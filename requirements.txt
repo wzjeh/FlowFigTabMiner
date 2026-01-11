@@ -1,0 +1,9 @@
+python-dotenv
+docling
+pandas
+streamlit
+opencv-python
+pillow
+google-generativeai
+dashscope
+ipykernel

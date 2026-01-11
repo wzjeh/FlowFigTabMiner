@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.env.local
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+debug_pipeline.ipynb
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Mac
+.DS_Store
+
+# Data
+data/input/*
+!data/input/.gitkeep
+data/intermediate/*
+!data/intermediate/.gitkeep
+data/output/*
+!data/output/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+
+# Virtual Environment
+flowfigtabminer/
