@@ -6,4 +6,6 @@ opencv-python
 pillow
 google-generativeai
 dashscope
+openai
 ipykernel
+einops

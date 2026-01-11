@@ -2,7 +2,10 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file
+# Force override to ensure we use the explicit keys from the file, not stale shell envs
+load_dotenv(override=True)
+
 
 class Config:
     # Project Paths
@@ -19,6 +22,10 @@ class Config:
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     QWEN_API_KEY = os.getenv("QWEN_API_KEY")
 
+    # Local Model Storage
+    MODELS_DIR = os.path.join(BASE_DIR, "models")
+    os.environ["HF_HOME"] = MODELS_DIR  # Tell Hugging Face to store models here
+
     @classmethod
     def validate(cls):
         """Validates that necessary configuration is present."""
@@ -26,10 +33,12 @@ class Config:
             print("WARNING: GEMINI_API_KEY not found in environment variables.")
         if cls.LLM_PROVIDER == "qwen" and not cls.QWEN_API_KEY:
             print("WARNING: QWEN_API_KEY not found in environment variables.")
+        
         # Add basic directory validation
         os.makedirs(cls.DATA_INPUT_DIR, exist_ok=True)
         os.makedirs(cls.DATA_INTERMEDIATE_DIR, exist_ok=True)
         os.makedirs(cls.DATA_OUTPUT_DIR, exist_ok=True)
+        os.makedirs(cls.MODELS_DIR, exist_ok=True)
 
 # Run validation on import
 Config.validate()

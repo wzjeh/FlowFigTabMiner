@@ -4,7 +4,6 @@
 
 # Jupyter Notebooks
 .ipynb_checkpoints
-debug_pipeline.ipynb
 
 # Python
 __pycache__/
@@ -31,3 +30,6 @@ data/output/*
 
 # Virtual Environment
 flowfigtabminer/
+
+# Local Models
+models/
