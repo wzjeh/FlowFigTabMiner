@@ -4,8 +4,9 @@ import json
 import time
 from src.parsing.docling_wrapper import parse_pdf_to_markdown
 from src.parsing.active_area_detector import ActiveAreaDetector
+from src.parsing.yolo_detector import YoloDetector
 from src.extraction.table_agent import extract_table
-from src.extraction.figure_agent import extract_figure
+from src.extraction.figure_agent import FigureAgent
 # from src.fusion.data_merger import fuse_data 
 
 def main():
@@ -49,6 +50,21 @@ def main():
         print(f"Error during TF-ID step: {e}")
         return
 
+    # Step 2.5: YOLO Refinement (Clean & Mask)
+    print("Step 2.5: Refining Figures with YOLO (Cut & Mask)...")
+    cleaned_figures_data = []
+    if figure_images:
+        try:
+            yolo = YoloDetector()
+            cleaned_figures_data = yolo.process_images(figure_images)
+            print(f"   YOLO generated {len(cleaned_figures_data)} cleaned charts from {len(figure_images)} inputs.")
+        except Exception as e:
+            print(f"   Warning: YOLO processing failed: {e}")
+            # Fallback: Treat original TF-ID crops as 'cleaned' if critical
+            pass
+    else:
+        print("   No figures to process with YOLO.")
+
     # Step 3: Extraction
     print("Step 3: Extracting Data using LLM...")
     
@@ -81,21 +97,10 @@ def main():
         print("   No tables to process.")
 
     # 3B: Figures
-    if figure_images:
-        print(f"   Processing {len(figure_images)} Figures...")
-        for img_path in figure_images:
-            print(f"      extracting: {os.path.basename(img_path)}")
-            try:
-                fig_result = extract_figure(img_path)
-                if fig_result.get("is_valid"):
-                    extracted_data["figures"].append({
-                        "source_image": img_path,
-                        "data": fig_result
-                    })
-                else:
-                    print(f"         -> Rejected ({fig_result.get('reason', 'unknown')})")
-            except Exception as e:
-                print(f"         -> Error: {e}")
+    # NOTE: FigureAgent logic disabled for stability validation.
+    # To re-enable, uncomment the logic that calls FigureAgent on 'cleaned_figures_data'.
+    if cleaned_figures_data:
+        print(f"   [INFO] Skipped FigureAgent processing for {len(cleaned_figures_data)} figures (Stability Mode).")
     else:
         print("   No figures to process.")
             

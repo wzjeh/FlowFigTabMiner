@@ -107,15 +107,19 @@ class ActiveAreaDetector:
         pdf = pdfium.PdfDocument(pdf_path)
         all_detections = {}
         
-        for i, page in enumerate(pdf):
-            # Render page to image
-            bitmap = page.render(scale=2) # 2x scale
-            pil_image = bitmap.to_pil()
-            
-            # Detect
-            detections = self.detect_tables_figures(pil_image)
-            if detections:
-                all_detections[f"page_{i+1}"] = detections
+        try:
+            for i, page in enumerate(pdf):
+                # Render page to image
+                bitmap = page.render(scale=2) # 2x scale
+                pil_image = bitmap.to_pil()
+                
+                # Detect
+                detections = self.detect_tables_figures(pil_image)
+                if detections:
+                    all_detections[f"page_{i+1}"] = detections
+        finally:
+            if pdf:
+                pdf.close()
         
         return all_detections
 
@@ -134,32 +138,36 @@ class ActiveAreaDetector:
         
         saved_paths = []
         
-        for page_key, detections in all_detections.items():
-            page_idx = int(page_key.split("_")[1]) - 1
-            page = pdf[page_idx]
-            # Render page to image at high resolution for cropping
-            bitmap = page.render(scale=3) # 3x scale for better crop quality
-            pil_image = bitmap.to_pil()
-            # 3x scale vs 2x scale detection
-            scale_factor = 3.0 / 2.0
-            
-            for idx, item in enumerate(detections):
-                label = item["label"] # 'table' or 'figure'
-                box = item["box"] # [x1, y1, x2, y2]
+        try:
+            for page_key, detections in all_detections.items():
+                page_idx = int(page_key.split("_")[1]) - 1
+                page = pdf[page_idx]
+                # Render page to image at high resolution for cropping
+                bitmap = page.render(scale=3) # 3x scale for better crop quality
+                pil_image = bitmap.to_pil()
+                # 3x scale vs 2x scale detection
+                scale_factor = 3.0 / 2.0
                 
-                # Scale box
-                crop_box = [coord * scale_factor for coord in box]
-                
-                # Label directory: data/intermediate/doc_name/tables/
-                label_dir = os.path.join(doc_output_dir, f"{label}s") 
-                os.makedirs(label_dir, exist_ok=True)
-                
-                # Crop and Save
-                crop = pil_image.crop(crop_box)
-                filename = f"{page_key}_{label}_{idx}.png"
-                filepath = os.path.join(label_dir, filename)
-                crop.save(filepath)
-                saved_paths.append(filepath)
+                for idx, item in enumerate(detections):
+                    label = item["label"] # 'table' or 'figure'
+                    box = item["box"] # [x1, y1, x2, y2]
+                    
+                    # Scale box
+                    crop_box = [coord * scale_factor for coord in box]
+                    
+                    # Label directory: data/intermediate/doc_name/tables/
+                    label_dir = os.path.join(doc_output_dir, f"{label}s") 
+                    os.makedirs(label_dir, exist_ok=True)
+                    
+                    # Crop and Save
+                    crop = pil_image.crop(crop_box)
+                    filename = f"{page_key}_{label}_{idx}.png"
+                    filepath = os.path.join(label_dir, filename)
+                    crop.save(filepath)
+                    saved_paths.append(filepath)
+        finally:
+            if pdf:
+                pdf.close()
                 
         return saved_paths
 

@@ -9,3 +9,5 @@ dashscope
 openai
 ipykernel
 einops
+ultralytics
+timm
