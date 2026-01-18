@@ -4,24 +4,23 @@ import numpy as np
 from ultralytics import YOLO
 
 class YoloDetector:
-    def __init__(self, model_path="models/best425.pt"):
+    def __init__(self, model_path="models/bestYOLOn-2-1.pt"):
         print(f"Loading YOLO model from {model_path}...")
         self.model = YOLO(model_path)
-        # Class Mapping based on inspection
+        # Class Mapping based on inspection (Updated: other_image removed)
         self.CLASS_MAP = {
             0: "axis_break",
             1: "chart_text",
             2: "legend",
-            3: "other_image",
-            4: "target_image",
-            5: "x_axis_title",
-            6: "y_axis_title"
+            3: "target_image",
+            4: "x_axis_title",
+            5: "y_axis_title"
         }
-        self.TARGET_CLASS_ID = 4  # target_image
+        self.TARGET_CLASS_ID = 3  # target_image
         # Elements to Mask (and Cut)
-        self.MASK_CLASSES = [0, 1, 2, 5, 6] 
+        self.MASK_CLASSES = [0, 1, 2, 4, 5] 
 
-    def process_images(self, image_paths, output_base_dir="data/intermediate", output_subdir_name="yolo_cleaned"):
+    def process_images(self, image_paths, output_base_dir="data/intermediate", output_subdir_name="yolo_cleaned", imgsz=640):
         """
         Process a list of image paths.
         Returns a list of dictionaries with metadata about processed charts.
@@ -35,9 +34,8 @@ class YoloDetector:
             print(f"   YOLO Processing: {basename}...")
             
             # Predict
-            # conf=0.25 is default, maybe lower/higher depending on needs
             try:
-                prediction_result = self.model(img_path, verbose=False)[0]
+                prediction_result = self.model(img_path, imgsz=imgsz, rect=False, verbose=False)[0]
             except Exception as e:
                 print(f"      -> prediction failed: {e}")
                 continue
@@ -71,14 +69,8 @@ class YoloDetector:
                     target_boxes.append(xyxy)
 
             # If no target found, maybe the whole image is the target? 
-            # User instruction: "Crop target... if one image has (a)(b), crop two frames."
-            # If nothing detected, we might optionally skip or treat whole as target if no 'other_image'
             if not target_boxes:
-                # heuristic: if 'other_image' (3) is dominant, skip. Else assume full image.
-                # For now, let's be strict: if no target_image detected, maybe it's not a chart.
-                # But let's check if there are parts like 'x_axis' etc. 
-                # If parts exist but no target box, we use the bounding box of all parts?
-                # Simpler: If no target, skip for now to follow 'target_image' rule strictly.
+                # If no target, skip for now to follow 'target_image' rule strictly.
                 print(f"      -> No target_image detected. Skipping.")
                 continue
 
@@ -96,14 +88,17 @@ class YoloDetector:
                 
                 target_out_name = f"{basename}_t{i}"
                 
+                # Save RAW Target (for downstream OCR)
+                target_raw = target_crop.copy()
+                raw_filename = f"{target_out_name}_raw.png"
+                raw_path = os.path.join(yolo_out_dir, raw_filename)
+                cv2.imwrite(raw_path, target_raw)
+
                 # Identify elements INSIDE or OVERLAPPING this target
                 # We check intersection.
                 elements_found = {}
                 
                 # Prepare Mask Overlay
-                # We want to mask on the target_crop.
-                # Need to map global coords to crop coords.
-                
                 for det in all_detections:
                     if det["cls_id"] in self.MASK_CLASSES:
                         dx1, dy1, dx2, dy2 = map(int, det["box"])
@@ -117,9 +112,7 @@ class YoloDetector:
                         if ix1 < ix2 and iy1 < iy2:
                             # Intersection exists. 
                             # 1. Cut (Save separate crop of the element)
-                            # Use un-clamped global coords for the element crop itself?
-                            # Or intersection? Better to take the whole element crop if possible, 
-                            # but sometimes element sticks out? Let's crop the element from original.
+                            # Use un-clamped global coords for the element crop itself from original full image
                             elem_crop = original_img[dy1:dy2, dx1:dx2]
                             elem_label = det["label"]
                             elem_filename = f"{target_out_name}_{elem_label}_{len(elements_found)}.png"
@@ -147,6 +140,7 @@ class YoloDetector:
                 results.append({
                     "original_source": img_path,
                     "cleaned_image": clean_path,
+                    "raw_image": raw_path,
                     "elements": elements_found
                 })
                 print(f"      -> Saved {clean_filename} (masked {sum(len(v) for v in elements_found.values())} elements)")
