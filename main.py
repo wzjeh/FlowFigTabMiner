@@ -37,7 +37,7 @@ def main():
         yolo_micro = Stage2Detector(model_path="models/bestYOLOm-2-2.pt")
         
         # Module 2 & 3
-        legend_matcher = LegendMatcher()
+        legend_matcher = LegendMatcher(yolo_model=yolo_micro)
         coord_mapper = CoordinateMapper()
         
     except Exception as e:
