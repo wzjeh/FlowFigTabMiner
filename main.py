@@ -99,11 +99,9 @@ def main():
                 # 2C. Legend Matching (Module 2)
                 # Parse Legends from Stage 1 crops
                 legend_crops = elements.get('legend', [])
-                prototypes = {}
-                for lc in legend_crops:
-                    print(f"      -> Parsing legend: {lc}")
-                    protos = legend_matcher.parse_legend(lc)
-                    prototypes.update(protos)
+                legend_crops = elements.get('legend', [])
+                print(f"      -> Parsing {len(legend_crops)} legend crops...")
+                prototypes = legend_matcher.parse_legend_crops(legend_crops)
                 
                 # Match points to series
                 print("      -> Matching points...")
