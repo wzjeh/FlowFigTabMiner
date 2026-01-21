@@ -1,0 +1,172 @@
+{
+  "meta": {
+    "figure_id": "page_6_figure_1_t0",
+    "source_intermediate_dir": "data/intermediate/macro_cleaned",
+    "caption": ""
+  },
+  "text_evidence": {
+    "x_axis_title": [
+      {
+        "text": "iquid flow rate (mL/min",
+        "source_file": "page_6_figure_1_t0_x_axis_title_1.png"
+      }
+    ],
+    "y_axis_title": [
+      {
+        "text": "product main t0 Selectivity",
+        "source_file": "page_6_figure_1_t0_y_axis_title_2.png"
+      },
+      {
+        "text": "ectivity of by products /%)",
+        "source_file": "page_6_figure_1_t0_y_axis_title_3.png"
+      }
+    ],
+    "chart_text": [],
+    "legend_text": [
+      {
+        "text": "3,4-dichloroaniline dechloroaniline \u2014 dechloronitrobenzene azo",
+        "source_file": "page_6_figure_1_t0_legend_0.png"
+      }
+    ]
+  },
+  "raw_data": [
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 2.371689184099362,
+      "Y_Left": 99.48871937669234,
+      "Y_Right": 1.0507264388981117
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 3.1955818579306396,
+      "Y_Left": 99.59135119575727,
+      "Y_Right": 1.1102671991555073
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": -0.1265739509089825,
+      "Y_Left": 99.81795345954106,
+      "Y_Right": 1.241728096805579
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 1.1163244868185092,
+      "Y_Left": 99.852552029847,
+      "Y_Right": 1.261800090058785
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 0.49769032656560164,
+      "Y_Left": 99.80509585678696,
+      "Y_Right": 1.2342688950683307
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 4.030126593542832,
+      "Y_Left": 99.4392034435617,
+      "Y_Right": 1.0220002959697765
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 1.7423324005964176,
+      "Y_Left": 99.51194829150411,
+      "Y_Right": 1.0642024472203588
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 4.038671411449942,
+      "Y_Left": 97.56563267371169,
+      "Y_Right": -0.06493189571574942
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 1.7418165498561637,
+      "Y_Left": 97.78698295995174,
+      "Y_Right": 0.06348212291904076
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 0.48088853674446996,
+      "Y_Left": 97.4216865346453,
+      "Y_Right": -0.1484407201156004
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 3.1955690576641325,
+      "Y_Left": 97.51839611959156,
+      "Y_Right": -0.0923356811097642
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 2.360081262416997,
+      "Y_Left": 97.61802927186584,
+      "Y_Right": -0.03453456555612555
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": -0.13975926543340522,
+      "Y_Left": 97.38741808054806,
+      "Y_Right": -0.16832119995494588
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 3.1914902527415037,
+      "Y_Left": 97.28763914215702,
+      "Y_Right": -0.22620689177650943
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 2.377651548238575,
+      "Y_Left": 97.4587643678416,
+      "Y_Right": -0.12693040881723094
+    },
+    {
+      "Series": "azo",
+      "X": -0.14687749363824976,
+      "Y_Left": 97.27350725923944,
+      "Y_Right": -0.23440535362243842
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 1.1032115738015196,
+      "Y_Left": 97.40009842187561,
+      "Y_Right": -0.16096483455243615
+    },
+    {
+      "Series": "azo",
+      "X": 0.4776774298877213,
+      "Y_Left": 97.27483447948477,
+      "Y_Right": -0.23363538088731683
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 1.7303481510787306,
+      "Y_Left": 97.45620711809545,
+      "Y_Right": -0.12841397010885736
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": -0.12121135925731319,
+      "Y_Left": 97.30433437648186,
+      "Y_Right": -0.21652132882504982
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 1.735534819067587,
+      "Y_Left": 97.31950419553417,
+      "Y_Right": -0.2077207193496351
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzene",
+      "X": 4.6199731144236065,
+      "Y_Left": 97.24570656589769,
+      "Y_Right": -0.2505336307233541
+    },
+    {
+      "Series": "azo",
+      "X": -0.1027172142005528,
+      "Y_Left": 97.3197192790876,
+      "Y_Right": -0.20759594090951272
+    }
+  ]
+}

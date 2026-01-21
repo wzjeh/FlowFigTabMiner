@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "figure_id": "page_5_figure_0_t0",
+    "source_intermediate_dir": "data/intermediate/example/macro_cleaned",
+    "caption": ""
+  },
+  "text_evidence": {
+    "x_axis_title": [
+      {
+        "text": "(MPa) ressure",
+        "source_file": "page_5_figure_0_t0_x_axis_title_1.png"
+      }
+    ],
+    "y_axis_title": [
+      {
+        "text": "of main produc ctivity",
+        "source_file": "page_5_figure_0_t0_y_axis_title_3.png"
+      },
+      {
+        "text": "ectivity of by products",
+        "source_file": "page_5_figure_0_t0_y_axis_title_2.png"
+      }
+    ],
+    "chart_text": [],
+    "legend_text": [
+      {
+        "text": "3,4-dichloroaniline dechloroaniline \u2014 dechloronitrobenzen  azo",
+        "source_file": "page_5_figure_0_t0_legend_0.png"
+      }
+    ]
+  },
+  "raw_data": [
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 1.9990823361550425,
+      "Y_Left": 99.4367252837328,
+      "Y_Right": 4.146662116493865
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 1.4984406828828978,
+      "Y_Left": 98.94980871643672,
+      "Y_Right": 3.841723007301813
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 2.498972602809091,
+      "Y_Left": 99.65026532342632,
+      "Y_Right": 4.280394903288487
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 3.0011824626369474,
+      "Y_Left": 99.67752848694903,
+      "Y_Right": 4.297468885479194
+    },
+    {
+      "Series": "dechloroaniline",
+      "X": 0.9948061508195362,
+      "Y_Left": 92.74220853844227,
+      "Y_Right": -0.04588360877576125
+    },
+    {
+      "Series": " azo",
+      "X": 3.0073659931641226,
+      "Y_Left": 92.97771616210343,
+      "Y_Right": 0.10160672076051025
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 0.9910495450593181,
+      "Y_Left": 99.20722325409828,
+      "Y_Right": 4.002932884064683
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 1.4918873346248904,
+      "Y_Left": 93.14730806455708,
+      "Y_Right": 0.20781629984216465
+    },
+    {
+      "Series": " azo",
+      "X": 2.501042770322699,
+      "Y_Left": 92.89839384359637,
+      "Y_Right": 0.05192987924552295
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 0.9900115153301495,
+      "Y_Left": 94.11938191664541,
+      "Y_Right": 0.8165927400663744
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 1.4959755259412537,
+      "Y_Left": 93.86549715474634,
+      "Y_Right": 0.6575934405336827
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 1.9947467158930818,
+      "Y_Left": 93.24522352983271,
+      "Y_Right": 0.269137390071414
+    },
+    {
+      "Series": "3,4-dichloroaniline",
+      "X": 0.991910620048455,
+      "Y_Left": 93.02880701561804,
+      "Y_Right": 0.1336031661579682
+    },
+    {
+      "Series": " azo",
+      "X": 1.99802466661011,
+      "Y_Left": 92.93071071280723,
+      "Y_Right": 0.07216882359641552
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 1.5008094737951942,
+      "Y_Left": 93.00433122676124,
+      "Y_Right": 0.11827482090939068
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 1.4966510701374753,
+      "Y_Left": 92.86555234036938,
+      "Y_Right": 0.03136237464369973
+    },
+    {
+      "Series": "\u2014 dechloronitrobenzen",
+      "X": 2.5019850886830453,
+      "Y_Left": 93.06537166180983,
+      "Y_Right": 0.15650234722212097
+    }
+  ]
+}

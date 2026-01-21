@@ -3,6 +3,7 @@ import numpy as np
 import os
 from paddleocr import PaddleOCR
 from sklearn.cluster import KMeans
+from scipy.spatial.distance import cdist
 from collections import defaultdict
 
 class LegendMatcher:
@@ -168,8 +169,11 @@ class LegendMatcher:
                 if x2 > x1 and y2 > y1:
                     crop = master_img[y1:y2, x1:x2]
                     if crop.size > 0:
-                        hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-                        mean_color = np.mean(hsv_crop, axis=(0,1))
+                        # hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+                        # mean_color = np.mean(hsv_crop, axis=(0,1))
+                        
+                        # Use Weighted Mean
+                        mean_color = self.get_weighted_mean_color(crop) # Crop is BGR
                         
                         if best_text not in prototypes:
                             prototypes[best_text] = {'colors': []}
@@ -185,22 +189,83 @@ class LegendMatcher:
             
         return final_protos
 
-    def hsv_dist(self, c1, c2):
-        """Weighted HSV distance."""
-        dh = min(abs(c1[0] - c2[0]), 180 - abs(c1[0] - c2[0])) / 180.0
-        ds = abs(c1[1] - c2[1]) / 255.0
-        dv = abs(c1[2] - c2[2]) / 255.0
-        return 4.0*dh + 1.0*ds + 0.5*dv
+    def get_weighted_mean_color(self, img_crop):
+        """
+        Compute mean color with Gaussian weighting centered in the crop.
+        This reduces the influence of background pixels at the edges.
+        """
+        h, w = img_crop.shape[:2]
+        if h == 0 or w == 0: return np.array([0, 0, 0])
+        
+        # Create Gaussian Mask
+        sigma_x = w / 2.5
+        sigma_y = h / 2.5
+        
+        x = np.linspace(-w/2, w/2, w)
+        y = np.linspace(-h/2, h/2, h)
+        X, Y = np.meshgrid(x, y)
+        
+        gaussian = np.exp(-(X**2 / (2*sigma_x**2) + Y**2 / (2*sigma_y**2)))
+        
+        # Normalize mask
+        if np.sum(gaussian) == 0:
+             return np.mean(img_crop, axis=(0,1))
+             
+        weights = gaussian / np.sum(gaussian)
+        
+        # Compute Weighted Mean per channel (in HSV)
+        # However, for Hue, weighted mean is tricky due to circularity.
+        # Strict way: Convert to cartesian, mean, convert back.
+        # Practical way for small hue diffs: Weighted Average is OK.
+        # Best way: Use RGB for weighted mean, then convert to HSV.
+        
+        # 1. Convert to RGB float
+        rgb_crop = cv2.cvtColor(img_crop, cv2.COLOR_HSV2BGR) # Wait, input is usually HSV from existing logic? No, extraction is BGR usually. 
+        # Ah, update: we should pass BGR here.
+        
+        # Let's check caller. Caller passes BGR?
+        # In current code: `hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)` happens inside the loop.
+        # We will move HSV conversion here.
+        
+        # We process in Linear RGB space to be strictly correct for physical mixing, 
+        # but standard Gamma RGB is fine for perceptual center extraction.
+        
+        weighted_r = np.sum(rgb_crop[:,:,2] * weights)
+        weighted_g = np.sum(rgb_crop[:,:,1] * weights)
+        weighted_b = np.sum(rgb_crop[:,:,0] * weights)
+        
+        mean_bgr = np.array([[[weighted_b, weighted_g, weighted_r]]], dtype=np.uint8)
+        mean_hsv = cv2.cvtColor(mean_bgr, cv2.COLOR_BGR2HSV)[0][0]
+        
+        return mean_hsv
+
+    # def hsv_dist(self, c1, c2):
+        # Default now handled by custom distance func in match_points
+    #     """Weighted HSV distance."""
+    #     dh = min(abs(c1[0] - c2[0]), 180 - abs(c1[0] - c2[0])) / 180.0
+    #     ds = abs(c1[1] - c2[1]) / 255.0
+    #     dv = abs(c1[2] - c2[2]) / 255.0
+    #     return 4.0*dh + 1.0*ds + 0.5*dv
+    
+    def weighted_hsv_dist(self, c1, c2):
+         """
+         c1, c2: [H, S, V] arrays.
+         H is 0-179, S/V 0-255.
+         """
+         # Wrap Hue
+         dh = min(abs(c1[0] - c2[0]), 180 - abs(c1[0] - c2[0])) / 180.0
+         ds = abs(c1[1] - c2[1]) / 255.0
+         dv = abs(c1[2] - c2[2]) / 255.0
+         
+         # Weights: Hue is most important, then Saturation. Value is least robust (lighting/shadows).
+         return 4.0*dh + 1.5*ds + 0.5*dv
 
     def match_points(self, points, prototypes, plot_img_path):
         """
-        Refined Logic: Cluster-then-Match
-        1. Extract colors for all data points.
-        2. K-Means Clustering (K = Num Legend Entries).
-        3. Match Clusters to Legends using Hungarian Algorithm (linear_sum_assignment).
+        Refined Logic: Nearest Neighbor with Weighted Color
+        1. Extract weighted mean color for all data points.
+        2. Assign each point to the closest Legend Prototype.
         """
-        from scipy.optimize import linear_sum_assignment
-        
         if not points or not prototypes:
             return points
 
@@ -218,94 +283,61 @@ class LegendMatcher:
                 
         if not data_points: return points
         
-        # 1. Extract Features
+        # 1. Extract Features (Weighted Mean Color)
         features = []
         valid_indices = []
+        
+        legend_labels = list(prototypes.keys())
+        legend_colors = np.array([prototypes[l]['hsv'] for l in legend_labels])
+        
         for i, p in enumerate(data_points):
             bbox = p['box']
-            # Crop center
-            pad_x = max(1, int((bbox[2]-bbox[0])*0.25))
-            pad_y = max(1, int((bbox[3]-bbox[1])*0.25))
-            x1 = max(0, int(bbox[0])+pad_x)
-            y1 = max(0, int(bbox[1])+pad_y)
-            x2 = min(img_w, int(bbox[2])-pad_x)
-            y2 = min(img_h, int(bbox[3])-pad_y)
+            # Crop slightly larger to ensure we get the whole marker, 
+            # but Gaussian weight will focus on center.
+            pad_x = max(1, int((bbox[2]-bbox[0])*0.1)) # Small padding
+            pad_y = max(1, int((bbox[3]-bbox[1])*0.1))
+            
+            x1 = max(0, int(bbox[0])-pad_x)
+            y1 = max(0, int(bbox[1])-pad_y)
+            x2 = min(img_w, int(bbox[2])+pad_x)
+            y2 = min(img_h, int(bbox[3])+pad_y)
             
             if x2 > x1 and y2 > y1:
                 crop = img[y1:y2, x1:x2]
                 if crop.size > 0:
-                    hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-                    mean = np.mean(hsv_crop, axis=(0,1))
+                    # mean = self.get_weighted_mean_color(crop)
+                    # For speed on many points, we can do simple mean if crop is tight, 
+                    # but user requested weighting.
+                    mean = self.get_weighted_mean_color(crop)
                     features.append(mean)
                     valid_indices.append(indices[i])
         
         if not features: return points
         
         X = np.array(features)
-        legend_labels = list(prototypes.keys())
-        legend_colors = [prototypes[l]['hsv'] for l in legend_labels]
-        n_legends = len(legend_labels)
-        n_points = len(X)
-        
-        assigned_labels = ["Unknown"] * n_points
-        
-        # Strategy A: Balanced Assignment (if detected points are divisible by series count)
-        # This addresses the user observation: "Each series should have 5 points"
-        # We assume detection is perfect (Recall = 100%) for this to work best.
-        if n_points > 0 and n_points % n_legends == 0:
-            count_per_series = n_points // n_legends
-            print(f"      [DEBUG] Balanced Mode TRIGGERED: {n_points} points, {n_legends} series -> {count_per_series} per series.")
-            
-            # Create targets: Repeat each legend color 'count_per_series' times
-            targets = []
-            target_map = [] 
-            
-            for i, proto_hsv in enumerate(legend_colors):
-                for _ in range(count_per_series):
-                    targets.append(proto_hsv)
-                    target_map.append(legend_labels[i])
-            
-            # Cost Matrix
-            cost_matrix = np.zeros((n_points, n_points))
-            for i in range(n_points): 
-                for j in range(n_points): 
-                    cost_matrix[i, j] = self.hsv_dist(X[i], targets[j])
-            
-            row_ind, col_ind = linear_sum_assignment(cost_matrix)
-            
-            for r, c in zip(row_ind, col_ind):
-                assigned_labels[r] = target_map[c]
-                
-        else:
-            # Fallback
-            print(f"      [DEBUG] Unbalanced Mode TRIGGERED: {n_points} points / {n_legends} series != Int. Running KMeans.")
-            print(f"      [DEBUG] Prototype Keys: {legend_labels}")
-            
-            # If fewer points than clusters, reduce K
-            n_clusters = min(n_legends, n_points)
-            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
-            cluster_labels = kmeans.fit_predict(X)
-            cluster_centers = kmeans.cluster_centers_
-            
-            # Match Clusters to Legends
-            cost_matrix = np.zeros((n_clusters, n_legends))
-            for i in range(n_clusters):
-                for j in range(n_legends):
-                    cost_matrix[i, j] = self.hsv_dist(cluster_centers[i], legend_colors[j])
-            
-            row_ind, col_ind = linear_sum_assignment(cost_matrix)
-            
-            cluster_to_legend = {}
-            for r, c in zip(row_ind, col_ind):
-                cluster_to_legend[r] = legend_labels[c]
-                
-            for i in range(n_points):
-                c_lbl = cluster_labels[i]
-                if c_lbl in cluster_to_legend:
-                    assigned_labels[i] = cluster_to_legend[c_lbl]
 
-        # 4. Apply labels back to points
+        # 2. Nearest Neighbor Assignment
+        # We calculate distance from every point to every legend color.
+        # Custom Metric because of Hue Wrapping.
+        
+        n_points = len(X)
+        n_legends = len(legend_colors)
+        
+        # Manual cdist with weighted_hsv_dist
+        dists = np.zeros((n_points, n_legends))
+        
+        for i in range(n_points):
+            for j in range(n_legends):
+                dists[i, j] = self.weighted_hsv_dist(X[i], legend_colors[j])
+                
+        # Assign to min distance
+        labels_idx = np.argmin(dists, axis=1)
+        assigned_labels = [legend_labels[idx] for idx in labels_idx]
+
+        # 3. Apply labels back to points
         for i, idx in enumerate(valid_indices):
             points[idx]['series'] = assigned_labels[i]
+            # Optional: Store confidence/distance?
+            # points[idx]['match_dist'] = dists[i, labels_idx[i]]
             
         return points

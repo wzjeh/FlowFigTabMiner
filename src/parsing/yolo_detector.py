@@ -108,29 +108,59 @@ class YoloDetector:
                         iy1 = max(ty1, dy1)
                         ix2 = min(tx2, dx2)
                         iy2 = min(ty2, dy2)
+
+                        # Logic for determining inclusion and labeling
+                        # 1. Intersection Check
+                        intersect_w = max(0, ix2 - ix1)
+                        intersect_h = max(0, iy2 - iy1)
+                        intersection_area = intersect_w * intersect_h
+                        is_intersecting = intersection_area > 0
+
+                        # 2. Horizontal Alignment Check (for chart_text)
+                        box_w = dx2 - dx1
+                        horizontal_overlap = max(0, min(tx2, dx2) - max(tx1, dx1))
+                        is_horizontally_aligned = horizontal_overlap > 0.5 * min((tx2 - tx1), box_w)
                         
-                        if ix1 < ix2 and iy1 < iy2:
-                            # Intersection exists. 
+                        include_element = False
+                        
+                        # Determine Label
+                        final_label = det["label"]
+                        
+                        if det["cls_id"] == 1: # chart_text
+                             # Always include if horizontally aligned (User request: retain all)
+                             if is_horizontally_aligned:
+                                 include_element = True
+                                 # Classify: Below -> Caption, Else -> Chart Text
+                                 # Vertical check: box top (dy1) > target bottom (ty2) - buffer
+                                 if dy1 >= ty2 - 20: 
+                                     final_label = "caption"
+                                 else:
+                                     final_label = "chart_text"
+                        else:
+                             # For others (Legend, titles), strictly use intersection
+                             if is_intersecting:
+                                 include_element = True
+
+                        if include_element:
                             # 1. Cut (Save separate crop of the element)
-                            # Use un-clamped global coords for the element crop itself from original full image
                             elem_crop = original_img[dy1:dy2, dx1:dx2]
-                            elem_label = det["label"]
-                            elem_filename = f"{target_out_name}_{elem_label}_{len(elements_found)}.png"
+                            elem_filename = f"{target_out_name}_{final_label}_{len(elements_found.get(final_label, []))}.png"
                             elem_path = os.path.join(yolo_out_dir, elem_filename)
                             if elem_crop.size > 0:
                                 cv2.imwrite(elem_path, elem_crop)
-                                if elem_label not in elements_found: elements_found[elem_label] = []
-                                elements_found[elem_label].append(elem_path)
+                                if final_label not in elements_found: elements_found[final_label] = []
+                                elements_found[final_label].append(elem_path)
                             
-                            # 2. Mask (White out on target_crop)
-                            # Convert global intersection to relative target coords
-                            rx1 = ix1 - tx1
-                            ry1 = iy1 - ty1
-                            rx2 = ix2 - tx1
-                            ry2 = iy2 - ty1
-                            
-                            # Draw white rectangle filled
-                            cv2.rectangle(target_crop, (rx1, ry1), (rx2, ry2), (255, 255, 255), -1)
+                            # 2. Mask (White out on target_crop) - ONLY IF INTERSECTING and NOT CAPTION (usually captions are outside)
+                            if is_intersecting and final_label != "caption":
+                                # Convert global intersection to relative target coords
+                                rx1 = ix1 - tx1
+                                ry1 = iy1 - ty1
+                                rx2 = ix2 - tx1
+                                ry2 = iy2 - ty1
+                                
+                                # Draw white rectangle filled
+                                cv2.rectangle(target_crop, (rx1, ry1), (rx2, ry2), (255, 255, 255), -1)
 
                 # Save Cleaned Target
                 clean_filename = f"{target_out_name}_cleaned.png"

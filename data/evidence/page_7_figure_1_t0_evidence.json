@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "figure_id": "page_7_figure_1_t0",
+    "source_intermediate_dir": "data/intermediate/macro_cleaned",
+    "caption": ""
+  },
+  "text_evidence": {
+    "x_axis_title": [
+      {
+        "text": "quid flow rate (mL/min)",
+        "source_file": "page_7_figure_1_t0_x_axis_title_1.png"
+      }
+    ],
+    "y_axis_title": [
+      {
+        "text": "Selectivity (%",
+        "source_file": "page_7_figure_1_t0_y_axis_title_0.png"
+      }
+    ],
+    "chart_text": [],
+    "legend_text": [
+      {
+        "text": "70 0.06 110",
+        "source_file": "page_7_figure_1_t0_legend_2.png"
+      }
+    ]
+  },
+  "raw_data": [
+    {
+      "Series": "90",
+      "X": 0.835284906104045,
+      "Y_Left": 99.1657511831845,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.10495282470623,
+      "Y_Left": 99.87961042301583,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.7186809591112564,
+      "Y_Left": 97.78058008482184,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.1044486378718426,
+      "Y_Left": 99.6009913159275,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.2594600007651398,
+      "Y_Left": 99.45106141763303,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.8340676869579462,
+      "Y_Left": 99.83176425257244,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.259623314935739,
+      "Y_Left": 97.78193851988988,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.834777590571244,
+      "Y_Left": 99.5136677730774,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.7185842220882623,
+      "Y_Left": 98.39042112089852,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.7186361079563608,
+      "Y_Left": 99.86951647305708,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.104909061794261,
+      "Y_Left": 98.53096021981756,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.2597415836223484,
+      "Y_Left": 98.16097990811434,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.2488457067849454,
+      "Y_Left": 99.45647466448008,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.9508109873440433,
+      "Y_Left": 99.41106094573908,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.2491736954298016,
+      "Y_Left": 97.77553639312006,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.9512980537852493,
+      "Y_Left": 99.5128555166532,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 1.2497865316606456,
+      "Y_Left": 98.14753727957107,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.5507211960568004,
+      "Y_Left": 99.04053395027238,
+      "Y_Right": null
+    },
+    {
+      "Series": "90",
+      "X": 0.5506214663657587,
+      "Y_Left": 98.53927174690914,
+      "Y_Right": null
+    }
+  ]
+}

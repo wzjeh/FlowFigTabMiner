@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "figure_id": "page_3_figure_0_t0",
+    "source_intermediate_dir": "data/intermediate/macro_cleaned"
+  },
+  "text_evidence": {
+    "x_axis_title": [
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_x_axis_title_1.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_x_axis_title_2.png"
+      }
+    ],
+    "y_axis_title": [
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_y_axis_title_1.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_y_axis_title_0.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_y_axis_title_2.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_y_axis_title_3.png"
+      }
+    ],
+    "chart_text": [
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_chart_text_3.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_chart_text_0.png"
+      },
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_chart_text_4.png"
+      }
+    ],
+    "legend_text": [
+      {
+        "text": "n a o t o e e e e e e e i e e",
+        "source_file": "page_3_figure_0_t0_legend_2.png"
+      }
+    ]
+  },
+  "raw_data": []
+}

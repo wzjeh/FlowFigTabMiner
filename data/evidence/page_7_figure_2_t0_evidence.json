@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "figure_id": "page_7_figure_2_t0",
+    "source_intermediate_dir": "data/intermediate/macro_cleaned"
+  },
+  "text_evidence": {
+    "x_axis_title": [
+      {
+        "text": "og (C,mg/mL",
+        "source_file": "page_7_figure_2_t0_x_axis_title_1.png"
+      }
+    ],
+    "y_axis_title": [
+      {
+        "text": "383' 374",
+        "source_file": "page_7_figure_2_t0_y_axis_title_2.png"
+      },
+      {
+        "text": "383' '374",
+        "source_file": "page_7_figure_2_t0_y_axis_title_0.png"
+      }
+    ],
+    "chart_text": [],
+    "legend_text": [
+      {
+        "text": "0.005 mg/m",
+        "source_file": "page_7_figure_2_t0_legend_3.png"
+      },
+      {
+        "text": "1 mg/mL",
+        "source_file": "page_7_figure_2_t0_legend_0.png"
+      }
+    ]
+  },
+  "raw_data": [
+    {
+      "Series": "1 mg/mL",
+      "X": 0.7026246699317107,
+      "Y_Left": 1.1265383102970543,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": 0.4792065836456034,
+      "Y_Left": 1.1079588476049693,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": 0.30159918960059295,
+      "Y_Left": 1.0849045008246885,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": 1.0046773870673178,
+      "Y_Left": 1.1317935104537047,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": -0.704858020824918,
+      "Y_Left": 0.7624753936138255,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": 0.17480203485269108,
+      "Y_Left": 0.9791490618424366,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": -0.30957898066101697,
+      "Y_Left": 0.8199226565404482,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": -1.0086835152092597,
+      "Y_Left": 0.7282730172202809,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": 0.00021364763468012526,
+      "Y_Left": 0.863106012295143,
+      "Y_Right": null
+    },
+    {
+      "Series": "1 mg/mL",
+      "X": -0.05190995672174692,
+      "Y_Left": 0.8492941413880188,
+      "Y_Right": null
+    }
+  ]
+}
