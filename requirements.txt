@@ -11,3 +11,10 @@ ipykernel
 einops
 ultralytics
 timm
+paddlepaddle
+paddleocr
+molscribe
+torch
+torchvision
+timm
+numpy<2.0

@@ -59,18 +59,19 @@ class EvidenceAssembler:
     def _is_relevant_chart(self, text_evidence):
         """
         Determines if the chart is relevant based on keywords in extracted text.
-        Keywords: yield, selectivity, conversion, etc.
+        Robust logic: 
+        1. Normalizes all text (removes spaces/punctuation).
+        2. Checks for presence of normalized keywords.
         """
-        import difflib
         
-        # Target Keywords (Stricter list per user request)
+        # Target Keywords (Normalized)
+        # We look for these sequences inside the normalized text dump
         keywords = [
-            'yield', 'uiel', 'yeild',           # yield
-            'selectivity', 'slelctivity', 'selectiv', # selectivity
-            'conversion', 'convers', 'conv.',   # conversion
-            'recovery', 'purity', 'efficiency', # efficiency/purity
-            'ee %', 'e.e.', 'dr',               # stereoselectivity
-            # Removed: product, formation, ratio
+            'yield', 'uiel', 'yeild',           
+            'selectivity', 'slelctivity', 'selectiv', 
+            'conversion', 'convers', 
+            'recovery', 'purity', 'efficiency', 
+            'ee%', 'ee', 'dr',               
         ]
         
         # Collect all text
@@ -79,32 +80,26 @@ class EvidenceAssembler:
             for item in text_evidence.get(key, []):
                 all_text_bits.append(item['text'].lower())
         
-        full_text = " ".join(all_text_bits)
+        full_text = "".join(all_text_bits) # Join without spaces first to preserve original order? 
+        # Actually join with spaces then strip all non-alpha is safer for boundaries but we want to catch "S e l e c t i v i t y"
+        # So: "S e l e c t i v i t y of Product" -> "selectivityofproduct"
         
-        # 1. Direct Regex check for strong symbols
-        # if '%' in full_text: return True # Too broad? "10%" might be in non-result charts.
+        # Normalize: Remove all non-alphanumeric characters
+        import re
+        normalized_text = re.sub(r'[^a-z0-9]', '', full_text)
         
-        # 2. Token-based fuzzy match
-        tokens = full_text.split()
-        for token in tokens:
-            # Clean token
-            clean = re.sub(r'[^\w]', '', token)
-            if len(clean) < 3: continue
-            
-            for kw in keywords:
-                # Exact substring match (robust)
-                if kw in clean:
-                    return True
+        print(f"      [Filter] Normalized Text Dump: {normalized_text[:100]}...")
+        
+        for kw in keywords:
+            # Check if keyword exists in normalized text
+            if kw in normalized_text:
+                print(f"      [Filter] Match Found: '{kw}'")
+                return True
                 
-                # Fuzzy match for longer words
-                if len(kw) > 4:
-                    ratio = difflib.SequenceMatcher(None, clean, kw).ratio()
-                    if ratio > 0.80:
-                        print(f"      [Filter] Keyword Match: '{token}' ~= '{kw}' ({ratio:.2f})")
-                        return True
-                        
-        # 3. Last resort: check if raw data exists? 
-        # User said: "Image directly discarded". Even if we found data points, if axes are not relevant, we discard.
+        # Fallback: Sliding window fuzzy match? 
+        # For now, strict substring on normalized text handles the user's "Selectivity" (spaced) case perfectly.
+        # "S e l e c t i v i t y" -> "selectivity" which contains "selectivity".
+        
         return False
 
     def _process_text_crops(self, figure_id, intermediate_dir):
@@ -142,7 +137,11 @@ class EvidenceAssembler:
                 continue # Skip raw, cleaned, etc.
             
             # Run OCR
-            ocr_result = self.ocr.ocr(file_path)
+            try:
+                ocr_result = self.ocr.ocr(file_path)
+            except Exception as e:
+                print(f"      [OCR Error] {filename}: {e}")
+                ocr_result = []
             
             # Parse OCR Result
             # Robust parsing (matching CoordinateMapper logic)
@@ -159,9 +158,10 @@ class EvidenceAssembler:
                             txts.append(line[1][0])
             
             full_text = " ".join(txts).strip()
+            print(f"      [OCR Debug] {filename} -> '{full_text}'")
             
             if full_text:
-                # Basic cleanup (Step 4 optimization: logical filtering)
+                # Basic cleanup
                 if self._is_valid_evidence(full_text):
                     evidence[key].append({
                         "text": full_text,

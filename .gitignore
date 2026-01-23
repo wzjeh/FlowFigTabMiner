@@ -23,7 +23,11 @@ data/intermediate/*
 !data/intermediate/.gitkeep
 data/output/*
 !data/output/.gitkeep
-data/for_annotation/
+data/for_annotation/*
+!data/for_annotation/.gitkeep
+data/tab-for-annotation/*
+!data/tab-for-annotation/.gitkeep
+!data/tab_for_annotation/.gitkeep
 
 # IDE
 .idea/

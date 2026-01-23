@@ -31,10 +31,94 @@ st.title("🧪 FlowFigTabMiner Pipeline Visualization")
 
 # Sidebar
 st.sidebar.header("Configuration")
-mode = st.sidebar.radio("Mode", ["Step-by-Step", "Batch Process (One-Click)", "Gallery View", "Upload Single Image"])
+app_mode = st.sidebar.radio("Mode", ["Step-by-Step (Figures)", "Table Extraction", "Batch Process (One-Click)", "Gallery View", "Upload Single Image"])
 
-# --- MODE: UPLOAD SINGLE IMAGE ---
-if mode == "Upload Single Image":
+# --- MODE: TABLE EXTRACTION ---
+if app_mode == "Table Extraction":
+    st.header("📊 Table Extraction Debugger")
+    
+    # Input Selection
+    input_type = st.radio("Input Type", ["Select from PDF", "Upload Image"])
+    
+    selected_image_path = None
+    
+    if input_type == "Select from PDF":
+        input_dir = "data/input"
+        # Ensure input dir exists
+        if os.path.exists(input_dir):
+            pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
+            pdf_map = {os.path.basename(f): f for f in pdf_files}
+            selected_pdf_name = st.selectbox("Select PDF", list(pdf_map.keys()))
+            
+            if selected_pdf_name:
+                pdf_basename = os.path.splitext(selected_pdf_name)[0]
+                tables_dir = os.path.join("data/intermediate", pdf_basename, "tables") # Assuming TF-ID saves here?
+                # Check root intermediate dir too if structure differs
+                if not os.path.exists(tables_dir):
+                     tables_dir = os.path.join("data/intermediate", pdf_basename) # Sometimes just flat?
+                
+                if os.path.exists(tables_dir):
+                     # Recursive search for images with 'table' in name? 
+                     # Or just list dir
+                     possible_files = glob.glob(os.path.join(tables_dir, "*table*.png")) + glob.glob(os.path.join(tables_dir, "*table*.jpg"))
+                     if possible_files:
+                         selected_img_name = st.selectbox("Select Table Image", [os.path.basename(f) for f in possible_files])
+                         selected_image_path = os.path.join(tables_dir, selected_img_name)
+                     else:
+                         st.warning(f"No table images found in {tables_dir}. Run Step 1 first.")
+                else:
+                     st.warning(f"Directory not found: {tables_dir}. Run Step 1 first.")
+        else:
+             st.error("data/input directory missing.")
+
+    else:
+        uploaded_file = st.file_uploader("Upload Table Image", type=['png', 'jpg', 'jpeg'])
+        if uploaded_file:
+            upload_dir = "data/intermediate/uploads_tables"
+            os.makedirs(upload_dir, exist_ok=True)
+            selected_image_path = os.path.join(upload_dir, uploaded_file.name)
+            with open(selected_image_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+    
+    # Main Processing UI
+    if selected_image_path:
+        st.image(selected_image_path, caption="Original Table", width=600)
+        
+        if st.button("Run Table Pipeline"):
+            with st.spinner("Running Pipeline (Filter -> Structure -> Content)..."):
+                # Create output dir for debug crops
+                out_debug = os.path.join(os.path.dirname(selected_image_path), "debug_output")
+                res = run_script("scripts/step_table_pipeline.py", [selected_image_path, "--output_dir", out_debug])
+                
+                json_out = parse_json_output(res.stdout)
+                
+                if json_out:
+                    if json_out.get('is_valid'):
+                        st.success("Analysis Complete & Valid Table!")
+                    else:
+                        st.error(f"Invalid / Filtered: {json_out.get('reason')}")
+                    
+                    st.json(json_out)
+                    
+                    # Show DataFrame
+                    if 'dataframe' in json_out:
+                         st.subheader("Extracted Data")
+                         st.dataframe(pd.DataFrame(json_out['dataframe']))
+                    
+                    # Show Cells Grid if available (Optional visualization)
+                    st.subheader("Detected Cells")
+                    cells = json_out.get('cells', [])
+                    if cells:
+                        st.write(f"Count: {len(cells)}")
+                        # Maybe show first 5 crops?
+                        cols = st.columns(5)
+                        for i, cell in enumerate(cells[:10]):
+                            with cols[i%5]:
+                                if 'crop_path' in cell and os.path.exists(cell['crop_path']):
+                                    st.image(cell['crop_path'], caption=f"R{cell.get('row_index')}C{cell.get('col_index')}\n{cell.get('class')}")
+                else:
+                    st.error(f"Pipeline Failed: {res.stdout}")
+                    st.text(res.stderr)
     st.header("📤 Upload Single Image")
     st.info("Note: Uploaded images only support Steps 2-4 (No Step 5 LLM).")
     uploaded_file = st.file_uploader("Choose an image (PNG/JPG)", type=['png', 'jpg', 'jpeg'])
@@ -159,7 +243,7 @@ if mode == "Upload Single Image":
                         st.warning("Filtered out.")
 
 # --- PDF MODES ---
-else:
+elif app_mode != "Table Extraction": # Handle other modes
     input_dir = "data/input"
     pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
     pdf_map = {os.path.basename(f): f for f in pdf_files}
@@ -173,7 +257,7 @@ else:
         evidence_dir = "data/evidence"
         
         # --- GALLERY VIEW ---
-        if mode == "Gallery View":
+        if app_mode == "Gallery View":
             st.header(f"🖼️ Gallery: {selected_pdf_name}")
             figures_path = os.path.join(intermediate_dir, "figures")
             
@@ -190,7 +274,7 @@ else:
                  st.info(f"No intermediate data found at {figures_path}. Run Step 1 first.")
 
         # --- BATCH MODE ---
-        elif mode == "Batch Process (One-Click)":
+        elif app_mode == "Batch Process (One-Click)":
             st.header(f"Batch Processing: {selected_pdf_name}")
             if st.button("🚀 Run Full Pipeline"):
                 with st.spinner(f"Processing {selected_pdf_name}..."):
@@ -225,7 +309,7 @@ else:
                 st.info("No evidence files found.")
 
         # --- STEP-BY-STEP MODE ---
-        else:
+        elif app_mode == "Step-by-Step (Figures)":
             st.header(f"Step-by-Step: {selected_pdf_name}")
             
             # Step 1

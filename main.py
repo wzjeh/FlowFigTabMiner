@@ -8,7 +8,8 @@ from src.parsing.yolo_detector import YoloDetector
 from src.parsing.stage2_detector import Stage2Detector
 from src.extraction.legend_matcher import LegendMatcher
 from src.extraction.coordinate_mapper import CoordinateMapper
-from src.extraction.table_agent import extract_table
+from src.extraction.coordinate_mapper import CoordinateMapper
+from src.extraction.table_pipeline import TablePipeline
 
 def main():
     parser = argparse.ArgumentParser(description="FlowFigTabMiner: Extract data from Flow Chemistry Papers")
@@ -39,6 +40,9 @@ def main():
         # Module 2 & 3
         legend_matcher = LegendMatcher(yolo_model=yolo_micro)
         coord_mapper = CoordinateMapper()
+        
+        # Table Pipeline
+        table_pipeline = TablePipeline()
         
     except Exception as e:
         print(f"Failed to initialize models: {e}")
@@ -136,11 +140,16 @@ def main():
     if table_images:
         print("\nStep 3: Processing Tables...")
         for img_path in table_images:
-             # Basic table agent wrapper
              try:
-                 result = extract_table(img_path)
+                 result = table_pipeline.process_table(img_path, output_dir=os.path.join(args.output_dir, "tables"))
                  if result.get("is_valid"):
-                      extracted_data["tables"].append(result)
+                      # Flatten 'dataframe' to list of lists or whatever format preferred for JSON
+                      # But extracted_data expects dicts.
+                      # We can store the CSV path mainly.
+                      extracted_data["tables"].append({
+                          "table_path": img_path,
+                          "csv_path": result['csv_path']
+                      })
                       print(f"   Extracted table: {os.path.basename(img_path)}")
              except Exception as e:
                  print(f"   Error extracting table {os.path.basename(img_path)}: {e}")

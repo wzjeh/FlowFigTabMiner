@@ -42,6 +42,9 @@ def run_step4_single(figure_id, intermediate_dir, extraction_json_path=None, for
         else:
              print(json.dumps({"error": "Evidence discarded by filter."}))
 
+    except Exception as e:
+        print(json.dumps({"error": str(e)}))
+
 if __name__ == "__main__":
     # Usage: python step4_single.py figure_id intermediate_dir [extraction.json] [caption]
     if len(sys.argv) > 2:

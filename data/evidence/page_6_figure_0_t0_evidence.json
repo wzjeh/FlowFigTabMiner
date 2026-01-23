@@ -1,298 +1,33 @@
 {
   "meta": {
     "figure_id": "page_6_figure_0_t0",
-    "source_intermediate_dir": "data/intermediate/macro_cleaned",
+    "source_intermediate_dir": "/Users/zhaowenyuan/Projects/FlowFigTabMiner/data/intermediate/yolo_cleaned",
     "caption": ""
   },
   "text_evidence": {
     "x_axis_title": [
       {
-        "text": "emperature (",
-        "source_file": "page_6_figure_0_t0_x_axis_title_1.png"
+        "text": "emperature(",
+        "source_file": "page_6_figure_0_t0_x_axis_title_2.png"
       }
     ],
     "y_axis_title": [
       {
-        "text": "electivity of by products",
-        "source_file": "page_6_figure_0_t0_y_axis_title_2.png"
+        "text": "Selectivity of by product",
+        "source_file": "page_6_figure_0_t0_y_axis_title_3.png"
       },
       {
-        "text": "product ctivity of main",
-        "source_file": "page_6_figure_0_t0_y_axis_title_3.png"
+        "text": "why of by products",
+        "source_file": "page_6_figure_0_t0_y_axis_title_0.png"
       }
     ],
     "chart_text": [],
     "legend_text": [
       {
-        "text": "3,4-dichloroaniline dechloroaniline dechloronitrobenzen azo",
-        "source_file": "page_6_figure_0_t0_legend_0.png"
+        "text": "3,4-dichloroaniline dechloroaniline dechloronitrobenzene",
+        "source_file": "page_6_figure_0_t0_legend_1.png"
       }
     ]
   },
-  "raw_data": [
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 11.91523971125271,
-      "Y_Left": 47.15451517887238,
-      "Y_Right": 1.7655243179388955
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 25.931332180865468,
-      "Y_Left": 81.26588206971657,
-      "Y_Right": 2.4861528580244276
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 23.158445249563822,
-      "Y_Left": 74.8122586924847,
-      "Y_Right": 2.3498151613417204
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 39.947487130737684,
-      "Y_Left": 80.85682659463924,
-      "Y_Right": 2.4775112503526433
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 37.210299857681726,
-      "Y_Left": 78.54608576283556,
-      "Y_Right": 2.42869509480346
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 6.285182581989744,
-      "Y_Left": -21.835539829385525,
-      "Y_Right": 0.30805699392011654
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 20.321966430858446,
-      "Y_Left": 66.06460765502294,
-      "Y_Right": 2.1650143875563765
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 31.596781773765137,
-      "Y_Left": 82.46919704475042,
-      "Y_Right": 2.511573801034321
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 14.716932645506915,
-      "Y_Left": 62.35928229662058,
-      "Y_Right": 2.0867365744123925
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 17.533654685504025,
-      "Y_Left": 62.79093553375829,
-      "Y_Right": 2.0958555769752953
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 28.723685618003334,
-      "Y_Left": 83.17585058001728,
-      "Y_Right": 2.526502393813824
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 34.43221925481295,
-      "Y_Left": 87.4078631423281,
-      "Y_Right": 2.6159068742663574
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 6.2436696562706615,
-      "Y_Left": 28.132164876717383,
-      "Y_Right": 1.363662716464435
-    },
-    {
-      "Series": "dechloroaniline",
-      "X": 9.21801116746191,
-      "Y_Left": 8.28829770487711,
-      "Y_Right": 0.9444459470088331
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 6.244211151852596,
-      "Y_Left": 86.89911275768054,
-      "Y_Right": 2.6051591358913546
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 17.445755373828426,
-      "Y_Left": -24.984003352616213,
-      "Y_Right": 0.24154331009388263
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 9.104190358145217,
-      "Y_Left": 61.01249012420429,
-      "Y_Right": 2.058284566607701
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 20.29430329598506,
-      "Y_Left": -6.203760390332064,
-      "Y_Right": 0.6382902100838375
-    },
-    {
-      "Series": "dechloronitrobenzen",
-      "X": 14.66234051880874,
-      "Y_Left": -11.593150738209289,
-      "Y_Right": 0.5244352446475431
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 14.68225349816565,
-      "Y_Left": -19.795128339427976,
-      "Y_Right": 0.3511622367527196
-    },
-    {
-      "Series": "azo",
-      "X": 11.808380244176881,
-      "Y_Left": -3.2681274513986693,
-      "Y_Right": 0.7003076861287036
-    },
-    {
-      "Series": "azo",
-      "X": 9.02221886108535,
-      "Y_Left": 2.5199544161044116,
-      "Y_Right": 0.822585312804339
-    },
-    {
-      "Series": "dechloroaniline",
-      "X": 16.198977416483146,
-      "Y_Left": 61.5427187634538,
-      "Y_Right": 2.0694860494282703
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 0.7066169965495348,
-      "Y_Left": 87.60190442613346,
-      "Y_Right": 2.6200061438005404
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 41.38379895513752,
-      "Y_Left": 81.39416614232476,
-      "Y_Right": 2.4888629565161033
-    },
-    {
-      "Series": "dechloroaniline",
-      "X": 30.224266199284333,
-      "Y_Left": 82.39384825146458,
-      "Y_Right": 2.5099820005334337
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 0.6864098393043605,
-      "Y_Left": 62.02481859547438,
-      "Y_Right": 2.0796707746325165
-    },
-    {
-      "Series": "azo",
-      "X": 9.031070231174702,
-      "Y_Left": -40.09874524805437,
-      "Y_Right": -0.07776709516586022
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 20.19045329473962,
-      "Y_Left": -26.362980196222594,
-      "Y_Right": 0.21241137665950172
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 40.362590354487054,
-      "Y_Left": 85.55682932311413,
-      "Y_Right": 2.5768023785990453
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 39.894830590410514,
-      "Y_Left": 74.12009466788284,
-      "Y_Right": 2.3351926704827437
-    },
-    {
-      "Series": "azo",
-      "X": 6.204171718918978,
-      "Y_Left": -40.03625042979061,
-      "Y_Right": -0.07644684465252194
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 38.03768493096449,
-      "Y_Left": 45.44046848458358,
-      "Y_Right": 1.7293137793551923
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 39.46637871956315,
-      "Y_Left": 51.98759376560639,
-      "Y_Right": 1.867626774789184
-    },
-    {
-      "Series": "azo",
-      "X": 17.42490779392385,
-      "Y_Left": -40.12620622528152,
-      "Y_Right": -0.07834722917197778
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 42.58337828315339,
-      "Y_Left": 68.87916022139817,
-      "Y_Right": 2.224473948745798
-    },
-    {
-      "Series": "azo",
-      "X": 39.91606997360876,
-      "Y_Left": -27.467774509521263,
-      "Y_Right": 0.18907175747523164
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 28.17789573854633,
-      "Y_Left": 26.70524080371672,
-      "Y_Right": 1.3335178613834335
-    },
-    {
-      "Series": "azo",
-      "X": 25.842766413089027,
-      "Y_Left": -40.0869960940482,
-      "Y_Right": -0.07751888536160934
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 47.45185897407589,
-      "Y_Left": 65.08035699156532,
-      "Y_Right": 2.144221344552402
-    },
-    {
-      "Series": "azo",
-      "X": 20.340986463173984,
-      "Y_Left": -40.003256669131474,
-      "Y_Right": -0.07574982639313
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 15.255751989664049,
-      "Y_Left": 80.90592537463925,
-      "Y_Right": 2.4785484993806466
-    },
-    {
-      "Series": "3,4-dichloroaniline",
-      "X": 41.00532348182115,
-      "Y_Left": 75.42624144309345,
-      "Y_Right": 2.3627860133930243
-    },
-    {
-      "Series": "azo",
-      "X": 11.83861027637618,
-      "Y_Left": -40.06356187233044,
-      "Y_Right": -0.07702381962476723
-    }
-  ]
+  "raw_data": []
 }
