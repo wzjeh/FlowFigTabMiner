@@ -35,13 +35,60 @@ class TablePipeline:
         print(f"Processing Table: {image_path}")
         
         # 1. Filter
-        filter_res = self.filter.filter_tables([image_path], conf_threshold=0.5)[0]
+        filter_res = self.filter.filter_tables([image_path], conf_threshold=0.4)[0]
         if not filter_res['is_table']:
-            print(f"   -> Rejected by Table Filter (Conf: {filter_res['conf']}).")
+            print(f"   -> Rejected by Table Filter (Conf: {filter_res.get('conf')}).")
             return {'is_valid': False, 'reason': 'Filtered by YOLO'}
 
-        # 2. Structure
-        struct_res = self.structure.recognize_structure(image_path)
+        # Prepare output structure: data/intermediate/{pdf_name}/tables/{table_basename}/
+        # 'output_dir' passed in is usually the base tables dir. We need a subfolder per table.
+        current_image_path = image_path
+        table_basename = os.path.splitext(os.path.basename(image_path))[0]
+        
+        # If output_dir is provided, append basename to create dedicated folder
+        table_output_dir = output_dir
+        if output_dir:
+            table_output_dir = os.path.join(output_dir, table_basename)
+            os.makedirs(table_output_dir, exist_ok=True)
+
+        # Save all segmented components
+        components = filter_res.get('components', {})
+        if table_output_dir and components:
+            print(f"   -> Saving components to {table_output_dir}...")
+            for label, items in components.items():
+                for i, item in enumerate(items):
+                    comp_filename = f"{table_basename}_{label}_{i}.png"
+                    comp_path = os.path.join(table_output_dir, comp_filename)
+                    cv2.imwrite(comp_path, item['crop'])
+                    # Store path back in item for reference
+                    item['saved_path'] = comp_path
+
+        # Use the cropped table body for structure recognition
+        if 'table_body' in components:
+            # Taking the best body (already sorted or max conf logic in filter)
+            # TableFilter returns 'table_body_crop' which is the best one.
+            # But let's use the one from components list to be consistent if we saved it.
+            # Actually TableFilter provides 'table_body_crop' key for convenience.
+            body_crop = filter_res['table_body_crop']
+            
+            if table_output_dir:
+                # It might have been saved in loop above, but let's ensure we know which one is the MAIN body
+                # The loop saves ALL bodies. We need the specific one used for extraction.
+                # Let's just save it as separate 'body_master.png' or reuse.
+                # Simple: Overwrite/Ensure 'table_body.png' exists
+                body_path = os.path.join(table_output_dir, f"{table_basename}_body_main.png")
+                cv2.imwrite(body_path, body_crop)
+                current_image_path = body_path
+                print(f"   -> Using cropped table body: {body_path}")
+            else:
+                import tempfile
+                fd, body_path = tempfile.mkstemp(suffix=".png")
+                os.close(fd)
+                cv2.imwrite(body_path, body_crop)
+                current_image_path = body_path
+        
+        # 2. Structure (on the body)
+        struct_res = self.structure.recognize_structure(current_image_path)
         cells = struct_res.get('cells', [])
         
         if not cells:
@@ -55,7 +102,8 @@ class TablePipeline:
         print(f"   -> Detected {len(cells)} cells.")
 
         # 3. Process Cells (Crop -> Classify -> Recognize)
-        original_img = cv2.imread(image_path)
+        # Use the cropped body image for cell cropping
+        original_img = cv2.imread(current_image_path)
         if original_img is None:
              return {'is_valid': False, 'reason': 'Image read error'}
              

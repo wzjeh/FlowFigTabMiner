@@ -24,7 +24,7 @@ class ContentRecognizer:
         except:
             pass
 
-        self.ocr = PaddleOCR(use_angle_cls=True, lang='en', show_log=False, use_gpu=use_gpu)
+        self.ocr = PaddleOCR(use_angle_cls=True, lang='en')
         
         # MolScribe
         self.molscribe = None
@@ -33,10 +33,27 @@ class ContentRecognizer:
             # Assume default checkpoint or download
             try:
                 print("Loading MolScribe...")
-                # MolScribe(model_path=None, device=None) - None downloads/uses default
-                self.molscribe = MolScribe(model_path=None, device='cuda' if use_gpu else 'cpu')
-            except Exception as e:
-                print(f"Error loading MolScribe: {e}")
+                # MolScribe expects a valid checkpoint path often, or downloads it.
+                # However, the previous error 'NoneType object has no attribute seek' usually implies
+                # it tried to load 'None' as a file or similar issue in internal loading.
+                # Let's specify the weight path explicitly if available, or force download by handling the init carefully.
+                
+                # Check if we have a local model
+                molscribe_ckpt = "models/molscribe.ckpt"
+                if os.path.exists(molscribe_ckpt):
+                    self.molscribe = MolScribe(model_path=molscribe_ckpt, device='cuda' if use_gpu else 'cpu')
+                else:
+                    # Try default load but might fail if network restricted or cache issue
+                    # The error suggests torch.load(f) where f is None.
+                    # Workaround: Use HuggingFace Hub directly if needed or skip if not found.
+                    print("Debug: No local MolScribe checkpoint found at models/molscribe.ckpt. Attempting default init.")
+                    try:
+                        self.molscribe = MolScribe(model_path=None, device='cuda' if use_gpu else 'cpu')
+                    except AttributeError as ae:
+                         if "'NoneType' object has no attribute 'seek'" in str(ae):
+                             print("Warning: MolScribe failed to download/load default weights. Please clear cache or manually download 'molscribe.ckpt' to models/.")
+                         else:
+                             raise ae
 
     def recognize_content(self, image_path, content_type):
         """
