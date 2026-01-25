@@ -4,11 +4,11 @@ import numpy as np
 from ultralytics import YOLO
 
 class TableFilter:
-    def __init__(self, model_path="models/bestYOLOl.pt"):
+    def __init__(self, model_path="models/bestYOLOm.pt"):
         """
         Initialize the YOLO-based table filter/segmenter.
         Args:
-            model_path (str): Path to the trained YOLOv11 large weights.
+            model_path (str): Path to the trained YOLOv11 medium weights.
         """
         self.model_path = model_path
         self.model = None
@@ -58,10 +58,8 @@ class TableFilter:
 
         for img_path in image_paths:
             try:
-                # Run inference with resizing to 1440 as requested/trained
-                # rect=False might be needed if trained on squares? User said "fit 1440x1440" which usually means letterbox. 
-                # Ultralytics handles this by default with imgsz argument.
-                prediction = self.model(img_path, imgsz=1440, verbose=False)[0]
+                # Run inference with resizing to 1280 as requested/trained (fit black borders implicitly handled by ultralytics letterbox if needed, or we just set imgsz)
+                prediction = self.model(img_path, imgsz=1280, verbose=False)[0]
                 
                 original_img = cv2.imread(img_path)
                 if original_img is None:
@@ -117,13 +115,27 @@ class TableFilter:
                 # Check if valid table body exists
                 if "table_body" in components:
                     is_table = True
-                    # Get the body corresponding to max_conf found above (or just take the first/best)
-                    # Let's re-extract strictly the max_conf one for 'table_body_crop' key
-                    # Or simpler: The loop above already accumulated them.
-                    # Just pick the "best" one to be the PRIMARY body for downstream.
+                    # Get the body corresponding to max_conf found above
                     best_body_item = max(components["table_body"], key=lambda x: x['conf'])
-                    body_crop = best_body_item['crop']
-                    crop_coords = best_body_item['box']
+                    
+                    # --- FULL-WIDTH CUT & PADDING LOGIC ---
+                    # User requested: 
+                    # 1. Full-width cut (x1=0, x2=w) to catch wide tables.
+                    # 2. Bottom padding only (+10px) to catch descenders.
+                    
+                    raw_box = best_body_item['box'] # [x1, y1, x2, y2]
+                    y1 = raw_box[1]
+                    y2 = raw_box[3]
+                    
+                    # Apply Logic
+                    new_x1 = 0
+                    new_x2 = w
+                    new_y1 = y1 # Top stays same to avoid caption
+                    new_y2 = min(h, y2 + 10) # Bottom padding +10px for descenders only
+                    
+                    body_crop = original_img[new_y1:new_y2, new_x1:new_x2]
+                    crop_coords = [new_x1, new_y1, new_x2, new_y2]
+                    
                 else:
                     # HEURISTIC: If no body detected, but 'table_scheme' exists, maybe treat as valid but different type?
                     # User filter preference: "filter out fake tables".
@@ -136,7 +148,7 @@ class TableFilter:
                     'conf': max_conf,
                     'table_body_crop': body_crop,
                     'crop_coords': crop_coords,
-                    'components': components, # All raw crops
+                    'components': components, # All raw crops (original detections)
                     'reason': 'No table_body detected' if not is_table else None
                 })
                 

@@ -12,13 +12,15 @@ from src.parsing.active_area_detector import ActiveAreaDetector
 def main():
     parser = argparse.ArgumentParser(description="Extract tables for YOLO annotation")
     parser.add_argument("--output_dir", default="data/tab-for-annotation", help="Output directory for tables")
+    parser.add_argument("--input_dir", default="data/input", help="Input directory containing PDFs")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
     count = 0
 
-    # 1. Process data/input PDFs
-    input_dir = "data/input"
+    # 1. Process PDFs from input_dir
+    input_dir = args.input_dir
+    # Support both *.pdf directly in dir
     pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
     
     print(f"Found {len(pdf_files)} PDFs in {input_dir}. Initializing TF-ID Detector...")
