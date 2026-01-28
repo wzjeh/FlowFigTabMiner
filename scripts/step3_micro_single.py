@@ -14,7 +14,17 @@ from src.parsing.stage2_detector import Stage2Detector
 from src.extraction.legend_matcher import LegendMatcher
 from src.extraction.coordinate_mapper import CoordinateMapper
 
-def run_step3_single(cleaned_image_path):
+import argparse
+
+def run_step3_single():
+    parser = argparse.ArgumentParser(description="Step 3 Micro Extraction")
+    parser.add_argument("cleaned_image_path", help="Path to cleaned image")
+    parser.add_argument("--log_x", action="store_true", help="Force Log Scale X")
+    parser.add_argument("--extract_labels", action="store_true", help="Extract labels near points")
+    args = parser.parse_args()
+    
+    cleaned_image_path = args.cleaned_image_path
+
     if not os.path.exists(cleaned_image_path):
         print(json.dumps({"error": f"Image not found: {cleaned_image_path}"}))
         return
@@ -48,14 +58,26 @@ def run_step3_single(cleaned_image_path):
         full_detections = other_detections + matched_points
         
         try:
-            df = coord_mapper.map_coordinates(full_detections, cleaned_image_path)
+            # Pass flags
+            df, debug_log = coord_mapper.map_coordinates(
+                full_detections, 
+                cleaned_image_path, 
+                force_log_x=args.log_x, 
+                extract_point_labels=args.extract_labels
+            )
         except Exception as e:
             # print(f"Mapping error: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc()
             df = pd.DataFrame()
+            debug_log = [f"Exception: {str(e)}"]
         
+        labels_found = list(set(d['label'] for d in micro_detections))
         result = {
             "num_points_detected": len(points),
             "num_legends_found": len(legend_crops),
+            "detected_classes": labels_found,
+            "debug_log": debug_log,
             "mapped_data": df.to_dict(orient='records') if not df.empty else [],
             "detections": micro_detections  # Send back boxes for visualization
         }
@@ -70,5 +92,4 @@ def run_step3_single(cleaned_image_path):
         print(json.dumps({"error": str(e)}))
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        run_step3_single(sys.argv[1])
+    run_step3_single()

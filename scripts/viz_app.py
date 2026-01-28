@@ -363,35 +363,116 @@ elif module == "Figure Extraction":
                         
                         # Step 3
                         st.subheader("Step 3: Detection")
+                        
+                        # Heuristic Auto-Detection for Heatmap
+                        default_heatmap = False
+                        if os.path.exists(cleaned_path):
+                            try:
+                                import cv2
+                                import numpy as np
+                                
+                                # Check background fill ratio
+                                # Standard plots are mostly white. Heatmaps are mostly colored/gray.
+                                img_check = cv2.imread(cleaned_path, cv2.IMREAD_GRAYSCALE)
+                                if img_check is not None:
+                                    # Count white pixels (> 240)
+                                    white_pixels = np.sum(img_check > 240)
+                                    total_pixels = img_check.size
+                                    white_ratio = white_pixels / total_pixels
+                                    
+                                    # If less than 60% white, likely a heatmap or filled contour
+                                    if white_ratio < 0.60:
+                                        default_heatmap = True
+                            except: pass
+
+                        col_opt1, col_opt2 = st.columns(2)
+                        use_log_x = col_opt1.checkbox("Log Scale X-Axis", value=False)
+                        extract_labels = col_opt2.checkbox("Extract Point Labels (Heatmap)", value=default_heatmap)
+                        
                         if st.button("Run Step 3"):
                              with st.spinner("Detecting..."):
-                                res = run_script("scripts/step3_micro_single.py", [cleaned_path])
+                                args = [cleaned_path]
+                                if use_log_x: args.append("--log_x")
+                                if extract_labels: args.append("--extract_labels")
+                                
+                                res = run_script("scripts/step3_micro_single.py", args)
                                 json_out = parse_json_output(res.stdout)
                                 if json_out:
                                     st.session_state['step3_result'] = json_out
                                     st.success("Done.")
                         
                         if 'step3_result' in st.session_state:
-                             res3 = st.session_state['step3_result']
-                             st.metric("Points", res3['num_points_detected'])
-                             st.dataframe(pd.DataFrame(res3['mapped_data']))
+                            res = st.session_state['step3_result']
+                            st.metric("Points", res.get("num_points_detected", 0))
+                            
+                            classes = res.get("detected_classes", [])
+                            if classes:
+                                st.write(f"**Detected Classes:** `{', '.join(classes)}`")
+                            
+                            # Visualization
+                            dets = res.get("detections", [])
+                            if dets and os.path.exists(cleaned_path):
+                                import cv2
+                                import numpy as np
+                                vis_img = cv2.imread(cleaned_path)
+                                if vis_img is not None:
+                                    vis_img = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
+                                    for d in dets:
+                                        bbox = list(map(int, d['box']))
+                                        label = d['label']
+                                        color = (255, 0, 0) # Red for points
+                                        if 'point' not in label: color = (0, 255, 0) # Green for text
+                                        if 'value' in label: color = (0, 165, 255) # Orange for values
+                                        
+                                        if 'point' in label or 'marker' in label:
+                                            cx, cy = d['center']
+                                            cv2.circle(vis_img, (int(cx), int(cy)), 4, color, -1)
+                                        else:
+                                            cv2.rectangle(vis_img, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
+                                            cv2.putText(vis_img, label, (bbox[0], bbox[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+                                    
+                                    
+                                    # Fix: 'use_container_width' is deprecated in strict versions, use width='stretch'
+                                    try:
+                                        st.image(vis_img, caption="YOLO Detections (Red=Points, Green=Text, Orange=Values)", width="stretch")
+                                    except:
+                                        # Fallback for older Streamlit
+                                        st.image(vis_img, caption="YOLO Detections (Red=Points, Green=Text, Orange=Values)", use_column_width=True)
+                            
+                            debug_logs = res.get("debug_log", [])
+                            if debug_logs:
+                                with st.expander("Debug Logs (Coordinate Mapper)"):
+                                    for l in debug_logs:
+                                        st.text(l)
+
+    
+                            
+                            with st.expander("Debug: Full Result JSON"):
+                                st.json(res)
+                                
+                            data = res.get("mapped_data", [])
+                            if data:
+                                df = pd.DataFrame(data)
+                                st.dataframe(df)
+                            else:
+                                st.warning("No data mapped. (Check if Axis Labels or Data Values were detected)")
                              
-                             # Step 4
-                             st.subheader("Step 4: Assembly")
-                             if st.button("Run Step 4"):
-                                 temp_json = "temp_extraction.json"
-                                 with open(temp_json, 'w') as f:
-                                     json.dump(res3['mapped_data'], f)
-                                 fid = os.path.splitext(os.path.basename(cleaned_path))[0].replace("_cleaned", "")
-                                 idir = os.path.dirname(cleaned_path)
-                                 res = run_script("scripts/step4_assembly_single.py", [fid, idir, temp_json])
-                                 json_out = parse_json_output(res.stdout)
-                                 if json_out:
-                                     st.success("Saved.")
-                                     st.json(json_out['content'])
-                                 else:
-                                     st.warning("Filtered out.")
-                else:
-                    st.info("No crops found.")
+                            # Step 4
+                            st.subheader("Step 4: Assembly")
+                            if st.button("Run Step 4"):
+                                temp_json = "temp_extraction.json"
+                                with open(temp_json, 'w') as f:
+                                    json.dump(res['mapped_data'], f)
+                                fid = os.path.splitext(os.path.basename(cleaned_path))[0].replace("_cleaned", "")
+                                idir = os.path.dirname(cleaned_path)
+                                res_s4 = run_script("scripts/step4_assembly_single.py", [fid, idir, temp_json])
+                                json_out_s4 = parse_json_output(res_s4.stdout)
+                                if json_out_s4:
+                                    st.success("Saved.")
+                                    st.json(json_out_s4['content'])
+                                else:
+                                    st.warning("Filtered out.")
+                 
+                                    
     else:
         st.info("Select a PDF.")
