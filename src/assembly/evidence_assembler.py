@@ -31,7 +31,24 @@ class EvidenceAssembler:
         
         # 2. Semantic Filtering (Step 4b Optimization)
         # "If image title or axis labels don't contain result information... directly discard"
-        if not self._is_relevant_chart(text_evidence):
+        # 2. Semantic Filtering (Step 4b Optimization)
+        # "If image title or axis labels don't contain result information... directly discard"
+        is_relevant = self._is_relevant_chart(text_evidence)
+        
+        if not is_relevant:
+            # [RETRY] Try to enrich with Shared Captions from the same page
+            print(f"      [Filter] Local check failed. Trying Context Expansion (Shared Caption)...")
+            enriched = self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
+            
+            if enriched:
+                # Re-evaluate
+                is_relevant = self._is_relevant_chart(text_evidence)
+                if is_relevant:
+                     print(f"      [Filter] SUCCESS! Saved by Shared Caption.")
+                else:
+                     print(f"      [Filter] FAILED even after Context Expansion.")
+            
+        if not is_relevant:
             print(f"      [Filter] Discarding {figure_id} due to lack of result keywords (yield, selectivity, etc).")
             return None
 
@@ -88,7 +105,7 @@ class EvidenceAssembler:
         import re
         normalized_text = re.sub(r'[^a-z0-9]', '', full_text)
         
-        print(f"      [Filter] Normalized Text Dump: {normalized_text[:100]}...")
+        print(f"      [Filter Debug] Normalized Text Dump (len={len(normalized_text)}): {normalized_text[:100]}...")
         
         for kw in keywords:
             # Check if keyword exists in normalized text
@@ -100,6 +117,7 @@ class EvidenceAssembler:
         # For now, strict substring on normalized text handles the user's "Selectivity" (spaced) case perfectly.
         # "S e l e c t i v i t y" -> "selectivity" which contains "selectivity".
         
+        print(f"      [Filter] FAILED. No keywords found in dump.")
         return False
 
     def _process_text_crops(self, figure_id, intermediate_dir):
@@ -131,14 +149,17 @@ class EvidenceAssembler:
                 key = "y_axis_title"
             elif "chart_text" in filename: # User mentioned "caption aka chart_text"
                 key = "chart_text"
+            # [FIX] Explicitly handle 'caption' files produced by YoloDetector
+            elif "caption" in filename:
+                key = "chart_text" # Treat caption as chart text for evidence
             elif "legend" in filename:
                 key = "legend_text"
             else:
                 continue # Skip raw, cleaned, etc.
             
-            # Run OCR
+            # Run OCR with Upscaling
             try:
-                ocr_result = self.ocr.ocr(file_path)
+                ocr_result = self._ocr_with_upscale(file_path)
             except Exception as e:
                 print(f"      [OCR Error] {filename}: {e}")
                 ocr_result = []
@@ -169,6 +190,85 @@ class EvidenceAssembler:
                     })
         
         return evidence
+
+    def _try_enrich_with_shared_caption(self, figure_id, intermediate_dir, evidence):
+        """
+        Attempts to find a shared caption on the same page and add it to the evidence.
+        Returns True if a new caption was found and added.
+        """
+        print(f"      [Fallback] Attempting to find shared caption for {figure_id}...")
+        
+        # extract page prefix e.g. "page_2" from "page_2_figure_2_t0"
+        parts = figure_id.split('_')
+        if len(parts) >= 2 and parts[0] == 'page':
+            page_prefix = f"{parts[0]}_{parts[1]}" # "page_2"
+            
+            # Search for any caption file on this page: page_2_figure_*_caption_*.png
+            # We want to find captions distinct from what we already have (if any)
+            fallback_pattern = os.path.join(intermediate_dir, f"{page_prefix}_figure_*_caption_*.png")
+            print(f"      [Fallback Debug] Scanning: {fallback_pattern}")
+            fallback_files = sorted(glob.glob(fallback_pattern))
+            print(f"      [Fallback Debug] Found {len(fallback_files)} candidates: {[os.path.basename(f) for f in fallback_files]}")
+            
+            # Check if we already have this file in our evidence
+            current_files = set(item['source_file'] for item in evidence.get('chart_text', []))
+            
+            for f_path in fallback_files:
+                 f_name = os.path.basename(f_path)
+                 if f_name in current_files:
+                     continue # Skip self
+                 
+                 # Found a new candidate!
+                 print(f"      [Fallback] Borrowing shared caption: {f_name}")
+                 try:
+                    res = self._ocr_with_upscale(f_path)
+                    txts = []
+                    if res and res[0]:
+                         if isinstance(res[0], dict) and 'rec_texts' in res[0]:
+                             txts = res[0].get('rec_texts', [])
+                         elif isinstance(res[0], list):
+                             for line in res[0]:
+                                 if isinstance(line, list) and len(line) >= 2:
+                                     txts.append(line[1][0])
+                    
+                    fallback_text = " ".join(txts).strip()
+                    print(f"      [Fallback Debug] OCR Result: '{fallback_text}'")
+                    
+                    if self._is_valid_evidence(fallback_text):
+                         evidence["chart_text"].append({
+                             "text": fallback_text,
+                             "source_file": f_name,
+                             "note": "Shared Caption Fallback"
+                         })
+                         return True # Enriched!
+                 except Exception as e:
+                     print(f"      [Fallback Error] {e}")
+        
+        return False
+
+    def _ocr_with_upscale(self, file_path):
+        """
+        Reads image, upscales it 2x to improve OCR on small text, and runs PaddleOCR.
+        """
+        try:
+            import cv2
+            import numpy as np
+            
+            img = cv2.imread(file_path)
+            if img is None:
+                # Fallback to direct path processing if read fails
+                return self.ocr.ocr(file_path)
+            
+            # Upscale 2x
+            h, w = img.shape[:2]
+            scale = 2
+            # Use Cubic for better text definition
+            img_scaled = cv2.resize(img, (w*scale, h*scale), interpolation=cv2.INTER_CUBIC)
+            
+            return self.ocr.ocr(img_scaled)
+        except Exception as e:
+            print(f"      [OCR Upscale Error] {e}. Fallback to raw.")
+            return self.ocr.ocr(file_path)
 
     def _is_valid_evidence(self, text):
         """

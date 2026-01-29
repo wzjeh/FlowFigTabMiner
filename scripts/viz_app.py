@@ -395,8 +395,10 @@ elif module == "Figure Extraction":
                                 if use_log_x: args.append("--log_x")
                                 if extract_labels: args.append("--extract_labels")
                                 
-                                res = run_script("scripts/step3_micro_single.py", args)
-                                json_out = parse_json_output(res.stdout)
+                                if extract_labels: args.append("--extract_labels")
+                                
+                                proc = run_script("scripts/step3_micro_single.py", args)
+                                json_out = parse_json_output(proc.stdout)
                                 if json_out:
                                     st.session_state['step3_result'] = json_out
                                     st.success("Done.")
@@ -467,6 +469,12 @@ elif module == "Figure Extraction":
                                 idir = os.path.dirname(cleaned_path)
                                 res_s4 = run_script("scripts/step4_assembly_single.py", [fid, idir, temp_json])
                                 json_out_s4 = parse_json_output(res_s4.stdout)
+                                
+                                # Show logs for debugging "Filtered out"
+                                with st.expander("Step 4 Execution Log (Debug)"):
+                                    st.text(res_s4.stdout)
+                                    st.text(res_s4.stderr)
+                                
                                 if json_out_s4:
                                     st.success("Saved.")
                                     st.json(json_out_s4['content'])
