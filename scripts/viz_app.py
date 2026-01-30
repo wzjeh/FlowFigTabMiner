@@ -105,92 +105,199 @@ if module == "Table Extraction":
             else:
                 out_dir = os.path.join(os.path.dirname(selected_image_path), "processed", os.path.splitext(uploaded_file.name)[0])
             
-            if st.button("Run Extraction Pipeline"):
-                with st.spinner("Running Pipeline..."):
-                    # Pass the *parent* directory or specific output dir?
-                    # The script step_table_pipeline.py takes --output_dir.
-                    # TablePipeline.process_table uses output_dir to create subfolder based on image name IF it's a base dir.
-                    # BUT we updated TablePipeline to append basename if output_dir is provided.
-                    # so if we pass .../tables/, it creates .../tables/table1/
-                    # Here we want to control it. Let's pass the parent of the target folder.
-                    # Actually, let's pass the exact parent dir where we want the folder to be created.
-                    target_parent_dir = os.path.dirname(out_dir)
-                    
-                    res = run_script("scripts/step_table_pipeline.py", [selected_image_path, "--output_dir", target_parent_dir])
+            # Create a dedicated output directory for this table's components
+            # Structure: data/intermediate/{pdf_name}/tables/{table_basename}/
+            if input_type == "Select from PDF Extraction":
+                # data/intermediate/{pdf_name}/tables/{table_img_name}/
+                base_dir = os.path.dirname(selected_image_path)
+                table_name = os.path.splitext(os.path.basename(selected_image_path))[0]
+                out_dir = os.path.join(base_dir, table_name)
+            else:
+                out_dir = os.path.join(os.path.dirname(selected_image_path), "processed", os.path.splitext(uploaded_file.name)[0])
+            
+            # --- STEP 2: SEGMENTATION ---
+            st.subheader("Step 2: Table Segmentation (YOLOv11)")
+            
+            if st.button("Run Step 2 (Segmentation)"):
+                with st.spinner("Running YOLOv11..."):
+                    res = run_script("scripts/step_table_segmentation.py", [selected_image_path, "--output_dir", out_dir])
                     json_out = parse_json_output(res.stdout)
                     
                     if json_out:
-                        st.session_state['table_result'] = json_out
-                        if json_out.get('is_valid'):
-                            st.success("Extraction Successful!")
+                        st.session_state['table_step2'] = json_out
+                        if json_out.get('is_table'):
+                            st.success("Table Detected & Segmented")
                         else:
-                            st.error(f"Extraction Failed/Filtered: {json_out.get('reason')}")
+                            st.warning("No Table Body detected.")
                     else:
-                        st.error("Pipeline execution failed.")
+                        st.error("Step 2 Failed.")
                         with st.expander("Log"):
                             st.text(res.stdout)
                             st.text(res.stderr)
 
-            if 'table_result' in st.session_state:
-                res = st.session_state['table_result']
+            if 'table_step2' in st.session_state:
+                res2 = st.session_state['table_step2']
                 
-                # Check for extracted components
-                # We expect them in out_dir
-                if os.path.exists(out_dir):
-                    st.subheader("1. Segmentation Results (YOLOv11)")
-                    
-                    # Layout: 4 columns for components
-                    c1, c2, c3, c4 = st.columns(4)
-                    
-                    # Helper to find images
-                    def get_comp_img(label):
-                        # Pattern: {table_basename}_{label}_*.png
-                        # json_out might have paths? No, strictly saved to disk.
-                        # Let's search pattern
-                        table_basename = os.path.splitext(os.path.basename(selected_image_path))[0]
-                        pattern = os.path.join(out_dir, f"{table_basename}_{label}_*.png")
-                        files = glob.glob(pattern)
-                        return files
-                    
-                    with c1:
-                        st.markdown("**Caption**")
-                        imgs = get_comp_img("table_caption")
-                        for img in imgs: st.image(img)
-                        
-                    with c2:
-                        st.markdown("**Subject/Body**")
-                        # Look for main body
-                        # pattern: table_basename_body_main.png OR table_caption_table_body_*.png
-                        # In pipeline we saved: {table_basename}_body_main.png
-                        main_body = os.path.join(out_dir, f"{os.path.splitext(os.path.basename(selected_image_path))[0]}_body_main.png")
-                        if os.path.exists(main_body):
-                            st.image(main_body)
-                        else:
-                            # Fallback to parts
-                            imgs = get_comp_img("table_body")
-                            for img in imgs: st.image(img)
+                # Show Logs
+                with st.expander("Step 2 Debug Logs (Raw Detections)"):
+                    if 'logs' in res2:
+                        st.dataframe(pd.DataFrame(res2['logs']))
+                    else:
+                        st.info("No detailed logs.")
 
-                    with c3:
-                        st.markdown("**Note**")
-                        imgs = get_comp_img("table_note")
-                        for img in imgs: st.image(img)
-                        
-                    with c4:
-                        st.markdown("**Scheme**")
-                        imgs = get_comp_img("table_scheme") # or table_scheme
-                        for img in imgs: st.image(img)
-
-                # Transformer Result (Grid)
-                if 'cells' in res:
-                    st.subheader("2. Structure Recognition (Transformer)")
-                    st.json(res['structure']) # Show raw structure if needed
-                    st.write(f"Detected Cells: {len(res['cells'])}")
+                # Show Images
+                # Components found
+                c1, c2, c3, c4 = st.columns(4)
                 
-                # CSV Result
-                if 'csv_path' in res and res['csv_path'] and os.path.exists(res['csv_path']):
-                    st.subheader("3. Extracted Data")
-                    df = pd.read_csv(res['csv_path'], header=None)
-                    st.dataframe(df)
+                # Helper to find saved images from logs or disk
+                def get_saved_paths(label):
+                    return [l['saved_path'] for l in res2.get('logs', []) if l['label'] == label]
+
+                with c1:
+                    st.markdown("**Caption**")
+                    for p in get_saved_paths("table_caption"): st.image(p)
+                with c2:
+                    st.markdown("**Table Body (Main)**")
+                    # Main Body
+                    main_body = res2.get("best_body_crop_path")
+                    if main_body and os.path.exists(main_body):
+                        st.image(main_body, caption="Processed Crop (Full Width + Padding)")
+                    else:
+                        for p in get_saved_paths("table_body"): st.image(p, caption="Raw Crop")
+                with c3:
+                    st.markdown("**Note**")
+                    for p in get_saved_paths("table_note"): st.image(p)
+                with c4:
+                    st.markdown("**Scheme**")
+                    for p in get_saved_paths("table_scheme"): st.image(p)
+
+                # --- STEP 3: STRUCTURE RECOGNITION ---
+                st.subheader("Step 3: Structure Recognition (TATR)")
+                
+                # Only enable if body exists
+                body_path = res2.get("best_body_crop_path")
+                
+                if body_path and os.path.exists(body_path):
+                    if st.button("Run Step 3 (Structure)"):
+                        with st.spinner("Running Table Transformer..."):
+                            res = run_script("scripts/step_table_structure.py", [body_path])
+                            json_out = parse_json_output(res.stdout)
+                            if json_out:
+                                st.session_state['table_step3'] = json_out
+                                st.success("Structure Recognized")
+                            else:
+                                st.error("Step 3 Failed.")
+                                with st.expander("Log"):
+                                    st.text(res.stdout)
+                                    st.text(res.stderr)
+                    
+                    if 'table_step3' in st.session_state:
+                        res3 = st.session_state['table_step3']
+                        
+                        # Show Viz
+                        viz_path = res3.get("viz_path")
+                        if viz_path and os.path.exists(viz_path):
+                            # Fix warning: use_container_width -> use_column_width for compatibility or width='stretch'
+                            # Sticking to use_column_width=True which is generally safe or ignore warning for now.
+                            # But user specifically asked to fix it.
+                            # Streamlit warning says: use width='stretch'
+                            st.image(viz_path, caption="TATR Detection (Green=Row, Orange=Col, Red=Cell)", width="stretch") 
+                        
+                        # Metrics
+                        m1, m2, m3 = st.columns(3)
+                        m1.metric("Rows", res3.get('num_rows', 0))
+                        m2.metric("Columns", res3.get('num_columns', 0))
+                        m3.metric("Cells", res3.get('num_cells', 0))
+                        
+                        # Logs
+                        with st.expander("Step 3 Debug Logs (Detected Objects)"):
+                            if 'logs' in res3:
+                                st.dataframe(pd.DataFrame(res3['logs']))
+                                
+                        # --- STEP 4: CONTENT EXTRACTION (OCR) ---
+                        st.subheader("Step 4: Content Extraction (OCR -> CSV)")
+                        
+                        # We need the structure logs which contain the cell boxes
+                        # Where is the structure JSON saved? 
+                        # step_table_structure.py outputted a JSON to stdout, but we need to save it to disk for the next script to read
+                        # or pass it. step_table_assembly.py takes "structure_json_path".
+                        # We need to save the JSON from Step 3 to a file if it wasn't already.
+                        # Actually, let's just save st.session_state['table_step3'] to a temp file or proper path.
+                        
+                        structure_json_path = os.path.join(out_dir, f"{os.path.splitext(os.path.basename(body_path))[0]}_structure.json")
+                        
+                        if st.button("Run Step 4 (OCR Assembly)"):
+                            # Save Structure JSON first
+                            with open(structure_json_path, 'w') as f:
+                                json.dump(res3, f) # res3 is the Step 3 output dict
+                            
+                            with st.spinner("Running OCR & Assembly..."):
+                                # Call Step 4 script
+                                # Usage: step_table_assembly.py body_image_path structure_json_path --output_dir ...
+                                res4 = run_script("scripts/step_table_assembly.py", [
+                                    body_path, 
+                                    structure_json_path, 
+                                    "--output_dir", out_dir,
+                                    "--padding", "14" # optimized white padding
+                                ])
+                                
+                                # Store raw output for log display
+                                st.session_state['table_step4_raw_stdout'] = res4.stdout
+                                st.session_state['table_step4_raw_stderr'] = res4.stderr
+                                
+                                json_out4 = parse_json_output(res4.stdout)
+                                
+                                if json_out4:
+                                    st.session_state['table_step4'] = json_out4
+                                    st.success("CSV Generated!")
+                                else:
+                                    st.error("Step 4 Failed.")
+                        
+                        # Display Functionality regardless of success to show logs
+                        if 'table_step4_raw_stdout' in st.session_state:
+                            st.markdown("### Execution Logs")
+                            
+                            # Filter for interesting lines (Cell X...)
+                            logs = st.session_state['table_step4_raw_stdout']
+                            cell_logs = [line for line in logs.split('\n') if "Cell " in line and "]:" in line]
+                            
+                            if cell_logs:
+                                with st.expander("OCR Detail Logs", expanded=True):
+                                    st.code("\n".join(cell_logs))
+                            else:
+                                with st.expander("Full stdout"):
+                                    st.text(logs)
+                            
+                            if st.session_state.get('table_step4_raw_stderr'):
+                                with st.expander("Stderr"):
+                                    st.text(st.session_state['table_step4_raw_stderr'])
+
+                        if 'table_step4' in st.session_state:
+                            res4 = st.session_state['table_step4']
+                            csv_path = res4.get('csv_path')
+                            
+                            if csv_path and os.path.exists(csv_path):
+                                st.markdown(f"**Saved CSV:** `{os.path.basename(csv_path)}`")
+                                df = pd.read_csv(csv_path, header=None)
+                                st.dataframe(df)
+                                
+                            # Debug: Extracted Cells Gallery
+                            cells_debug_dir = os.path.join(out_dir, "cells_debug")
+                            if os.path.exists(cells_debug_dir):
+                                st.markdown("### Debug: Cell Crops")
+                                cell_imgs = sorted(glob.glob(os.path.join(cells_debug_dir, "*.png")))[:20] # Show first 20
+                                if cell_imgs:
+                                    cols = st.columns(5)
+                                    for i, p in enumerate(cell_imgs):
+                                        with cols[i % 5]:
+                                            st.image(p, caption=os.path.basename(p), width=100)
+                                else:
+                                    st.info("No cell crops found.")
+                            else:
+                                st.info(f"No cells_debug dir at {cells_debug_dir}")
+                        
+                else:
+                    st.warning("Cannot proceed to Step 3: No valid table body found.")
 
 # --- FIGURE EXTRACTION MODULE ---
 elif module == "Figure Extraction":

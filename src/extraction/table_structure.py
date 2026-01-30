@@ -181,12 +181,18 @@ class TableStructureRecognizer:
                 y2 = min(ry2, cy2)
                 
                 if x2 > x1 and y2 > y1:
+                    # Calculate score as average of row and col score
+                    r_score = row.get('score', 0.0)
+                    c_score = col.get('score', 0.0)
+                    avg_score = (r_score + c_score) / 2
+                    
                     cells.append({
                         'box': [x1, y1, x2, y2],
                         'row_index': r_idx,
                         'col_index': c_idx,
                         'row_span': 1,
                         'col_span': 1,
-                        'label': 'table cell'
+                        'label': 'table cell',
+                        'score': round(avg_score, 2)
                     })
         return cells

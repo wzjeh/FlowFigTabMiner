@@ -18,9 +18,9 @@ class ContentRecognizer:
         # Check if gpu is available
         use_gpu = False # Set to False by default to avoid issues if paddle-gpu not installed
         try:
-             import paddle
-             if paddle.device.is_compiled_with_cuda():
-                 use_gpu = True
+            import paddle
+            if paddle.device.is_compiled_with_cuda():
+                use_gpu = True
         except:
             pass
 
@@ -50,10 +50,12 @@ class ContentRecognizer:
                     try:
                         self.molscribe = MolScribe(model_path=None, device='cuda' if use_gpu else 'cpu')
                     except AttributeError as ae:
-                         if "'NoneType' object has no attribute 'seek'" in str(ae):
-                             print("Warning: MolScribe failed to download/load default weights. Please clear cache or manually download 'molscribe.ckpt' to models/.")
-                         else:
-                             raise ae
+                        if "'NoneType' object has no attribute 'seek'" in str(ae):
+                            print("Warning: MolScribe failed to download/load default weights. Please clear cache or manually download 'molscribe.ckpt' to models/.")
+                        else:
+                            raise ae
+            except Exception as e:
+                print(f"Error initializing MolScribe: {e}")
 
     def recognize_content(self, image_path, content_type):
         """
@@ -71,15 +73,37 @@ class ContentRecognizer:
 
     def _recognize_text(self, image_path):
         try:
-            # PaddleOCR expects image path or numpy array
-            result = self.ocr.ocr(image_path, cls=True)
-            # Result structure: [[[[[x1,y1],[x2,y2],[x3,y3],[x4,y4]],("text", confidence)]...]]
-            if not result or result[0] is None:
-                return ""
+            # Use parameter-less call (default full pipeline)
+            # This is robust across PaddleOCR / PaddleX versions
+            result = self.ocr.ocr(image_path)
+            # print(f"DEBUG: OCR Result Type: {type(result)}", flush=True)
+
+            text = ""
+            # Handle PaddleX Dict vs List
+            if result:
+                 # Case 1: List format (Standard PaddleOCR)
+                 if isinstance(result, list) and len(result) > 0:
+                      first_item = result[0]
+                      
+                      # Case 1.1: New PaddleX format returns dict
+                      if isinstance(first_item, dict): 
+                          if 'rec_texts' in first_item and first_item['rec_texts']:
+                              text = first_item['rec_texts'][0]
+
+                      # Case 1.2: Standard list of lines
+                      elif isinstance(first_item, list):
+                           # Concatenate all detected lines
+                           texts = []
+                           for line in first_item:
+                               if isinstance(line, list) and len(line) >= 2:
+                                    # line: [box, (text, conf)]
+                                    txt_obj = line[1]
+                                    if isinstance(txt_obj, (list, tuple)) and len(txt_obj) > 0:
+                                        texts.append(txt_obj[0])
+                           text = " ".join(texts)
             
-            # Concatenate all detected text lines
-            texts = [line[1][0] for line in result[0]]
-            return " ".join(texts)
+            return text
+
         except Exception as e:
             print(f"OCR Error on {image_path}: {e}")
             return ""

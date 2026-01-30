@@ -59,27 +59,38 @@ class DataFusion:
             y_title = resolve(text_ev["y_axis_title"][0]["text"])
 
         # Construct Rows
+        # Construct Rows
         for point in raw_data:
-            sid = point.get("series_id", -1) # Wait, coordinate mapper output format check needed
-            # coordinate mapper: {"x": .., "y": .., "type": "data_point", "class": 0 (series)}
-            # usually key is "class" or "series_id" depending on version.
-            # Checking `coordinate_mapper.py` (not visible now, assuming "series_id" or "class")
-            # Usually users scripts have "series_id".
+            # Step 4 raw_data already has "Series" (name), "X", "Y_Left", "Y_Right/Data_Value"
             
-            sid = point.get("series_id", point.get("class", -1))
+            # Resolve Series Name
+            raw_series = point.get("Series", "Unknown")
+            # If Series name contains abbr, e.g. "PhCl", resolve it
+            # Simple text resolution attempt
+            resolved_series = resolve(raw_series)
             
             row = {
-                x_title: point.get("x"),
-                y_title: point.get("y"),
-                "Series": legend_map.get(sid, f"Series {sid}")
+                "Series": resolved_series
             }
+            
+            # Add Axes
+            # If we resolved X/Y titles, use them as keys? 
+            # Or stick to standard "X_Value", "Y_Value" + "X_Unit/Desc" in separate metadata?
+            # User typically wants the CSV to have the actual header as the column name.
+            
+            row[x_title] = point.get("X")
+            
+            # Handle Y values (heatmap might have Data Value)
+            if "Y_Right/Data_Value" in point and point["Y_Right/Data_Value"] is not None:
+                 # It's a heatmap/3D plot
+                 row[y_title] = point.get("Y_Left") # The Y-axis position
+                 row["Data_Value"] = point.get("Y_Right/Data_Value") # The Z-value (Color/Heat)
+            else:
+                 row[y_title] = point.get("Y_Left")
             
             # Add Global Conditions
             for k, v in conditions.items():
                 row[f"Condition: {k}"] = v
-            
-            # Add Caption (optional, might be too long)
-            # row["Caption"] = meta.get("caption", "")
             
             rows.append(row)
             

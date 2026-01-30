@@ -87,38 +87,55 @@ class CoordinateMapper:
             # This prevents heatmap numbers from being treated as axis labels
             tick_marks = [d for d in detections if d['label'] == 'tick_mark']
             
-            plot_x_min = 0
-            plot_y_max = img_h
+            plot_x_min = 0 # Left Axis X
+            plot_x_max = img_w # Right Axis X (Default to edge)
+            plot_y_max = img_h # Bottom Axis Y
             
-            # Heuristic: Find bounds from ticks immediately
+            has_right_axis = False # Is there a Right Axis?
+
             if tick_marks:
                 txs = [d['center'][0] for d in tick_marks]
                 tys = [d['center'][1] for d in tick_marks]
                 
-                # X-Axis is the bottom-most line of ticks
-                # Y-Axis is the left-most line of ticks
-                
-                # Simple clustering
+                # --- Y-Axis Detection (Vertical Columns) ---
                 bins_x = {}
+                bin_size = 20 # px
                 for x in txs:
-                    b = int(x / 20)
+                    b = int(x / bin_size)
                     bins_x[b] = bins_x.get(b, []) + [x]
-                if bins_x:
-                    best_x = max(bins_x, key=lambda k: len(bins_x[k]))
-                    if len(bins_x[best_x]) > 2:
-                        plot_x_min = np.median(bins_x[best_x]) # Left Y-Axis X-pos
                 
+                major_cols = [b for b, v in bins_x.items() if len(v) >= 2]
+                if major_cols:
+                    sorted_cols = sorted(major_cols)
+                    # Leftmost -> plot_x_min
+                    left_cluster = bins_x[sorted_cols[0]]
+                    if len(left_cluster) >= 2:
+                        plot_x_min = np.median(left_cluster)
+                    
+                    # Check for Rightmost (Right Axis)
+                    if len(sorted_cols) >= 2:
+                        right_cluster = bins_x[sorted_cols[-1]]
+                        x_right = np.median(right_cluster)
+                        # Check separation
+                        if (x_right - plot_x_min) > (img_w * 0.4): # >40% width
+                            has_right_axis = True
+                            plot_x_max = x_right
+                            log(f"Detected Dual Vertical Axes (Scatter Mode). Width={plot_x_max - plot_x_min:.1f}")
+
+                # --- X-Axis Detection (Horizontal Rows) ---
                 bins_y = {}
                 for y in tys:
-                    b = int(y / 20)
+                    b = int(y / bin_size)
                     bins_y[b] = bins_y.get(b, []) + [y]
+                
                 if bins_y:
-                    # Bottom axis has LARGEST Y
+                    # Bottom axis usually has LARGEST Y
                     best_y = max(bins_y, key=lambda k: len(bins_y[k]))
-                    if len(bins_y[best_y]) > 2:
+                    if len(bins_y[best_y]) >= 2:
                         plot_y_max = np.median(bins_y[best_y]) # Bottom X-Axis Y-pos
             
-            log(f"Estimated Plot Boundaries: LeftAxis_X={plot_x_min:.1f}, BottomAxis_Y={plot_y_max:.1f}")
+            log(f"Estimated Plot Boundaries: LeftAxis_X={plot_x_min:.1f}, RightAxis_X={plot_x_max:.1f}, BottomAxis_Y={plot_y_max:.1f}")
+            log(f"Has Right Axis: {has_right_axis}")
 
             # 1. Gather all potential axis labels
             def parse_val(txt):
@@ -154,13 +171,27 @@ class CoordinateMapper:
                 
                 # FILTER: Must be OUTSIDE the plot area to be an axis label
                 # X-Label: Should be BELOW plot_y_max (plus some margin? No, strictly greater usually)
-                # Y-Label: Should be LEFT of plot_x_min
+                # Y-Label: Should be LEFT of plot_x_min OR RIGHT of plot_x_max (if dual axis)
                 
                 is_potential_axis = False
-                # FIX: Strict margin to 2px to exclude heatmap values
-                margin = 2 
+                margin = 2 # FIX: Strict margin
+                
+                # Bottom X-Axis
                 if cy > plot_y_max - margin: is_potential_axis = True
+                
+                # Left Y-Axis
                 if cx < plot_x_min + margin: is_potential_axis = True
+                
+                # Right Y-Axis (Allow if dual axis OR if simply to the right?)
+                # If plot_x_max is close to img_w (default), this condition is hard to satisfy unless cx > img_w.
+                # If dual axis detected, plot_x_max is inward.
+                if has_right_axis:
+                    if cx > plot_x_max - margin: is_potential_axis = True
+                else:
+                    # Standard Single Axis -> Fallback check if simple scatter
+                    # To be safe, allow anything > img_w * 0.9? No, heatmap values are there.
+                    # Stick to logic: Only allow Right Axis candidates if we explicitly detected ticks there.
+                    pass
                 
                 # Check bounds existence
                 has_bounds = (plot_x_min > 20 and plot_y_max < img_h - 20)
@@ -359,93 +390,94 @@ class CoordinateMapper:
             # The "Plot Area" is the quadrant to the Top-Right of this intersection.
             # i.e., x > axis_x and y < axis_y (since image Y grows down).
             
+            # 3.5 Determine Chart Type (Scatter/Dual vs Heatmap) Logic
+            # Detect Columns of Vertical Ticks (Left vs Right Axis)
             tick_marks = [d for d in detections if d['label'] == 'tick_mark']
-            
-            axis_x_line = None
-            axis_y_line = None
+            has_right_axis = False
             
             if tick_marks:
-                # 1. Find Vertical Axis (Y-Axis) -> Dominant X coordinate
                 txs = [d['center'][0] for d in tick_marks]
                 bins_x = {}
-                bin_size = 10 # px
+                bin_size = 20 # px
                 for x in txs:
                     b = int(x / bin_size)
                     bins_x[b] = bins_x.get(b, []) + [x]
                 
-                if bins_x:
-                    best_bin_x = max(bins_x, key=lambda k: len(bins_x[k]))
-                    if len(bins_x[best_bin_x]) >= 3:
-                         axis_x_line = np.median(bins_x[best_bin_x])
-
-                # 2. Find Horizontal Axis (X-Axis) -> Dominant Y coordinate (bottom)
-                tys = [d['center'][1] for d in tick_marks]
-                bins_y = {}
-                for y in tys:
-                    b = int(y / bin_size)
-                    bins_y[b] = bins_y.get(b, []) + [y]
-                    
-                if bins_y:
-                    valid_bins = [b for b, v in bins_y.items() if len(v) >= 3]
-                    if valid_bins:
-                        best_bin_y = max(valid_bins, key=lambda b: len(bins_y[b])) # Most populated
-                        axis_y_line = np.median(bins_y[best_bin_y])
-                        
-            # Fallback if ticks insufficient
-            if axis_x_line is None and len(y_left_candidates) > 2:
-                 axis_x_line = np.median([c[0] for c in y_left_candidates])
-                 log("Inferred Axis X from text candidates")
-                 
-            if axis_y_line is None and len(x_candidates) > 2:
-                 axis_y_line = np.median([c[4] for c in x_candidates])
-                 log("Inferred Axis Y from text candidates")
-
-            if axis_x_line is not None and axis_y_line is not None:
-                 log(f"Axis Lines Detected: Vert X={axis_x_line:.1f}, Horz Y={axis_y_line:.1f}")
-                 
-                 margin = 15.0 # px padding
-                 quad_x = axis_x_line + margin
-                 quad_y = axis_y_line - margin
-                 
-                 promoted_count = 0
-                 for d in detections:
-                      lbl = d['label']
-                      if lbl in ['tick_label', 'text', 'value']:
-                          cx, cy = d['center']
-                          
-                          if cx > quad_x and cy < quad_y:
-                              # Promote!
-                              d['label'] = 'data_value'
-                              promoted_count += 1
-                 
-                 if promoted_count > 0:
-                     log(f"Promoted {promoted_count} labels to 'data_value' (Quadrant Logic)")
+                # Count major columns (>=3 ticks)
+                major_cols = [b for b, v in bins_x.items() if len(v) >= 3]
+                
+                # If we have at least 2 distinct major columns separated by plot width
+                # Let's check spread
+                if len(major_cols) >= 2:
+                    sorted_cols = sorted(major_cols)
+                    min_x = np.median(bins_x[sorted_cols[0]])
+                    max_x = np.median(bins_x[sorted_cols[-1]])
+                    if (max_x - min_x) > (img_w * 0.4): # Significant width
+                        has_right_axis = True
+                        log(f"Detected Dual Vertical Axes (Scatter Mode). Width={max_x - min_x:.1f}")
+            
+            # Quadrant Logic / Data Value Promotion
+            # Only enabled if Heatmap likely (No Right Axis) AND Requested
+            # OR simplistic: If Right Axis, Disable. If No Right Axis, check flag.
+            
+            use_data_value_promotion = False
+            
+            if has_right_axis:
+                use_data_value_promotion = False # Always disable for dual-axis scatter
+                log("Dual Axis Scatter detected -> Disabling Data Value Promotion.")
+            else:
+                # Ambiguous (Single Left Axis). Could be Simple Scatter or Heatmap.
+                # Default to Scatter (Safe) unless extracting labels explicitly.
+                if extract_point_labels:
+                    use_data_value_promotion = True
+                    log("Single Axis + Extract Labels -> Enabling Data Value Promotion (Heatmap Mode).")
+                else:
+                    use_data_value_promotion = False
+                    log("Single Axis + No Extract Flag -> Disabling Data Value Promotion (Simple Scatter Mode).")
+            
+            if use_data_value_promotion:
+                # Reuse pre-calculated boundaries
+                axis_x_line = plot_x_min
+                axis_y_line = plot_y_max
+                
+                if axis_x_line > 0 and axis_y_line < img_h:
+                     # ... existing Quadrant Logic ...
+                     margin = 15.0 # px padding
+                     quad_x = axis_x_line + margin
+                     quad_y = axis_y_line - margin
+                     
+                     promoted_count = 0
+                     for d in detections:
+                          lbl = d['label']
+                          if lbl in ['tick_label', 'text', 'value']:
+                              cx, cy = d['center']
+                              
+                              if cx > quad_x and cy < quad_y:
+                                  # Promote!
+                                  d['label'] = 'data_value'
+                                  promoted_count += 1
+                     
+                     if promoted_count > 0:
+                         log(f"Promoted {promoted_count} labels to 'data_value' (Quadrant Logic)")
 
             # 4. Point Label Extraction (YOLO-guided)
-            # Now we gather value_dets AFTER promotion, so we see the new data_values.
-            
             value_labels = ['data_value', 'value_label', 'point_value', 'floating_value']
             value_dets = [d for d in detections if d['label'] in value_labels]
             
-            # Fallback (only if not auto-enabled via presence)
-            if extract_point_labels and not value_dets:
-                 log("Fallback to generic labels for Point Extraction")
-                 value_dets = [d for d in detections if d['label'] in ['tick_label', 'text', 'value']]
+            # Fallback Logic adjusted: If extract_point_labels is True, we already promoted text.
+            # But if detections were initially 'value_label', we keep them.
             
             should_extract = len(value_dets) > 0 or extract_point_labels
-            
-            point_labels = {} # index -> value
+            point_labels = {} 
             
             if should_extract and value_dets:
                 log(f"Extracting Point Labels from {len(value_dets)} value boxes")
-                
+                # ... extraction loop ...
                 for idx, p in enumerate(points):
                         px, py = p['center']
-                        
                         best_det = None
                         min_dist = float('inf')
-                        search_radius = 120.0 # Increased from 80
-                        
+                        search_radius = 120.0 
                         for v in value_dets:
                             vx, vy = v['center']
                             dist = np.sqrt((vx - px)**2 + (vy - py)**2)
@@ -453,25 +485,16 @@ class CoordinateMapper:
                                 min_dist = dist
                                 best_det = v
                         
-                        if best_det is None:
-                             closest_any = float('inf')
-                             for v in value_dets:
-                                 d2 = np.sqrt((v['center'][0] - px)**2 + (v['center'][1] - py)**2)
-                                 if d2 < closest_any: closest_any = d2
-                             if idx < 5: log(f"Point {idx} has no match. Closest value box dist: {closest_any:.1f}")
-                        
                         if best_det:
+                            # ... OCR crop logic ...
                             bx1, by1, bx2, by2 = map(int, best_det['box'])
-                            # Padding increased from 10 to 14 (User Request)
                             pad = 14
                             bx1, by1 = max(0, bx1-pad), max(0, by1-pad)
                             bx2, by2 = min(img_w, bx2+pad), min(img_h, by2+pad)
                             crop = img[by1:by2, bx1:bx2]
-
                             if crop.shape[0] < 60 or crop.shape[1] < 60:
                                 scale = 4
                                 crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
-                            
                             try:
                                 res = self.ocr.ocr(crop)
                                 val = None
@@ -489,9 +512,7 @@ class CoordinateMapper:
                                                  if isinstance(txt_obj, (list, tuple)) and len(txt_obj) > 0:
                                                      txt = txt_obj[0]
                                     val = parse_val(txt)
-                            except Exception as e:
-                                pass
-                                 
+                            except Exception: pass
                             if val is not None:
                                 point_labels[idx] = val
             
@@ -516,20 +537,33 @@ class CoordinateMapper:
                         real_yl = np.power(10, pred) if is_yl_log else pred
                     except: pass
 
+                # Y_Right Logic / Data Value Logic
+                # Column "Y_Right/Data_Value" semantics:
+                # If Heatmap -> Data Value (Z)
+                # If Scatter -> Y-Right Axis Value
+                
                 real_yr = None
-                label_val = point_labels.get(idx)
-                if label_val is not None:
-                    real_yr = label_val
+                
+                if has_right_axis and model_yr:
+                    # Case A: Dual Axis Scatter -> Use Axis Model
+                     try:
+                        pred = model_yr.predict([[cy]])[0]
+                        real_yr = np.power(10, pred) if is_yr_log else pred
+                     except: pass
+                
+                else:
+                    # Case B: Single Axis / Heatmap -> Use Point Label if exists
+                    label_val = point_labels.get(idx)
+                    if label_val is not None:
+                        real_yr = label_val
                 
                 if real_x is not None:
                     row = {
                         "Series": series,
                         "X": float(real_x),
                         "Y_Left": float(real_yl) if real_yl is not None else None,
-                        # FIX: Rename UI Column
                         "Y_Right/Data_Value": float(real_yr) if real_yr is not None else None,
                     }
-                        
                     data_rows.append(row)
             
             return pd.DataFrame(data_rows), debug_log
