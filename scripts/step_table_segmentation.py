@@ -22,9 +22,13 @@ def main():
 
     print(f"Processing Image: {image_path}")
     
+    from src.utils.config import load_config
+    cfg = load_config()
+    model_path = cfg.get("tables", {}).get("segmentation", {}).get("model_path", "models/bestYOLOm.pt")
+    
     # Initialize Filter
     # Assuming standard model path or configured one
-    filter_model = TableFilter()
+    filter_model = TableFilter(model_path=model_path)
     
     # Run Inference
     results = filter_model.filter_tables([image_path], conf_threshold=0.4)

@@ -27,7 +27,13 @@ def run_step4(figure_id="page_3_figure_0_t0"):
     print(">>> 1. Running Extraction Pipeline...")
     
     # A. Detection (Stage 2)
-    model_path = "models/bestYOLOm-2-2.pt"
+    # A. Detection (Stage 2)
+    from src.utils.config import load_config
+    cfg = load_config()
+    # Step 4 re-uses the micro-model from Step 3 usually, or maybe it has its own entry?
+    # For now let's use the same step3_micro model path as it seems to be the one intended.
+    model_path = cfg.get("figures", {}).get("step3_micro", {}).get("model_path", "models/bestYOLOm-2-2.pt")
+    
     detector = Stage2Detector(model_path=model_path)
     # Using optimized parameters from Step 3 verification
     detections = detector.detect(cleaned_img_path, conf=0.10, use_tiling=True)

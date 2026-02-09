@@ -5,14 +5,32 @@ from src.parsing.table_filter import TableFilter
 from src.extraction.table_structure import TableStructureRecognizer
 from src.extraction.cell_classifier import CellClassifier
 from src.extraction.content_recognizer import ContentRecognizer
+from src.extraction.molecule_processor import MoleculeProcessor
 
 class TablePipeline:
     def __init__(self):
         print("Initializing Table Pipeline...")
-        self.filter = TableFilter()
-        self.structure = TableStructureRecognizer()
+        from src.utils.config import load_config
+        cfg = load_config()
+        tables_cfg = cfg.get("tables", {})
+        
+        seg_model = tables_cfg.get("segmentation", {}).get("model_path")
+        struct_model = tables_cfg.get("structure", {}).get("model_path")
+        molscribe_path = tables_cfg.get("content", {}).get("molscribe_path")
+        
+        # Molecule Detection
+        mol_det_cfg = tables_cfg.get("molecule_detection", {})
+        mol_model_path = mol_det_cfg.get("model_path")
+        mol_conf = mol_det_cfg.get("confidence_threshold", 0.25)
+
+        self.filter = TableFilter(model_path=seg_model)
+        self.structure = TableStructureRecognizer(model_name=struct_model)
         self.classifier = CellClassifier()
-        self.recognizer = ContentRecognizer()
+        self.recognizer = ContentRecognizer(molscribe_path=molscribe_path)
+        
+        # Initialize Molecule Processor
+        # Check if model path exists to avoid error if user hasn't downloaded yet (though config verify checks this)
+        self.molecule_processor = MoleculeProcessor(model_path=mol_model_path, conf_threshold=mol_conf)
 
     def process_table(self, image_path, output_dir=None):
         """
@@ -87,7 +105,29 @@ class TablePipeline:
                 cv2.imwrite(body_path, body_crop)
                 current_image_path = body_path
         
-        # 2. Structure (on the body)
+                cv2.imwrite(body_path, body_crop)
+                current_image_path = body_path
+        
+        # --- NEW: Process Molecules (Detect -> MolScribe -> Replace) ---
+        print("   -> Processing Molecules...")
+        # We need to pass the recognizer so it can use MolScribe
+        # Function returns modified image (with SMILES text) and metadata
+        modified_img, mol_meta = self.molecule_processor.process_image(current_image_path, self.recognizer)
+        
+        if modified_img is not None and mol_meta:
+            print(f"      Replaced {len(mol_meta)} molecules with SMILES.")
+            # Save modified image for structure recognition
+            # Use a slightly different name to distinguish
+            base_body = os.path.splitext(os.path.basename(current_image_path))[0]
+            modified_body_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_smiles.png")
+            cv2.imwrite(modified_body_path, modified_img)
+            
+            # Switch current_image_path to the modified one for Structure Recognition
+            current_image_path = modified_body_path
+        else:
+            print("      No molecules detected or model not loaded.")
+            
+        # 2. Structure (on the body, potentially modified)
         struct_res = self.structure.recognize_structure(current_image_path)
         cells = struct_res.get('cells', [])
         

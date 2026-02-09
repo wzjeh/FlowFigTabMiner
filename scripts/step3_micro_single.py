@@ -30,8 +30,14 @@ def run_step3_single():
         return
 
     try:
+        from src.utils.config import load_config
+        cfg = load_config()
+        step3_cfg = cfg.get("figures", {}).get("step3_micro", {})
+        model_path = step3_cfg.get("model_path", "models/bestYOLOm-2-2.pt")
+        print(f"Loading Stage 2 YOLO model from {model_path}...")
+        
         # Initialize Models (Lazy to save memory/startup)
-        yolo_micro = Stage2Detector(model_path="models/bestYOLOm-2-2.pt")
+        yolo_micro = Stage2Detector(model_path=model_path)
         legend_matcher = LegendMatcher(yolo_model=yolo_micro)
         coord_mapper = CoordinateMapper()
         

@@ -145,13 +145,36 @@ class LegendMatcher:
                 tcx, tcy = t['center']
                 
                 # Loose constraint: Text roughly right or below
-                if tcx < mcx - 10: continue # Allow slight left drift
+                # But mostly vertically aligned.
                 
                 # Vertical proximity
-                ref_h = max(tbox[3]-tbox[1], mbox[3]-mbox[1])
-                if abs(tcy - mcy) > ref_h * 3.0: continue
+                ref_h = max(tbox[3]-tbox[1], mbox[3]-mbox[1]) # Height of text/marker
+                
+                # FIX: Strict vertical alignment. 
+                # Legend text is usually centered vertically with marker.
+                # Allow tolerance of ~1.2 lines?
+                if abs(tcy - mcy) > ref_h * 1.5: continue
 
-                dist = np.sqrt((tcx - mcx)**2 + (tcy - mcy)**2)
+                # FIX: Use Left Edge for horizontal distance
+                # Text Center (tcx) biases towards short words.
+                # Marker is always to the LEFT of Text.
+                # Distance = (Text Left - Marker Right) ideal?
+                # or (Text Left - Marker Center)? Let's use Text Left.
+                tx1 = tbox[0]
+                
+                # Check horizontal ordering: Text must be to the right of marker
+                # Allow slight overlap (e.g. marker bounding box big)
+                if tx1 < mbox[0] - 10: continue
+
+                # Calculate Distance:
+                # Vertical diff is critical. Horizontal diff is secondary (closest to the right).
+                # Weighted distance
+                dy = abs(tcy - mcy)
+                dx = abs(tx1 - mcx) # Distance from marker center to text start
+                
+                # Penalize vertical distance heavily
+                dist = dy * 5.0 + dx
+                
                 if dist < min_dist:
                     min_dist = dist
                     best_text = t['text']
@@ -166,33 +189,105 @@ class LegendMatcher:
                 x2 = min(img_w, int(mbox[2])-pad_x)
                 y2 = min(img_h, int(mbox[3])-pad_y)
                 
+                CONST_DEBUG = True
+
                 if x2 > x1 and y2 > y1:
                     crop = master_img[y1:y2, x1:x2]
                     if crop.size > 0:
-                        # hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-                        # mean_color = np.mean(hsv_crop, axis=(0,1))
-                        
-                        # Use Weighted Mean
-                        mean_color = self.get_weighted_mean_color(crop) # Crop is BGR
+                        # Use Weighted Mean or Dominant? 
+                        # Dominant is safer for extracted legend key too (often on white bg)
+                        mean_color = self.get_dominant_color(crop) 
                         
                         if best_text not in prototypes:
                             prototypes[best_text] = {'colors': []}
                         prototypes[best_text]['colors'].append(mean_color)
+                        
+                        if CONST_DEBUG:
+                            print(f"      [DEBUG] Proto '{best_text}': HSV={mean_color}")
 
         # Aggregate
         final_protos = {}
         for label, data in prototypes.items():
+            colors = np.array(data['colors'])
+            if len(colors) == 0: continue
+            
+            # Smart Filter: Prefer High Saturation/Value samples
+            # HSV: H=0-179, S=0-255, V=0-255
+            # Low Saturation (<40) or Low Value (<40) = Achromatic (Black/Gray/White)
+            # We want the color that distinguishes the series.
+            
+            s_vals = colors[:, 1]
+            v_vals = colors[:, 2]
+            
+            # Filter for "Colorful" markers (Saturation > 40 and Value > 40)
+            mask_colorful = (s_vals > 40) & (v_vals > 40)
+            
+            if np.sum(mask_colorful) > 0:
+                # We have colorful candidates.
+                valid_colors = colors[mask_colorful]
+                
+                # STRATEGY: Pick the "Best" Representative instead of Averaging.
+                # Averaging Hues [0, 179] -> 89 (Wrong).
+                # Averaging Red [0] and Purple [130] -> 65 (Yellow) (Wrong).
+                
+                # We pick the sample with the HIGHEST SATURATION.
+                # This assumes the most saturated marker found is the "True" legend color
+                # and others might be faded, noise, or partial crops.
+                
+                best_idx = np.argmax(valid_colors[:, 1]) # Max Saturation
+                final_mean = valid_colors[best_idx]
+                
+                if CONST_DEBUG:
+                     print(f"      [DEBUG] Proto '{label}' Selected BEST from {len(valid_colors)} candidates (Max Sat: {final_mean[1]}).")
+
+            else:
+                # Fallback: All seem gray/black.
+                # Just take the one with max Value (Brightest)? or Mean?
+                # If truly achromatic, Mean is fine.
+                final_mean = np.mean(colors, axis=0)
+
             final_protos[label] = {
-                'hsv': np.mean(data['colors'], axis=0),
-                'count': len(data['colors'])
+                'hsv': final_mean,
+                'count': len(colors)
             }
+            if CONST_DEBUG:
+                print(f"      [DEBUG] Final Proto '{label}': HSV={final_protos[label]['hsv'].astype(int)}")
             
         return final_protos
+
+    def get_dominant_color(self, img_crop):
+        """
+        Extract the dominant foreground color, ignoring white/light background.
+        This is crucial for hollow markers where the center is white.
+        """
+        if img_crop.size == 0: return np.array([0, 0, 0])
+        
+        # Convert to HSV for masking
+        hsv = cv2.cvtColor(img_crop, cv2.COLOR_BGR2HSV)
+        s = hsv[:,:,1]
+        v = hsv[:,:,2]
+        
+        # Define Background: Low Saturation AND High Value (White/Gray)
+        # OpenAI CV: S(0-255), V(0-255)
+        # White is S~0, V~255
+        mask_bg = (s < 40) & (v > 200)
+        mask_fg = ~mask_bg
+        
+        if np.sum(mask_fg) < 5: 
+             # Fallback to Gaussian weighted mean if mostly background (e.g. very thin marker or actually gray)
+             return self.get_weighted_mean_color(img_crop)
+             
+        # Compute mean of FG pixels in BGR space (to avoid Hue wrap issues)
+        fg_pixels = img_crop[mask_fg]
+        mean_bgr = np.mean(fg_pixels, axis=0).astype(np.uint8)
+        
+        mean_hsv = cv2.cvtColor(np.array([[mean_bgr]]), cv2.COLOR_BGR2HSV)[0][0]
+        return mean_hsv
 
     def get_weighted_mean_color(self, img_crop):
         """
         Compute mean color with Gaussian weighting centered in the crop.
-        This reduces the influence of background pixels at the edges.
+        Fallback for when smart masking fails.
         """
         h, w = img_crop.shape[:2]
         if h == 0 or w == 0: return np.array([0, 0, 0])
@@ -209,32 +304,26 @@ class LegendMatcher:
         
         # Normalize mask
         if np.sum(gaussian) == 0:
-             return np.mean(img_crop, axis=(0,1))
+             # Should convert BGR->HSV here?
+             # No, return raw HSV? 
+             # Let's fix this to be consistent with get_dominant_color
+             m_bgr = np.mean(img_crop, axis=(0,1)).astype(np.uint8)
+             return cv2.cvtColor(np.array([[m_bgr]]), cv2.COLOR_BGR2HSV)[0][0]
              
         weights = gaussian / np.sum(gaussian)
         
-        # Compute Weighted Mean per channel (in HSV)
-        # However, for Hue, weighted mean is tricky due to circularity.
-        # Strict way: Convert to cartesian, mean, convert back.
-        # Practical way for small hue diffs: Weighted Average is OK.
-        # Best way: Use RGB for weighted mean, then convert to HSV.
+        # 1. Convert to RGB float (Linearize if possible, but standard BGR is fine for now)
+        # Input is BGR (OpenCV default)
         
-        # 1. Convert to RGB float
-        rgb_crop = cv2.cvtColor(img_crop, cv2.COLOR_HSV2BGR) # Wait, input is usually HSV from existing logic? No, extraction is BGR usually. 
-        # Ah, update: we should pass BGR here.
+        # We compute weighted mean on BGR channels directly.
         
-        # Let's check caller. Caller passes BGR?
-        # In current code: `hsv_crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)` happens inside the loop.
-        # We will move HSV conversion here.
-        
-        # We process in Linear RGB space to be strictly correct for physical mixing, 
-        # but standard Gamma RGB is fine for perceptual center extraction.
-        
-        weighted_r = np.sum(rgb_crop[:,:,2] * weights)
-        weighted_g = np.sum(rgb_crop[:,:,1] * weights)
-        weighted_b = np.sum(rgb_crop[:,:,0] * weights)
+        weighted_b = np.sum(img_crop[:,:,0] * weights)
+        weighted_g = np.sum(img_crop[:,:,1] * weights)
+        weighted_r = np.sum(img_crop[:,:,2] * weights)
         
         mean_bgr = np.array([[[weighted_b, weighted_g, weighted_r]]], dtype=np.uint8)
+        
+        # Convert the final WEIGHTED MEAN BGR to HSV
         mean_hsv = cv2.cvtColor(mean_bgr, cv2.COLOR_BGR2HSV)[0][0]
         
         return mean_hsv
@@ -305,10 +394,7 @@ class LegendMatcher:
             if x2 > x1 and y2 > y1:
                 crop = img[y1:y2, x1:x2]
                 if crop.size > 0:
-                    # mean = self.get_weighted_mean_color(crop)
-                    # For speed on many points, we can do simple mean if crop is tight, 
-                    # but user requested weighting.
-                    mean = self.get_weighted_mean_color(crop)
+                    mean = self.get_dominant_color(crop)
                     features.append(mean)
                     valid_indices.append(indices[i])
         
@@ -317,27 +403,29 @@ class LegendMatcher:
         X = np.array(features)
 
         # 2. Nearest Neighbor Assignment
-        # We calculate distance from every point to every legend color.
-        # Custom Metric because of Hue Wrapping.
-        
         n_points = len(X)
         n_legends = len(legend_colors)
         
-        # Manual cdist with weighted_hsv_dist
         dists = np.zeros((n_points, n_legends))
         
         for i in range(n_points):
             for j in range(n_legends):
                 dists[i, j] = self.weighted_hsv_dist(X[i], legend_colors[j])
-                
+        
         # Assign to min distance
         labels_idx = np.argmin(dists, axis=1)
         assigned_labels = [legend_labels[idx] for idx in labels_idx]
 
+        # Debug Stats for first few points
+        if n_points > 0:
+            print(f"      [DEBUG] Point 0 HSV: {X[0].astype(int)}")
+            for j in range(n_legends):
+                print(f"        -> Dist to '{legend_labels[j]}': {dists[0,j]:.2f}")
+            print(f"        -> Assigned: {assigned_labels[0]}")
+
         # 3. Apply labels back to points
         for i, idx in enumerate(valid_indices):
             points[idx]['series'] = assigned_labels[i]
-            # Optional: Store confidence/distance?
-            # points[idx]['match_dist'] = dists[i, labels_idx[i]]
+            points[idx]['match_dist'] = dists[i, labels_idx[i]]
             
         return points

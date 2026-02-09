@@ -24,11 +24,49 @@ def main():
         print(f"Error: File not found {image_path}")
         return
 
-    # Initialize Model
-    recognizer = TableStructureRecognizer()
+    from src.utils.config import load_config
+    cfg = load_config()
+    model_name = cfg.get("tables", {}).get("structure", {}).get("model_path", "microsoft/table-transformer-structure-recognition-v1.1-all")
+
+    # Initialize Models
+    recognizer = TableStructureRecognizer(model_name=model_name)
     
-    # Run Inference
-    structure = recognizer.recognize_structure(image_path)
+    # --- NEW: Molecule Replacement (Web App Support) ---
+    # Check if configured
+    mol_cfg = cfg.get("tables", {}).get("molecule_detection", {})
+    mol_model_path = mol_cfg.get("model_path")
+    
+    current_image_path = image_path
+    
+    if mol_model_path and os.path.exists(mol_model_path):
+        print("Initializing Molecule Processor for Web App Step...")
+        try:
+            from src.extraction.molecule_processor import MoleculeProcessor
+            from src.extraction.content_recognizer import ContentRecognizer
+            
+            mol_conf = mol_cfg.get("confidence_threshold", 0.25)
+            mol_proc = MoleculeProcessor(model_path=mol_model_path, conf_threshold=mol_conf)
+            
+            # We need ContentRecognizer for MolScribe
+            molscribe_path = cfg.get("tables", {}).get("content", {}).get("molscribe_path")
+            content_rec = ContentRecognizer(molscribe_path=molscribe_path)
+            
+            # Process
+            modified_img, mol_meta = mol_proc.process_image(image_path, content_rec)
+            
+            if modified_img is not None and mol_meta:
+                print(f"Replaced {len(mol_meta)} molecules with SMILES.")
+                # Save modified image
+                base_name = os.path.splitext(os.path.basename(image_path))[0]
+                output_dir = os.path.dirname(image_path)
+                modified_path = os.path.join(output_dir, f"{base_name}_smiles.png")
+                cv2.imwrite(modified_path, modified_img)
+                current_image_path = modified_path
+        except Exception as e:
+            print(f"Warning: Molecule Processing failed in Step 3 script: {e}")
+
+    # Run Inference (on potentially modified image)
+    structure = recognizer.recognize_structure(current_image_path)
     
     # Visualizer
     # structure dict keys: 'cells', 'rows', 'columns'
@@ -65,7 +103,9 @@ def main():
                 "box": box, 
                 "score": float(c.get('score', 0.0)),
                 "row_idx": c.get('row_index'), # Fixed key
-                "col_idx": c.get('col_index')  # Fixed key
+                "col_idx": c.get('col_index'), # Fixed key
+                "row_span": c.get('row_span', 1),
+                "col_span": c.get('col_span', 1)
             })
 
         # Save Visualization

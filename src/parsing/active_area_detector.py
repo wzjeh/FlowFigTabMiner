@@ -143,10 +143,10 @@ class ActiveAreaDetector:
                 page_idx = int(page_key.split("_")[1]) - 1
                 page = pdf[page_idx]
                 # Render page to image at high resolution for cropping
-                bitmap = page.render(scale=3) # 3x scale for better crop quality
+                bitmap = page.render(scale=4) # 4x scale (approx 300 DPI) for better crop quality
                 pil_image = bitmap.to_pil()
-                # 3x scale vs 2x scale detection
-                scale_factor = 3.0 / 2.0
+                # 4x scale vs 2x scale detection
+                scale_factor = 4.0 / 2.0
                 
                 for idx, item in enumerate(detections):
                     label = item["label"] # 'table' or 'figure'

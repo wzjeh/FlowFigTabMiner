@@ -1,0 +1,22 @@
+# Keywords for Relevance Filtering (Figures & Tables)
+# The pipeline checks if VALID text from the figure/table (Caption, Title, Note, Axis, Headers) 
+# contains any of these keywords.
+# Matches are case-insensitive and support partial matches (e.g. 'selectiv' matches 'selectivity').
+
+keywords:
+  - yield
+  - uiel
+  - yeild
+  - selectivity
+  - slelctivity
+  - selectiv
+  - conversion
+  - convers
+  - recovery
+  - purity
+  - efficiency
+  - ee%
+  - ee
+  - ratio
+  - product
+  - composition

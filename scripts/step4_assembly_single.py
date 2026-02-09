@@ -11,45 +11,59 @@ sys.path.insert(0, os.getcwd())
 
 from src.assembly.evidence_assembler import EvidenceAssembler
 
-def run_step4_single(figure_id, intermediate_dir, extraction_json_path=None, forced_caption=None):
+def run_step4_single():
+    parser = argparse.ArgumentParser(description="Step 4 Assembly Single")
+    parser.add_argument("figure_id", help="Figure ID (e.g. page_5_figure_0_t0)")
+    parser.add_argument("intermediate_dir", help="Path to macro_cleaned dir with crops")
+    parser.add_argument("step3_json", help="Path to JSON file containing Step 3 mapped_data")
+    parser.add_argument("--output_dir", default="data/evidence", help="Directory to save evidence")
+    
+    args = parser.parse_args()
+    
+    if not os.path.exists(args.intermediate_dir):
+        print(json.dumps({"error": f"Intermediate dir not found: {args.intermediate_dir}"}))
+        return
+
+    if not os.path.exists(args.step3_json):
+        print(json.dumps({"error": f"Step 3 data not found: {args.step3_json}"}))
+        return
+        
     try:
-        assembler = EvidenceAssembler()
+        # Load Step 3 Data
+        with open(args.step3_json, 'r') as f:
+            step3_data = json.load(f)
+            
+        # Extract 'mapped_data' list if it's wrapped in the result object
+        extraction_data = step3_data
+        if isinstance(step3_data, dict):
+            extraction_data = step3_data.get('mapped_data', [])
+            
+        # Init Assembler
+        assembler = EvidenceAssembler(output_dir=args.output_dir)
         
-        # Load extraction data if provided
-        extraction_data = []
-        if extraction_json_path and os.path.exists(extraction_json_path):
-            with open(extraction_json_path, 'r') as f:
-                extraction_data = json.load(f)
-        
-        # Assemble
-        json_path = assembler.assemble(figure_id, extraction_data, intermediate_dir)
+        # Run Assembly
+        # Logic matches FigurePipeline loop
+        json_path = assembler.assemble(args.figure_id, extraction_data, args.intermediate_dir)
         
         if json_path:
-            # Read content
+            # Read back the saved JSON to return it
             with open(json_path, 'r') as f:
-                content = json.load(f)
-            
-            # INJECT FORCED CAPTION (from Upload Mode)
-            if forced_caption:
-                content['meta']['caption'] = forced_caption
-                # Save back
-                with open(json_path, 'w') as f:
-                    json.dump(content, f, indent=2)
+                final_packet = json.load(f)
                 
             print("---JSON_START---")
-            print(json.dumps({"path": json_path, "content": content}))
+            print(json.dumps({
+                "status": "success",
+                "output_path": json_path,
+                "evidence": final_packet
+            }))
             print("---JSON_END---")
         else:
-             print(json.dumps({"error": "Evidence discarded by filter."}))
+            print(json.dumps({"status": "filtered", "message": "Discarded by relevance filter."}))
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(json.dumps({"error": str(e)}))
 
 if __name__ == "__main__":
-    # Usage: python step4_single.py figure_id intermediate_dir [extraction.json] [caption]
-    if len(sys.argv) > 2:
-        fid = sys.argv[1]
-        idir = sys.argv[2]
-        ext_json = sys.argv[3] if len(sys.argv) > 3 else None
-        caption = sys.argv[4] if len(sys.argv) > 4 else None
-        run_step4_single(fid, idir, ext_json, caption)
+    run_step4_single()

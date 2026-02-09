@@ -1,0 +1,65 @@
+# Global Settings
+global:
+  output_base_dir: "data/output"
+  intermediate_dir: "data/intermediate"
+  device: "auto" # "cuda", "cpu", "mps", or "auto"
+
+# Figure Extraction Pipeline
+figures:
+  step1_tfid:
+    enabled: true
+    # Add any specific TF-ID parameters here if needed
+
+  step2_macro:
+    model_path: "models/yolo11m-fig-seg-0207-nobreaknocharttext/runs/detect/train/weights/best.pt"
+    confidence_threshold: 0.5
+    device: "auto"
+
+  step3_micro:
+    model_path: "models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt"
+    crop_padding: 10
+    ocr_engine: "paddle"
+    # confidence_threshold: 0.5 # Example if needed
+
+  step4_assembly:
+    clustering_threshold: 0.5
+    # sorting_method: "top-down" 
+
+# Table Extraction Pipeline
+tables:
+  segmentation:
+    model_path: "models/yolo11m-tab-seg-0208/runs/detect/train/weights/best.pt"
+    threshold: 0.8
+  
+  molecule_detection:
+    model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt"
+    confidence_threshold: 0.25
+
+  structure:
+    model_path: "microsoft/table-transformer-structure-recognition-v1.1-all" # From src/extraction/table_structure.py
+  
+  cell_classification:
+    model_path: "models/cell_classifier.pt"
+
+  content:
+    molscribe_path: "models/molscribe.ckpt"
+    ocr_engine: "paddle"
+
+# LLM & Adjudication
+llm:
+  # This sets the default provider for generic tasks.
+  # "openai", "gemini", "qwen", "dashscope" - must match keys in .env
+  default_provider: "dashscope" 
+  
+  # Configuration for Step 5: Adjudication
+  adjudication:
+    # You can override the provider here if you want adjudication to run on a specific model
+    # provider: "openai" 
+    model_name: "qwen-plus-2025-12-01"
+    temperature: 0.1
+    prompt_template: "templates/adjudication.txt" # Path relative to project root
+
+  # Configuration for Data Extraction (if different)
+  extraction:
+    model_name: "qwen-plus-2025-12-01"
+    temperature: 0.1

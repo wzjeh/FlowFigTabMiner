@@ -12,45 +12,58 @@ class EvidenceAssembler:
         # use_angle_cls=True ensures we can read rotated y-axis text
         self.ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
-    def assemble(self, figure_id, extraction_data, intermediate_dir):
+    def check_relevance(self, figure_id, intermediate_dir):
+        """
+        Public method to check if a figure is relevant BEFORE running expensive Step 3.
+        Returns: (is_relevant, text_evidence)
+        """
+        # 1. Collect and OCR Text Crops
+        text_evidence = self._process_text_crops(figure_id, intermediate_dir)
+        
+        # 2. Semantic Filtering
+        is_relevant = self._is_relevant_chart(text_evidence)
+        
+        if not is_relevant:
+            # [RETRY] Try to enrich with Shared Captions
+            print(f"      [Filter] Local check failed. Trying Context Expansion (Shared Caption)...")
+            enriched = self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
+            
+            if enriched:
+                is_relevant = self._is_relevant_chart(text_evidence)
+                if is_relevant:
+                     print(f"      [Filter] SUCCESS! Saved by Shared Caption.")
+                else:
+                     print(f"      [Filter] FAILED even after Context Expansion.")
+        
+        return is_relevant, text_evidence
+
+    def assemble(self, figure_id, extraction_data, intermediate_dir, text_evidence=None):
         """
         Assembles extraction results (Step 3) and OCR evidence (Step 2/4) into a JSON packet.
         
         Args:
-            figure_id (str): Unique ID of the figure (e.g. 'page_3_figure_0_t0')
-            extraction_data (list): List of dicts containing extracted data points (from CoordinateMapper)
-            intermediate_dir (str): Path to directory containing crop images (macro_cleaned)
+            figure_id (str): Unique ID of the figure
+            extraction_data (list): List of dicts containing extracted data points
+            intermediate_dir (str): Path to directory containing crop images
+            text_evidence (dict, optional): Pre-computed text evidence from check_relevance.
             
         Returns:
             str: Path to saved JSON, or None if filtered out.
         """
         print(f"[Assembler] Assembling evidence for {figure_id}...")
         
-        # 1. Collect and OCR Text Crops
-        text_evidence = self._process_text_crops(figure_id, intermediate_dir)
-        
-        # 2. Semantic Filtering (Step 4b Optimization)
-        # "If image title or axis labels don't contain result information... directly discard"
-        # 2. Semantic Filtering (Step 4b Optimization)
-        # "If image title or axis labels don't contain result information... directly discard"
-        is_relevant = self._is_relevant_chart(text_evidence)
-        
-        if not is_relevant:
-            # [RETRY] Try to enrich with Shared Captions from the same page
-            print(f"      [Filter] Local check failed. Trying Context Expansion (Shared Caption)...")
-            enriched = self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
-            
-            if enriched:
-                # Re-evaluate
-                is_relevant = self._is_relevant_chart(text_evidence)
-                if is_relevant:
-                     print(f"      [Filter] SUCCESS! Saved by Shared Caption.")
-                else:
-                     print(f"      [Filter] FAILED even after Context Expansion.")
-            
-        if not is_relevant:
-            print(f"      [Filter] Discarding {figure_id} due to lack of result keywords (yield, selectivity, etc).")
-            return None
+        # 1. Get Text Evidence (if not provided)
+        if text_evidence is None:
+            # Full check
+            is_relevant, text_evidence = self.check_relevance(figure_id, intermediate_dir)
+            if not is_relevant:
+                 print(f"      [Filter] Discarding {figure_id} due to lack of result keywords.")
+                 return None
+        else:
+            # Already checked, but let's just ensure we have it.
+            # Assuming caller only calls assemble if relevant, 
+            # OR we can re-verify if robust.
+            pass
 
         # 3. Structure the Data
         # User Request: Aggregate chart_text into a single caption field
@@ -60,7 +73,7 @@ class EvidenceAssembler:
             "meta": {
                 "figure_id": figure_id,
                 "source_intermediate_dir": intermediate_dir,
-                "caption": caption_content # Added aggregated caption
+                "caption": caption_content
             },
             "text_evidence": text_evidence,
             "raw_data": extraction_data
@@ -189,7 +202,74 @@ class EvidenceAssembler:
                         "source_file": filename
                     })
         
+        # Clean and Deduplicate
+        self._clean_and_deduplicate(evidence)
+        
         return evidence
+
+    def _clean_and_deduplicate(self, evidence):
+        """
+        1. Remove exact/near duplicates within each category.
+        2. Remove 'chart_text' that is actually a 'legend_text'.
+        """
+        # A. Deduplicate within category
+        for key in evidence:
+            unique_items = []
+            seen_texts = set()
+            
+            for item in evidence[key]:
+                # Normalize for comparison
+                norm = re.sub(r'[^a-zA-Z0-9]', '', item['text'].lower())
+                if not norm: continue
+                
+                if norm not in seen_texts:
+                    seen_texts.add(norm)
+                    unique_items.append(item)
+                else:
+                    # Duplicate found
+                    # Optional: Keep the one with longer text or better conf?
+                    # For now just keep first.
+                    pass
+            
+            evidence[key] = unique_items
+            
+        # B. Cross-Category Cleaning
+        # Remove chart_text if it matches any legend_text
+        if evidence['legend_text'] and evidence['chart_text']:
+            legend_norms = set()
+            for l in evidence['legend_text']:
+                legend_norms.add(re.sub(r'[^a-zA-Z0-9]', '', l['text'].lower()))
+            
+            cleaned_chart_text = []
+            for c in evidence['chart_text']:
+                c_norm = re.sub(r'[^a-zA-Z0-9]', '', c['text'].lower())
+                
+                # Check if this chart_text is basically a legend
+                is_legend = False
+                for l_norm in legend_norms:
+                    if l_norm in c_norm or c_norm in l_norm:
+                        # Heavy overlap?
+                        # If ratio of overlap is high
+                        if len(l_norm) > 5 and len(c_norm) > 5: # Ignore small noise
+                             # SequenceMatcher ratio? or simple inclusion?
+                             # Simple inclusion is risky for short words.
+                             # But "3,4-dichloroaniline..." is long.
+                             
+                             # If almost identical
+                             if l_norm == c_norm: 
+                                 is_legend = True
+                                 break
+                             # If one contains the other and length diff is small
+                             if abs(len(l_norm) - len(c_norm)) < 5:
+                                 is_legend = True
+                                 break
+                
+                if not is_legend:
+                    cleaned_chart_text.append(c)
+                else:
+                    print(f"      [Cleaner] Removed chart_text that matched legend: '{c['text'][:20]}...'")
+            
+            evidence['chart_text'] = cleaned_chart_text
 
     def _try_enrich_with_shared_caption(self, figure_id, intermediate_dir, evidence):
         """
@@ -259,13 +339,20 @@ class EvidenceAssembler:
                 # Fallback to direct path processing if read fails
                 return self.ocr.ocr(file_path)
             
-            # Upscale 2x
+            # Upscale 3x (Better for small fonts)
             h, w = img.shape[:2]
-            scale = 2
+            scale = 3 
             # Use Cubic for better text definition
             img_scaled = cv2.resize(img, (w*scale, h*scale), interpolation=cv2.INTER_CUBIC)
             
-            return self.ocr.ocr(img_scaled)
+            # Add Padding (White Border) - Crucial for text near edges!
+            pad = 50
+            img_padded = cv2.copyMakeBorder(
+                img_scaled, pad, pad, pad, pad, 
+                cv2.BORDER_CONSTANT, value=(255, 255, 255)
+            )
+            
+            return self.ocr.ocr(img_padded)
         except Exception as e:
             print(f"      [OCR Upscale Error] {e}. Fallback to raw.")
             return self.ocr.ocr(file_path)

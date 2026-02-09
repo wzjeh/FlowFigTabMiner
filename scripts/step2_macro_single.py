@@ -19,7 +19,11 @@ def run_step2_single(image_path):
         # But YoloDetector prints "Loading model...". We can't easily suppress without modifying class.
         # We'll just print final JSON at the very end and tell GUI to parse last line.
         
-        yolo_macro = YoloDetector(model_path="models/bestYOLOn-2-1.pt")
+        from src.utils.config import load_config
+        cfg = load_config()
+        model_path = cfg.get("figures", {}).get("step2_macro", {}).get("model_path", "models/bestYOLOn-2-1.pt")
+        
+        yolo_macro = YoloDetector(model_path=model_path)
         
         # Output directory is same as image parent? Or macro_cleaned subdir.
         # Let's match typical pipeline: parent/macro_cleaned

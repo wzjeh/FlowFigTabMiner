@@ -7,7 +7,7 @@ except ImportError:
     print("Warning: MolScribe not found. Chemical structure recognition will fail.")
 
 class ContentRecognizer:
-    def __init__(self):
+    def __init__(self, molscribe_path=None):
         """
         Initialize OCR and MolScribe models.
         """
@@ -39,14 +39,15 @@ class ContentRecognizer:
                 # Let's specify the weight path explicitly if available, or force download by handling the init carefully.
                 
                 # Check if we have a local model
-                molscribe_ckpt = "models/molscribe.ckpt"
-                if os.path.exists(molscribe_ckpt):
-                    self.molscribe = MolScribe(model_path=molscribe_ckpt, device='cuda' if use_gpu else 'cpu')
+                ckpt_path = molscribe_path or "models/molscribe.ckpt"
+                
+                if os.path.exists(ckpt_path):
+                    self.molscribe = MolScribe(model_path=ckpt_path, device='cuda' if use_gpu else 'cpu')
                 else:
                     # Try default load but might fail if network restricted or cache issue
                     # The error suggests torch.load(f) where f is None.
                     # Workaround: Use HuggingFace Hub directly if needed or skip if not found.
-                    print("Debug: No local MolScribe checkpoint found at models/molscribe.ckpt. Attempting default init.")
+                    print(f"Debug: No local MolScribe checkpoint found at {ckpt_path}. Attempting default init.")
                     try:
                         self.molscribe = MolScribe(model_path=None, device='cuda' if use_gpu else 'cpu')
                     except AttributeError as ae:

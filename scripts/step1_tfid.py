@@ -14,11 +14,14 @@ def run_step1(input_pdf):
         print(f"Error: File not found: {input_pdf}")
         return
 
+    from src.utils.config import load_config
+
     print(f"--- Step 1: TF-ID Detection for {input_pdf} ---")
     try:
+        cfg = load_config()
         detector = ActiveAreaDetector()
         detections = detector.process_pdf(input_pdf)
-        intermediate_dir = "data/intermediate"
+        intermediate_dir = cfg.get("global", {}).get("intermediate_dir", "data/intermediate")
         saved_paths = detector.save_crops(input_pdf, detections, intermediate_dir)
         
         print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")

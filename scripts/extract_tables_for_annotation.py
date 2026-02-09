@@ -20,8 +20,8 @@ def main():
 
     # 1. Process PDFs from input_dir
     input_dir = args.input_dir
-    # Support both *.pdf directly in dir
-    pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
+    # Support both *.pdf directly in dir and nested
+    pdf_files = sorted(glob.glob(os.path.join(input_dir, "**", "*.pdf"), recursive=True))
     
     print(f"Found {len(pdf_files)} PDFs in {input_dir}. Initializing TF-ID Detector...")
     

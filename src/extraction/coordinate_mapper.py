@@ -36,13 +36,15 @@ class CoordinateMapper:
             def filter_nested_boxes(dets):
                 if not dets: return []
                 keep = [True] * len(dets)
-                # Sort by area descending (Largest first)
-                # No, lets just do O(N^2) it is small.
+                
+                # Sort by area ascending (Smallest first) to safely handle
+                # But actually O(N^2) comparison is fine.
                 
                 for i in range(len(dets)):
                     if not keep[i]: continue
                     box_i = dets[i]['box']
                     area_i = (box_i[2] - box_i[0]) * (box_i[3] - box_i[1])
+                    conf_i = dets[i].get('conf', 0.0)
                     
                     for j in range(len(dets)):
                         if i == j: continue
@@ -50,6 +52,7 @@ class CoordinateMapper:
                         
                         box_j = dets[j]['box']
                         area_j = (box_j[2] - box_j[0]) * (box_j[3] - box_j[1])
+                        conf_j = dets[j].get('conf', 0.0)
                         
                         # Compute Intersection
                         xx1 = max(box_i[0], box_j[0])
@@ -63,18 +66,39 @@ class CoordinateMapper:
                         
                         if inter == 0: continue
                         
-                        # Check coverage of small box
+                        # Coverage Check
+                        # If small inside large
                         if area_j < area_i:
                              # j is smaller
                              coverage = inter / area_j
                              if coverage > 0.8:
-                                 keep[j] = False
+                                 # j is inside i.
+                                 # Previously: kept i (Large).
+                                 # FIX: Usually individual ticks are better than a cluster.
+                                 # But sometimes a "text_block" is better than "char".
+                                 # Let's rely on Confidence AND Size.
+                                 
+                                 # If i is HUGE (>3x j) and j is tick_label, keep j (Small).
+                                 if area_i > 3 * area_j:
+                                     keep[i] = False # Kill Large
+                                     # break? No, i might cover others.
+                                 elif conf_j > conf_i:
+                                     keep[i] = False # Kill i (Lower conf)
+                                 else:
+                                     keep[j] = False # Kill j (Default logic if similar size/conf)
+
                         else:
                              # i is smaller (or equal)
                              coverage = inter / area_i
                              if coverage > 0.8:
-                                 keep[i] = False
-                                 break # i is removed, stop checking i
+                                 # i is inside j.
+                                 if area_j > 3 * area_i:
+                                     keep[j] = False # Kill Large (j)
+                                 elif conf_i > conf_j:
+                                     keep[j] = False # Kill j
+                                 else:
+                                     keep[i] = False # Kill i
+                                     break
                 
                 return [dets[i] for i in range(len(dets)) if keep[i]]
 
@@ -83,61 +107,64 @@ class CoordinateMapper:
             detections = filter_nested_boxes(detections)
             log(f"Nested Filter: {count_before} -> {len(detections)}")
 
-            # [NEW] Pre-calculate Plot Bounds using Tick Marks to filter candidates
-            # This prevents heatmap numbers from being treated as axis labels
-            tick_marks = [d for d in detections if d['label'] == 'tick_mark']
+            # [NEW] Pre-calculate Plot Bounds using Labels (since tick_mark is gone)
+            # Use clusters of x/y labels to estimate axis lines.
             
-            plot_x_min = 0 # Left Axis X
-            plot_x_max = img_w # Right Axis X (Default to edge)
-            plot_y_max = img_h # Bottom Axis Y
+            x_label_dets = [d for d in detections if d['label'] == 'x_tick_label']
+            y_label_dets = [d for d in detections if d['label'] == 'y_tick_label']
             
-            has_right_axis = False # Is there a Right Axis?
+            plot_x_min = 0 
+            plot_x_max = img_w
+            plot_y_max = img_h
+            
+            has_right_axis = False
 
-            if tick_marks:
-                txs = [d['center'][0] for d in tick_marks]
-                tys = [d['center'][1] for d in tick_marks]
+            # Estimate Bottom X-Axis Y-pos from x_tick_labels
+            if x_label_dets:
+                ys = [d['center'][1] for d in x_label_dets]
+                # The axis line is usually just above the labels (min y of labels? or median - height?)
+                # Actually, simply use the median Y of the labels as the "Axis Area" 
+                # and assume the plot ends slightly above needed.
+                # Let's take the Top of the bounding boxes?
+                tops = [d['box'][1] for d in x_label_dets]
+                plot_y_max = np.median(tops) if tops else img_h
+
+            # Estimate Left/Right Y-Axis X-pos from y_tick_labels
+            if y_label_dets:
+                xs = [d['center'][0] for d in y_label_dets]
                 
-                # --- Y-Axis Detection (Vertical Columns) ---
+                # Cluster Y-labels by X-coordinate
                 bins_x = {}
-                bin_size = 20 # px
-                for x in txs:
+                bin_size = 50 # Larger bin for text labels
+                for x in xs:
                     b = int(x / bin_size)
                     bins_x[b] = bins_x.get(b, []) + [x]
                 
-                major_cols = [b for b, v in bins_x.items() if len(v) >= 2]
-                if major_cols:
-                    sorted_cols = sorted(major_cols)
-                    # Leftmost -> plot_x_min
-                    left_cluster = bins_x[sorted_cols[0]]
-                    if len(left_cluster) >= 2:
-                        plot_x_min = np.median(left_cluster)
+                major_bins = [b for b, v in bins_x.items() if len(v) >= 2]
+                if major_bins:
+                    sorted_bins = sorted(major_bins)
                     
-                    # Check for Rightmost (Right Axis)
-                    if len(sorted_cols) >= 2:
-                        right_cluster = bins_x[sorted_cols[-1]]
+                    # Leftmost -> Left Axis
+                    left_cluster = bins_x[sorted_bins[0]]
+                    plot_x_min = np.median(left_cluster) # Actually this is center of text. Axis is to the right?
+                    # For Left Axis, text is to the Left of line. Line ~ max(box.x2)?
+                    
+                    # Refine plot_x_min using box right edges
+                    # But generic center is robust enough for exclusion logic.
+                    
+                    # Check for Right Axis
+                    if len(sorted_bins) >= 2:
+                        right_cluster = bins_x[sorted_bins[-1]]
                         x_right = np.median(right_cluster)
-                        # Check separation
-                        if (x_right - plot_x_min) > (img_w * 0.4): # >40% width
+                        if (x_right - plot_x_min) > (img_w * 0.4):
                             has_right_axis = True
                             plot_x_max = x_right
-                            log(f"Detected Dual Vertical Axes (Scatter Mode). Width={plot_x_max - plot_x_min:.1f}")
+                            log(f"Detected Dual Vertical Axes (Labels). Width={plot_x_max - plot_x_min:.1f}")
 
-                # --- X-Axis Detection (Horizontal Rows) ---
-                bins_y = {}
-                for y in tys:
-                    b = int(y / bin_size)
-                    bins_y[b] = bins_y.get(b, []) + [y]
-                
-                if bins_y:
-                    # Bottom axis usually has LARGEST Y
-                    best_y = max(bins_y, key=lambda k: len(bins_y[k]))
-                    if len(bins_y[best_y]) >= 2:
-                        plot_y_max = np.median(bins_y[best_y]) # Bottom X-Axis Y-pos
-            
-            log(f"Estimated Plot Boundaries: LeftAxis_X={plot_x_min:.1f}, RightAxis_X={plot_x_max:.1f}, BottomAxis_Y={plot_y_max:.1f}")
+            log(f"Estimated Plot Bounds (Labels): LeftX~{plot_x_min:.0f}, RightX~{plot_x_max:.0f}, BottomY~{plot_y_max:.0f}")
             log(f"Has Right Axis: {has_right_axis}")
 
-            # 1. Gather all potential axis labels
+            # 1. Gather candidates based on Class
             def parse_val(txt):
                 # Handle scientific notation like '10^-2', '10-2', '10^2'
                 # Replace '10^' or '10' followed by '-' as '1e'
@@ -160,96 +187,153 @@ class CoordinateMapper:
             y_left_candidates = [] 
             y_right_candidates = []
             
-            # FIX: Relax filter to include everything text-like
-            text_dets = [d for d in detections if d['label'] not in ['data_point', 'marker', 'legend_marker']]
-            log(f"Processing {len(text_dets)} text/tick detections")
-            log(f"(Classes: {list(set(d['label'] for d in text_dets))})")
+            # Filter specifically for tick labels
+            # If model is trusted, we just use the label.
+            # But we still run OCR to get value.
             
-            for i, d in enumerate(text_dets):
-                bbox = d['box']
-                cx, cy = d['center']
-                
-                # FILTER: Must be OUTSIDE the plot area to be an axis label
-                # X-Label: Should be BELOW plot_y_max (plus some margin? No, strictly greater usually)
-                # Y-Label: Should be LEFT of plot_x_min OR RIGHT of plot_x_max (if dual axis)
-                
-                is_potential_axis = False
-                margin = 2 # FIX: Strict margin
-                
-                # Bottom X-Axis
-                if cy > plot_y_max - margin: is_potential_axis = True
-                
-                # Left Y-Axis
-                if cx < plot_x_min + margin: is_potential_axis = True
-                
-                # Right Y-Axis (Allow if dual axis OR if simply to the right?)
-                # If plot_x_max is close to img_w (default), this condition is hard to satisfy unless cx > img_w.
-                # If dual axis detected, plot_x_max is inward.
-                if has_right_axis:
-                    if cx > plot_x_max - margin: is_potential_axis = True
-                else:
-                    # Standard Single Axis -> Fallback check if simple scatter
-                    # To be safe, allow anything > img_w * 0.9? No, heatmap values are there.
-                    # Stick to logic: Only allow Right Axis candidates if we explicitly detected ticks there.
-                    pass
-                
-                # Check bounds existence
-                has_bounds = (plot_x_min > 20 and plot_y_max < img_h - 20)
-                
-                if has_bounds and not is_potential_axis:
-                    # Log rejection (limit volume)
-                    if i < 10: log(f"Rejected Candidate [{d['label']}] at ({cx:.1f},{cy:.1f}) - Inside Plot")
-                    continue 
-
-                x1, y1, x2, y2 = map(int, bbox)
-                # FIX: Padding reduced to 12
-                pad = 12 
-                x1, y1 = max(0, x1-pad), max(0, y1-pad)
-                x2, y2 = min(img_w, x2+pad), min(img_h, y2+pad)
-                crop = img[y1:y2, x1:x2]
-                
-                if crop.size == 0: continue
-                if crop.shape[0] < 50 or crop.shape[1] < 50:
-                    scale = 3
-                    crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
-
-                res = self.ocr.ocr(crop)
-                text = ""
-                # Handle PaddleX Dict vs List
-                if res and isinstance(res, list) and len(res) > 0:
-                    first_item = res[0]
-                    if isinstance(first_item, dict):
-                        if 'rec_texts' in first_item and first_item['rec_texts']:
-                            text = first_item['rec_texts'][0]
-                    elif isinstance(first_item, list):
-                        for line in first_item:
-                            if isinstance(line, list) and len(line) >= 2:
-                                 # line: [box, (text, conf)]
-                                 txt_obj = line[1]
-                                 if isinstance(txt_obj, (list, tuple)) and len(txt_obj) > 0:
-                                     text = txt_obj[0]
-                                     break
-                
-                if i < 5: log(f"Top 5 AxisCand OCR [{i}]: Text='{text}'")
-
-                val = parse_val(text)
-                
-                if val is not None:
-                    cls_name = d['label']
-                    mid_x = img_w / 2.0
-                    item = [cx, val, text, cx, cy]
+            # Helper to process a list of dets
+            def process_candidates(dets, cand_list):
+                 for i, d in enumerate(dets):
+                    bbox = d['box']
+                    cx, cy = d['center']
                     
-                    # Strict Geographic Sorting based on Bounds
-                    if cy > plot_y_max - margin:
-                        x_candidates.append(item)
-                    elif cx < plot_x_min + margin:
-                        y_left_candidates.append(item)
-                    else:
-                        # Fallback to simple split
-                        if cy > img_h * 0.8: x_candidates.append(item)
-                        else:
-                            if cx < mid_x: y_left_candidates.append(item)
-                            else: y_right_candidates.append(item)
+                    x1, y1, x2, y2 = map(int, bbox)
+                    # FIX: Padding increased to handle tight Y-labels
+                    pad = 15 
+                    x1, y1 = max(0, x1-pad), max(0, y1-pad)
+                    x2, y2 = min(img_w, x2+pad), min(img_h, y2+pad)
+                    crop = img[y1:y2, x1:x2]
+                    
+                    if crop.size == 0 or crop.shape[0] < 5 or crop.shape[1] < 5: continue
+                    
+                    # Upscale small
+                    if crop.shape[0] < 50:
+                        scale = 3
+                        crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
+
+                    res = self.ocr.ocr(crop)
+                    text = ""
+                    if res and isinstance(res, list) and len(res) > 0:
+                        first_item = res[0]
+                        if isinstance(first_item, dict):
+                            if 'rec_texts' in first_item: text = first_item['rec_texts'][0]
+                        elif isinstance(first_item, list):
+                             for line in first_item:
+                                 if isinstance(line, list) and len(line) >= 2:
+                                     # line: [box, (text, conf)]
+                                     txt_obj = line[1]
+                                     if isinstance(txt_obj, (list, tuple)): text = txt_obj[0]; break
+
+                    if i < 5: log(f"OCR [{d['label']}]: '{text}'")
+                    val = parse_val(text)
+                    if val is not None:
+                        # [cx, val, text, cx, cy]
+                        cand_list.append([cx, val, text, cx, cy])
+
+            # Helper: Validates monotonic sequence (Longest Monotonic Subsequence)
+            def filter_monotonic(candidates, direction='decreasing'):
+                if not candidates: return []
+                # candidates: list of [cx, val, text, cx, cy]
+                # Sort by Y-coordinate (Top to Bottom)
+                # Note: valid Y-axis usually has values DECREASING as Y-pixel increases (Top->Bottom)
+                
+                # Sort by cy (pixel) asc
+                cands_sorted = sorted(candidates, key=lambda x: x[4]) 
+                
+                # Extract values
+                vals = [c[1] for c in cands_sorted]
+                
+                # We want the longest subsequence that is strictly 'decreasing' (or 'increasing' if axis inverted)
+                # Standard plot: Y-axis 100 (top) -> 0 (bottom). So vals should be DECREASING.
+                
+                n = len(vals)
+                if n < 2: return cands_sorted
+                
+                # Simple LIS/LDS O(N^2) dynamic programming
+                # dp[i] = length of substring ending at i
+                # parent[i] = index of previous element
+                
+                dp = [1] * n
+                parent = [-1] * n
+                
+                for i in range(n):
+                    for j in range(i):
+                        is_valid = False
+                        if direction == 'decreasing':
+                            if vals[i] < vals[j]: is_valid = True # Top(j) > Bottom(i) -> 100 > 90
+                        else: # increasing (rare, inverted Y)
+                            if vals[i] > vals[j]: is_valid = True
+                        
+                        if is_valid:
+                            if dp[j] + 1 > dp[i]:
+                                dp[i] = dp[j] + 1
+                                parent[i] = j
+                
+                # Backtrack best path
+                max_len = 0
+                end_idx = -1
+                for i in range(n):
+                    if dp[i] > max_len:
+                        max_len = dp[i]
+                        end_idx = i
+                
+                if end_idx == -1: return [] # Should not happen
+                
+                keep_indices = []
+                curr = end_idx
+                while curr != -1:
+                    keep_indices.append(curr)
+                    curr = parent[curr]
+                
+                keep_indices.reverse()
+                return [cands_sorted[i] for i in keep_indices]
+
+            # Process X Labels
+            process_candidates(x_label_dets, x_candidates)
+            
+            # Process Y Labels
+            # ... (Split code unchanged) ...
+            mid_x = img_w / 2
+            
+            # [Refactored Split Logic]
+            y_left_pool = []
+            y_right_pool = []
+            
+            if y_label_dets:
+                 if has_right_axis:
+                     for d in y_label_dets:
+                         cx = d['center'][0]
+                         dist_l = abs(cx - plot_x_min)
+                         dist_r = abs(cx - plot_x_max)
+                         if dist_l < dist_r: y_left_pool.append(d)
+                         else: y_right_pool.append(d)
+                 else:
+                     # Assumption: single axis usually Left.
+                     # But some charts have only Right axis? Rare.
+                     y_left_pool = y_label_dets
+
+            process_candidates(y_left_pool, y_left_candidates)
+            process_candidates(y_right_pool, y_right_candidates)
+
+            # [NEW] Apply Monotonic Filter to Y-Candidates
+            # Default assumption: Standard Axis (Values decrease Key Top->Bottom)
+            # We can try both directions and keep the one with more points?
+            # Or just enforce standard. Most flowcharts are standard.
+            
+            count_yl_raw = len(y_left_candidates)
+            y_left_candidates = filter_monotonic(y_left_candidates, 'decreasing')
+            if len(y_left_candidates) < count_yl_raw:
+                log(f"Monotonic Filter (YL): {count_yl_raw} -> {len(y_left_candidates)} (Removed outliers)")
+            
+            count_yr_raw = len(y_right_candidates)
+            if has_right_axis:
+                y_right_candidates = filter_monotonic(y_right_candidates, 'decreasing')
+                if len(y_right_candidates) < count_yr_raw:
+                    log(f"Monotonic Filter (YR): {count_yr_raw} -> {len(y_right_candidates)}")
+
+            log(f"Candidates Found: X={len(x_candidates)}, YL={len(y_left_candidates)}, YR={len(y_right_candidates)}")
+            if x_candidates: log(f"Sample X: {[c[2] for c in x_candidates[:5]]}")
+            if y_left_candidates: log(f"Sample YL: {[c[2] for c in y_left_candidates[:5]]}")
                             
             log(f"Candidates Found: X={len(x_candidates)}, YL={len(y_left_candidates)}, YR={len(y_right_candidates)}")
             if x_candidates: log(f"Sample X: {[c[2] for c in x_candidates[:5]]}")
@@ -355,6 +439,11 @@ class CoordinateMapper:
             model_yl = prepare_pairs_and_fit(y_left_candidates, is_yl_log, 'y')
             model_yr = prepare_pairs_and_fit(y_right_candidates, is_yr_log, 'y')
             
+            # FIX: If we successfully matched a Right Axis model, force dual-axis mode
+            if model_yr:
+                has_right_axis = True
+                log("Right Axis Model Fit Success -> Forcing Dual Axis Mode")
+            
             log(f"Models Fit: X={'OK' if model_x else 'FAIL'}, YL={'OK' if model_yl else 'FAIL'}")
             
             # 3. Data Point Cleaning & Transform
@@ -391,30 +480,12 @@ class CoordinateMapper:
             # i.e., x > axis_x and y < axis_y (since image Y grows down).
             
             # 3.5 Determine Chart Type (Scatter/Dual vs Heatmap) Logic
-            # Detect Columns of Vertical Ticks (Left vs Right Axis)
-            tick_marks = [d for d in detections if d['label'] == 'tick_mark']
-            has_right_axis = False
+            # Detect Columns of Vertical Labels (Left vs Right Axis)
+            # Already done in Pre-calculate step, can reuse 'has_right_axis'
             
-            if tick_marks:
-                txs = [d['center'][0] for d in tick_marks]
-                bins_x = {}
-                bin_size = 20 # px
-                for x in txs:
-                    b = int(x / bin_size)
-                    bins_x[b] = bins_x.get(b, []) + [x]
-                
-                # Count major columns (>=3 ticks)
-                major_cols = [b for b, v in bins_x.items() if len(v) >= 3]
-                
-                # If we have at least 2 distinct major columns separated by plot width
-                # Let's check spread
-                if len(major_cols) >= 2:
-                    sorted_cols = sorted(major_cols)
-                    min_x = np.median(bins_x[sorted_cols[0]])
-                    max_x = np.median(bins_x[sorted_cols[-1]])
-                    if (max_x - min_x) > (img_w * 0.4): # Significant width
-                        has_right_axis = True
-                        log(f"Detected Dual Vertical Axes (Scatter Mode). Width={max_x - min_x:.1f}")
+            # If has_right_axis is True, we know it's Dual Axis.
+            if has_right_axis:
+                 log(f"Dual Vertical Axes Confirmed via Labels.")
             
             # Quadrant Logic / Data Value Promotion
             # Only enabled if Heatmap likely (No Right Axis) AND Requested
@@ -574,8 +645,8 @@ class CoordinateMapper:
             return pd.DataFrame(), debug_log
 
     def _fit_ransac(self, pairs):
-        # Require at least 3 points for robust regression to avoid wild extrapolation
-        if len(pairs) < 3: return None
+        # Require at least 2 points for line fitting (Linear Algebra basic)
+        if len(pairs) < 2: return None
         
         data = np.array(pairs)
         X = data[:, 0].reshape(-1, 1)

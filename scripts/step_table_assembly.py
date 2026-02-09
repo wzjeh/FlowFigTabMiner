@@ -87,7 +87,11 @@ def main():
     print(f"Loaded {len(cells)} cells. Initializing Recognizer...")
 
     # 3. Initialize Recognizer (PaddleOCR)
-    recognizer = ContentRecognizer()
+    from src.utils.config import load_config
+    cfg = load_config()
+    molscribe_path = cfg.get("tables", {}).get("content", {}).get("molscribe_path", "models/molscribe.ckpt")
+    
+    recognizer = ContentRecognizer(molscribe_path=molscribe_path)
 
     # 4. Process Cells
     extracted_data = [] # List of {row, col, text}
@@ -143,6 +147,8 @@ def main():
             extracted_data.append({
                 'row': r_idx,
                 'col': c_idx,
+                'row_span': cell.get('row_span', 1),
+                'col_span': cell.get('col_span', 1),
                 'text': text,
                 'original_box': box
             })
@@ -154,6 +160,61 @@ def main():
     if not extracted_data:
         print("No data extracted.")
         return
+
+    # --- NEW: Extract Context (Caption/Note) ---
+    # Look for {base_name}_table_caption_*.png and {base_name}_table_note_*.png
+    # Step 2 usually saves them in output_dir (which is passed as args.output_dir here)
+    # But wait, Step 2 output_dir might be different from Step 4 output_dir?
+    # In viz_app, we pass t_out for both. So it should be fine.
+    
+    base_name = os.path.splitext(os.path.basename(body_path))[0]
+    # base_name might be {pdf}_table_{i}_body_main
+    # We need the original table base name. 
+    # Usually: {pdf}_table_{i}
+    
+    # Heuristic: try to reconstruct prefix
+    # If body_path is .../page_5_figure_3_body_main.png -> prefix is page_5_figure_3
+    if "_body" in base_name:
+        table_prefix = base_name.split("_body")[0]
+    else:
+        table_prefix = base_name
+        
+    context_data = {
+        "caption": [],
+        "table_note": []
+    }
+    
+    import glob
+    # Search patterns
+    cap_pattern = os.path.join(output_dir, f"{table_prefix}_table_caption_*.png")
+    note_pattern = os.path.join(output_dir, f"{table_prefix}_table_note_*.png")
+    
+    for c_path in sorted(glob.glob(cap_pattern)):
+        try:
+             # Reuse recognizer's OCR
+             # We assume _recognize_text handles simple image path
+             # Need RGB for paddleocr? _recognize_text does cvtColor if input is array.
+             # If input is path, it reads it.
+             # Let's read it here to be safe and consistent with cell logic
+             c_img = cv2.imread(c_path)
+             if c_img is not None:
+                 c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
+                 txt = recognizer._recognize_text(c_rgb)
+                 if txt.strip():
+                     context_data["caption"].append(txt)
+        except Exception as e:
+            print(f"Error OCR caption {c_path}: {e}")
+
+    for n_path in sorted(glob.glob(note_pattern)):
+        try:
+             n_img = cv2.imread(n_path)
+             if n_img is not None:
+                 n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
+                 txt = recognizer._recognize_text(n_rgb)
+                 if txt.strip():
+                     context_data["table_note"].append(txt)
+        except Exception as e:
+            print(f"Error OCR note {n_path}: {e}")
 
     # Determine Grid Size
     # Filter out None indices
@@ -170,7 +231,19 @@ def main():
     grid = [["" for _ in range(max_col + 1)] for _ in range(max_row + 1)]
     
     for item in valid_data:
-        grid[item['row']][item['col']] = item['text']
+        r_start = item['row']
+        c_start = item['col']
+        r_span = item.get('row_span', 1)
+        c_span = item.get('col_span', 1)
+        
+        text = item['text']
+        
+        # Fill all spanned cells
+        for r in range(r_start, r_start + r_span):
+            for c in range(c_start, c_start + c_span):
+                # Boundary check just in case
+                if r < len(grid) and c < len(grid[0]):
+                    grid[r][c] = text
         
     df = pd.DataFrame(grid)
     
@@ -182,12 +255,69 @@ def main():
     df.to_csv(csv_path, index=False, header=False)
     print(f"Saved CSV to: {csv_path}")
 
+    # --- NEW: Relevance Filter ---
+    # Load keywords from external file
+    import yaml
+    try:
+        with open("keywords.yaml", 'r') as f:
+            kw_config = yaml.safe_load(f)
+            keywords = kw_config.get('keywords', [])
+    except Exception as e:
+        print(f"Warning: Could not load keywords.yaml: {e}. Using defaults.")
+        keywords = ['yield', 'conversion', 'selectivity', 'product', 'composition'] # minimal fallback
+    
+    # Text source: Caption + Note + Headers (first 2 rows of df)
+    # Combine text
+    check_text = (
+        " ".join(context_data["caption"]) + " " + 
+        " ".join(context_data["table_note"])
+    ).lower()
+    
+    # Add dataframe headers/content (first 3 rows)
+    # Flatten first few rows
+    if not df.empty:
+        head_text = df.head(3).to_string(index=False, header=False)
+        check_text += " " + head_text.lower()
+        
+    import re
+    # Normalize
+    norm_text = re.sub(r'[^a-z0-9]', '', check_text)
+    
+    is_relevant = False
+    for kw in keywords:
+        if kw in norm_text:
+            is_relevant = True
+            break
+            
+    if not is_relevant:
+        print("Creating Table Evidence but marked as IRRELEVANT (No keywords found).")
+
     # Output JSON for UI
     output_info = {
         "csv_path": csv_path,
         "num_extracted": len(valid_data),
-        "dataframe_preview": df.head().to_dict(orient='split') # easier for quick debug
+        "dataframe_preview": df.head().to_dict(orient='split'),
+        "cell_logs": extracted_data, # List of {row, col, text, original_box}
+        "caption_text": " ".join(context_data["caption"]),
+        "table_note_text": " ".join(context_data["table_note"]),
+        "is_relevant": is_relevant
     }
+    
+    # Save Evidence JSON to disk (Clean version for LLM)
+    evidence_data = output_info.copy()
+    if 'cell_logs' in evidence_data:
+        del evidence_data['cell_logs'] # Remove verbose logs
+    if 'dataframe_preview' in evidence_data:
+         del evidence_data['dataframe_preview'] # Remove preview
+         
+    json_filename = f"{base_name}_evidence.json"
+    json_path = os.path.join(output_dir, json_filename)
+    with open(json_path, 'w') as f:
+        json.dump(evidence_data, f, indent=2)
+    print(f"Saved Evidence JSON to: {json_path}")
+    
+    # Add json_path to output for UI
+    output_info["json_path"] = json_path
     
     print("---JSON_START---")
     print(json.dumps(output_info))

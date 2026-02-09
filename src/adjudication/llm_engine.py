@@ -6,13 +6,27 @@ from dotenv import load_dotenv
 
 class LLMEngine:
     def __init__(self, api_key=None, base_url=None, model=None, provider=None):
-        load_dotenv()
+        load_dotenv(override=True)
         
-        # Configuration
-        self.provider = provider or os.getenv("LLM_PROVIDER", "dashscope") # 'dashscope' or 'openai'
+        # Load Global Config
+        from src.utils.config import load_config
+        self.cfg = load_config()
+        llm_cfg = self.cfg.get("llm", {})
+        
+        # Configuration Priorities: 
+        # 1. Constructor Params
+        # 2. Environment Variables
+        # 3. Config.yaml Defaults
+        
+        self.provider = provider or os.getenv("LLM_PROVIDER") or llm_cfg.get("default_provider", "dashscope")
         self.api_key = api_key or os.getenv("LLM_API_KEY") or os.getenv("QWEN_API_KEY")
         self.base_url = base_url or os.getenv("LLM_BASE_URL")
-        self.model = model or os.getenv("LLM_MODEL_NAME")
+        
+        # Determine specific config section based on usage context? 
+        # For now, default to general or adjudication
+        adj_cfg = llm_cfg.get("adjudication", {})
+        
+        self.model = model or os.getenv("LLM_MODEL_NAME") or adj_cfg.get("model_name")
         
         # Defaults based on provider
         if self.provider == "dashscope":
@@ -33,7 +47,10 @@ class LLMEngine:
         elif self.provider == "openai":
             from openai import OpenAI
             if not self.base_url:
-                raise ValueError("LLM_BASE_URL is required for 'openai' provider (e.g. Colab/Ngrok URL)")
+                # If no base_url provided, check if it's a real OpenAI key or error?
+                # For this project, user seems to use local LLM via Ngrok/Colab mostly
+                pass 
+                # raise ValueError("LLM_BASE_URL is required for 'openai' provider (e.g. Colab/Ngrok URL)")
             
             self.client = OpenAI(
                 api_key=self.api_key or "dummy", # Local models often ignore key
@@ -41,6 +58,46 @@ class LLMEngine:
             )
             self.model = self.model or "model" # Default for many local servers
             print(f"[LLMEngine] Initialized Generic OpenAI Client (URL: {self.base_url}, Model: {self.model})")
+
+    def chat(self, system_prompt, user_prompt):
+        """
+        Generic chat completion.
+        """
+        print(f"[LLMEngine] Chat Request via {self.provider}...")
+        
+        try:
+            if self.provider == "dashscope":
+                import dashscope
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ]
+                response = dashscope.Generation.call(
+                    model=self.model,
+                    messages=messages,
+                    result_format='message'
+                )
+                if response.status_code == HTTPStatus.OK:
+                    return response.output.choices[0].message.content
+                else:
+                    return f"Error: {response.code} - {response.message}"
+            
+            elif self.provider == "openai":
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    temperature=0.1
+                )
+                return response.choices[0].message.content
+                
+            else:
+                return f"Error: Unknown provider {self.provider}"
+
+        except Exception as e:
+            return f"Error during chat: {e}"
 
     def adjucate(self, pdf_text, unique_terms, pdf_name):
         """

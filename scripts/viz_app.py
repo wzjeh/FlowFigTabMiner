@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import sys
 import glob
 import subprocess
 import json
@@ -7,17 +8,22 @@ import pandas as pd
 import time
 from PIL import Image
 
-st.set_page_config(layout="wide", page_title="FlowFigTabMiner Pipeline Viz")
+st.set_page_config(layout="wide", page_title="Unified FlowFigTabMiner Dashboard")
 
-# --- Utils ---
-PYTHON_EXEC = "./flowfigtabminer/bin/python3"
+# --- Constants & Utils ---
+PYTHON_EXEC = sys.executable if sys.executable else "python3"
+# Or fallback to relative path if running in venv
+if os.path.exists("./flowfigtabminer/bin/python3"):
+    PYTHON_EXEC = "./flowfigtabminer/bin/python3"
 
 def run_script(script_path, args=[]):
+    """Run a script and capture output."""
     cmd = [PYTHON_EXEC, script_path] + args
     result = subprocess.run(cmd, capture_output=True, text=True)
     return result
 
-def parse_json_output(stdout):
+def parse_json_from_stdout(stdout):
+    """Extract JSON from ---JSON_START--- ... ---JSON_END--- block or last valid JSON line."""
     try:
         if "---JSON_START---" in stdout:
             json_str = stdout.split("---JSON_START---")[1].split("---JSON_END---")[0]
@@ -26,568 +32,608 @@ def parse_json_output(stdout):
         pass
     return None
 
-# --- UI ---
-st.title("🧪 FlowFigTabMiner Pipeline Visualization")
+# --- UI Layout ---
+st.title("🧪 FlowFigTabMiner Unified Dashboard")
 
-# Sidebar Header
-st.sidebar.header("Pipeline Module")
-module = st.sidebar.radio("Select Module", ["Figure Extraction", "Table Extraction"])
+# Sidebar: Document Selection
+st.sidebar.header("Document Selection")
+input_dir = "data/input"
+if not os.path.exists(input_dir):
+    st.sidebar.error(f"Input directory not found: {input_dir}")
+    st.stop()
 
-# --- TABLE EXTRACTION MODULE ---
-if module == "Table Extraction":
-    st.sidebar.markdown("---")
-    st.sidebar.header("Table Options")
-    table_mode = st.sidebar.radio("Activity", ["Step-by-Step (Single)", "Batch Processing (TODO)", "Gallery View (TODO)"])
+pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
+pdf_map = {os.path.basename(f): f for f in pdf_files}
+
+selected_pdf_name = st.sidebar.selectbox("Select PDF", list(pdf_map.keys()))
+
+if not selected_pdf_name:
+    st.info("Please select a PDF to start.")
+    st.stop()
+
+selected_pdf_path = pdf_map[selected_pdf_name]
+pdf_basename = os.path.splitext(selected_pdf_name)[0]
+intermediate_dir = os.path.join("data/intermediate", pdf_basename)
+figures_dir = os.path.join(intermediate_dir, "figures")
+tables_dir = os.path.join(intermediate_dir, "tables") # Convention: TF-ID puts raw table tables here? 
+# Actually TF-ID (Step 1) usually puts 'figures' and 'tables' in intermediate/{basename}/...
+# Let's verify standard paths later.
+
+# --- Pipeline Status Indicators ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("Pipeline Status")
+
+has_step1 = os.path.exists(figures_dir)
+st.sidebar.checkbox("Step 1 (TF-ID)", value=has_step1, disabled=True)
+
+# Step 2-4 Figures?
+# Check if evidence exists?
+evidence_dir = "data/evidence" # This is global?
+# We need to know if figures for THIS pdf are done.
+# Simple check: `data/evidence/*_evidence.json` where ID matches?
+has_figures = False # heuristic
+
+# Step Tables?
+has_tables = False # heuristic
+
+# Step 5?
+final_json = os.path.join("data/final_output", f"{pdf_basename}_final.json")
+has_step5 = os.path.exists(final_json)
+st.sidebar.checkbox("Step 5 (Assembly)", value=has_step5, disabled=True)
+
+# --- Main Tabs ---
+tab1, tab2, tab3, tab4 = st.tabs([
+    "1. Preparation (TF-ID)", 
+    "2. Figure Pipeline", 
+    "3. Table Pipeline", 
+    "4. Global Assembly"
+])
+
+# === TAB 1: PREPARATION ===
+with tab1:
+    st.header("Step 1: Raw Extraction (TF-ID)")
     
-    # === TABLE: STEP-BY-STEP (SINGLE) ===
-    if table_mode == "Step-by-Step (Single)":
-        st.header("📊 Table Extraction: Step-by-Step")
-        
-        # Input Selection
-        input_type = st.radio("Input Source", ["Select from PDF Extraction", "Upload Image"])
-        
-        selected_image_path = None
-        
-        if input_type == "Select from PDF Extraction":
-            input_dir = "data/input"
-            if os.path.exists(input_dir):
-                pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
-                pdf_map = {os.path.basename(f): f for f in pdf_files}
-                selected_pdf_name = st.selectbox("Select PDF", list(pdf_map.keys()))
-                
-                if selected_pdf_name:
-                    pdf_basename = os.path.splitext(selected_pdf_name)[0]
-                    # Try finding tables in intermediate dir
-                    # Structure: data/intermediate/{pdf_name}/tables/
-                    tables_dir = os.path.join("data/intermediate", pdf_basename, "tables")
-                    # Fallback check
-                    if not os.path.exists(tables_dir):
-                         tables_dir = os.path.join("data/intermediate", pdf_basename)
-                    
-                    if os.path.exists(tables_dir):
-                         possible_files = glob.glob(os.path.join(tables_dir, "*table*.png")) + glob.glob(os.path.join(tables_dir, "*table*.jpg"))
-                         # Exclude debug crops if any (avoid recursion)
-                         possible_files = [f for f in possible_files if "_body" not in f and "_caption" not in f]
-                         
-                         if possible_files:
-                             selected_img_name = st.selectbox("Select Table", [os.path.basename(f) for f in possible_files])
-                             selected_image_path = os.path.join(tables_dir, selected_img_name)
-                         else:
-                             st.warning("No table images found. Run Step 1 (TF-ID) first.")
-                    else:
-                         st.warning("Intermediate folder not found.")
-            else:
-                 st.error("Data input directory missing.")
-
-        else:
-            uploaded_file = st.file_uploader("Upload Table Image", type=['png', 'jpg', 'jpeg'])
-            if uploaded_file:
-                upload_dir = "data/intermediate/uploads_tables"
-                os.makedirs(upload_dir, exist_ok=True)
-                selected_image_path = os.path.join(upload_dir, uploaded_file.name)
-                with open(selected_image_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-        
-        # Main Processing UI
-        if selected_image_path:
-            st.image(selected_image_path, caption="Original Table Image", width=600)
-            
-            # Create a dedicated output directory for this table's components
-            # Structure: data/intermediate/{pdf_name}/tables/{table_basename}/
-            # For uploads, use upload_dir/processed/{name}
-            if input_type == "Select from PDF Extraction":
-                # data/intermediate/{pdf_name}/tables/{table_img_name}/
-                base_dir = os.path.dirname(selected_image_path)
-                table_name = os.path.splitext(os.path.basename(selected_image_path))[0]
-                # Ensure we don't nest infinitely if already in a subfolder
-                # If selected_image_path is .../tables/img.png -> .../tables/img/
-                out_dir = os.path.join(base_dir, table_name)
-            else:
-                out_dir = os.path.join(os.path.dirname(selected_image_path), "processed", os.path.splitext(uploaded_file.name)[0])
-            
-            # Create a dedicated output directory for this table's components
-            # Structure: data/intermediate/{pdf_name}/tables/{table_basename}/
-            if input_type == "Select from PDF Extraction":
-                # data/intermediate/{pdf_name}/tables/{table_img_name}/
-                base_dir = os.path.dirname(selected_image_path)
-                table_name = os.path.splitext(os.path.basename(selected_image_path))[0]
-                out_dir = os.path.join(base_dir, table_name)
-            else:
-                out_dir = os.path.join(os.path.dirname(selected_image_path), "processed", os.path.splitext(uploaded_file.name)[0])
-            
-            # --- STEP 2: SEGMENTATION ---
-            st.subheader("Step 2: Table Segmentation (YOLOv11)")
-            
-            if st.button("Run Step 2 (Segmentation)"):
-                with st.spinner("Running YOLOv11..."):
-                    res = run_script("scripts/step_table_segmentation.py", [selected_image_path, "--output_dir", out_dir])
-                    json_out = parse_json_output(res.stdout)
-                    
-                    if json_out:
-                        st.session_state['table_step2'] = json_out
-                        if json_out.get('is_table'):
-                            st.success("Table Detected & Segmented")
-                        else:
-                            st.warning("No Table Body detected.")
-                    else:
-                        st.error("Step 2 Failed.")
-                        with st.expander("Log"):
-                            st.text(res.stdout)
-                            st.text(res.stderr)
-
-            if 'table_step2' in st.session_state:
-                res2 = st.session_state['table_step2']
-                
-                # Show Logs
-                with st.expander("Step 2 Debug Logs (Raw Detections)"):
-                    if 'logs' in res2:
-                        st.dataframe(pd.DataFrame(res2['logs']))
-                    else:
-                        st.info("No detailed logs.")
-
-                # Show Images
-                # Components found
-                c1, c2, c3, c4 = st.columns(4)
-                
-                # Helper to find saved images from logs or disk
-                def get_saved_paths(label):
-                    return [l['saved_path'] for l in res2.get('logs', []) if l['label'] == label]
-
-                with c1:
-                    st.markdown("**Caption**")
-                    for p in get_saved_paths("table_caption"): st.image(p)
-                with c2:
-                    st.markdown("**Table Body (Main)**")
-                    # Main Body
-                    main_body = res2.get("best_body_crop_path")
-                    if main_body and os.path.exists(main_body):
-                        st.image(main_body, caption="Processed Crop (Full Width + Padding)")
-                    else:
-                        for p in get_saved_paths("table_body"): st.image(p, caption="Raw Crop")
-                with c3:
-                    st.markdown("**Note**")
-                    for p in get_saved_paths("table_note"): st.image(p)
-                with c4:
-                    st.markdown("**Scheme**")
-                    for p in get_saved_paths("table_scheme"): st.image(p)
-
-                # --- STEP 3: STRUCTURE RECOGNITION ---
-                st.subheader("Step 3: Structure Recognition (TATR)")
-                
-                # Only enable if body exists
-                body_path = res2.get("best_body_crop_path")
-                
-                if body_path and os.path.exists(body_path):
-                    if st.button("Run Step 3 (Structure)"):
-                        with st.spinner("Running Table Transformer..."):
-                            res = run_script("scripts/step_table_structure.py", [body_path])
-                            json_out = parse_json_output(res.stdout)
-                            if json_out:
-                                st.session_state['table_step3'] = json_out
-                                st.success("Structure Recognized")
-                            else:
-                                st.error("Step 3 Failed.")
-                                with st.expander("Log"):
-                                    st.text(res.stdout)
-                                    st.text(res.stderr)
-                    
-                    if 'table_step3' in st.session_state:
-                        res3 = st.session_state['table_step3']
-                        
-                        # Show Viz
-                        viz_path = res3.get("viz_path")
-                        if viz_path and os.path.exists(viz_path):
-                            # Fix warning: use_container_width -> use_column_width for compatibility or width='stretch'
-                            # Sticking to use_column_width=True which is generally safe or ignore warning for now.
-                            # But user specifically asked to fix it.
-                            # Streamlit warning says: use width='stretch'
-                            st.image(viz_path, caption="TATR Detection (Green=Row, Orange=Col, Red=Cell)", width="stretch") 
-                        
-                        # Metrics
-                        m1, m2, m3 = st.columns(3)
-                        m1.metric("Rows", res3.get('num_rows', 0))
-                        m2.metric("Columns", res3.get('num_columns', 0))
-                        m3.metric("Cells", res3.get('num_cells', 0))
-                        
-                        # Logs
-                        with st.expander("Step 3 Debug Logs (Detected Objects)"):
-                            if 'logs' in res3:
-                                st.dataframe(pd.DataFrame(res3['logs']))
-                                
-                        # --- STEP 4: CONTENT EXTRACTION (OCR) ---
-                        st.subheader("Step 4: Content Extraction (OCR -> CSV)")
-                        
-                        # We need the structure logs which contain the cell boxes
-                        # Where is the structure JSON saved? 
-                        # step_table_structure.py outputted a JSON to stdout, but we need to save it to disk for the next script to read
-                        # or pass it. step_table_assembly.py takes "structure_json_path".
-                        # We need to save the JSON from Step 3 to a file if it wasn't already.
-                        # Actually, let's just save st.session_state['table_step3'] to a temp file or proper path.
-                        
-                        structure_json_path = os.path.join(out_dir, f"{os.path.splitext(os.path.basename(body_path))[0]}_structure.json")
-                        
-                        if st.button("Run Step 4 (OCR Assembly)"):
-                            # Save Structure JSON first
-                            with open(structure_json_path, 'w') as f:
-                                json.dump(res3, f) # res3 is the Step 3 output dict
-                            
-                            with st.spinner("Running OCR & Assembly..."):
-                                # Call Step 4 script
-                                # Usage: step_table_assembly.py body_image_path structure_json_path --output_dir ...
-                                res4 = run_script("scripts/step_table_assembly.py", [
-                                    body_path, 
-                                    structure_json_path, 
-                                    "--output_dir", out_dir,
-                                    "--padding", "14" # optimized white padding
-                                ])
-                                
-                                # Store raw output for log display
-                                st.session_state['table_step4_raw_stdout'] = res4.stdout
-                                st.session_state['table_step4_raw_stderr'] = res4.stderr
-                                
-                                json_out4 = parse_json_output(res4.stdout)
-                                
-                                if json_out4:
-                                    st.session_state['table_step4'] = json_out4
-                                    st.success("CSV Generated!")
-                                else:
-                                    st.error("Step 4 Failed.")
-                        
-                        # Display Functionality regardless of success to show logs
-                        if 'table_step4_raw_stdout' in st.session_state:
-                            st.markdown("### Execution Logs")
-                            
-                            # Filter for interesting lines (Cell X...)
-                            logs = st.session_state['table_step4_raw_stdout']
-                            cell_logs = [line for line in logs.split('\n') if "Cell " in line and "]:" in line]
-                            
-                            if cell_logs:
-                                with st.expander("OCR Detail Logs", expanded=True):
-                                    st.code("\n".join(cell_logs))
-                            else:
-                                with st.expander("Full stdout"):
-                                    st.text(logs)
-                            
-                            if st.session_state.get('table_step4_raw_stderr'):
-                                with st.expander("Stderr"):
-                                    st.text(st.session_state['table_step4_raw_stderr'])
-
-                        if 'table_step4' in st.session_state:
-                            res4 = st.session_state['table_step4']
-                            csv_path = res4.get('csv_path')
-                            
-                            if csv_path and os.path.exists(csv_path):
-                                st.markdown(f"**Saved CSV:** `{os.path.basename(csv_path)}`")
-                                df = pd.read_csv(csv_path, header=None)
-                                st.dataframe(df)
-                                
-                            # Debug: Extracted Cells Gallery
-                            cells_debug_dir = os.path.join(out_dir, "cells_debug")
-                            if os.path.exists(cells_debug_dir):
-                                st.markdown("### Debug: Cell Crops")
-                                cell_imgs = sorted(glob.glob(os.path.join(cells_debug_dir, "*.png")))[:20] # Show first 20
-                                if cell_imgs:
-                                    cols = st.columns(5)
-                                    for i, p in enumerate(cell_imgs):
-                                        with cols[i % 5]:
-                                            st.image(p, caption=os.path.basename(p), width=100)
-                                else:
-                                    st.info("No cell crops found.")
-                            else:
-                                st.info(f"No cells_debug dir at {cells_debug_dir}")
-                        
+    col_act, col_info = st.columns([1, 2])
+    with col_act:
+        if st.button("Run Step 1 (TF-ID)", type="primary"):
+            with st.spinner("Running TF-ID extraction..."):
+                res = run_script("scripts/step1_tfid.py", [selected_pdf_path])
+                if res.returncode == 0:
+                    st.success("Step 1 Complete!")
+                    st.rerun()
                 else:
-                    st.warning("Cannot proceed to Step 3: No valid table body found.")
+                    st.error("Step 1 Failed")
+                    with st.expander("Logs"):
+                        st.text(res.stderr)
+                        st.text(res.stdout)
 
-# --- FIGURE EXTRACTION MODULE ---
-elif module == "Figure Extraction":
-    st.sidebar.markdown("---")
-    st.sidebar.header("Figure Options")
-    fig_mode = st.sidebar.radio("Activity", ["Step-by-Step", "Batch Process (One-Click)", "Gallery View", "Upload Single Image"])
+    # Visualization of Assets
+    if os.path.exists(intermediate_dir):
+        # Figures
+        fig_assets = sorted(glob.glob(os.path.join(figures_dir, "*.png")))
+        # Tables
+        # TF-ID output structure might vary. Assume intermediate/{basename}/tables/*.png
+        # If TF-ID outputting tables to 'tables' subfolder
+        tab_assets = sorted(glob.glob(os.path.join(intermediate_dir, "tables", "*.png")))
+        # Filter out processed/debug
+        tab_assets_raw = [f for f in tab_assets if "_body" not in f and "_crop" not in f and "_smiles" not in f]
 
-    # --- MODE: UPLOAD SINGLE IMAGE ---
-    if fig_mode == "Upload Single Image":
-        pass # Placeholder for now or specific upload logic
-        # Actually it seems the previous code structure intended to fall through?
-        # Let's fix the indentation of the following block if it belongs to 'else'
-        # Looking at original code, lines 203+ seem to handle the PDF selection logic generally
-        # But here they are seemingly unindented relative to 'if' but inside 'elif module == Figure'
-    
-    # Common PDF Selection Logic (if not upload mode)
-    if fig_mode != "Upload Single Image":
-        input_dir = "data/input"
-        pdf_files = sorted(glob.glob(os.path.join(input_dir, "*.pdf")))
-        pdf_map = {os.path.basename(f): f for f in pdf_files}
+        st.subheader(f"Extracted Assets ({len(fig_assets)} Figures, {len(tab_assets_raw)} Tables)")
         
-        selected_pdf_name = st.sidebar.selectbox("Select PDF", list(pdf_map.keys()))
-        
-        if selected_pdf_name:
-            selected_pdf = pdf_map[selected_pdf_name]
-            basename = os.path.splitext(selected_pdf_name)[0]
-            intermediate_dir = os.path.join("data/intermediate", basename)
-            evidence_dir = "data/evidence"
-        
-        # --- GALLERY VIEW ---
-        if fig_mode == "Gallery View":
-            st.header(f"🖼️ Gallery: {selected_pdf_name}")
-            figures_path = os.path.join(intermediate_dir, "figures")
-            
-            if os.path.exists(figures_path):
-                figure_crops = sorted(glob.glob(os.path.join(figures_path, "*.png")))
-                if figure_crops:
-                    cols = st.columns(3)
-                    for i, crop in enumerate(figure_crops):
-                        with cols[i % 3]:
-                            st.image(crop, caption=os.path.basename(crop), use_container_width=True)
-                else:
-                    st.info("No figures found. Run Step 1 first.")
+        with st.expander("View Raw Figures", expanded=False):
+            if fig_assets:
+                cols = st.columns(4)
+                for i, p in enumerate(fig_assets):
+                    with cols[i % 4]:
+                        st.image(p, caption=os.path.basename(p), use_container_width=True)
             else:
-                 st.info(f"No intermediate data found at {figures_path}. Run Step 1 first.")
+                st.info("No figures found.")
 
-        # --- BATCH MODE ---
-        elif fig_mode == "Batch Process (One-Click)":
-            st.header(f"Batch Processing: {selected_pdf_name}")
-            if st.button("🚀 Run Full Pipeline"):
-                with st.spinner(f"Processing {selected_pdf_name}..."):
-                    st.info("Running Step 1 (TF-ID)...")
-                    res1 = run_script("scripts/step1_tfid.py", [selected_pdf])
-                    if res1.returncode != 0:
-                        st.error(f"Step 1 Failed:\n{res1.stderr}")
-                    else:
-                        st.success("Step 1 Complete.")
-                        st.info("Running Steps 2-4...")
-                        res2 = run_script("scripts/run_steps2_to_4.py", [selected_pdf])
-                        if res2.returncode != 0:
-                            st.error(f"Steps 2-4 Failed:\n{res2.stderr}")
-                        else:
-                            st.success("Pipeline Complete!")
-                            with st.expander("Show Log"):
-                                st.text(res2.stdout)
-
-            # Show Result Evidence
-            st.subheader("Generated Evidence")
-            evidence_files = sorted(glob.glob(os.path.join(evidence_dir, "*.json")))
-            if evidence_files:
-                ev_file = st.selectbox("Select Evidence", [os.path.basename(f) for f in evidence_files])
-                if ev_file:
-                    full_path = os.path.join(evidence_dir, ev_file)
-                    with open(full_path, 'r') as f:
-                        data = json.load(f)
-                    c1, c2 = st.columns(2)
-                    c1.json(data['meta'])
-                    c2.dataframe(pd.DataFrame(data['raw_data']))
+        with st.expander("View Raw Tables", expanded=False):
+            if tab_assets_raw:
+                cols = st.columns(3)
+                for i, p in enumerate(tab_assets_raw):
+                    with cols[i % 3]:
+                        st.image(p, caption=os.path.basename(p), use_container_width=True)
             else:
-                st.info("No evidence files found.")
-
-        # --- STEP-BY-STEP MODE ---
-        elif fig_mode == "Step-by-Step":
-            st.header(f"Step-by-Step: {selected_pdf_name}")
-            
-            # Step 1
-            st.subheader("Step 1: TF-ID Detection")
-            if st.button("Run Step 1"):
-                with st.spinner("Running TF-ID..."):
-                    res = run_script("scripts/step1_tfid.py", [selected_pdf])
-                    if res.returncode == 0:
-                        st.success("Complete.")
-                    else:
-                        st.error(res.stderr)
-            
-            figures_path = os.path.join(intermediate_dir, "figures")
-            if os.path.exists(figures_path):
-                figure_crops = sorted(glob.glob(os.path.join(figures_path, "*.png")))
-                if figure_crops:
-                    selected_crop_name = st.selectbox("Select Figure", [os.path.basename(f) for f in figure_crops])
-                    selected_crop = os.path.join(figures_path, selected_crop_name)
-                    st.image(selected_crop, caption="Original Crop", width=500)
-                    
-                    # Step 2
-                    st.subheader("Step 2: Macro Cleaning")
-                    if st.button("Run Step 2 (Clean)"):
-                        with st.spinner("Cleaning..."):
-                            res = run_script("scripts/step2_macro_single.py", [selected_crop])
-                            json_out = parse_json_output(res.stdout)
-                            if json_out and 'cleaned_image' in json_out:
-                                st.session_state['step2_result'] = json_out
-                                st.success("Done.")
-                            else:
-                                st.error(res.stdout)
-                    
-                    if 'step2_result' in st.session_state:
-                        res2 = st.session_state['step2_result']
-                        cleaned_path = res2['cleaned_image']
-                        
-                        c1, c2 = st.columns(2)
-                        c1.image(res2['raw_image'], caption="Raw", width=300)
-                        c2.image(cleaned_path, caption="Cleaned", width=300)
-                        
-                        # Elements Gallery (Updated)
-                        st.subheader("Extracted Elements")
-                        elements = res2.get('elements', {})
-                        if elements:
-                            folder_path = os.path.dirname(cleaned_path)
-                            if st.button(f"📂 Open Folder", key="open_folder_step"):
-                                subprocess.run(["open", folder_path])
-                            
-                            # Separate Caption
-                            caption_paths = elements.pop("caption", [])
-
-                            for label, paths in elements.items():
-                                if isinstance(paths, list) and paths:
-                                    st.markdown(f"**{label.replace('_', ' ').title()}**")
-                                    if "y_axis" in label:
-                                         cols = st.columns(5)
-                                         mod_val = 5
-                                    else:
-                                         cols = st.columns(3)
-                                         mod_val = 3
-                                    
-                                    for i, p in enumerate(paths):
-                                        with cols[i % mod_val]:
-                                            if os.path.exists(p):
-                                                 # Custom Sizing Logic
-                                                if "y_axis" in label:
-                                                     # Enforce Height = 500
-                                                     try:
-                                                         img = Image.open(p)
-                                                         w, h = img.size
-                                                         target_h = 500
-                                                         target_w = int(w * (target_h / h))
-                                                         st.image(p, caption=os.path.basename(p), width=target_w)
-                                                     except:
-                                                         st.image(p, caption=os.path.basename(p), width=100)
-                                                else:
-                                                     # Others: Width = 300
-                                                     st.image(p, caption=os.path.basename(p), width=300)
-                            
-                            # Display Caption at Bottom
-                            if caption_paths:
-                                st.markdown("---")
-                                st.markdown("**Chart Caption (Bottom)**")
-                                for p in caption_paths:
-                                    if os.path.exists(p):
-                                         st.image(p, caption=os.path.basename(p), width=600)
-                        
-                        # Step 3
-                        st.subheader("Step 3: Detection")
-                        
-                        # Heuristic Auto-Detection for Heatmap
-                        default_heatmap = False
-                        if os.path.exists(cleaned_path):
-                            try:
-                                import cv2
-                                import numpy as np
-                                
-                                # Check background fill ratio
-                                # Standard plots are mostly white. Heatmaps are mostly colored/gray.
-                                img_check = cv2.imread(cleaned_path, cv2.IMREAD_GRAYSCALE)
-                                if img_check is not None:
-                                    # Count white pixels (> 240)
-                                    white_pixels = np.sum(img_check > 240)
-                                    total_pixels = img_check.size
-                                    white_ratio = white_pixels / total_pixels
-                                    
-                                    # If less than 60% white, likely a heatmap or filled contour
-                                    if white_ratio < 0.60:
-                                        default_heatmap = True
-                            except: pass
-
-                        col_opt1, col_opt2 = st.columns(2)
-                        use_log_x = col_opt1.checkbox("Log Scale X-Axis", value=False)
-                        extract_labels = col_opt2.checkbox("Extract Point Labels (Heatmap)", value=default_heatmap)
-                        
-                        if st.button("Run Step 3"):
-                             with st.spinner("Detecting..."):
-                                args = [cleaned_path]
-                                if use_log_x: args.append("--log_x")
-                                if extract_labels: args.append("--extract_labels")
-                                
-                                if extract_labels: args.append("--extract_labels")
-                                
-                                proc = run_script("scripts/step3_micro_single.py", args)
-                                json_out = parse_json_output(proc.stdout)
-                                if json_out:
-                                    st.session_state['step3_result'] = json_out
-                                    st.success("Done.")
-                        
-                        if 'step3_result' in st.session_state:
-                            res = st.session_state['step3_result']
-                            st.metric("Points", res.get("num_points_detected", 0))
-                            
-                            classes = res.get("detected_classes", [])
-                            if classes:
-                                st.write(f"**Detected Classes:** `{', '.join(classes)}`")
-                            
-                            # Visualization
-                            dets = res.get("detections", [])
-                            if dets and os.path.exists(cleaned_path):
-                                import cv2
-                                import numpy as np
-                                vis_img = cv2.imread(cleaned_path)
-                                if vis_img is not None:
-                                    vis_img = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
-                                    for d in dets:
-                                        bbox = list(map(int, d['box']))
-                                        label = d['label']
-                                        color = (255, 0, 0) # Red for points
-                                        if 'point' not in label: color = (0, 255, 0) # Green for text
-                                        if 'value' in label: color = (0, 165, 255) # Orange for values
-                                        
-                                        if 'point' in label or 'marker' in label:
-                                            cx, cy = d['center']
-                                            cv2.circle(vis_img, (int(cx), int(cy)), 4, color, -1)
-                                        else:
-                                            cv2.rectangle(vis_img, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
-                                            cv2.putText(vis_img, label, (bbox[0], bbox[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
-                                    
-                                    
-                                    # Fix: 'use_container_width' is deprecated in strict versions, use width='stretch'
-                                    try:
-                                        st.image(vis_img, caption="YOLO Detections (Red=Points, Green=Text, Orange=Values)", width="stretch")
-                                    except:
-                                        # Fallback for older Streamlit
-                                        st.image(vis_img, caption="YOLO Detections (Red=Points, Green=Text, Orange=Values)", use_column_width=True)
-                            
-                            debug_logs = res.get("debug_log", [])
-                            if debug_logs:
-                                with st.expander("Debug Logs (Coordinate Mapper)"):
-                                    for l in debug_logs:
-                                        st.text(l)
-
-    
-                            
-                            with st.expander("Debug: Full Result JSON"):
-                                st.json(res)
-                                
-                            data = res.get("mapped_data", [])
-                            if data:
-                                df = pd.DataFrame(data)
-                                st.dataframe(df)
-                            else:
-                                st.warning("No data mapped. (Check if Axis Labels or Data Values were detected)")
-                             
-                            # Step 4
-                            st.subheader("Step 4: Assembly")
-                            if st.button("Run Step 4"):
-                                temp_json = "temp_extraction.json"
-                                with open(temp_json, 'w') as f:
-                                    json.dump(res['mapped_data'], f)
-                                fid = os.path.splitext(os.path.basename(cleaned_path))[0].replace("_cleaned", "")
-                                idir = os.path.dirname(cleaned_path)
-                                res_s4 = run_script("scripts/step4_assembly_single.py", [fid, idir, temp_json])
-                                json_out_s4 = parse_json_output(res_s4.stdout)
-                                
-                                # Show logs for debugging "Filtered out"
-                                with st.expander("Step 4 Execution Log (Debug)"):
-                                    st.text(res_s4.stdout)
-                                    st.text(res_s4.stderr)
-                                
-                                if json_out_s4:
-                                    st.success("Saved.")
-                                    st.json(json_out_s4['content'])
-                                else:
-                                    st.warning("Filtered out.")
-                 
-                                    
+                st.info("No tables found.")
     else:
-        st.info("Select a PDF.")
+        st.info("Run Step 1 to generate intermediate data.")
+
+
+# === TAB 2: FIGURE PIPELINE ===
+with tab2:
+    st.header("Step 2-4: Figure Data Mining")
+    
+    if st.button("Run Figure Pipeline (All Figures)", type="primary"):
+        with st.spinner("Running Logic: Macro -> Micro -> Legend -> Assembly..."):
+            res = run_script("scripts/run_steps2_to_4.py", [selected_pdf_path])
+            
+            with st.expander("Execution Logs", expanded=True):
+                st.text(res.stdout)
+                if res.stderr:
+                    st.text(res.stderr)
+            
+            if res.returncode == 0:
+                st.success("Figure Pipeline Complete!")
+
+    # --- Debug Mode: Single Figure Step-by-Step ---
+    with st.expander("🛠 Advanced Debug: Single Figure Steps"):
+        st.markdown("Run individual steps on a specific figure crop to debug issues.")
+        fig_assets = sorted(glob.glob(os.path.join(figures_dir, "*.png")))
+        if fig_assets:
+            sel_fig_debug = st.selectbox("Select Raw Figure Crop", [os.path.basename(f) for f in fig_assets])
+            sel_fig_path = os.path.join(figures_dir, sel_fig_debug)
+            
+            col_dbg_1, col_dbg_2 = st.columns(2)
+            
+            with col_dbg_1:
+                st.image(sel_fig_path, caption="Raw Input", width=300)
+                
+                # Define unique keys for this debug session
+                s2_key = f"s2_{sel_fig_debug}"
+                s3_key = f"s3_{sel_fig_debug}"
+
+                # Step 2
+                if st.button("Run Step 2 (Macro Clean)", key="btn_step2"):
+                    res = run_script("scripts/step2_macro_single.py", [sel_fig_path])
+                    
+                    # Show logs
+                    with st.expander("Step 2 Logs (Stdout/Stderr)", expanded=False):
+                         st.text(res.stdout)
+                         if res.stderr:
+                             st.text(f"STDERR:\n{res.stderr}")
+
+                    if res.returncode == 0:
+                        st.success("Step 2 Done")
+                        j = parse_json_from_stdout(res.stdout)
+                        if j:
+                            st.session_state[s2_key] = j
+                            # Clear subsequent steps if Step 2 re-run
+                            if s3_key in st.session_state: del st.session_state[s3_key]
+                    else:
+                        st.error("Step 2 Failed")
+                        if res.stderr: st.error(res.stderr)
+                
+                # Render Step 2 Results (Persistent)
+                if s2_key in st.session_state:
+                    j = st.session_state[s2_key]
+                    
+                    # Show cleaned image
+                    cleaned_rel = j.get("cleaned_image")
+                    if cleaned_rel and os.path.exists(cleaned_rel):
+                        st.image(cleaned_rel, caption="Macro Cleaned Result", width=300)
+                    
+                    # Show elements
+                    elems = j.get("elements", {})
+                    if elems:
+                         st.markdown("**Detected Elements (Masked):**")
+                         ec = st.columns(len(elems))
+                         for idx, (label, paths) in enumerate(elems.items()):
+                             with ec[idx]:
+                                 st.caption(label)
+                                 for p in paths:
+                                     if os.path.exists(p):
+                                         img_data = p
+                                         width_val = 150
+                                         if label == "y_axis_title":
+                                             try:
+                                                 pil_img = Image.open(p)
+                                                 img_data = pil_img.rotate(-90, expand=True)
+                                                 width_val = 100
+                                             except: pass
+                                         elif label in ["legend", "x_axis_title"]:
+                                             width_val = 300
+                                         st.image(img_data, width=width_val)
+
+            with col_dbg_2:
+                # Step 3
+                # Need clean image locally or from state?
+                # We can deduce path from persisting state or glob (as before)
+                # But glob is safer if user didn't just run Step 2 but file exists.
+                # Let's stick to glob logic but allow Step 3 results persistence.
+                
+                base_name = os.path.splitext(sel_fig_debug)[0]
+                macro_dir = os.path.join(intermediate_dir, "macro_cleaned")
+                candidates = glob.glob(os.path.join(macro_dir, f"{base_name}_t*_cleaned.png"))
+                
+                if candidates:
+                    sel_clean = candidates[0]
+                    if len(candidates) > 1:
+                        sel_clean = st.selectbox("Select Cleaned Crop", [os.path.basename(c) for c in candidates])
+                        sel_clean = os.path.join(macro_dir, sel_clean)
+                    
+                    st.image(sel_clean, caption="Cleaned Input for Step 3", width=300)
+                    
+                    if st.button("Run Step 3 (Micro Detect)", key="btn_step3"):
+                        res = run_script("scripts/step3_micro_single.py", [sel_clean])
+                        
+                        with st.expander("Step 3 Logs", expanded=False):
+                            st.text(res.stdout)
+                            if res.stderr: st.text(f"STDERR:\n{res.stderr}")
+
+                        if res.returncode == 0:
+                             st.success("Step 3 Done")
+                             j = parse_json_from_stdout(res.stdout)
+                             if j: st.session_state[s3_key] = j
+                    
+                    # Render Step 3 Results (Persistent)
+                    if s3_key in st.session_state:
+                         j = st.session_state[s3_key]
+                         
+                         # Data
+                         # 1. Data
+                         mapped = j.get("mapped_data", [])
+                         if mapped:
+                             st.markdown(f"### Extracted Data ({len(mapped)} pts)")
+                             st.dataframe(pd.DataFrame(mapped))
+                         else:
+                             st.warning("No data mapped.")
+                                 
+                         # 2. Key Stats
+                         st.markdown(f"**Stats:** Points: {j.get('num_points_detected', 0)} | Legends: {j.get('num_legends_found', 0)}")
+                         
+                         # 3. Visualization of Detections
+                         detections = j.get("detections", [])
+                         if detections and os.path.exists(sel_clean):
+                             import cv2
+                             import numpy as np
+                             
+                             # Load image to draw on
+                             img_vis = cv2.imread(sel_clean)
+                             img_vis = cv2.cvtColor(img_vis, cv2.COLOR_BGR2RGB)
+                             
+                             for d in detections:
+                                 bbox = d.get('box')
+                                 label = d.get('label')
+                                 conf = d.get('conf', 0.0)
+                                 
+                                 if bbox:
+                                     x1, y1, x2, y2 = map(int, bbox)
+                                     # Color code
+                                     color = (255, 0, 0) # Red default
+                                     if label == 'data_point': color = (0, 255, 0) # Green
+                                     elif label == 'x_tick_label': color = (0, 0, 255) # Blue
+                                     elif label == 'y_tick_label': color = (255, 0, 255) # Magenta
+                                     elif 'tick_label' in label: color = (0, 0, 255) # Fallback Blue
+                                     elif label == 'tick_mark': color = (255, 255, 0) # Yellow
+                                     
+                                     cv2.rectangle(img_vis, (x1, y1), (x2, y2), color, 2)
+                                     cv2.putText(img_vis, f"{label} {conf:.2f}", (x1, y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+                             
+                             st.image(img_vis, caption="YOLO Micro Detections", width=400)
+
+                         # 4. Debug Log
+                         with st.expander("Detailed Logic Log"):
+                             for l in j.get("debug_log", []):
+                                 st.text(l)
+
+                         # --- NEW: Step 4 Assembly ---
+                         st.markdown("---")
+                         st.markdown("**Step 4: Assembly**")
+                         if st.button("Run Step 4 (Assemble Evidence)", key="btn_step4"):
+                             # 1. Save Step 3 Data to Temp File
+                             temp_s3_path = os.path.join(intermediate_dir, f"temp_step3_{base_name}.json")
+                             with open(temp_s3_path, 'w') as f:
+                                 json.dump(j, f)
+                             
+                             # 2. Run Script
+                             # Usage: step4_assembly_single.py <fig_id> <macro_dir> <step3_json>
+                             # fig_id is base_name (removed _cleaned)
+                             fig_id_clean = base_name.replace("_cleaned", "")
+                             
+                             res = run_script("scripts/step4_assembly_single.py", [
+                                 fig_id_clean, 
+                                 macro_dir, 
+                                 temp_s3_path
+                             ])
+                             
+                             with st.expander("Step 4 Logs", expanded=True):
+                                 st.text(res.stdout)
+                                 if res.stderr: st.text(f"STDERR:\n{res.stderr}")
+                             
+                             if res.returncode == 0:
+                                 s4_json = parse_json_from_stdout(res.stdout)
+                                 if s4_json and s4_json.get("status") == "success":
+                                     st.success(f"Evidence Assembled! Saved to: {s4_json['output_path']}")
+                                     st.json(s4_json.get("evidence"))
+                                 else:
+                                     st.warning("Assembly finished but filtered out (or no JSON returned). Check logs.")
+                             else:
+                                 st.error("Step 4 Failed")
+
+                else:
+                    st.info("Run Step 2 first to generate cleaned image.")
+        else:
+            st.info("No figures found to debug.")
+
+    # Visualization of Results (Moved to Bottom)
+    st.markdown("---")
+    st.subheader("Results Gallery")
+    
+    ev_files = glob.glob("data/evidence/*.json")
+    relevant_ev = []
+    for f in ev_files:
+        try:
+            with open(f, 'r') as jf:
+                d = json.load(jf)
+                if pdf_basename in d.get('meta', {}).get('source_intermediate_dir', ''):
+                    relevant_ev.append(f)
+        except: pass
+    
+    if relevant_ev:
+        sel_ev = st.selectbox("Select Evidence Packet", [os.path.basename(f) for f in relevant_ev])
+        if sel_ev:
+            full_path = os.path.join("data/evidence", sel_ev)
+            with open(full_path, 'r') as f:
+                data = json.load(f)
+            
+            c1, c2 = st.columns([1, 1])
+            with c1:
+                st.markdown("**Metadata**")
+                st.json(data['meta'])
+                
+                fid = data['meta']['figure_id']
+                macro_dir = os.path.join(intermediate_dir, "macro_cleaned")
+                img_path = os.path.join(macro_dir, f"{fid}.png")
+                if not os.path.exists(img_path):
+                     img_path = os.path.join(macro_dir, f"{fid}_cleaned.png")
+                
+                if os.path.exists(img_path):
+                    st.image(img_path, caption=f"Analyzed Image: {fid}", use_container_width=True)
+
+            with c2:
+                st.markdown("**Extracted Data Points**")
+                raw = data.get('raw_data', [])
+                if raw:
+                    st.dataframe(pd.DataFrame(raw))
+                else:
+                    st.warning("No data points.")
+                
+                st.markdown("**Text Evidence**")
+                st.json(data.get('text_evidence', {}))
+
+    else:
+        st.info("No evidence found for this PDF. Run pipeline above.")
+
+
+# === TAB 3: TABLE PIPELINE ===
+with tab3:
+    st.header("Step Table: Structure & Molecule Mining")
+    
+    # Find raw tables
+    raw_tables = sorted(glob.glob(os.path.join(intermediate_dir, "tables", "*.png")))
+    # Filter out sub-images (body, smiles, etc) to find ROOTS
+    # Root tables from TF-ID are usually just {pdf}_table_{i}.png
+    # But processed ones create subfolders?
+    # Or just files in same dir? 
+    # Let's filter strictly.
+    raw_tables = [f for f in raw_tables if "_body" not in f and "_smiles" not in f and "_crop" not in f and "_viz" not in f]
+    
+    if not raw_tables:
+        st.info("No tables found via TF-ID.")
+    else:
+        # Selection
+        t_names = [os.path.basename(f) for f in raw_tables]
+        sel_t = st.selectbox("Select Table Image", t_names)
+        sel_t_path = os.path.join(intermediate_dir, "tables", sel_t)
+        
+        st.image(sel_t_path, caption="Original Table", width=400)
+        
+        t_base = os.path.splitext(sel_t)[0]
+        # We use a subfolder for outputs to keep things clean
+        t_out = os.path.join(intermediate_dir, "tables", t_base)
+        os.makedirs(t_out, exist_ok=True)
+
+        # Actions
+        st.subheader("Pipeline Actions")
+        
+        # Unified Button
+        if st.button("Run Full Pipeline (All Steps)"):
+            with st.spinner("Processing..."):
+                res = run_script("scripts/step_table_pipeline.py", [sel_t_path, "--output_dir", t_out])
+                with st.expander("Full Pipeline Logs"):
+                    st.text(res.stdout)
+                    st.text(res.stderr)
+                if res.returncode == 0:
+                    st.success("Full Pipeline Complete!")
+                    st.session_state['last_table_run'] = t_base
+
+        st.markdown("---")
+        st.markdown("**Step-by-Step Debugging**")
+        
+        c_step2, c_step3, c_step4 = st.columns(3)
+        
+        # Step 2: Segmentation
+        with c_step2:
+            st.markdown("**1. Segmentation (YOLO)**")
+            if st.button("Run Step 1 Start", key="btn_t_s1"):
+                res = run_script("scripts/step_table_segmentation.py", [sel_t_path, "--output_dir", t_out])
+                if res.returncode == 0:
+                    st.success("Done")
+                    j = parse_json_from_stdout(res.stdout)
+                    if j: st.session_state[f'seg_json_{t_base}'] = j
+                else:
+                    st.error("Failed")
+                    st.text(res.stderr)
+            
+            # Show Results (Persistent)
+            if f'seg_json_{t_base}' in st.session_state:
+                j = st.session_state[f'seg_json_{t_base}']
+                
+                # Logs
+                with st.expander("Segmentation Logs", expanded=False):
+                    logs = j.get('logs', [])
+                    if logs:
+                        st.dataframe(pd.DataFrame(logs)[['label','confidence','saved_path']])
+                    else:
+                        st.text("No components found.")
+                
+                # Images
+                if j.get('best_body_crop_path'):
+                   st.image(j['best_body_crop_path'], caption="Best Body Crop", use_container_width=True)
+                
+                # Component Gallery
+                st.caption("Other Components:")
+                logs = j.get('logs', [])
+                if logs:
+                     # Filter out the body if it's best? No just show all unique
+                     for l in logs:
+                         p = l.get('saved_path')
+                         if p and os.path.exists(p) and "body_main" not in p:
+                             st.image(p, caption=f"{l['label']} ({l['confidence']:.2f})", width=150)
+
+        # Step 3: Structure (+Molecule)
+        # Input is body crop (prefer the "Best Body" from Step 2 if avail, else default)
+        # We try to find the best body path from session state or guess
+        best_body = os.path.join(t_out, f"{t_base}_body_main.png")
+        if not os.path.exists(best_body):
+             best_body = os.path.join(t_out, f"{t_base}_body.png") # Old default name
+        
+        with c_step3:
+            st.markdown("**2. Structure & Molecule**")
+            if os.path.exists(best_body):
+                st.image(best_body, caption="Input Body", width=100)
+                
+                if st.button("Run Step 2 Start", key="btn_t_s2"):
+                     res = run_script("scripts/step_table_structure.py", [best_body])
+                     if res.returncode == 0:
+                         st.success("Done")
+                         j = parse_json_from_stdout(res.stdout)
+                         if j: st.session_state[f'struct_json_{t_base}'] = j
+                     else:
+                         st.error("Failed")
+                         st.text(res.stderr)
+            else:
+                st.warning("No Body Crop found. Run Step 1.")
+
+            # Show Results
+            if f'struct_json_{t_base}' in st.session_state:
+                j = st.session_state[f'struct_json_{t_base}']
+                
+                # 1. Viz Image
+                viz = j.get('viz_path')
+                if viz and os.path.exists(viz):
+                    st.image(viz, caption="Structure Prediction", use_container_width=True)
+                
+                # 2. Molecule SMILES Image?
+                # The script implicitly overwrites if molecule found? 
+                # Or checks if _smiles.png exists in output dir
+                smiles_path = best_body.replace(".png", "_smiles.png")
+                if os.path.exists(smiles_path):
+                     st.image(smiles_path, caption="Molecule Replaced", use_container_width=True)
+                
+                # 3. Logs
+                with st.expander("Structure Logs"):
+                     logs = j.get('logs', [])
+                     if logs:
+                         df_log = pd.DataFrame(logs)
+                         # Clean up box column
+                         st.dataframe(df_log)
+
+        # Step 4: OCR Assembly
+        struct_json_path = os.path.join(t_out, f"{t_base}_structure.json")
+        
+        with c_step4:
+            st.markdown("**3. OCR Assembly**")
+            
+            # We need the structure JSON file on disk
+            # If we have it in session, we can save it to be safe
+            if f'struct_json_{t_base}' in st.session_state:
+                 # Check if need to write
+                 # Always write to sync state
+                 with open(struct_json_path, 'w') as f:
+                     json.dump(st.session_state[f'struct_json_{t_base}'], f)
+            
+            if os.path.exists(best_body) and os.path.exists(struct_json_path):
+                if st.button("Run Step 3 Start", key="btn_t_s3"):
+                    res = run_script("scripts/step_table_assembly.py", [
+                        best_body, 
+                        struct_json_path, 
+                        "--output_dir", t_out,
+                        "--padding", "14"
+                    ])
+                    
+                    if res.returncode == 0:
+                        st.success("Done")
+                        j = parse_json_from_stdout(res.stdout)
+                        if j: st.session_state[f'assembly_json_{t_base}'] = j
+                    else:
+                        st.error("Failed")
+                        st.text(res.stderr)
+            else:
+                if not os.path.exists(best_body): st.warning("Need Body Crop")
+                if not os.path.exists(struct_json_path): st.warning("Need Structure JSON (Run Step 2)")
+            
+            # Show Results
+            if f'assembly_json_{t_base}' in st.session_state:
+                j = st.session_state[f'assembly_json_{t_base}']
+                
+                csv_path = j.get('csv_path')
+                json_path = j.get('json_path')
+                
+                if json_path and os.path.exists(json_path):
+                     st.success(f"Evidence Saved: `{os.path.basename(json_path)}`")
+                     with st.expander("Show Full Evidence JSON", expanded=True):
+                         with open(json_path, 'r') as f:
+                             st.json(json.load(f))
+                
+                if csv_path and os.path.exists(csv_path):
+                     st.write(f"CSV: `{os.path.basename(csv_path)}`")
+                     st.dataframe(pd.read_csv(csv_path, header=None))
+                
+                with st.expander("Cell OCR Logs"):
+                    cell_logs = j.get('cell_logs', [])
+                    if cell_logs:
+                        st.dataframe(pd.DataFrame(cell_logs)[['row', 'col', 'text']])
+
+# === TAB 4: GLOBAL ASSEMBLY ===
+with tab4:
+    st.header("Step 5: Global Assembly (LLM)")
+    
+    st.markdown("Aggregates all extracted Figures and Tables, truncates PDF text, and sends to LLM.")
+    
+    if st.button("Run Global Assembly", type="primary"):
+        with st.spinner("Assembling & Querying LLM..."):
+            res = run_script("scripts/step5_global_single.py", [selected_pdf_path])
+            
+            with st.expander("Logs"):
+                st.text(res.stdout)
+                st.text(res.stderr)
+            
+            # Parse output
+            json_out = parse_json_from_stdout(res.stdout)
+            if json_out and json_out.get('status') == 'success':
+                st.success("Assembly Complete!")
+                st.session_state['final_json_path'] = json_out['output_path']
+            else:
+                st.error("Assembly Failed")
+    
+    # Show Result
+    # Check if file exists or in session
+    # OUTPUT NAME UPDATE: step5_global_single.py outputs {basename}_final_summary.json
+    final_file = os.path.join("data/final_output", f"{pdf_basename}_final_summary.json")
+    
+    if os.path.exists(final_file):
+        st.subheader("Final Dataset")
+        st.markdown(f"Path: `{final_file}`")
+        
+        try:
+            with open(final_file, 'r') as f:
+                content = f.read()
+                # Try parse json
+                try:
+                    j_data = json.loads(content)
+                    st.json(j_data)
+                except:
+                    st.error("Invalid JSON Content (Likely LLM Error):")
+                    st.text(content)
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            # It might be raw text or JSON
+            content = f.read()
+            try:
+                j = json.loads(content)
+                st.json(j)
+            except:
+                st.text(content)
