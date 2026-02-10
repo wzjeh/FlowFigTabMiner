@@ -109,6 +109,60 @@ final_json = os.path.join("data/final_output", f"{pdf_basename}_final.json")
 has_step5 = os.path.exists(final_json)
 st.sidebar.checkbox("Step 5 (Assembly)", value=has_step5, disabled=True)
 
+st.sidebar.markdown("---")
+if st.sidebar.button("🚀 Run Full Pipeline", type="primary"):
+    progress_bar = st.sidebar.progress(0)
+    status_text = st.sidebar.empty()
+    
+    try:
+        # 1. Step 1: TF-ID
+        status_text.write("Step 1/4: Running TF-ID Extraction...")
+        res1 = run_script("scripts/step1_tfid.py", [selected_pdf_path])
+        if res1.returncode != 0:
+            st.sidebar.error("Step 1 Failed!")
+            st.error(res1.stderr)
+            st.stop()
+        progress_bar.progress(25)
+        
+        # 2. Step 2-4: Figures
+        status_text.write("Step 2/4: Processing Figures...")
+        res2 = run_script("scripts/run_steps2_to_4.py", [selected_pdf_path])
+        if res2.returncode != 0:
+            st.sidebar.warning("Figure pipeline had issues (check logs), continuing...")
+            st.write("Figure Logs:", res2.stderr)
+        progress_bar.progress(50)
+        
+        # 3. Step Tables
+        status_text.write("Step 3/4: Processing Tables...")
+        # Target specific table directory for this PDF
+        pdf_tables_dir = os.path.join(intermediate_dir, "tables")
+        if os.path.exists(pdf_tables_dir):
+            # We run batch pipeline on this specific folder
+            res3 = run_script("scripts/run_batch_tables.py", ["--input_dir", pdf_tables_dir])
+            if res3.returncode != 0:
+                 st.sidebar.warning("Table pipeline had issues, continuing...")
+                 st.write("Table Logs:", res3.stderr)
+        else:
+            st.sidebar.info("No tables found to process.")
+        progress_bar.progress(75)
+
+        # 4. Step 5: Assembly
+        status_text.write("Step 4/4: Final Assembly & Synthesis...")
+        res5 = run_script("scripts/step5_advanced.py", [selected_pdf_path])
+        if res5.returncode != 0:
+             st.sidebar.error("Step 5 Failed!")
+             st.error(res5.stderr)
+             st.stop()
+        progress_bar.progress(100)
+        
+        status_text.write("✅ Pipeline Complete!")
+        st.sidebar.success("All Steps Finished.")
+        time.sleep(1)
+        st.rerun()
+        
+    except Exception as e:
+        st.sidebar.error(f"Pipeline Error: {e}")
+
 # --- Main Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs([
     "1. Preparation (TF-ID)", 

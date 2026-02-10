@@ -48,9 +48,12 @@ class DataSynthesizer:
         - For EACH row/point in Raw Data, output a standardized JSON object.
         - Merge Global Variables into each row. 
         - IF a row specifies a value, it OVERRIDES the Global Variable.
-        - **CRITICAL**: Substitute ALL abbreviations with their full names from "Term Definitions". 
+        - **CRITICAL 1**: Substitute ALL abbreviations with their full names from "Term Definitions". 
           - e.g. If "NB" is resolved to "nitrobenzene", output "nitrobenzene" in the "name" field.
-          - Do NOT output "NB" or "NB (nitrobenzene)". Just the full name.
+        - **CRITICAL 2**: If the Product is listed generically (e.g., "Main product", "Product 3a", "Yield"), 
+          INFER the chemical name based on the Substrate and Reaction Type.
+        - **CRITICAL 3**: Do NOT list equipment (e.g., "H-flow", "FlowSyn", "Reactor") as "Catalyst". 
+          Catalyst must be a chemical substance (e.g., Pd/C, Raney Ni). If none, use null.
         
         Output Schema (List of Objects):
         [
@@ -59,10 +62,11 @@ class DataSynthesizer:
             "Products": [ {"name": "aniline", "smiles": "...", "yield": "95%"} ],
             "Catalyst": "Pd/C",
             "Solvent": "MeOH",
-            "Temperature": "20 C",
-            "Pressure": "1 atm",
-            "Time": "2 h",
-            "Source": "Table 1, Row 1"
+            "Temperature": "e.g., 50 C",
+            "Pressure": "e.g., 10 bar",
+            "Time": "Residence time or Reaction time",
+            "Other Parameters": "Any other fixed conditions (e.g., H2 Flow Rate, Base, Additive)",
+            "Source": "Table 1, Row 3"
           },
           ...
         ]
