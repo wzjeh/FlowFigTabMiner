@@ -7,6 +7,11 @@ import base64
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+# Force headless for stability
+os.environ["OPENCV_IO_ENABLE_JASPER"] = "true"
+import cv2
+cv2.setNumThreads(0)
+
 from src.extraction.table_pipeline import TablePipeline
 
 def main():

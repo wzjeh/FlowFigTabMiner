@@ -135,9 +135,51 @@ def main():
             # PaddleOCR (and most DL models) usually expect RGB. cv2 reads BGR.
             crop_rgb = cv2.cvtColor(padded_crop, cv2.COLOR_BGR2RGB)
             
-            # We assume Text for everything for now 
-            text = recognizer._recognize_text(crop_rgb)
-            print(f"Cell {i} [r={cell.get('row_idx')}, c={cell.get('col_idx')}]: '{text}'", flush=True) # Debug Log
+            # --- SMART MOLECULE INTEGRATION ---
+            # Check if this cell overlaps with any detected molecule from Step 2
+            text = ""
+            is_molecule = False
+            
+            # Helper for Overlap
+            def get_iou_robust(boxA, boxB):
+                 # box: [x1, y1, x2, y2]
+                 xA = max(boxA[0], boxB[0])
+                 yA = max(boxA[1], boxB[1])
+                 xB = min(boxA[2], boxB[2])
+                 yB = min(boxA[3], boxB[3])
+                 
+                 interArea = max(0, xB - xA) * max(0, yB - yA)
+                 
+                 boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+                 boxBArea = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1])
+                 
+                 if boxAArea == 0 or boxBArea == 0: return 0.0, 0.0
+                 
+                 return interArea / boxAArea, interArea / boxBArea
+
+            molecules = structure_data.get('molecules', [])
+            if molecules:
+                for m in molecules:
+                    # m['box'] might be list or np array
+                    mol_box = m.get('box')
+                    if mol_box:
+                        try:
+                            mol_box = list(map(int, mol_box))
+                            # Check overlap with ORIGINAL cell box (not crop)
+                            overlap_mol, overlap_cell = get_iou_robust(mol_box, box)
+                            
+                            # If > 50% of molecule is inside cell
+                            if overlap_mol > 0.5:
+                                text = m.get('smiles', '')
+                                is_molecule = True
+                                print(f"Cell {i} matched to Molecule: {text}", flush=True)
+                                break
+                        except: pass
+            
+            if not is_molecule:
+                # Normal OCR
+                text = recognizer._recognize_text(crop_rgb)
+                print(f"Cell {i} [r={cell.get('row_idx')}, c={cell.get('col_idx')}]: '{text}'", flush=True) # Debug Log
             
             # Row/Col indices
             # If Step 3 assigned them (Grid intersection logic), use them.
@@ -198,6 +240,17 @@ def main():
              # Let's read it here to be safe and consistent with cell logic
              c_img = cv2.imread(c_path)
              if c_img is not None:
+                 # 1. UPSCALE
+                 c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                 # 2. PADDING (White border) - Critical for text near edges
+                 pad = 50
+                 c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                 
+                 # 3. Preprocess for OCR (optional, but good for noisy text)
+                 # c_gray = cv2.cvtColor(c_img, cv2.COLOR_BGR2GRAY)
+                 # _, c_thresh = cv2.threshold(c_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                 # c_img = cv2.cvtColor(c_thresh, cv2.COLOR_GRAY2BGR)
+
                  c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
                  txt = recognizer._recognize_text(c_rgb)
                  if txt.strip():
@@ -209,6 +262,12 @@ def main():
         try:
              n_img = cv2.imread(n_path)
              if n_img is not None:
+                 # 1. UPSCALE
+                 n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                 # 2. PADDING
+                 pad = 50
+                 n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                 
                  n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
                  txt = recognizer._recognize_text(n_rgb)
                  if txt.strip():

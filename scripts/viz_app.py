@@ -1,12 +1,26 @@
 import streamlit as st
 import os
 import sys
+
+# --- GLOBAL RESOURCE LIMITS (Must be set before importing torrent/cv2/etc in subprocesses) ---
+# Prevent overheating and zombie processes by forcing single-threaded execution for libraries
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OPENCV_IO_ENABLE_JASPER"] = "true" 
+
 import glob
 import subprocess
 import json
 import pandas as pd
 import time
 from PIL import Image
+import cv2
+
+# Force OpenCV single thread
+cv2.setNumThreads(0)
 
 st.set_page_config(layout="wide", page_title="Unified FlowFigTabMiner Dashboard")
 
@@ -19,8 +33,22 @@ if os.path.exists("./flowfigtabminer/bin/python3"):
 def run_script(script_path, args=[]):
     """Run a script and capture output."""
     cmd = [PYTHON_EXEC, script_path] + args
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    return result
+    # CRITICAL: Pass current environment (with thread limits) to subprocess
+    # subprocess.run inherits env by default, but let's be explicit if needed.
+    # Actually, default behavior IS to inherit os.environ.
+    # But let's verify if we need to force it or if there's a shell=True issue (we are not using shell=True).
+    
+    # Debug: Print command being run
+    print(f"Running command: {' '.join(cmd)}")
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, env=os.environ.copy())
+        return result
+    except Exception as e:
+        print(f"Subprocess failed: {e}")
+        # Return a dummy completed process with error
+        from subprocess import CompletedProcess
+        return CompletedProcess(cmd, 1, stdout="", stderr=str(e))
 
 def parse_json_from_stdout(stdout):
     """Extract JSON from ---JSON_START--- ... ---JSON_END--- block or last valid JSON line."""
@@ -451,10 +479,15 @@ with tab3:
                 res = run_script("scripts/step_table_segmentation.py", [sel_t_path, "--output_dir", t_out])
                 if res.returncode == 0:
                     st.success("Done")
+                    # Debug Logs
+                    with st.expander("Step 1 Execution Logs"):
+                        st.text(res.stdout)
+                        st.text(res.stderr)
                     j = parse_json_from_stdout(res.stdout)
                     if j: st.session_state[f'seg_json_{t_base}'] = j
                 else:
                     st.error("Failed")
+                    st.text(res.stdout)
                     st.text(res.stderr)
             
             # Show Results (Persistent)
@@ -499,10 +532,15 @@ with tab3:
                      res = run_script("scripts/step_table_structure.py", [best_body])
                      if res.returncode == 0:
                          st.success("Done")
+                         # Debug Logs
+                         with st.expander("Step 2 Execution Logs", expanded=True):
+                             st.text(res.stdout)
+                             st.text(res.stderr)
                          j = parse_json_from_stdout(res.stdout)
                          if j: st.session_state[f'struct_json_{t_base}'] = j
                      else:
                          st.error("Failed")
+                         st.text(res.stdout)
                          st.text(res.stderr)
             else:
                 st.warning("No Body Crop found. Run Step 1.")
@@ -593,21 +631,102 @@ with tab4:
     
     st.markdown("Aggregates all extracted Figures and Tables, truncates PDF text, and sends to LLM.")
     
-    if st.button("Run Global Assembly", type="primary"):
-        with st.spinner("Assembling & Querying LLM..."):
-            res = run_script("scripts/step5_global_single.py", [selected_pdf_path])
+    if st.button("Run Global Assembly (Step 5)", type="primary"):
+        with st.status("Running LLM Global Assembly (Advanced Context-Aware)...", expanded=True) as status:
+            t_start = time.time()
+            st.write("Generating structured data with Context-Aware Logic...")
             
-            with st.expander("Logs"):
-                st.text(res.stdout)
-                st.text(res.stderr)
+            # Run new advanced script
+            # scripts/step5_advanced.py {pdf_path}
+            cmd_args = [selected_pdf_path]
             
-            # Parse output
-            json_out = parse_json_from_stdout(res.stdout)
-            if json_out and json_out.get('status') == 'success':
-                st.success("Assembly Complete!")
-                st.session_state['final_json_path'] = json_out['output_path']
+            # --- EXECUTION ---
+            ret = run_script("scripts/step5_advanced.py", cmd_args)
+            
+            st.write(f"Done in {time.time() - t_start:.2f}s")
+            
+            # --- LOGS ---
+            with st.expander("Step 5 Execution Logs", expanded=False):
+                st.code(ret.stdout, language="text")
+                if ret.stderr:
+                    st.error("Stderr Output:")
+                    st.code(ret.stderr, language="text")
+            
+            # Parse Result
+            json_start = ret.stdout.find("---JSON_START---")
+            if json_start != -1:
+                json_str = ret.stdout.split("---JSON_START---")[1].split("---JSON_END---")[0].strip()
+                try:
+                    res_data = json.loads(json_str)
+                    final_path = res_data.get("output_path")
+                    debug_path = res_data.get("debug_path")
+                    
+                    if final_path and os.path.exists(final_path):
+                        st.success(f"Final Summary Saved: `{final_path}`")
+                        st.session_state['final_json_path'] = final_path
+                        
+                        # Display Final Data
+                        with open(final_path, 'r') as f:
+                            final_json = json.load(f)
+                        
+                        # --- FORMAT FOR DISPLAY ---
+                        df_display = pd.DataFrame(final_json)
+                        
+                        # Format "Reactants" (list of dicts) -> String
+                        if "Reactants" in df_display.columns:
+                            def fmt_reactants(x):
+                                if isinstance(x, list):
+                                    # e.g. "Name (Role)" or just "Name"
+                                    return ", ".join([f"{i.get('name','')}" for i in x])
+                                return str(x)
+                            df_display["Reactants"] = df_display["Reactants"].apply(fmt_reactants)
+                        
+                        # Format "Products" (list of dicts) -> String
+                        if "Products" in df_display.columns:
+                            def fmt_products(x):
+                                if isinstance(x, list):
+                                    # e.g. "Name (Yield)"
+                                    items = []
+                                    for i in x:
+                                        name = i.get('name', '')
+                                        yld = i.get('yield', '')
+                                        if yld and yld != "0.00%":
+                                            items.append(f"{name} ({yld})")
+                                        else:
+                                            items.append(name)
+                                    return ", ".join(items)
+                                return str(x)
+                            df_display["Products"] = df_display["Products"].apply(fmt_products)
+
+                        st.dataframe(df_display)
+                        
+                        # Display Debug Info (Step 5a/5b Results)
+                        if debug_path and os.path.exists(debug_path):
+                            with open(debug_path, 'r') as f:
+                                debug_json = json.load(f)
+                            
+                            st.divider()
+                            st.subheader("Step 5 Process Details (Context Resolution)")
+                            for item in debug_json:
+                                with st.expander(f"Source: {item['source']}", expanded=False):
+                                    c1, c2 = st.columns(2)
+                                    with c1:
+                                        st.markdown("**Step 5a: Global Candidates**")
+                                        st.json(item.get("step5a_candidates", {}))
+                                    with c2:
+                                        st.markdown("**Step 5b: Resolved Context**")
+                                        st.json(item.get("step5b_resolved", {}))
+                                        if item.get("step5b_unknowns"):
+                                            st.caption(f"Unknowns queried: {item.get('step5b_unknowns')}")
+
+                    else:
+                        st.error("Output file not found.")
+                except Exception as e:
+                    st.error(f"Failed to parse result JSON: {e}")
             else:
-                st.error("Assembly Failed")
+                 st.warning("Script finished but returned no structured JSON result.")
+            
+            status.update(label="Global Assembly Complete", state="complete")
     
     # Show Result
     # Check if file exists or in session

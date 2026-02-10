@@ -32,7 +32,7 @@ tables:
     threshold: 0.8
   
   molecule_detection:
-    model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt"
+    model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt" # YOLO for molecules/detect/train/weights/best.pt"
     confidence_threshold: 0.25
 
   structure:
@@ -42,7 +42,7 @@ tables:
     model_path: "models/cell_classifier.pt"
 
   content:
-    molscribe_path: "models/molscribe.ckpt"
+    molscribe_path: "models/swin_base_char_aux_1m680k.pth"
     ocr_engine: "paddle"
 
 # LLM & Adjudication

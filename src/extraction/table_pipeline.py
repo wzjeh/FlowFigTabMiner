@@ -8,29 +8,54 @@ from src.extraction.content_recognizer import ContentRecognizer
 from src.extraction.molecule_processor import MoleculeProcessor
 
 class TablePipeline:
-    def __init__(self):
+    def __init__(self, table_filter=None, structure_recognizer=None, molecule_processor=None, content_recognizer=None):
+        """
+        Initialize Table Pipeline.
+        Args:
+            table_filter: Optional pre-loaded TableFilter instance.
+            structure_recognizer: Optional pre-loaded TableStructureRecognizer instance.
+            molecule_processor: Optional pre-loaded MoleculeProcessor instance.
+            content_recognizer: Optional pre-loaded ContentRecognizer instance.
+        """
         print("Initializing Table Pipeline...")
         from src.utils.config import load_config
         cfg = load_config()
         tables_cfg = cfg.get("tables", {})
         
-        seg_model = tables_cfg.get("segmentation", {}).get("model_path")
-        struct_model = tables_cfg.get("structure", {}).get("model_path")
-        molscribe_path = tables_cfg.get("content", {}).get("molscribe_path")
-        
-        # Molecule Detection
-        mol_det_cfg = tables_cfg.get("molecule_detection", {})
-        mol_model_path = mol_det_cfg.get("model_path")
-        mol_conf = mol_det_cfg.get("confidence_threshold", 0.25)
+        # 1. Table Filter (Segmentation)
+        if table_filter:
+            self.filter = table_filter
+        else:
+            seg_model = tables_cfg.get("segmentation", {}).get("model_path")
+            self.filter = TableFilter(model_path=seg_model)
 
-        self.filter = TableFilter(model_path=seg_model)
-        self.structure = TableStructureRecognizer(model_name=struct_model)
+        # 2. Structure Recognizer
+        if structure_recognizer:
+            self.structure = structure_recognizer
+        else:
+            struct_model = tables_cfg.get("structure", {}).get("model_path")
+            self.structure = TableStructureRecognizer(model_name=struct_model)
+
+        # 3. Content Recognizer (OCR + MolScribe)
+        if content_recognizer:
+            self.recognizer = content_recognizer
+        else:
+            molscribe_path = tables_cfg.get("content", {}).get("molscribe_path")
+            self.recognizer = ContentRecognizer(molscribe_path=molscribe_path)
+
+        # 4. Cell Classifier
+        # It's lightweight, but could be injected too. For now keep internal or add if needed.
         self.classifier = CellClassifier()
-        self.recognizer = ContentRecognizer(molscribe_path=molscribe_path)
         
-        # Initialize Molecule Processor
-        # Check if model path exists to avoid error if user hasn't downloaded yet (though config verify checks this)
-        self.molecule_processor = MoleculeProcessor(model_path=mol_model_path, conf_threshold=mol_conf)
+        # 5. Molecule Processor
+        if molecule_processor:
+            self.molecule_processor = molecule_processor
+        else:
+            mol_det_cfg = tables_cfg.get("molecule_detection", {})
+            mol_model_path = mol_det_cfg.get("model_path")
+            mol_conf = mol_det_cfg.get("confidence_threshold", 0.25)
+            # Check if model path exists
+            self.molecule_processor = MoleculeProcessor(model_path=mol_model_path, conf_threshold=mol_conf)
 
     def process_table(self, image_path, output_dir=None):
         """
@@ -160,9 +185,12 @@ class TablePipeline:
             crop = original_img[y1:y2, x1:x2]
             
             # Save crop for debug/classifier
-            crop_filename = f"cell_{i}.png"
             if output_dir:
-                crop_path = os.path.join(output_dir, crop_filename)
+                cells_dir = os.path.join(output_dir, "cells")
+                os.makedirs(cells_dir, exist_ok=True)
+                crop_filename = f"cell_{i}.png"
+                crop_path = os.path.join(cells_dir, crop_filename)
+                
                 cv2.imwrite(crop_path, crop)
                 cell['crop_path'] = crop_path
             
@@ -180,10 +208,92 @@ class TablePipeline:
 
         # 4. Classify Batch
         print("   -> Classifying cells...")
-        classifications = self.classifier.classify_cells(cell_crops)
         
-        # 5. Recognize Content
+        # --- SMART MOLECULE INTEGRATION ---
+        # If we have mol_meta, we can pre-assign cells that overlap with molecules
+        # to class 'Molecule' and content 'SMILES' without re-running classifier/OCR.
+        
+        cells_to_classify_indices = []
+        cells_to_classify_crops = []
+        
+        # Helper for IoU/Overlap
+        def get_overlap(box1, box2):
+             # box: [x1, y1, x2, y2]
+             x_left = max(box1[0], box2[0])
+             y_top = max(box1[1], box2[1])
+             x_right = min(box1[2], box2[2])
+             y_bottom = min(box1[3], box2[3])
+             
+             if x_right < x_left or y_bottom < y_top:
+                 return 0.0
+             
+             intersection_area = (x_right - x_left) * (y_bottom - y_top)
+             box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+             
+             if box1_area == 0: return 0.0
+             return intersection_area / box1_area # Overlap relative to Cell
+             
+        for i, cell in enumerate(cell_meta):
+             # Check overlap with any molecule
+             # cell['box'] is [x1, y1, x2, y2]
+             # mol_meta items have 'box'
+             
+             match_mol = None
+             if mol_meta:
+                 for m in mol_meta:
+                     # Check if cell is largely contained in molecule or vice versa
+                     # We want: Intersection / MoleculeArea > 0.5 (Molecule is mostly inside cell)
+                     # OR Intersection / CellArea > 0.5 (Cell is mostly inside molecule)
+                     
+                     # Recalculate robust overlap
+                     def get_iou_robust(boxA, boxB):
+                         # box: [x1, y1, x2, y2]
+                         xA = max(boxA[0], boxB[0])
+                         yA = max(boxA[1], boxB[1])
+                         xB = min(boxA[2], boxB[2])
+                         yB = min(boxA[3], boxB[3])
+                         
+                         interArea = max(0, xB - xA) * max(0, yB - yA)
+                         
+                         boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+                         boxBArea = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1])
+                         
+                         if boxAArea == 0 or boxBArea == 0: return 0.0, 0.0
+                         
+                         return interArea / boxAArea, interArea / boxBArea
+
+                     # m['box'] is the molecule box. cell['box'] is the cell box.
+                     # We want to know if the molecule matches this cell.
+                     # Usually molecule is smaller than cell.
+                     # So Intersection / MoleculeArea ~ 1.0 (Molecule fully inside cell)
+                     
+                     overlap_mol, overlap_cell = get_iou_robust(m['box'], cell['box'])
+                     
+                     # Threshold: If > 50% of the molecule is inside the cell
+                     if overlap_mol > 0.5: 
+                         match_mol = m
+                         break
+             
+             if match_mol:
+                 # Override
+                 cell['class'] = 'Molecule'
+                 cell['content'] = match_mol.get('smiles', '')
+                 # Skip classification list
+             else:
+                 cells_to_classify_indices.append(i)
+                 cells_to_classify_crops.append(cell_crops[i])
+        
+        # Only classify remaining
+        if cells_to_classify_crops:
+             cls_results = self.classifier.classify_cells(cells_to_classify_crops)
+        else:
+             cls_results = []
+             
+        # 5. Recognize Content (for non-molecules)
         print("   -> Recognizing content...")
+        if not cells_to_classify_indices:
+             print("      (All cells matched to molecules)")
+
         extracted_data = []
         
         # We need row/col info. 
@@ -193,20 +303,32 @@ class TablePipeline:
         # Let's assume we need to assign them if missing.
         
         # Simple clustering for row/col assignment if missing
-        if 'row_index' not in cell_meta[0]:
+        if cell_meta and 'row_index' not in cell_meta[0]:
              self._assign_grid_indices(cell_meta)
-
-        for i, (cell, cls) in enumerate(zip(cell_meta, classifications)):
-            content = self.recognizer.recognize_content(cell_crops[i], cls)
+        
+        # Re-merge results
+        # We have cell_meta which now has some cells with 'content' populated
+        # We iterate all cells to build extracted_data
+        
+        cls_idx = 0
+        for i, cell in enumerate(cell_meta):
+             if 'content' in cell and cell.get('class') == 'Molecule':
+                 # Already handled
+                 content = cell['content']
+                 cls = 'Molecule'
+             else:
+                 # Need OCR
+                 cls = cls_results[cls_idx]
+                 content = self.recognizer.recognize_content(cell_crops[i], cls)
+                 cell['class'] = cls
+                 cell['content'] = content
+                 cls_idx += 1
             
-            cell['class'] = cls
-            cell['content'] = content
-            
-            extracted_data.append({
+             extracted_data.append({
                 'row': cell['row_index'],
                 'col': cell['col_index'],
                 'content': content
-            })
+             })
 
         # 6. Construct DataFrame
         if not extracted_data:

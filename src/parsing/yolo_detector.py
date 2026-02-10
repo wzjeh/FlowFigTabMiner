@@ -7,6 +7,11 @@ from ultralytics import YOLO
 class YoloDetector:
     def __init__(self, model_path="models/bestYOLOn-2-1.pt"):
         print(f"Loading YOLO model from {model_path}...")
+        # ultralytics uses torch. Force torch to respect limits if not already
+        import torch
+        if torch.get_num_threads() > 1:
+            torch.set_num_threads(1)
+            
         self.model = YOLO(model_path)
         # Dynamic Class Mapping from Model
         if hasattr(self.model.names, 'items'):

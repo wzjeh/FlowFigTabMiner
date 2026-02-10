@@ -9,6 +9,10 @@ import torch
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+# Force headless
+os.environ["OPENCV_IO_ENABLE_JASPER"] = "true"
+cv2.setNumThreads(0) # Avoid multiprocessing issues in subprocess
+
 from src.extraction.table_structure import TableStructureRecognizer
 
 def main():
@@ -72,7 +76,9 @@ def main():
     # structure dict keys: 'cells', 'rows', 'columns'
     # Each item has 'box': [x1, y1, x2, y2]
     
-    original_img = cv2.imread(image_path)
+    # CRITICAL FIX: Load the image that was ACTUALLY processed (current_image_path)
+    # This ensures that if molecules were replaced, the visualization shows the SMILES text, not the original molecules.
+    original_img = cv2.imread(current_image_path)
     vis_img = original_img.copy() if original_img is not None else None
     
     log_data = []
@@ -123,7 +129,8 @@ def main():
             "num_columns": len(structure.get('columns', [])),
             "viz_path": vis_path,
             "logs": log_data,
-            "raw_structure": structure # Valid JSON structure? 'box' might be np array or tensor
+            "raw_structure": structure,
+            "molecules": mol_meta if 'mol_meta' in locals() and mol_meta else []
         }
 
         # Need to handle serialization of raw_structure if it has arrays

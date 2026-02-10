@@ -52,32 +52,32 @@ class PDFParser:
         text_lower = text.lower()
         
         # Keywords to cut off
-        # "references" often appears in headers, need to be careful?
-        # Usually looking for a section header.
-        # Simple heuristic: Split by newlines and look for standalone lines?
-        # Or just find the last occurrence?
-        # Often "References" is at the end. 
+        # We look for section headers that typically appear at the end.
+        # "conclusions" or "conclusion" is often the last section before refs.
+        # "references" is the definitive end.
         
-        cutoff_keywords = ["references", "bibliography", "acknowledgements"]
+        cutoff_keywords = [
+            "\nreferences", "\nbibliography", "\nacknowledgements", 
+            "\nconclusion", "\nconclusions", "experimental section"
+        ]
         
         cutoff_idx = len(text)
         
+        # We want to find the *first* occurrence of these *after* the middle of the document
+        # to avoid matching "See references" in the intro.
+        
+        min_pos = len(text) * 0.6 
+        
         for kw in cutoff_keywords:
-            # We want headers, perhaps "\nReferences" or "\nREFERENCES"
-            # Try to find the last substantial block or just the first occurrence from the end?
-            # It's tricky. Let's try finding "\nReferences\n"
-            
-            # Simple approach: Find last 20% of text? No.
-            # Just find the keyword.
-            idx = text_lower.rfind(kw)
-            if idx != -1 and idx < cutoff_idx:
-                # Basic check: is it really near the end?
-                # If it's in the first 10%, it's probably citation like "see References...".
-                if idx > len(text) * 0.5:
-                     cutoff_idx = idx
+            idx = text_lower.find(kw, int(min_pos))
+            if idx != -1:
+                # We found a keyword near the end.
+                # Use the earliest one found (e.g. Conclusion comes before References)
+                if idx < cutoff_idx:
+                    cutoff_idx = idx
         
         if cutoff_idx < len(text):
-            print(f"[PDFParser] Truncated text at index {cutoff_idx} (detected Reference/Biblio).")
+            print(f"[PDFParser] Truncated text at index {cutoff_idx}/{len(text)} (detected ending section).")
             return text[:cutoff_idx]
             
         return text

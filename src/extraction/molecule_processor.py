@@ -17,8 +17,13 @@ class MoleculeProcessor:
         # Load YOLO model
         if model_path and os.path.exists(model_path):
             print(f"Loading Molecule Detection Model from {model_path}...")
+            print(f"Loading Molecule Detection Model from {model_path}...")
             try:
+                import torch
+                if torch.get_num_threads() > 1:
+                    torch.set_num_threads(1)
                 self.model = YOLO(model_path)
+                print(f"   MoleculeProcessor: YOLO model loaded successfully from {model_path}")
             except Exception as e:
                 print(f"Error loading Molecule Model: {e}")
                 self.model = None
@@ -56,8 +61,16 @@ class MoleculeProcessor:
 
         h, w = original_img.shape[:2]
         
+        h, w = original_img.shape[:2]
+        
         # 1. Detect Molecules
-        results = self.model(original_img, conf=self.conf_threshold, verbose=False)[0]
+        print(f"   MoleculeProcessor: Starting YOLO inference on image {w}x{h}...", flush=True)
+        try:
+             results = self.model(original_img, conf=self.conf_threshold, verbose=False)[0]
+             print(f"   MoleculeProcessor: YOLO inference done. Found {len(results.boxes)} boxes.", flush=True)
+        except Exception as e:
+             print(f"   MoleculeProcessor: YOLO INFERENCE FAILED: {e}", flush=True)
+             return None, []
         
         metrics = []
         
@@ -67,7 +80,24 @@ class MoleculeProcessor:
         if len(results.boxes) > 0:
             print(f"   -> Detected {len(results.boxes)} potential molecules.")
             
+            # DEBUG: Save visualization of what YOLO sees
+            debug_viz = original_img.copy()
             for box in results.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
+                conf = float(box.conf[0])
+                cls = int(box.cls[0])
+                label = f"{self.model.names[cls]} {conf:.2f}"
+                cv2.rectangle(debug_viz, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                cv2.putText(debug_viz, label, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            
+            # Save to same directory as input (if path known) or temp
+            # Since we don't know output path here easily, let's look at image_path_or_array
+            if isinstance(image_path_or_array, str):
+                 debug_path = os.path.splitext(image_path_or_array)[0] + "_debug_yolo.png"
+                 cv2.imwrite(debug_path, debug_viz)
+                 print(f"   -> Saved YOLO debug viz to {debug_path}")
+            
+            for i, box in enumerate(results.boxes):
                 # Get Box
                 x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
                 conf = float(box.conf[0])
@@ -76,30 +106,24 @@ class MoleculeProcessor:
                 x1, y1 = max(0, x1), max(0, y1)
                 x2, y2 = min(w, x2), min(h, y2)
                 
-                # Crop Molecule
-                mol_crop = original_img[y1:y2, x1:x2]
+                # Crop Molecule with Padding for MolScribe
+                # MolScribe often fails on tight crops. Add standard padding.
+                pad_mol = 30 # Increased from 10 to 30 to help MolScribe context
+                mx1 = max(0, x1 - pad_mol)
+                my1 = max(0, y1 - pad_mol)
+                mx2 = min(w, x2 + pad_mol)
+                my2 = min(h, y2 + pad_mol)
+                
+                mol_crop = original_img[my1:my2, mx1:mx2]
                 
                 # 2. Convert to SMILES
-                # MolScribe expects PIL image or path? 
-                # ContentRecognizer._recognize_structure calls molscribe.predict_images([image_path])
-                # We need to temporarily save crop or modify recognizer to accept array?
-                # MolScribe's predict_images usually takes paths. predict_images_from_arrays takes arrays?
-                # Let's check ContentRecognizer. It seems it only has _recognize_structure(image_path).
-                # We'll save a temp crop to be safe and consistent with existing interface.
-                
-                import tempfile
-                fd, temp_path = tempfile.mkstemp(suffix=".png")
-                os.close(fd)
-                cv2.imwrite(temp_path, mol_crop)
-                
+                # MolScribe expects PIL image or array. ContentRecognizer now supports array.
                 smiles = ""
                 try:
                     # We use 'Structure' type to trigger _recognize_structure
-                    # And we need to ensure content_recognizer has molscribe initialized
-                    smiles = content_recognizer.recognize_content(temp_path, "Structure")
-                finally:
-                    if os.path.exists(temp_path):
-                        os.remove(temp_path)
+                    smiles = content_recognizer.recognize_content(mol_crop, "Structure")
+                except Exception as e:
+                    print(f"Structure Rec Error: {e}")
                 
                 logging_smiles = smiles if smiles else "[NoSMILES]"
                 
@@ -115,6 +139,7 @@ class MoleculeProcessor:
                 # Let's try to fit it.
                 
                 text_to_draw = smiles if smiles else "Structure"
+                print(f"   -> Box {i}: SMILES='{smiles}' | Drawing Text='{text_to_draw}'", flush=True) # DEBUG
                 
                 font_scale = 0.5
                 thickness = 1

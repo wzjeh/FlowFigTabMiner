@@ -9,6 +9,10 @@ class TableStructureRecognizer:
         Initialize Table Transformer for structure recognition.
         """
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        # CRITICAL: Limit CPU threads to prevent overheating when running multiple instances or alongside other models
+        if self.device == "cpu":
+            torch.set_num_threads(1)
+            
         print(f"Loading Table Structure model: {model_name} on {self.device}...")
         try:
             self.processor = AutoImageProcessor.from_pretrained(model_name)
@@ -40,9 +44,12 @@ class TableStructureRecognizer:
             
             # Using DETR defaults
             inputs = self.processor(images=image, return_tensors="pt", size={"shortest_edge": 800, "longest_edge": 1333})
+            inputs = {k: v.to(self.device) for k, v in inputs.items()} # Ensure inputs are on correct device
             
+            print(f"   TableStructure: Running inference on {self.device}...", flush=True)
             with torch.no_grad():
                 outputs = self.model(**inputs)
+            print("   TableStructure: Inference done.", flush=True)
 
             # Post-process
             # target_sizes should be (height, width)

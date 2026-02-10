@@ -22,7 +22,11 @@ class TableFilter:
         
         if os.path.exists(model_path):
             print(f"Loading Table Segmentation YOLO model from {model_path}...")
+            print(f"Loading Table Segmentation YOLO model from {model_path}...")
             try:
+                import torch
+                if torch.get_num_threads() > 1:
+                    torch.set_num_threads(1)
                 self.model = YOLO(model_path)
             except Exception as e:
                 print(f"Warning: Failed to load Table Filter model: {e}")
