@@ -45,7 +45,8 @@ def run_step3_single():
         print(f"Using confidence threshold: {conf_thresh}")
         
         # 3A. Detection
-        micro_detections = yolo_micro.detect(cleaned_image_path, conf=conf_thresh, use_tiling=True)
+        # Match training: Fit 1024x1024 (Global Resize)
+        micro_detections = yolo_micro.detect(cleaned_image_path, conf=conf_thresh, imgsz=1024, use_tiling=False)
         points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
         
         # 3B. Legend Matching

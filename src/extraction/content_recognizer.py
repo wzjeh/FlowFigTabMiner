@@ -1,5 +1,8 @@
-from paddleocr import PaddleOCR
 import os
+# Disable connectivity checks to prevent hangs
+os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "1"
+os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "1"
+from paddleocr import PaddleOCR
 try:
     from molscribe import MolScribe
 except ImportError:
@@ -9,11 +12,10 @@ except ImportError:
 class ContentRecognizer:
     def __init__(self, molscribe_path=None):
         """
-        Initialize OCR and MolScribe models.
+        Initialize OCR and MolNexTR models.
         """
         # PaddleOCR
         # use_angle_cls=True loads the direction classifier
-        # lang='en' for English tables
         # lang='en' for English tables
         print("Loading PaddleOCR...")
         # Force single thread for torch interaction (MolScribe uses torch)
@@ -36,42 +38,18 @@ class ContentRecognizer:
         self.ocr = PaddleOCR(
             use_angle_cls=True, 
             lang='en'
-            # use_mp=False, # Removed: Causes 'Unknown argument' error in some versions
-            # show_log=False, # Removed: Causes 'Unknown argument' error
-            # enable_mkldnn=not use_gpu # Removed: Potentially unsafe if show_log failed
         )
         
-        # MolScribe
-        self.molscribe = None
-        if MolScribe:
-            # MolScribe loads weights automatically or from a path
-            # Assume default checkpoint or download
-            try:
-                print("Loading MolScribe...")
-                # MolScribe expects a valid checkpoint path often, or downloads it.
-                # However, the previous error 'NoneType object has no attribute seek' usually implies
-                # it tried to load 'None' as a file or similar issue in internal loading.
-                # Let's specify the weight path explicitly if available, or force download by handling the init carefully.
-                
-                # Check if we have a local model
-                ckpt_path = molscribe_path or "models/swin_base_char_aux_1m680k.pth"
-                
-                if os.path.exists(ckpt_path):
-                    self.molscribe = MolScribe(model_path=ckpt_path, device='cuda' if use_gpu else 'cpu')
-                else:
-                    # Try default load but might fail if network restricted or cache issue
-                    # The error suggests torch.load(f) where f is None.
-                    # Workaround: Use HuggingFace Hub directly if needed or skip if not found.
-                    print(f"Debug: No local MolScribe checkpoint found at {ckpt_path}. Attempting default init.")
-                    try:
-                        self.molscribe = MolScribe(model_path=None, device='cuda' if use_gpu else 'cpu')
-                    except AttributeError as ae:
-                        if "'NoneType' object has no attribute 'seek'" in str(ae):
-                            print("Warning: MolScribe failed to download/load default weights. Please clear cache or manually download 'molscribe.ckpt' to models/.")
-                        else:
-                            raise ae
-            except Exception as e:
-                print(f"Error initializing MolScribe: {e}")
+        # MolScribe (Deprecated) -> MolNexTR (Active)
+        self.molnextr = None
+        try:
+            from src.extraction.molnextr.molnextr import MolNexTRSingleton
+            print("Loading MolNexTR...", flush=True)
+            self.molnextr = MolNexTRSingleton.get_instance()
+            print("MolNexTR Loaded Successfully.", flush=True)
+        except Exception as e:
+            print(f"Error initializing MolNexTR: {e}", flush=True)
+            print("Warning: MolNexTR failed to load. Chemical structure recognition will fail.", flush=True)
 
     def recognize_content(self, image_input, content_type):
         """
@@ -126,11 +104,11 @@ class ContentRecognizer:
             return ""
 
     def _recognize_structure(self, image_input):
-        if self.molscribe is None:
-            return "[MolScribe Missing]"
+        if self.molnextr is None:
+            return "[MolNexTR Missing]"
         
         try:
-            # Prepare image for MolScribe
+            # Prepare image for MolNexTR
             # If path, load it. If array, use it.
             import cv2
             import numpy as np
@@ -141,23 +119,31 @@ class ContentRecognizer:
                 if img is None:
                      return "[Error: Image Read Failed]"
             
-            # Ensure it is RGB. MolScribe expects RGB.
+            # Ensure it is RGB. MolNexTR expects RGB (same as MolScribe).
             # OpenCV (cv2.imread) returns BGR.
             if len(img.shape) == 3 and img.shape[2] == 3:
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             
-            # MolScribe inference
-            # predict_images([img]) -> [{'smiles': '...', 'molfile': '...'}]
-            result = self.molscribe.predict_images([img])
-            print(f"   ContentRecognizer: MolScribe Raw Result: {result}", flush=True) # DEBUG
+            # MolNexTR inference
+            # predict_images([img]) -> [{'predicted_smiles': '...', ...}]
+            # Note: MolNexTR.predict_images takes a list of images or paths.
+            # But the underlying model.predict_images expects transformed tensors if passed directly?
+            # Wait, MolNexTRSingleton instance is the `molnextr` class from `src/extraction/molnextr/model.py`.
+            # Its `predict_images` method (line 97) takes `input_images` list.
+            # And it applies `self.transform` inside loop (line 104).
+            # `self.transform` from albumentations expects image=...
+            # The `predict_images` implementation:
+            # images = [self.transform(image=image, keypoints=[])['image'] for image in batch_images]
+            # So passing standard RGB numpy arrays is correct.
+            
+            result = self.molnextr.predict_images([img])
+            # print(f"   ContentRecognizer: MolNexTR Raw Result: {result}", flush=True) # DEBUG
             
             if result and len(result) > 0:
-                smiles = result[0].get('smiles', "")
-                # Some versions might return <invalid> or similar
-                if smiles == "<invalid>":
-                    print("   ContentRecognizer: MolScribe returned <invalid>.", flush=True)
+                smiles = result[0].get('predicted_smiles', "")
+                # Clean up if needed, though MolNexTR usually returns valid SMILES or None
                 return smiles
             return ""
         except Exception as e:
-            print(f"MolScribe Error: {e}")
+            print(f"MolNexTR Error: {e}")
             return "[Error]"

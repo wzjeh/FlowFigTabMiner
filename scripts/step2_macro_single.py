@@ -43,7 +43,13 @@ def run_step2_single(image_path):
         # e.g. data/intermediate/doc/figures -> data/intermediate/doc
         doc_dir = os.path.dirname(os.path.dirname(image_path))
         
-        results = yolo_macro.process_images([image_path], output_base_dir=doc_dir, output_subdir_name="macro_cleaned")
+        # Run with imgsz=1024 to match training
+        results = yolo_macro.process_images(
+            [image_path], 
+            output_base_dir=doc_dir, 
+            output_subdir_name="macro_cleaned",
+            imgsz=1024
+        )
         
         if results:
             item = results[0]

@@ -27,8 +27,11 @@ figures:
 
 # Table Extraction Pipeline
 tables:
+  # segmentation:
+  #   model_path: "models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/best1.pt"
+  #   threshold: 0.8
   segmentation:
-    model_path: "models/yolo11m-tab-seg-0208/runs/detect/train/weights/best.pt"
+    model_path: "models/yolo11m-table-seg-0208/runs/detect/train/weights/best.pt"
     threshold: 0.8
   
   molecule_detection:

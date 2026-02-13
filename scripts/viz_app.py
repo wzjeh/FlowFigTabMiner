@@ -585,6 +585,13 @@ with tab3:
                 if res.returncode == 0:
                     st.success("Full Pipeline Complete!")
                     st.session_state['last_table_run'] = t_base
+                    
+                    # Show Molecule Debug Viz if available
+                    debug_viz_path = os.path.join(t_out, f"{t_base}_body_main_debug_yolo.png")
+                    if os.path.exists(debug_viz_path):
+                        st.image(debug_viz_path, caption="Molecule Detection Debug (YOLO)", width=600)
+                    else:
+                        st.info(f"No molecule debug viz found at {debug_viz_path}")
 
         st.markdown("---")
         st.markdown("**Step-by-Step Debugging**")
@@ -598,6 +605,15 @@ with tab3:
                 res = run_script("scripts/step_table_segmentation.py", [sel_t_path, "--output_dir", t_out])
                 if res.returncode == 0:
                     st.success("Done")
+                    
+                    # Try to parse or infer
+                    # The script now outputs debug_viz_path in JSON or saves as ..._segmentation_debug.png
+                    debug_viz_path = os.path.join(t_out, f"{t_base}_segmentation_debug.png")
+                    
+                    if os.path.exists(debug_viz_path):
+                        st.image(debug_viz_path, caption="YOLO Segmentation Debug", use_container_width=True)
+                    else:
+                        st.warning("Visualization image not found.")
                     # Debug Logs
                     with st.expander("Step 1 Execution Logs"):
                         st.text(res.stdout)

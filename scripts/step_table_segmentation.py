@@ -98,6 +98,35 @@ def main():
     # Sort logs by confidence
     output_data["logs"].sort(key=lambda x: x['confidence'], reverse=True)
     
+    # Visualize and Save Full Debug Image (New)
+    print("Generating Segmentation Debug Visualization...")
+    orig_img = cv2.imread(image_path)
+    if orig_img is not None:
+        viz_img = orig_img.copy()
+        
+        for label, items in components.items():
+            for i, item in enumerate(items):
+                bbox = item.get('box')
+                conf = item.get('conf', 0.0)
+                if bbox:
+                    x1, y1, x2, y2 = map(int, bbox)
+                    # Color Scheme
+                    if label == 'table_body': color = (0, 255, 0) # Green for Body
+                    elif label == 'table_header': color = (0, 0, 255) # Red for Header
+                    elif label == 'table_caption': color = (255, 0, 0) # Blue for Caption
+                    else: color = (0, 255, 255) # Yellow
+                    
+                    cv2.rectangle(viz_img, (x1, y1), (x2, y2), color, 2)
+                    cv2.putText(viz_img, f"{label} {conf:.2f}", (x1, y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+        
+        debug_viz_fname = f"{table_basename}_segmentation_debug.png"
+        debug_viz_path = os.path.join(output_dir, debug_viz_fname)
+        cv2.imwrite(debug_viz_path, viz_img)
+        print(f"Saved Segmentation Visualization to: {debug_viz_path}")
+        output_data['debug_viz_path'] = debug_viz_path
+    else:
+        print("Warning: Could not reload image for visualization.")
+
     print("---JSON_START---")
     print(json.dumps(output_data))
     print("---JSON_END---")

@@ -105,7 +105,8 @@ class FigurePipeline:
         macro_results = self.yolo_macro.process_images(
             figure_images, 
             output_base_dir=output_base_dir, 
-            output_subdir_name="macro_cleaned"
+            output_subdir_name="macro_cleaned",
+            imgsz=1024 # Match User Training
         )
         
         # Step 3 & 4
@@ -140,7 +141,9 @@ class FigurePipeline:
                 # 3A: Micro Detection
                 # 3A: Micro Detection
                 print(f"      [Step 3a] Micro Detection (conf={self.micro_conf})...")
-                micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=self.micro_conf, use_tiling=True)
+                # User Training: Fit 1024x1024. 
+                # Disable tiling to strictly match training distribution.
+                micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=self.micro_conf, imgsz=1024, use_tiling=False)
                 points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
                 print(f"      [Step 3a] Detected {len(points)} data points.")
                 

@@ -62,15 +62,16 @@ class TableFilter:
 
         for img_path in image_paths:
             try:
-                # Run inference with resizing to 1280 as requested/trained (fit black borders implicitly handled by ultralytics letterbox if needed, or we just set imgsz)
-                prediction = self.model(img_path, imgsz=1280, verbose=False)[0]
-                
                 original_img = cv2.imread(img_path)
                 if original_img is None:
                      results.append({'path': img_path, 'is_table': False, 'reason': 'Read Error'})
                      continue
 
                 h, w = original_img.shape[:2]
+                
+                # Run inference with resizing to 1024 
+                # (Standard YOLO padding: gray 114, rect=False: square)
+                prediction = self.model(original_img, imgsz=1024, rect=False, verbose=False)[0]
                 
                 # Check for "table_body"
                 best_body_box = None

@@ -66,7 +66,8 @@ class MoleculeProcessor:
         # 1. Detect Molecules
         print(f"   MoleculeProcessor: Starting YOLO inference on image {w}x{h}...", flush=True)
         try:
-             results = self.model(original_img, conf=self.conf_threshold, verbose=False)[0]
+             # Run inference with resizing to 1024 as requested (match training args)
+             results = self.model(original_img, conf=self.conf_threshold, imgsz=1024, rect=False, verbose=False)[0]
              print(f"   MoleculeProcessor: YOLO inference done. Found {len(results.boxes)} boxes.", flush=True)
         except Exception as e:
              print(f"   MoleculeProcessor: YOLO INFERENCE FAILED: {e}", flush=True)
@@ -107,13 +108,22 @@ class MoleculeProcessor:
                 x2, y2 = min(w, x2), min(h, y2)
                 
                 # Crop Molecule with Padding logic
-                # PREVIOUS: Expanded box in original image (Risk: Includes neighbor tokens)
-                # NEW: Tight crop + Synthetic White Padding (Clean isolation)
+                # PREVIOUS: Tight crop + Synthetic White Padding (Clean isolation)
+                # NEW: Tight + Safety Margin + Synthetic White Padding (Prevents bond cut-off)
                 
-                # 1. Tight Crop
-                tc_crop = original_img[y1:y2, x1:x2].copy()
+                # 1. Tight Crop with Safety Margin (10px) (Original: 5px)
+                # Extra margin ensures we don't cut off dangling bonds/labels
+                # MolScribe is robust to white space but sensitive to cut-offs.
+                margin = 10 
+                tc_x1 = max(0, x1 - margin)
+                tc_y1 = max(0, y1 - margin)
+                tc_x2 = min(w, x2 + margin)
+                tc_y2 = min(h, y2 + margin)
+                
+                tc_crop = original_img[tc_y1:tc_y2, tc_x1:tc_x2].copy()
                 
                 # 2. White Padding
+                # Pad value 30 is good.
                 pad_val = 30
                 try:
                     mol_crop = cv2.copyMakeBorder(tc_crop, pad_val, pad_val, pad_val, pad_val, cv2.BORDER_CONSTANT, value=[255, 255, 255])
@@ -121,24 +131,29 @@ class MoleculeProcessor:
                     print(f"Warning: Padding failed for box {i}: {e}")
                     mol_crop = tc_crop
                 
-                # DEBUG: Save failures
-                # We need to do this AFTER prediction, but let's prepare the path
+                # DEBUG: Save failures (prepare)
                 fail_dir = os.path.join(os.path.dirname(image_path_or_array) if isinstance(image_path_or_array, str) else ".", "mol_debug_crops")
                 os.makedirs(fail_dir, exist_ok=True)
 
-                # 3. Resolution Upscaling
-                # MolScribe works best on larger images. If crop is small, upscale.
-                # Threshold: height < 300px
+                # 3. Resolution Upscaling (Refined)
+                # Only upscale if significantly small (< 192px).
+                # MolScribe handles ~200-300px fine naturally.
+                # If we upscale 230px -> 400px using Cubic, we might add ringing that confuses it.
                 h_crop, w_crop = mol_crop.shape[:2]
-                if h_crop < 300:
-                    scale_factor = 300 / h_crop
+                target_upscale_h = 300
+                
+                if h_crop < 192:
+                    scale_factor = target_upscale_h / h_crop
                     # Limit scale factor to avoid excessive blur (max 3x)
                     scale_factor = min(scale_factor, 3.0)
                     if scale_factor > 1.0:
                         new_w = int(w_crop * scale_factor)
                         new_h = int(h_crop * scale_factor)
                         mol_crop = cv2.resize(mol_crop, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
-                        print(f"   -> [Debug] Upscaled box {i} by {scale_factor:.1f}x ({w_crop}x{h_crop} -> {new_w}x{new_h})")
+                        print(f"   -> [Debug] Upscaled TINY box {i} by {scale_factor:.1f}x ({w_crop}x{h_crop} -> {new_w}x{new_h})")
+                else:
+                    # No upscaling for sufficient resolution
+                    print(f"   -> [Debug] Box {i} sufficient size ({w_crop}x{h_crop}). Skipped Upscaling.")
                 
                 # 2. Convert to SMILES
                 # MolScribe expects PIL image or array. ContentRecognizer now supports array.
@@ -152,11 +167,18 @@ class MoleculeProcessor:
                 logging_smiles = smiles if smiles else "[NoSMILES]"
                 
                 if not smiles or smiles == "<invalid>":
-                     # Save the crop for inspection
-                     fail_fname = f"fail_box_{i}_{logging_smiles}.png"
-                     fail_path = os.path.join(fail_dir, fail_fname)
-                     cv2.imwrite(fail_path, mol_crop)
-                     print(f"   -> [Debug] Saved failed crop to {fail_path}")
+                     print(f"   -> [Debug] MolScribe failed or returned <invalid>. Attempting OCR Fallback...", flush=True)
+                     # Fallback to OCR
+                     ocr_text = content_recognizer.recognize_content(mol_crop, "Text")
+                     if ocr_text and len(ocr_text.strip()) > 0:
+                         smiles = ocr_text.strip()
+                         print(f"   -> [Debug] OCR Fallback Successful: '{smiles}'")
+                     else:
+                         # Still failed
+                         fail_fname = f"fail_box_{i}_{logging_smiles}.png"
+                         fail_path = os.path.join(fail_dir, fail_fname)
+                         cv2.imwrite(fail_path, mol_crop)
+                         print(f"   -> [Debug] OCR also failed. Saved failed crop to {fail_path}")
                 
                 # 3. Replace in Image
                 # A. Fill White
