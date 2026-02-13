@@ -41,8 +41,11 @@ def run_step3_single():
         legend_matcher = LegendMatcher(yolo_model=yolo_micro)
         coord_mapper = CoordinateMapper()
         
+        conf_thresh = step3_cfg.get("confidence_threshold", 0.25)
+        print(f"Using confidence threshold: {conf_thresh}")
+        
         # 3A. Detection
-        micro_detections = yolo_micro.detect(cleaned_image_path, conf=0.10, use_tiling=True)
+        micro_detections = yolo_micro.detect(cleaned_image_path, conf=conf_thresh, use_tiling=True)
         points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
         
         # 3B. Legend Matching

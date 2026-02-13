@@ -20,7 +20,8 @@ def main():
     parser.add_argument("--output_dir", help="Output directory", default=None)
     args = parser.parse_args()
 
-    pipeline = TablePipeline()
+    # Low Memory Mode: Load models sequentially to prevent OOM on Mac/CPU
+    pipeline = TablePipeline(sequential_mode=True)
     result = pipeline.process_table(args.image_path, output_dir=args.output_dir)
     
     # Serialize for stdout

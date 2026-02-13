@@ -2,8 +2,11 @@ import os
 import sys
 import argparse
 
-# Fix OpenMP Conflict
+# Fix OpenMP Conflict & Force Single Threading
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 # Ensure src is importable
 sys.path.insert(0, os.getcwd())

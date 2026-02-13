@@ -7,8 +7,9 @@ class ContextResolver:
     Step 5b: Context Resolution
     Resolves 'Unknown Terms' by searching definitions in the full PDF text.
     """
-    def __init__(self, full_text):
+    def __init__(self, full_text, external_context=None):
         self.full_text = full_text
+        self.external_context = external_context or {}
 
     def resolve(self, unknown_terms):
         """
@@ -19,13 +20,25 @@ class ContextResolver:
             dict: { "NB": "nitrobenzene", "3a": "product 3a (1,3-dinitrobenzene)", ... }
         """
         resolved = {}
+        
+        # 1. Check External Context (Agentic Brain)
+        for term in unknown_terms:
+            # Case-insensitive check
+            for k, v in self.external_context.items():
+                if k.lower() == term.lower() or term.lower() in k.lower(): # Loose match
+                     resolved[term] = v
+                     break
+            # Exact match override
+            if term in self.external_context:
+                resolved[term] = self.external_context[term]
+
+        # 2. Check Full Text (Regex Fallback)
         if not self.full_text:
             return resolved
             
-        # Simple Heuristic Resolver (Can be upgraded to LLM-based)
-        # Search for patterns like: "TB (terms)" or "terms (TB)" or "TB = terms"
-        
         for term in unknown_terms:
+            if term in resolved: continue # Already found
+            
             definition = self._search_definition(term)
             if definition:
                 resolved[term] = definition

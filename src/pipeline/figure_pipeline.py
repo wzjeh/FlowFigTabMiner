@@ -29,6 +29,7 @@ class FigurePipeline:
         self.micro_model_path = micro_cfg.get("model_path", "models/bestYOLOm-2-2.pt")
         
         self.macro_conf = macro_cfg.get("confidence_threshold", 0.5)
+        self.micro_conf = micro_cfg.get("confidence_threshold", 0.25) # Default 0.25 if not set
         self.micro_crop_padding = micro_cfg.get("crop_padding", 10)
         
         # Initialize Models
@@ -63,7 +64,27 @@ class FigurePipeline:
             print(f"Error: Figures directory not found: {figures_dir}. Did Step 1 run?")
             return []
 
-        figure_images = glob.glob(os.path.join(figures_dir, "*.png"))
+        # --- Hybrid Agentic Filtering ---
+        whitelist = None
+        selection_path = os.path.join(pdf_intermediate_dir, "selected_assets.json")
+        if os.path.exists(selection_path):
+            print(f"Found Selection File: {selection_path}")
+            try:
+                with open(selection_path, 'r') as f:
+                    sel_data = json.load(f)
+                    whitelist = set(sel_data.get("selected_figures", []))
+                    print(f"Applying Whitelist: {len(whitelist)} figures selected.")
+            except Exception as e:
+                print(f"Error reading selection file: {e}")
+
+        all_figures = glob.glob(os.path.join(figures_dir, "*.png"))
+        
+        if whitelist is not None:
+            figure_images = [f for f in all_figures if os.path.basename(f) in whitelist]
+            print(f"Filtered {len(all_figures)} -> {len(figure_images)} figures.")
+        else:
+            figure_images = all_figures
+
         print(f"--- Steps 2-4: Processing {len(figure_images)} figures from {figures_dir} ---")
         
         if not figure_images:
@@ -117,9 +138,9 @@ class FigurePipeline:
                 # If we are here, it's relevant! Proceed to Step 3.
                 
                 # 3A: Micro Detection
-                # Using hardcoded config from original script: conf=0.10, use_tiling=True
-                # Could be moved to config.yaml
-                micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=0.10, use_tiling=True)
+                # 3A: Micro Detection
+                print(f"      [Step 3a] Micro Detection (conf={self.micro_conf})...")
+                micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=self.micro_conf, use_tiling=True)
                 points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
                 print(f"      [Step 3a] Detected {len(points)} data points.")
                 
@@ -133,7 +154,7 @@ class FigurePipeline:
                 full_detections = other_detections + matched_points
                 
                 try:
-                    df = self.coord_mapper.map_coordinates(full_detections, cleaned_plot_path)
+                    df, _ = self.coord_mapper.map_coordinates(full_detections, cleaned_plot_path)
                 except Exception as e:
                     print(f"      [Mapper Warning] {e}")
                     df = pd.DataFrame()

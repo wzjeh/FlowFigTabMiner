@@ -6,6 +6,12 @@ import json
 import glob
 from tqdm import tqdm
 
+# Fix OpenMP Conflict & Force Single Threading
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
 # Ensure src is importable
 sys.path.insert(0, os.getcwd())
 
@@ -90,10 +96,32 @@ def main():
         print("No evidence found. Exiting.")
         return
 
+    # Load Agentic Context (if available)
+    agentic_context_path = os.path.join(intermediate_dir, "selected_assets.json")
+    master_abbreviations = {}
+    
+    if os.path.exists(agentic_context_path):
+        print(f"[Info] Loading Agentic Context from {agentic_context_path}")
+        try:
+            with open(agentic_context_path, 'r') as f:
+                ac_data = json.load(f)
+                rich_list = ac_data.get("rich_metadata", [])
+                for item in rich_list:
+                    # Aggregate abbreviations
+                    abbrevs = item.get("abbreviations", {})
+                    if abbrevs:
+                        for k, v in abbrevs.items():
+                            master_abbreviations[k] = v
+            print(f"      Loaded {len(master_abbreviations)} abbreviations from Agentic Brain.")
+            print(f"      (Sample: {list(master_abbreviations.items())[:3]}...)")
+        except Exception as e:
+            print(f"      [Warning] Failed to load agentic context: {e}")
+
     # Initialize Modules
     llm = LLMEngine()
     extractor = GlobalInfoExtractor(llm)
-    resolver = ContextResolver(full_text)
+    # Pass master_abbreviations to resolver
+    resolver = ContextResolver(full_text, external_context=master_abbreviations)
     synthesizer = DataSynthesizer(llm)
     
     final_results = []

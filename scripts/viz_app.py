@@ -41,8 +41,17 @@ def run_script(script_path, args=[]):
     # Debug: Print command being run
     print(f"Running command: {' '.join(cmd)}")
     
+    # CRITICAL: Force single-thread environment for subprocesses to prevent CPU saturation
+    env = os.environ.copy()
+    env["OMP_NUM_THREADS"] = "1"
+    env["MKL_NUM_THREADS"] = "1"
+    env["OPENBLAS_NUM_THREADS"] = "1"
+    env["VECLIB_MAXIMUM_THREADS"] = "1"
+    env["NUMEXPR_NUM_THREADS"] = "1"
+    # env["OPENCV_IO_ENABLE_JASPER"] = "true" # Already global?
+
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, env=os.environ.copy())
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
         return result
     except Exception as e:
         print(f"Subprocess failed: {e}")
@@ -114,41 +123,96 @@ if st.sidebar.button("🚀 Run Full Pipeline", type="primary"):
     progress_bar = st.sidebar.progress(0)
     status_text = st.sidebar.empty()
     
+    # Create a container for logs
+    log_expander = st.expander("📜 Pipeline Execution Logs", expanded=True)
+    
     try:
         # 1. Step 1: TF-ID
         status_text.write("Step 1/4: Running TF-ID Extraction...")
-        res1 = run_script("scripts/step1_tfid.py", [selected_pdf_path])
+        with log_expander:
+            st.markdown("### Step 1: TF-ID")
+            res1 = run_script("scripts/step1_tfid.py", [selected_pdf_path])
+            st.text(f"Return Code: {res1.returncode}")
+            if res1.stdout: st.code(res1.stdout, language='text')
+            if res1.stderr: st.code(res1.stderr, language='text')
+            
         if res1.returncode != 0:
             st.sidebar.error("Step 1 Failed!")
             st.error(res1.stderr)
             st.stop()
         progress_bar.progress(25)
         
-        # 2. Step 2-4: Figures
-        status_text.write("Step 2/4: Processing Figures...")
-        res2 = run_script("scripts/run_steps2_to_4.py", [selected_pdf_path])
-        if res2.returncode != 0:
-            st.sidebar.warning("Figure pipeline had issues (check logs), continuing...")
-            st.write("Figure Logs:", res2.stderr)
-        progress_bar.progress(50)
+        # 2. Step 2: Intelligent Selection (Hybrid Agentic)
+        status_text.write("Step 2/5: Agentic Reasoning (Selecting Relevant Assets)...")
+        with log_expander:
+            st.markdown("### Step 2: Agentic Selector")
+            res_sel = run_script("scripts/step_llm_selector.py", [selected_pdf_path])
+            st.text(f"Return Code: {res_sel.returncode}")
+            if res_sel.stdout: st.code(res_sel.stdout, language='json')
+            if res_sel.stderr: st.code(res_sel.stderr, language='text')
+
+        if res_sel.returncode != 0:
+            st.sidebar.warning("Selector failed (check logs), falling back to processing ALL assets.")
+        else:
+            # Parse output to show what was selected
+            sel_json = parse_json_from_stdout(res_sel.stdout)
+            if sel_json:
+                n_fig = len(sel_json.get("selected_figures", []))
+                n_tab = len(sel_json.get("selected_tables", []))
+                st.sidebar.info(f"Agent Selected: {n_fig} Figs, {n_tab} Tabs")
+                
+                # Show reasons in main area
+                rich_data = sel_json.get("rich_metadata", [])
+                if rich_data:
+                    st.write("**Agent Selection Logic:**")
+                    for item in rich_data:
+                        fname = item.get("filename")
+                        reason = item.get("reason", "No reason provided")
+                        icon = "📊" if "Table" in fname else "📈"
+                        st.caption(f"{icon} **{fname}**: {reason}")
+        progress_bar.progress(40)
         
-        # 3. Step Tables
-        status_text.write("Step 3/4: Processing Tables...")
+        # 3. Step 3: Figures
+        status_text.write("Step 3/5: Processing Selected Figures...")
+        with log_expander:
+            st.markdown("### Step 3: Figure Processing")
+            res2 = run_script("scripts/run_steps2_to_4.py", [selected_pdf_path])
+            st.text(f"Return Code: {res2.returncode}")
+            if res2.stdout: st.code(res2.stdout, language='text')
+            if res2.stderr: st.code(res2.stderr, language='text')
+
+        if res2.returncode != 0:
+            st.sidebar.warning("Figure pipeline had issues, continuing...")
+        progress_bar.progress(60)
+        
+        # 4. Step 4: Tables
+        status_text.write("Step 4/5: Processing Selected Tables...")
         # Target specific table directory for this PDF
         pdf_tables_dir = os.path.join(intermediate_dir, "tables")
         if os.path.exists(pdf_tables_dir):
-            # We run batch pipeline on this specific folder
-            res3 = run_script("scripts/run_batch_tables.py", ["--input_dir", pdf_tables_dir])
+            with log_expander:
+                st.markdown("### Step 4: Content Extraction (Tables)")
+                # We run batch pipeline on this specific folder
+                res3 = run_script("scripts/run_batch_tables.py", ["--input_dir", pdf_tables_dir])
+                st.text(f"Return Code: {res3.returncode}")
+                if res3.stdout: st.code(res3.stdout, language='text')
+                if res3.stderr: st.code(res3.stderr, language='text')
+
             if res3.returncode != 0:
-                 st.sidebar.warning("Table pipeline had issues, continuing...")
-                 st.write("Table Logs:", res3.stderr)
+                 st.sidebar.warning("Table pipeline loop had issues, continuing...")
         else:
             st.sidebar.info("No tables found to process.")
-        progress_bar.progress(75)
+        progress_bar.progress(80)
 
-        # 4. Step 5: Assembly
-        status_text.write("Step 4/4: Final Assembly & Synthesis...")
-        res5 = run_script("scripts/step5_advanced.py", [selected_pdf_path])
+        # 5. Step 5: Assembly
+        status_text.write("Step 5/5: Final Assembly & Synthesis...")
+        with log_expander:
+            st.markdown("### Step 5: Global Assembly")
+            res5 = run_script("scripts/step5_advanced.py", [selected_pdf_path])
+            st.text(f"Return Code: {res5.returncode}")
+            if res5.stdout: st.code(res5.stdout, language='text')
+            if res5.stderr: st.code(res5.stderr, language='text')
+
         if res5.returncode != 0:
              st.sidebar.error("Step 5 Failed!")
              st.error(res5.stderr)
@@ -158,7 +222,8 @@ if st.sidebar.button("🚀 Run Full Pipeline", type="primary"):
         status_text.write("✅ Pipeline Complete!")
         st.sidebar.success("All Steps Finished.")
         time.sleep(1)
-        st.rerun()
+        if st.button("Reload Page to Reset"):
+            st.rerun()
         
     except Exception as e:
         st.sidebar.error(f"Pipeline Error: {e}")

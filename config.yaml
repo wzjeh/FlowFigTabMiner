@@ -19,7 +19,7 @@ figures:
     model_path: "models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt"
     crop_padding: 10
     ocr_engine: "paddle"
-    # confidence_threshold: 0.5 # Example if needed
+    confidence_threshold: 0.5 # Example if needed
 
   step4_assembly:
     clustering_threshold: 0.5

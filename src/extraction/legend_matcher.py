@@ -341,6 +341,10 @@ class LegendMatcher:
          c1, c2: [H, S, V] arrays.
          H is 0-179, S/V 0-255.
          """
+         # Cast to float to avoid uint8 overflow
+         c1 = c1.astype(float)
+         c2 = c2.astype(float)
+
          # Wrap Hue
          dh = min(abs(c1[0] - c2[0]), 180 - abs(c1[0] - c2[0])) / 180.0
          ds = abs(c1[1] - c2[1]) / 255.0

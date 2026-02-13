@@ -216,7 +216,8 @@ class CoordinateMapper:
                     if res and isinstance(res, list) and len(res) > 0:
                         first_item = res[0]
                         if isinstance(first_item, dict):
-                            if 'rec_texts' in first_item: text = first_item['rec_texts'][0]
+                            if 'rec_texts' in first_item and first_item['rec_texts']:
+                                text = first_item['rec_texts'][0]
                         elif isinstance(first_item, list):
                              for line in first_item:
                                  if isinstance(line, list) and len(line) >= 2:

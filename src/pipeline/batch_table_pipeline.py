@@ -71,6 +71,23 @@ class BatchTablePipeline:
         print(f"Scanning {input_dir}...")
         image_files = sorted(glob.glob(os.path.join(input_dir, "**", "*.png"), recursive=True))
         
+        # --- Hybrid Agentic Filtering ---
+        # Look for selected_assets.json in the parent folder of input_dir
+        # input_dir = data/intermediate/{pdf}/tables -> parent = data/intermediate/{pdf}
+        parent_dir = os.path.dirname(input_dir.rstrip(os.sep))
+        selection_path = os.path.join(parent_dir, "selected_assets.json")
+        whitelist = None
+        
+        if os.path.exists(selection_path):
+            print(f"Found Selection File: {selection_path}")
+            try:
+                with open(selection_path, 'r') as f:
+                    sel_data = json.load(f)
+                    whitelist = set(sel_data.get("selected_tables", []))
+                    print(f"Applying Whitelist: {len(whitelist)} tables selected.")
+            except Exception as e:
+                print(f"Error reading selection file: {e}")
+
         # Filter: Exclude already processed crops (body, cell, smiles)
         # We want the ROOT table images.
         # Heuristic: exclude files containing "_body", "_cell", "_smiles", "_viz", "_crop"
@@ -79,9 +96,15 @@ class BatchTablePipeline:
             name = os.path.basename(f)
             if any(x in name for x in ["_body", "_cell", "_smiles", "_viz", "_crop", "lab_pub_"]):
                 continue
+            
+            # Apply Whitelist
+            if whitelist is not None:
+                if name not in whitelist:
+                    continue
+                    
             to_process.append(f)
             
-        print(f"Found {len(to_process)} potential raw table images.")
+        print(f"Found {len(to_process)} potential raw table images (Filtered).")
         
         results_summary = []
         
