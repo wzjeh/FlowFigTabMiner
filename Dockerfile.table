@@ -26,10 +26,9 @@ COPY src/utils/ src/utils/
 # Copy the API service itself
 COPY services/table_api.py services/table_api.py
 
-# Models/Configs should ideally be downloaded from GCS or mounted, 
-# but if small, you can copy them:
-# COPY models/ models/
-# COPY config.yaml config.yaml
+# Copy models and configuration files needed by the pipeline
+COPY models/ models/
+COPY config.yaml config.yaml
 
 # Create necessary directories for runtime
 RUN mkdir -p /tmp /app/data

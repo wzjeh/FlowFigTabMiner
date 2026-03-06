@@ -9,7 +9,9 @@ ultralytics==8.2.15
 numpy<2.0.0
 
 # Dependencies specific to table processing
-# Make sure to include TATR and MolScribe related libraries here
-transformers==4.40.2
+# TATR, MolScribe, and Huggingface dependencies
+transformers==4.57.3
+huggingface-hub==0.28.1
+timm==0.4.12
 Pillow==10.3.0
-# ... add other specific packages that were in your original environment for tables
+requests==2.32.5
