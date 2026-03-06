@@ -15,7 +15,7 @@ sys.path.insert(0, os.getcwd())
 from src.parsing.active_area_detector import ActiveAreaDetector
 from src.parsing.yolo_detector import YoloDetector
 from src.parsing.stage2_detector import Stage2Detector
-from src.extraction.legend_matcher import LegendMatcher
+from src.extraction.figure.legend_matcher import LegendMatcher
 
 # NOTE: Paddle-based modules (CoordinateMapper, EvidenceAssembler) are imported LOCALLY
 # to avoid crashes on init if Torch is already loaded/active, or simply to manage memory.
@@ -72,7 +72,7 @@ def run_pipeline(input_pdf):
         # Lazy Import Paddle Modules NOW
         print("   Importing PaddleOCR modules...")
         try:
-            from src.extraction.coordinate_mapper import CoordinateMapper
+            from src.extraction.figure.coordinate_mapper import CoordinateMapper
             from src.assembly.evidence_assembler import EvidenceAssembler
             
             # Instantiate

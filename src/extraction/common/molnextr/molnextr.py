@@ -4,7 +4,7 @@ import platform
 import warnings
 import torch
 import torch
-from src.extraction.molnextr.model import molnextr
+from src.extraction.common.molnextr.model import molnextr
 
 # Suppress unnecessary warnings
 logging.getLogger("absl").setLevel("ERROR")

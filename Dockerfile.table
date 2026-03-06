@@ -1,0 +1,45 @@
+# Use a slim Python 3.9 image (matching your development environment roughly)
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (needed for OpenCV and MolScribe)
+RUN apt-get update && apt-get install -y \\
+    libglib2.0-0 \\
+    libsm6 \\
+    libxext6 \\
+    libxrender-dev \\
+    libgl1-mesa-glx \\
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file and install python dependencies
+COPY services/requirements_table.txt .
+RUN pip install --no-cache-dir -r requirements_table.txt
+
+# Copy only the necessary source code for the table microservice
+COPY src/extraction/table/ src/extraction/table/
+COPY src/extraction/common/ src/extraction/common/
+COPY src/parsing/ src/parsing/
+COPY src/utils/ src/utils/
+
+# Copy the API service itself
+COPY services/table_api.py services/table_api.py
+
+# Models/Configs should ideally be downloaded from GCS or mounted, 
+# but if small, you can copy them:
+# COPY models/ models/
+# COPY config.yaml config.yaml
+
+# Create necessary directories for runtime
+RUN mkdir -p /tmp /app/data
+
+# Expose port (Cloud Run defaults to 8080)
+ENV PORT=8080
+EXPOSE 8080
+
+# Environment variables for Python to find 'src' imports
+ENV PYTHONPATH="/app:${PYTHONPATH}"
+
+# Command to run the FastAPI app via Uvicorn
+CMD ["uvicorn", "services.table_api:app", "--host", "0.0.0.0", "--port", "8080"]

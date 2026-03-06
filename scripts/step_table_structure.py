@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 os.environ["OPENCV_IO_ENABLE_JASPER"] = "true"
 cv2.setNumThreads(0) # Avoid multiprocessing issues in subprocess
 
-from src.extraction.table_structure import TableStructureRecognizer
+from src.extraction.table.structure import TableStructureRecognizer
 
 def main():
     parser = argparse.ArgumentParser(description="Step 3: Structure Recognition (TATR)")
@@ -51,8 +51,8 @@ def main():
     if mol_model_path and os.path.exists(mol_model_path):
         print("Initializing Molecule Processor for Web App Step...")
         try:
-            from src.extraction.molecule_processor import MoleculeProcessor
-            from src.extraction.content_recognizer import ContentRecognizer
+            from src.extraction.common.molecule_processor import MoleculeProcessor
+            from src.extraction.common.content_recognizer import ContentRecognizer
             
             mol_conf = mol_cfg.get("confidence_threshold", 0.25)
             mol_proc = MoleculeProcessor(model_path=mol_model_path, conf_threshold=mol_conf)

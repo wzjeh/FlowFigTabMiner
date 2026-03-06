@@ -13,14 +13,14 @@ from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-from src.extraction.molnextr.indigo import Indigo
-from src.extraction.molnextr.indigo.renderer import IndigoRenderer
+from src.extraction.common.molnextr.indigo import Indigo
+from src.extraction.common.molnextr.indigo.renderer import IndigoRenderer
 
-from src.extraction.molnextr.data_aug import SafeRotate, CropWhite, PadWhite, AddIncompleteStructuralNoise, AddBondNoise, SaltAndPepperNoise, PadToSquare, AddLineNoise, AddEdgeElementSymbolNoise, DrawBorder
-from src.extraction.molnextr.utils import FORMAT_INFO
-from src.extraction.molnextr.tokenization import PAD_ID
-from src.extraction.molnextr.chemical import get_num_atoms, normalize_nodes
-from src.extraction.molnextr.abbrs import RGROUP_SYMBOLS, SUBSTITUTIONS, ELEMENTS, COLORS
+from src.extraction.common.molnextr.data_aug import SafeRotate, CropWhite, PadWhite, AddIncompleteStructuralNoise, AddBondNoise, SaltAndPepperNoise, PadToSquare, AddLineNoise, AddEdgeElementSymbolNoise, DrawBorder
+from src.extraction.common.molnextr.utils import FORMAT_INFO
+from src.extraction.common.molnextr.tokenization import PAD_ID
+from src.extraction.common.molnextr.chemical import get_num_atoms, normalize_nodes
+from src.extraction.common.molnextr.abbrs import RGROUP_SYMBOLS, SUBSTITUTIONS, ELEMENTS, COLORS
 
 cv2.setNumThreads(1)
 

@@ -10,8 +10,8 @@ import argparse
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.parsing.stage2_detector import Stage2Detector
-from src.extraction.legend_matcher import LegendMatcher
-from src.extraction.coordinate_mapper import CoordinateMapper
+from src.extraction.figure.legend_matcher import LegendMatcher
+from src.extraction.figure.coordinate_mapper import CoordinateMapper
 
 def show_img(path, title="Image"):
     """Helper to show image or print path if in non-GUI env"""

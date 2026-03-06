@@ -11,8 +11,8 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 sys.path.insert(0, os.getcwd())
 
 from src.parsing.stage2_detector import Stage2Detector
-from src.extraction.legend_matcher import LegendMatcher
-from src.extraction.coordinate_mapper import CoordinateMapper
+from src.extraction.figure.legend_matcher import LegendMatcher
+from src.extraction.figure.coordinate_mapper import CoordinateMapper
 
 import argparse
 

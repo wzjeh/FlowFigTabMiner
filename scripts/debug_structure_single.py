@@ -6,7 +6,7 @@ import numpy as np
 # Ensure src is importable
 sys.path.insert(0, os.getcwd())
 
-from src.extraction.content_recognizer import ContentRecognizer
+from src.extraction.common.content_recognizer import ContentRecognizer
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

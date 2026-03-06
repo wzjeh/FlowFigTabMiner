@@ -6,10 +6,10 @@ import pandas as pd
 from src.parsing.active_area_detector import ActiveAreaDetector
 from src.parsing.yolo_detector import YoloDetector
 from src.parsing.stage2_detector import Stage2Detector
-from src.extraction.legend_matcher import LegendMatcher
-from src.extraction.coordinate_mapper import CoordinateMapper
-from src.extraction.coordinate_mapper import CoordinateMapper
-from src.extraction.table_pipeline import TablePipeline
+from src.extraction.figure.legend_matcher import LegendMatcher
+from src.extraction.figure.coordinate_mapper import CoordinateMapper
+from src.extraction.figure.coordinate_mapper import CoordinateMapper
+from src.extraction.table.pipeline import TablePipeline
 
 def main():
     parser = argparse.ArgumentParser(description="FlowFigTabMiner: Extract data from Flow Chemistry Papers")

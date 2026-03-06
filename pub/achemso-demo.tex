@@ -1,0 +1,523 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This is a (brief) model paper using the achemso class
+%% The document class accepts keyval options, which should include
+%% the target journal and optionally the manuscript type.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[journal=jacsat,manuscript=article]{achemso}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional packages needed here.  Only include packages
+%% which are essential, to avoid problems later.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{chemformula} % Formula subscripts using \ch{}
+\usepackage[T1]{fontenc} % Use modern font encodings
+\usepackage{hyperref} % For hyperlinks in the PDF
+\usepackage{url}
+\usepackage[version=4]{mhchem} % Formula subscripts using \ce{}
+\usepackage{booktabs} % For formal tables
+\usepackage{siunitx}  % 可选但推荐，用于处理单位和数字对齐
+\usepackage{amsmath} % 确保导言区有这个
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% If issues arise when submitting your manuscript, you may want to
+%% un-comment the next line.  This provides information on the
+%% version of every file you have used.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\listfiles
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional macros here.  Please use \newcommand* where
+%% possible, and avoid layout-changing macros (which are not used
+%% when typesetting).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*\mycommand[1]{\texttt{\emph{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Meta-data block
+%% ---------------
+%% Each author should be given as a separate \author command.
+%%
+%% Corresponding authors should have an e-mail given after the author
+%% name as an \email command. Phone and fax numbers can be given
+%% using \phone and \fax, respectively; this information is optional.
+%%
+%% The affiliation of authors is given after the authors; each
+%% \affiliation command applies to all preceding authors not already
+%% assigned an affiliation.
+%%
+%% The affiliation takes an option argument for the short name.  This
+%% will typically be something like "University of Somewhere".
+%%
+%% The \altaffiliation macro should be used for new address, etc.
+%% On the other hand, \alsoaffiliation is used on a per author basis
+%% when authors are associated with multiple institutions.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Wenyuan Zhao}
+% \affiliation{Graduate School of Chemical Sciences and Engineering, Hokkaido University, Sapporo, Japan}
+\affiliation{Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan}
+
+\author{Xianzhu Zhong}
+\author{Simeng Wang}
+\author{ashikeri}
+\author{mohanmode}
+\author{Jouffery Xiaer}
+\author{Yirui Peng}
+\author{Aiichiro Nagaki}
+\email{nagaki@sci.hokudai.ac.jp}
+% Kita 10-jo, Nishi 8-chome, Kita-ku, Sapporo 060-0810 (Japan)
+% \affiliation{Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan}
+\affiliation{Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The document title should be given as usual. Some journals require
+%% a running title from the author: this should be supplied as an
+%% optional argument to \title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title[An \textsf{achemso} demo]
+  {FlowFigTabMiner: An Agent for High Quality Flow Chemistry Dataset Construction from Literatures}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Some journals require a list of abbreviations or keywords to be
+%% supplied. These should be set up here, and will be printed after
+%% the title and author information, if needed.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \abbreviations{IR,NMR,UV}
+\keywords{Chemoinfromatic, AI Agent, Yolo, Flow chemistry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The manuscript does not need to include \maketitle, which is
+%% executed automatically.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "tocentry" environment can be used to create an entry for the
+%% graphical table of contents. It is given here as some journals
+%% require that it is printed as part of the abstract page. It will
+%% be automatically moved as appropriate.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tocentry}
+% The surrounding frame is 9\,cm by 3.5\,cm。
+
+%% A TOC figure needs to be added.
+\begin{minipage}{9cm}
+\includegraphics[width=8cm]{figures/TOC.PNG} 
+\end{minipage}
+
+\end{tocentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The abstract environment will automatically gobble the contents
+%% if an abstract is not used by the target journal.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+  Data scarcity and the limitations of commercial LLMs impede the digitalization of flow chemistry. 
+  Herein, we introduce \textbf{FlowDevMiner}, a locally deployable framework for automated literature mining. 
+  By fine-tuning Llama-3.1-8B, we achieved an extraction F1 score of 0.72, outperforming baselines while overcoming the limitations of generic safety filters regarding chemical queries. 
+  Analyzing 118 curated publications revealed data-driven reactor selection rules and graphically defined a \textit{Safe Operating Window}. 
+  These data-driven insights guided the experimental design for nitrobenzene hydrogenation, achieving 100\% yield. 
+  This work establishes a secure and robust framework that not only digitizes legacy literature but also provides evidence-based starting conditions to lower the entry barrier for flow chemistry development.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start the main part of the manuscript here.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+%fig4 未来必须要做的事是和多模态提取数据的效果分别进行对比图（包括两种模式的成本对比）。以及展示本论文中所用的yolo或者其他模型的训练结果图。
+%fig5-fig6还需要提取一些文献，分析下数据构成，组成一个本实验室和竞争对手实验室的丁基里 数据集。即，比如有共20篇文献，我提取19篇，然后用数据预测第20篇中的数据，这样不需要做实验，还能算作完成了很好的验证，可以生成一张大图。
+%提取真实数据时候恰好，也可以展示下热图提取的过程，或者放到SI中。
+% 其实可以单独比较下 我的方案转化为smiles之后再去识别表格的准确率和之前直接tatr做个柱形图或者表格对比
+% 另外还要发到群里 让大家使用下
+
+Recent advances in generative artificial intelligence, particularly large language models (LLMs), are expanding the applications of machine learning in chemical engineering\cite{schweidtmann2024generative,D5CS00146C,D4SC03921A,boiko2023autonomous,doi:10.1021/acs.oprd.3c00229}.
+These models have demonstrated significant potential across diverse tasks, such as assisting with process flow diagrams\cite{aicheasdas}, predicting thermochemical and kinetic properties\cite{tomme2025machine}, aiding process development\cite{ruan2024automatic}, and optimizing reaction conditions or yields\cite{doi:10.1021/acs.jcim.2c01085,doi:10.1021/acs.jcim.0c01234,schwaller2021prediction,D2SC06041H}.
+However, a primary bottleneck limits the broader application of these AI models: the lack of high-quality, large-scale training datasets.\cite{tomme2025machine,gartner2024data,chen2024autotemplate} 
+In response to this challenge, significant efforts are underway to improve data standardization and accessibility. 
+For example, \citeauthor{doi:10.1021/jacs.1c09820} have pioneered the development of reaction databases and defined standardized formats to promote effective data sharing and reuse\cite{doi:10.1021/acs.jcim.3c00607}.
+\citeauthor{jacs_mof} successfully addressed the data scarcity challenge by employing a chain of advanced LLMs to mine over 40,000 articles, constructing a comprehensive, structured dataset for metal-organic frameworks (MOFs)\cite{jacs_mof}.
+
+Advancements in laboratory automation are also helping to generate large datasets. Techniques like high-throughput experimentation (HTE)\cite{lu2024roboticized,li2023deep} and flow chemistry\cite{D5DD00129C,ashikari2025real,adamo2016demand} can now produce standardized experimental data at scale. 
+However, physical experiments remain costly. 
+Consequently, large datasets are also acquired through alternative methods, including simulations\cite{acsabm} and text mining from patents\cite{vangala2024suitability} or published literature\cite{doi:10.1021/acs.jcim.1c00284,angewhuman}.
+A critical gap persists for flow chemistry data in particular. Although the published literature contains abundant information on flow chemistry processes, this data is often unstructured.
+As a result, publicly available, structured databases for flow chemistry remain remarkably scarce\cite{Deadman_2025}. This scarcity directly hinders the development of robust machine learning models tailored for continuous manufacturing.
+
+Over the past few decades, various methods have been developed to extract structured information from unstructured chemical literature.
+Leveraging natural language processing (NLP) techniques to build systems that can automatically and effectively process lengthy chemical texts, 
+including scientific literature or patents, in order to extract key information has received widespread attention\cite{KURGAN_MUSILEK_2006}.
+Supervised learning models like Google’s  BERT  language  model\cite{BERT} and its domain-specific variants such as SciBERT\cite{SciBERT}, ChemBERTa\cite{ChemBERTa}, 
+BioBERT\cite{BioBERT}, and MatSciBERT\cite{MatSciBERT} have been successfully applied to various chemical text mining tasks.
+
+For instance, OPSIN \cite{lowe_2012} serves as an early exemplar, utilizing a heuristic-based method that underscores the potential benefits of applying NLP to chemical data extraction. 
+ChemDataExtractor \cite{ChemDataExtractor} pioneered an automated approach to extract chemical information from scientific literature by integrating NLP and machine learning techniques. 
+Subsequently, ChemRxnBERT \cite{Guo2022-tk} harnessed the power of pre-training on chemical literature to foster a deeper understanding of chemical context. 
+More recently, OpenChemIE \cite{doi:10.1021/acs.jcim.4c00572} introduced an open-source toolkit that automatically extracts chemical reaction data by integrating information from text, tables, and figures. 
+Xiang et al. \cite{Xiang2025-dp} presented a workflow that employs a local LLMs combined with multi-step prompt engineering to automatically extract synthesis parameters for on-surface reactions. 
+However, it does not capture process-level information such as reactor types or influencing process parameters. 
+Pan et al. \cite{Pan2025-sj} introduced Chat-microreactor, an LLM-based assistant that extracts fluidic properties and microchannel dimensions from literature to train machine learning models for classifying multiphase flow patterns (e.g., dripping, jetting). 
+Nevertheless, this tool is explicitly prompted to ignore chemical reaction data and therefore does not extract critical process development parameters such as catalyst, temperature, or yield.
+
+Recently, LLMs such as the GPT series\cite{openai2024gpt4technicalreport, dagdelen2024structured} and LLaMA \cite{touvron2023llama, zhong2023reaction} have demonstrated exceptional capabilities in text understanding and generation, emerging as promising tools for extracting chemical information from literature.\cite{D4CS00913D}
+However, deploying such models requires substantial computational resources, and the reliance on online APIs raises security and privacy concerns that hinder broader adoption. 
+Moreover, general-purpose LLMs often struggle to handle highly specialized domains such as flow chemistry, where reaction descriptions are complex, domain-specific, and frequently involve hazardous or highly exothermic processes. 
+In some cases, safety-related content may even be automatically blocked by commercial models (e.g., Gemini), further limiting their effectiveness for process development literature.\cite{openai2024gpt4ocard,google2025gemini25flashlite}
+
+Herein, we introduce \textbf{FlowDevMiner}, a locally deployable framework that leverages Local Large Language Models (LLMs) to extract structured process data from unstructured flow chemistry literature. 
+By fine-tuning Llama-3.1-8B via Low-Rank Adaptation (LoRA)\cite{hu2021lora} and employing advanced prompt engineering, our approach efficiently processes PDF documents on standard personal computing hardware. 
+The framework is engineered to generate dual outputs: it extracts quantitative reaction parameters into a structured JSON format compatible with the Open Reaction Database (ORD)\cite{doi:10.1021/jacs.1c09820} standards, while simultaneously synthesizing qualitative influencing factors to guide researchers in experimental design. 
+We demonstrate the practical utility of FlowDevMiner by constructing a high-quality dataset from 118 flow chemistry publications and experimentally validating the mined insights through the successful continuous-flow hydrogenation of nitrobenzene.
+
+\section{RESULTS AND DISCUSSION}
+
+\subsection{Framework Architecture and Optimization Strategy}
+Compared to traditional batch synthesis, flow chemistry exhibits higher standardization in reaction conditions and more explicitly defined parameters.
+This inherent structure facilitates information extraction via Large Language Models (LLMs), as shown in Figure~\ref{fig:match}.
+However, reliable extraction remains challenging due to the limited context window and computational constraints of local models.
+To address this, the \textbf{FlowDevMiner} architecture bridges the gap between unstructured scientific literature and machine-readable data.
+
+As illustrated in Figure~\ref{fig:overall}, the system operates through a streamlined three-stage pipeline: Text Parsing, Filtering/Extraction, and Output Generation.
+In the \textit{Text Parsing} stage, a keyword-based check first identifies relevant flow chemistry literature. 
+For valid documents, PyMuPDF\cite{PyMuPDF} extracts unstructured raw text from the source files.
+In the \textit{Filtering/Extraction} stage, a modular prompt engineering framework guides the local LLM through three discrete tasks: \textit{Filter}, \textit{Abstract}, and \textit{Summarize}.
+The \textit{Filter} module is employed to ensure input data purity by identifying high-relevance text segments through a semantic filtering mechanism. 
+This involves evaluating text segments against a set of 'Gold Standard' experimental paragraphs using cosine similarity (Eq.~\ref{equ:cos_similarity}):
+\begin{equation}\label{equ:cos_similarity}
+\text { Similarity }=\frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\|\|\mathbf{B}\|}
+\end{equation}
+where $\mathbf{A}$ and $\mathbf{B}$ represent the vector embeddings of the input text and the reference sample, respectively. 
+Only segments surpassing a high-relevance threshold are retained.
+
+Subsequently, the \textit{Abstract} module consolidates high-relevance segments, preserving the original sequence and key technical details. 
+The LLM then performs \textit{Summarization} to extract structured reaction parameters into a predefined JSON schema or to condense key influencing factors. 
+This process yields intermediate JSON files and a markdown summary of influence factors.
+Finally, the \textit{Output Generation} stage produces dual outputs: structured JSON for ORD integration and qualitative influence summaries to assist in experimental design (Figure S1).
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig1-overview.png}
+    \caption{\centering Transformation of original text descriptions into structured JSON formats: optimal reaction results (top) and influence factor summary (bottom).}
+    \label{fig:overview}
+\end{figure}
+
+% \subsubsection{Evolution of Prompt Engineering}
+Prompt engineering is essential for applying LLMs to specialized chemical domains~\cite{Luo2025-se,appllmchemreactiondataextraction2024}. 
+To mitigate hallucinations common in smaller models, we adopted an iterative optimization strategy. 
+Initial Zero-shot attempts yielded unstructured outputs, which were partially improved by enforcing a rigid JSON schema to standardize the format. 
+However, semantic errors persisted until we implemented negative constraints, explicitly instructing the model to return \texttt{null} for background reviews to reduce false positives. 
+We further incorporated few-shot examples to aid in parsing complex procedures. 
+Finally, we adopted a modular decomposition approach to maintain context focus. 
+This strategy divides the workflow into distinct \textit{Filter}, \textit{Abstract}, and \textit{Summarize} stages.
+
+% \subsubsection{Data Curation and Fine-tuning Strategy}
+Beyond prompt engineering, we fine-tuned the local model to enhance its extraction capabilities in flow chemistry.
+We constructed a high-quality dataset via a "human-in-the-loop" process. 
+Doctoral researchers manually verified data from 118 publications to ensure accuracy and reliability (Figure~\ref{fig:finetune}).
+The annotated dataset is accessible on \href{https://huggingface.co/wyzhaoc/Llama-3.1-8B-TXT2JSON-FT-Q4_K_M}{Hugging Face}. 
+To address the objectives outlined in Figure~\ref{fig:overall}, specifically converting paragraphs to JSON and merging multiple outputs, we designed three distinct task types for fine-tuning.
+
+We constructed a composite dataset to fine-tune the local LLM via LoRA, balancing domain specificity with general reasoning.
+LoRA achieves results comparable to full-parameter fine-tuning while modifying only a small subset of parameters(Figure S3).
+As detailed in the Experimental Section, the dataset comprises Task A (75.1\%, Domain Specificity), Task B (3.4\%, Structural Alignment), and Task C (21.5\%, Generalization).
+Task C serves to preserve fundamental language understanding and prevent catastrophic forgetting~\cite{luo2025empiricalstudycatastrophicforgetting}.
+This hybridization strategy serves as a safeguard, ensuring the model retains basic language capabilities while mastering flow chemistry extraction.
+
+Table S3 shows the training logs, which can be divided into two stages. 
+In the first stage (Steps 0–30), the loss dropped sharply (1.21 $\to$ 0.40), indicating the model quickly learned the JSON format and rules. 
+In the second stage (Steps 45–120), the loss stabilized around 0.33. 
+Finally, the training loss (0.3247) was very close to the validation loss (0.3275) at step 120, suggesting the model worked effectively without overfitting.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/pipeline-figure.png}
+    \caption{Overall framework of the FlowDevMiner system. The workflow incorporates a modular prompt engineering pipeline (light green) and a human-in-the-loop fine-tuning process to transform raw PDFs into structured chemical data.}
+    \label{fig:pipeline-figure}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/pipeline-table.png}
+    \caption{Workflow for fine-tuning the local LLM.}
+    \label{fig:pipeline-table}
+\end{figure}
+
+\subsection{Evaluation of Extraction Capability}
+
+% Comparative analysis against baseline models validates the efficacy of our fine-tuning strategy (Figure~\ref{fig:compare}).
+% The Local LLM (Finetuned) demonstrated superior performance in identifying structured chemical entities.
+% Specifically, F1 scores for \textit{Products} and \textit{Reaction Types} surged from near-zero (un-finetuned) to 0.50 and 0.40, respectively.
+% Additionally, the model exhibited exceptional \textit{Instruction Following} capability (0.99), surpassing the commercial Qwen3-Max baseline.
+% While Qwen3 excels in general knowledge, the Local LLM (FT) achieved a Precision of 1.00 in extracting \textit{Conditions}, compared to 0.27 for the un-finetuned version. 
+% This highlights the critical role of fine-tuning in capturing numerical values and units accurately.
+% However, regression occurred in the \textit{Reactor} extraction task (0.07 to 0.00). 
+% This is likely attributed to the high heterogeneity of reactor descriptions and the absence of specific reactor details in many training texts, leading the model to overfit to a "default null" behavior.
+% Overall, the fine-tuned local model delivers performance comparable to larger commercial models like Qwen3 for this specific domain.
+
+Comparative analysis against baseline models validates the efficacy of our fine-tuning strategy (Figure~\ref{fig:compare}). The fine-tuned Local LLM shows significant improvement in identifying structured chemical entities across all evaluation categories. Specifically, F1 scores for \textit{Products} and \textit{Reaction Types} surged from 0.00 (un-finetuned) to 0.50 and 0.40, respectively. The model also exhibited exceptional \textit{Instruction Following} capability with an F1 of 0.98, surpassing the commercial Qwen3-Max baseline (0.92).
+
+Notably, the Local LLM (FT) achieved a perfect Precision of 1.00 in extracting \textit{Conditions}, a remarkable increase from the 0.27 of the un-finetuned version. This perfect score ensures high reliability for evidence-based process development by eliminating false positives in reaction parameters. Overall, the fine-tuned local model delivers robust performance comparable to larger commercial models like Qwen3 for this specific domain.
+
+However, high general intelligence does not guarantee utility in specialized chemical research due to commercial safety guardrails.
+Despite its advanced capabilities, \textit{Gemini 2.5 Flash} yielded zero scores across all extraction metrics (Table S1).
+This failure stems from aggressive safety alignment protocols.
+Flow chemistry literature frequently references high-energy reactions (e.g., nitration, azides) or hazardous conditions.
+Commercial models often misclassify these technical descriptions as "dangerous content" or "CBRN risks," triggering refusals.\cite{röttger2024xstesttestsuiteidentifying}
+This limitation underscores the necessity of \textbf{FlowDevMiner}, as a locally deployed, uncensored framework is a prerequisite for unobstructed research in flow chemistry process development.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=16cm]{pictures/fig4.png}
+    \caption{Comparative evaluation of extraction performance. (a) Overall Precision, Recall, and F1 scores. (b–d) Detailed performance heatmaps across different data fields for (b) Qwen3-Max, (c) Fine-tuned Local LLM, and (d) Un-finetuned Local LLM.}
+    \label{fig:compare}
+\end{figure}
+
+\subsection{Data-Driven Insights for Flow Process Development}
+
+Based on the analysis of 118 flow chemistry papers, \textbf{FlowDevMiner} provides key insights for flow processes.
+The Sankey diagram (Figure~\ref{fig:sankey1}) illustrates the link between reaction types and reactor architectures, revealing clear selection patterns. 
+The detailed distribution of these reactions is shown in Figure S2.
+Nitration reactions predominantly utilize microchannel reactors due to their high exothermicity~\cite{Nitrationthermol}. 
+These reactors provide superior heat transfer performance, effectively preventing thermal runaway.
+Conversely, Hydrogenation reactions favor packed bed reactors or monolith catalysts. 
+These configurations induce flow perturbation, enhancing solid-liquid-gas interfacial contact for efficient heterogeneous catalysis~\cite{monolithmic_micromixers}.
+Polymerization processes are largely conducted in capillary reactors. 
+The smaller diameters ensure narrow residence time distributions and precise reaction control, mitigating clogging risks associated with viscosity changes.
+These trends confirm the workflow's ability to capture chemical engineering principles governing reactor selection.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{pictures/fig5.png}
+    \caption{Data-Driven Hierarchical Reactor Selection. }%The Sankey diagram visualizes the mapping between reaction types and reactor architectures
+    \label{fig:sankey1}
+\end{figure}
+
+Taking hydrogenation as a case study, Figure~\ref{fig:window} delineates the \textit{Process Window} derived from the extracted data. 
+The analysis identifies two critical boundaries: the upper-left Pressure Drop Limit Zone, characterized by high flow rates in small diameters that cause excessive pressure drops, and the lower-right Mass Transfer Limit Zone, where low flow rates in large channels lead to poor mixing. 
+Consequently, the intermediate region constitutes the \textit{Safe Operating Window}, where optimal reaction performance is typically achieved.
+The plot also reveals current research trends. 
+Data points span from the laboratory scale (bottom-left) to the pilot scale (top-right), indicating a clear trend toward process scale-up. 
+Nitration reactions are distributed widely, reflecting efforts to scale up continuous nitration. 
+Notably, a distinct \textit{Hydrogenation Cluster} appears in the central region. 
+In contrast, other reactions, such as polymerization, remain concentrated in the laboratory-scale region with smaller reactor inner diameters.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=12cm]{pictures/fig6.png}
+    \caption{Process Window Analysis. The red square marks the validation point selected for this study.}
+    \label{fig:window}
+\end{figure}
+
+
+\subsection{Experimental Validation: A Case Study}
+Beyond data aggregation, \textbf{FlowDevMiner} aids chemists and engineers in navigating unfamiliar reactions.
+Figure~\ref{fig:window} facilitates rapid identification of the \textit{Safe Operating Window} and appropriate starting conditions.
+To validate the practical utility of these insights, we selected the continuous-flow hydrogenation of nitrobenzene as a representative case study.
+
+Based on the \textit{Hydrogenation Cluster} in Figure~\ref{fig:window} and catalyst trends in Figure~\ref{fig:flow_hydrogenation}, we narrowed the experimental search space.
+Extracted data suggests optimal yield typically occurs between $0-100^\circ$C using noble metal Pd catalysts.
+Guided by this, we employed a Pd@Monolith catalyst (based on our prior work) and selected validation temperatures of 30, 50, and 70 $^\circ$C.
+The experiment was designed within the \textit{Safe Operating Window} at a moderate pressure of 0.35 MPa.
+Selected conditions lie at the center of the identified cluster, ensuring a robust test of data-driven recommendations.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{pictures/fig7.png}
+    \caption{Data-driven mapping of catalyst usage and temperature ranges for flow hydrogenation.}
+    \label{fig:flow_hydrogenation}
+\end{figure}
+
+Experimental outcomes are summarized in Table~\ref{tab:reaction_results}.
+Under the \textbf{FlowDevMiner}-guided conditions (Flow rate = 0.5 mL/min, Reactor i.d. = 4.6 mm, $P = 0.35$ MPa, Pd@Monolith catalyst), we achieved 100\% yield of nitrobenzene across all tested temperatures in a single experimental run.
+This result demonstrates the high efficiency of the flow process and serves as strong validation of the AI-extracted \textit{process window}.
+The successful translation of mined data into a high-yield experiment confirms \textbf{FlowDevMiner}'s efficacy in guiding process development and reducing laboratory trial-and-error.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Experimental validation of reaction conditions based on mined literature data. All reactions utilized Pd@Monolith catalyst at 0.35 MPa.}
+  \label{tab:reaction_results}
+  \begin{tabular}{cccccc}
+    \toprule
+    \textbf{Entry} & \textbf{T (\si{\celsius})} & \textbf{\ce{C_{NB}} (M)} & \textbf{\ce{F_{NB}} (mL/min)} & \textbf{\ce{F_{H2}} (mL/min)} & \textbf{yield (\%)} \\
+    \midrule
+    1 & 30 & 0.505 & 0.5025 & 25 & 100 \\
+    2 & 50 & 0.505 & 0.5025 & 25 & 100 \\
+    3 & 70 & 0.505 & 0.5025 & 25 & 100 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{CONCLUSIONS}
+In this study, we addressed the challenges of data scarcity and privacy in flow chemistry by developing \textbf{FlowDevMiner}, a locally deployable framework for structured data extraction. 
+Our fine-tuned local model achieved an F1 score of 0.72, effectively bridging the performance gap with commercial baselines while overcoming their tendency to reject legitimate chemical queries due to restrictive safety guardrails. 
+Beyond methodology, analyzing 118 publications elucidated data-driven reactor selection patterns and defined a \textit{Safe Operating Window} based on physical constraints.
+These insights were experimentally validated via nitrobenzene hydrogenation, achieving 100\% yield under the guided conditions. 
+By open-sourcing the annotated dataset, model weights and this framework, this work provides a robust, accessible tool to accelerate the digitalization of flow chemistry process development.
+
+\section{EXPERIMENTAL SECTION}%完成了第二轮
+
+\subsection{Model Implementation and Configuration}
+Knowledge distillation\cite{gu2024minillmknowledgedistillationlarge} and model quantization\cite{zhu2024surveymodelcompressionlarge} are techniques that help to reduce the memory and computational demands of LLMs.
+In order to deployed local LLMs on a personal PC, this study utilizes a 4-bit quantized, knowledge-distilled model \texttt{Llama-3.1-8b-instruct\allowbreak-q4\_k\_m.guff}\cite{grattafiori2024llama3herdmodels}.
+All local model operations were conducted on a Macbook Air M4 CPU with 16 GB RAM. 
+The framework was scripted in Python 3.10.18. We utilized the GPT4All \cite{gpt4all} ecosystem to deploy two quantized local models. 
+To ensure deterministic and reproducible results, the generation parameters for these local models were set to a \texttt{temperature} of 0.0. For comparative analysis, two online models, Gemini 2.5 flash and qwen3-max, were also employed. 
+The \texttt{temperature} for these online models was likewise set to 0.0.
+
+\subsection{Prompt Engineering Framework}
+% 完成第一轮
+To enable standardized information extraction, we implemented a modular prompting framework comprising three distinct stages: \textit{Filter}, \textit{Abstract}, and \textit{Summarize}. 
+The specific prompt templates for each stage, including system instructions and few-shot examples, are detailed in the Supporting Information (Tables S4--S6).
+We enforced a strict JSON schema to ensure machine readability and compatibility with downstream data processing. 
+The schema explicitly defines data types for critical parameters, normalizing temperature to degrees Celsius ($^\circ$C), residence time to minutes, and flow rates to mL/min . 
+To mitigate hallucination, particularly in smaller quantized models, we incorporated Negative Constraints into the system prompts. 
+These constraints instruct the model to return \texttt{null} values for fields not explicitly supported by the authors' own experimental data, thereby filtering out background literature reviews . 
+The prompt design also distinguishes between \textit{Instruction Following} capabilities and \textit{Information Extraction} accuracy, facilitating the dual-metric evaluation described in Experimental Section.
+  
+\subsection{Data Curation and Finetuning}
+
+To balance domain expertise with general reasoning capabilities, we constructed a composite dataset consisting of three categories (Table~\ref{tab:dataset_composition}).
+The core of the dataset (75.1\%) focuses on domain-specific extraction. It contains 1,750 high-quality samples derived from 118 flow chemistry publications. These samples were initially extracted by the base model and subsequently verified by doctoral students. 
+To ensure accuracy, missing information was explicitly marked as \texttt{null} rather than inferred, and original units were retained.
+To enable the aggregation of data from multiple paragraphs, we included a small subset (3.4\%) of JSON merging tasks. This helps the model learn the logic for combining data structures without overfitting to specific patterns.
+Finally, to prevent the loss of general language abilities (\textit{catastrophic forgetting}), we integrated 500 samples (~21.5\%) from the general-purpose \texttt{alpaca-cleaned} dataset~\cite{alpaca_cleaned}. This ensures the model remains responsive to basic instructions and does not become a rigid JSON generator.
+
+All training data were converted into the standard \texttt{Llama-3.1-Chat} format(Listing S1, Supporting Information). We applied distinct system prompts based on the data type: a strict extraction prompt for chemical tasks and a default ``helpful assistant'' prompt for general tasks. User prompts were simplified to a ``Context + Instructions'' structure without long examples, which reduces noise and improves training efficiency. 
+The entire dataset was shuffled to prevent data ordering bias.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Composition of the LoRA Fine-tuning Dataset.}
+  \label{tab:dataset_composition}
+  \begin{tabular}{llcc}
+    \toprule
+    \textbf{Category} & \textbf{Sub-category} & \textbf{Count} & \textbf{Ratio (\%)} \\
+    \midrule
+    \textbf{Domain Specific} & & \textbf{1750} & \textbf{75.1} \\
+    & \textit{Para2JSON} & \textit{1674} & \textit{71.9} \\
+    & \textit{Clean TXT2JSON} & \textit{76} & \textit{3.3} \\
+    \addlinespace
+    \textbf{Structural} & \textit{JSON2JSON} & 80 & 3.4 \\ 
+    \textbf{General}~\cite{alpaca_cleaned} & -- & 500 & 21.5 \\
+    \midrule
+    \textbf{Total} & & \textbf{2330} & \textbf{100.0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparative experimental results of different YOLO models for FlowFigTabMiner. The best performance is indicated in bold.}
+\label{tab:yolo_results}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Models} & \textbf{Precision/\%} & \textbf{Recall/\%} & \textbf{F1 Score/\%} & \textbf{mAP50/\%} & \textbf{mAP50--95/\%} \\ \midrule
+v11m-fig-seg  & 88.2 & 91.7 & 89.9 & 91.7 & 66.9 \\
+v11m-fig-sca  & 92.1 & 91.9 & 92.0 & 92.5 & 69.3 \\
+v11m-tab-seg  & 91.2 & 89.9 & 90.5 & 94.8 & 77.7 \\
+v11s-tab-mol  & 96.2 & 95.4 & 95.8 & 95.6 & 81.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We fine-tuned the \texttt{Meta-Llama-3.1-8B-Instruct} model using LoRA on an NVIDIA A100 GPU via the \texttt{Unsloth} framework for memory efficiency. 
+We configured LoRA with a rank ($r$) of 16 and an alpha ($\alpha$) of 32, applied to all linear layers. 
+To focus learning on the output, we used a completion-only masking strategy, ensuring loss was calculated only on the generated JSON. 
+As shown in Table S3, the training loss dropped from 1.21 to 0.40 in the first 30 steps and stabilized around 0.33 by step 120, indicating effective adaptation without overfitting.
+
+\subsection{Evaluation Methodology}
+\label{sec:eval}
+The model's performance was evaluated by comparing the extracted JSON data against the manually curated ground truth. 
+To ensure consistent comparisons, lists (e.g., reactants) were matched as unordered sets, and numerical values were normalized to standard units with a small tolerance for rounding differences. 
+Standard metrics were calculated based on True Positives (TP, correct matches), False Positives (FP, incorrect extracts), and False Negatives (FN, missed items):
+
+\begin{equation}
+\text { Precision }=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}}
+\end{equation}
+\begin{equation}
+\text { Recall }=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}
+\end{equation}
+\begin{equation}
+\text { F1 }=2 \times \frac{\text { Precision } \times \text { Recall }}{\text { Precision }+ \text { Recall }}
+\end{equation}
+\begin{equation}
+m A P_{50} =\frac{1}{N} \sum_{i=1}^N A P_{50, i}
+\end{equation}
+\begin{equation}
+m A P_{50-95} =\frac{1}{N} \sum_{i=1}^N \frac{1}{K} \sum_{j=1}^K A P_{i, j}
+\end{equation}
+
+\subsection{Experimental Setup}
+Nitrobenzene (purity $>$99\%) was purchased from Kanto Chemical Co. (Tokyo, Japan). 
+The flow system utilized stainless steel (SUS304) T-shaped micromixers (500 $\mu$m i.d., Sanko Seiki Co., Inc.) and SUS316 microtubes (1000 $\mu$m i.d., GL Sciences). 
+Reactants were delivered using Shimadzu LC-20AD plunger pumps, and gas flow rates were controlled by a thermal mass flow controller (Brooks Instrument). 
+The reactor consisted of ferrule columns (4 mm i.d., 100 mm length) obtained from Tomoe Works Co., Ltd. 
+Reaction products were analyzed by gas chromatography (GC) using a Shimadzu GC-2025 system equipped with a flame ionization detector (FID) and an Rtx-200 capillary column (0.25 mm $\times$ 30 m). 
+Yields were determined using \textit{n}-dodecane as an internal standard. 
+The experimental setup for continuous-flow hydrogenation is illustrated in Figure~\ref{fig:flow_setup}.
+Nitrobenzene solutions were prepared in ethanol at a concentration of 0.505 M. 
+\begin{figure} 
+    \centering
+    \includegraphics[width=\linewidth]{pictures/fig8.png}
+    \caption{\centering   Schematic of the experimental setup.}
+    \label{fig:flow_setup}
+\end{figure}
+
+\section{ASSOCIATED CONTENT}
+\subsection{Data Availability Statement}
+\label{dataset}
+% 已经上传的替换完毕
+\begin{itemize}
+  \item The source code for the \textbf{FlowDevMiner} framework is publicly available at \href{https://github.com/wzjeh/FlowDevMiner}{\url{https://github.com/wzjeh/FlowDevMiner}}.
+  \item The fine-tuning source code, provided as a Google Colab notebook, is available at \href{https://colab.research.google.com/drive/1ki5z3zKD-J9nr8a1pJnZA5Z3hCm2uNVX?usp=share_link}{this Colab notebook}.
+  \item The curated dataset of flow chemistry papers and the fine-tuned LoRA model adapters are publicly available on \href{https://huggingface.co/wyzhaoc/Llama-3.1-8B-TXT2JSON-FT-Q4_K_M}{Hugging Face} .
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The same is true for Supporting Information, which should use the
+%% suppinfo environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{suppinfo}
+% 这里连接回来是编辑改，我不用管.不过itemize中的描述需要改
+The Supporting Information is available free of charge at
+\url{https://pubs.acs.org/}.
+\begin{itemize} 
+  \item Additional analysis and detailed performance results of the models trained (PDF)
+\end{itemize}
+\end{suppinfo}
+
+
+\section{AUTHOR INFORMATION}
+\subsection{Corresponding Author}
+Aiichiro Nagaki -- Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan; orcid.org/0000-0002-8264-6205; Email: nagaki@sci.hokudai.ac.jp
+
+\subsection{Authors}
+% Wenyuan Zhao -- Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan; orcid.org/0009-0009-7235-3562
+
+
+% \subsection{Author Contributions}
+
+
+\subsection{Notes}
+The authors declare no competing financial interest.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "Acknowledgement" section can be given in all manuscript
+%% classes.  This should be given within the "acknowledgement"
+%% environment, which will make the correct section or running title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgement}% 已完成
+The authors thank the Support for Pioneering Research Initiated by the Next Generation (SPRING) at Hokkaido University (JPMJSP2119) and JSPS KAKENHI (JP20KK0121; JP21H01936) for their financial support. 
+This work was also supported by AMED BINDS (PJ22230021), NEDO (PJ22240036), the Japan Keirin Autorace Foundation, and the Takahashi Industrial and Economic Foundation.
+\end{acknowledgement}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The appropriate \bibliography command should be placed here.
+%% Notice that the class file automatically sets \bibliographystyle
+%% and also names the section correctly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{achemso-demo}
+
+\end{document}

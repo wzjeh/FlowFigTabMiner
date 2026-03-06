@@ -7,11 +7,11 @@ import pandas as pd
 import json
 
 from src.utils.config import load_config
-from src.extraction.table_pipeline import TablePipeline
+from src.extraction.table.pipeline import TablePipeline
 from src.parsing.table_filter import TableFilter
-from src.extraction.table_structure import TableStructureRecognizer
-from src.extraction.molecule_processor import MoleculeProcessor
-from src.extraction.content_recognizer import ContentRecognizer
+from src.extraction.table.structure import TableStructureRecognizer
+from src.extraction.common.molecule_processor import MoleculeProcessor
+from src.extraction.common.content_recognizer import ContentRecognizer
 
 class BatchTablePipeline:
     def __init__(self):

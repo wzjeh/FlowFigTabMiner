@@ -9,7 +9,7 @@ from tqdm import tqdm
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.parsing.table_filter import TableFilter
-from src.extraction.table_structure import TableStructureRecognizer
+from src.extraction.table.structure import TableStructureRecognizer
 
 def main():
     parser = argparse.ArgumentParser(description="Extract cell crops for ResNet training")

@@ -8,7 +8,7 @@ import subprocess
 sys.path.insert(0, os.getcwd())
 
 from src.pipeline.figure_pipeline import FigurePipeline
-from src.extraction.table_pipeline import TablePipeline
+from src.extraction.table.pipeline import TablePipeline
 from src.adjudication.global_assembly import GlobalAssembly
 
 def run_step1_tfid(pdf_path):

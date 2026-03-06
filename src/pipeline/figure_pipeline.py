@@ -8,8 +8,8 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 from src.parsing.yolo_detector import YoloDetector
 from src.parsing.stage2_detector import Stage2Detector
-from src.extraction.legend_matcher import LegendMatcher
-from src.extraction.coordinate_mapper import CoordinateMapper
+from src.extraction.figure.legend_matcher import LegendMatcher
+from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.assembly.evidence_assembler import EvidenceAssembler
 from src.utils.config import load_config
 

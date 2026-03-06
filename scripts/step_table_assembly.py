@@ -10,7 +10,7 @@ from PIL import Image
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.extraction.content_recognizer import ContentRecognizer
+from src.extraction.common.content_recognizer import ContentRecognizer
 
 def remove_lines(image):
     """

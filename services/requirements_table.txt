@@ -1,0 +1,15 @@
+fastapi==0.111.0
+uvicorn==0.29.0
+python-multipart==0.0.9
+google-cloud-storage==2.16.0
+pandas==2.2.2
+opencv-python==4.9.0.80
+torch==2.3.0
+ultralytics==8.2.15
+numpy<2.0.0
+
+# Dependencies specific to table processing
+# Make sure to include TATR and MolScribe related libraries here
+transformers==4.40.2
+Pillow==10.3.0
+# ... add other specific packages that were in your original environment for tables

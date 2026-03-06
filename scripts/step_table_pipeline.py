@@ -12,7 +12,7 @@ os.environ["OPENCV_IO_ENABLE_JASPER"] = "true"
 import cv2
 cv2.setNumThreads(0)
 
-from src.extraction.table_pipeline import TablePipeline
+from src.extraction.table.pipeline import TablePipeline
 
 def main():
     parser = argparse.ArgumentParser()

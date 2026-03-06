@@ -2,10 +2,10 @@ import os
 import cv2
 import pandas as pd
 from src.parsing.table_filter import TableFilter
-from src.extraction.table_structure import TableStructureRecognizer
-from src.extraction.cell_classifier import CellClassifier
-from src.extraction.content_recognizer import ContentRecognizer
-from src.extraction.molecule_processor import MoleculeProcessor
+from src.extraction.table.structure import TableStructureRecognizer
+from src.extraction.table.cell_classifier import CellClassifier
+from src.extraction.common.content_recognizer import ContentRecognizer
+from src.extraction.common.molecule_processor import MoleculeProcessor
 
 class TablePipeline:
     def __init__(self, table_filter=None, structure_recognizer=None, molecule_processor=None, content_recognizer=None, sequential_mode=False):
@@ -170,15 +170,25 @@ class TablePipeline:
         recognizer_for_mol = self._get_model('content') # Needed for MolScribe
         mol_meta = []
         try:
-            modified_img, mol_meta = mol_processor.process_image(current_image_path, recognizer_for_mol)
+            # Construct debug path for molecule detection visualization
+            base_body = os.path.splitext(os.path.basename(current_image_path))[0]
+            debug_mol_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_debug_yolo.png")
+            
+            # Use mask_only=True to white-out molecules without writing text, preventing TATR interference.
+            modified_img, mol_meta = mol_processor.process_image(
+                current_image_path, 
+                recognizer_for_mol, 
+                mask_only=True,
+                output_path=debug_mol_path
+            )
         finally:
             self._unload_model(mol_processor)
             self._unload_model(recognizer_for_mol)
         
         if modified_img is not None and mol_meta:
-            print(f"      Replaced {len(mol_meta)} molecules with SMILES.")
-            base_body = os.path.splitext(os.path.basename(current_image_path))[0]
-            modified_body_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_smiles.png")
+            print(f"      Replaced {len(mol_meta)} molecules with White Masks (for Structure Rec).")
+            # Rename to _masked to reflect that it is just masked, not text-replaced
+            modified_body_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_masked.png")
             cv2.imwrite(modified_body_path, modified_img)
             current_image_path = modified_body_path
         else:

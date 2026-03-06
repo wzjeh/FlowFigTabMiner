@@ -31,17 +31,19 @@ class MoleculeProcessor:
             print(f"Warning: Molecule Model not found at {model_path}")
             self.model = None
 
-    def process_image(self, image_path_or_array, content_recognizer):
+    def process_image(self, image_path_or_array, content_recognizer, mask_only=False, output_path=None):
         """
         Detect molecules, convert to SMILES using content_recognizer, 
-        and replace them in the image with text.
+        and replace them in the image with text or just mask them.
         
         Args:
             image_path_or_array: Path to image or cv2 image array (BGR).
             content_recognizer: Instance of ContentRecognizer (must have molscribe loaded).
+            mask_only (bool): If True, only mask the molecule with white box (no text).
+            output_path (str): Optional path to save the molecule detection visualization.
             
         Returns:
-            processed_image: cv2 image (BGR) with molecules replaced by SMILES text.
+            processed_image: cv2 image (BGR) with molecules masked/replaced.
             molecule_data: List of dicts [{'box': [x1,y1,x2,y2], 'smiles': str, 'conf': float}]
         """
         if self.model is None:
@@ -59,8 +61,6 @@ class MoleculeProcessor:
         if original_img is None:
             return None, []
 
-        h, w = original_img.shape[:2]
-        
         h, w = original_img.shape[:2]
         
         # 1. Detect Molecules
@@ -81,7 +81,7 @@ class MoleculeProcessor:
         if len(results.boxes) > 0:
             print(f"   -> Detected {len(results.boxes)} potential molecules.")
             
-            # DEBUG: Save visualization of what YOLO sees
+            # Save visualization of what YOLO sees
             debug_viz = original_img.copy()
             for box in results.boxes:
                 x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
@@ -91,12 +91,15 @@ class MoleculeProcessor:
                 cv2.rectangle(debug_viz, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 cv2.putText(debug_viz, label, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
             
-            # Save to same directory as input (if path known) or temp
-            # Since we don't know output path here easily, let's look at image_path_or_array
-            if isinstance(image_path_or_array, str):
+            # 1. Use explicit output_path if provided
+            if output_path:
+                 cv2.imwrite(output_path, debug_viz)
+                 print(f"   -> Saved Molecule YOLO debug viz to {output_path}")
+            # 2. Fallback to legacy behavior if image_path_or_array is a string
+            elif isinstance(image_path_or_array, str):
                  debug_path = os.path.splitext(image_path_or_array)[0] + "_debug_yolo.png"
                  cv2.imwrite(debug_path, debug_viz)
-                 print(f"   -> Saved YOLO debug viz to {debug_path}")
+                 print(f"   -> Saved Molecule YOLO debug viz to {debug_path}")
             
             for i, box in enumerate(results.boxes):
                 # Get Box
@@ -184,30 +187,27 @@ class MoleculeProcessor:
                 # A. Fill White
                 cv2.rectangle(processed_img, (x1, y1), (x2, y2), (255, 255, 255), -1)
                 
-                # B. Put Text (Centered)
-                # If SMILES is very long, it might overflow.
-                # Heuristic: Trim or wrap? For structure recognition, just having "some text" might be enough 
-                # to be treated as a cell content. 
-                # But user said "replace molecules with SMILES strings".
-                # Let's try to fit it.
-                
-                text_to_draw = smiles if smiles else "Structure"
-                print(f"   -> Box {i}: SMILES='{smiles}' | Drawing Text='{text_to_draw}'", flush=True) # DEBUG
-                
-                font_scale = 0.5
-                thickness = 1
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                
-                # Calculate size
-                (tw, th), _ = cv2.getTextSize(text_to_draw, font, font_scale, thickness)
-                
-                # Center
-                cx = (x1 + x2) // 2
-                cy = (y1 + y2) // 2
-                tx = max(x1, cx - tw // 2)
-                ty = cy + th // 2
-                
-                cv2.putText(processed_img, text_to_draw, (tx, ty), font, font_scale, (0, 0, 0), thickness)
+                # B. Put Text (Centered) - Only if not mask_only
+                if not mask_only:
+                    text_to_draw = smiles if smiles else "Structure"
+                    print(f"   -> Box {i}: SMILES='{smiles}' | Drawing Text='{text_to_draw}'", flush=True) # DEBUG
+                    
+                    font_scale = 0.5
+                    thickness = 1
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    
+                    # Calculate size
+                    (tw, th), _ = cv2.getTextSize(text_to_draw, font, font_scale, thickness)
+                    
+                    # Center
+                    cx = (x1 + x2) // 2
+                    cy = (y1 + y2) // 2
+                    tx = max(x1, cx - tw // 2)
+                    ty = cy + th // 2
+                    
+                    cv2.putText(processed_img, text_to_draw, (tx, ty), font, font_scale, (0, 0, 0), thickness)
+                else:
+                    print(f"   -> Box {i}: SMILES='{smiles}' | Masked (White Box)", flush=True)
                 
                 # Store metadata
                 metrics.append({

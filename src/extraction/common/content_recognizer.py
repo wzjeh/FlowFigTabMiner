@@ -43,7 +43,7 @@ class ContentRecognizer:
         # MolScribe (Deprecated) -> MolNexTR (Active)
         self.molnextr = None
         try:
-            from src.extraction.molnextr.molnextr import MolNexTRSingleton
+            from src.extraction.common.molnextr.molnextr import MolNexTRSingleton
             print("Loading MolNexTR...", flush=True)
             self.molnextr = MolNexTRSingleton.get_instance()
             print("MolNexTR Loaded Successfully.", flush=True)
