@@ -8,10 +8,13 @@ torch==2.3.0
 ultralytics==8.2.15
 numpy<2.0.0
 
-# Dependencies specific to table processing
 # TATR, MolScribe, and Huggingface dependencies
 transformers==4.57.3
 huggingface-hub==0.28.1
 timm==0.4.12
 Pillow==10.3.0
 requests==2.32.5
+
+# MolNexTR dependencies
+OpenNMT-py==2.2.0
+pyonmttok==1.37.1
