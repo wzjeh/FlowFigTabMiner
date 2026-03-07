@@ -630,11 +630,19 @@ class CoordinateMapper:
                         real_yr = label_val
                 
                 if real_x is not None:
+                    # Physically plausible constraints:
+                    # Yield, Selectivity, Conversion, Temperature (K/C) are usually >= 0.
+                    # Negative values usually indicate extrapolation errors in RANSAC.
+                    # Setting to None is better than 0.0 as it signals "data not found/invalid"
+                    f_yl = float(real_yl) if (real_yl is not None and real_yl >= 0) else None
+                    f_yr = float(real_yr) if (real_yr is not None and real_yr >= 0) else None
+                    f_x = float(real_x) if (real_x is not None and real_x >= 0) else None
+                    
                     row = {
                         "Series": series,
-                        "X": float(real_x),
-                        "Y_Left": float(real_yl) if real_yl is not None else None,
-                        "Y_Right/Data_Value": float(real_yr) if real_yr is not None else None,
+                        "X": f_x,
+                        "Y_Left": f_yl,
+                        "Y_Right/Data_Value": f_yr,
                     }
                     data_rows.append(row)
             

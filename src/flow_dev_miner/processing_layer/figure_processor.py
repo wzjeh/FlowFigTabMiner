@@ -119,11 +119,13 @@ class FigureProcessor:
         # 3. Micro Detection
         micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=self.micro_conf, imgsz=1024, use_tiling=False)
         points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
+        logger.info(f"Figure '{figure_id}': YOLO found {len(points)} raw data points.")
         
         # 4. Legend Matching
         legend_crops = elements.get('legend', [])
         prototypes = self.legend_matcher.parse_legend_crops(legend_crops)
         matched_points = self.legend_matcher.match_points(points, prototypes, cleaned_plot_path)
+        logger.info(f"Figure '{figure_id}': LegendMatcher matched {len(matched_points)} points to series.")
         
         # 5. Coordinate Mapping
         other_detections = [d for d in micro_detections if d['label'] not in ['data_point', 'marker']]

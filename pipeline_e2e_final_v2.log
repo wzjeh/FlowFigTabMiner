@@ -1,0 +1,57 @@
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+Florence2LanguageForConditionalGeneration has generative capabilities, as `prepare_inputs_for_generation` is explicitly defined. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/paddle/utils/cpp_extension/extension_utils.py:712: UserWarning: No ccache found. Please be aware that recompiling all source files may be required. You can download and install ccache from: https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
+  warnings.warn(warning_message)
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-LCNet_x1_0_textline_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_textline_ori`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+[2026-03-07 17:13:59,968] [    INFO] figure_processor.py:59 - Loading YOLO Micro: models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt
+[2026-03-07 17:14:02,192] [    INFO] figure_processor.py:122 - Figure 'page_6_figure_1_t0': YOLO found 19 raw data points.
+[2026-03-07 17:14:02,192] [    INFO] figure_processor.py:66 - Loading LegendMatcher...
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+[2026-03-07 17:14:05,162] [    INFO] figure_processor.py:128 - Figure 'page_6_figure_1_t0': LegendMatcher matched 19 points to series.
+[2026-03-07 17:14:05,162] [    INFO] figure_processor.py:73 - Loading CoordinateMapper...
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+[2026-03-07 17:14:17,396] [    INFO] figure_processor.py:89 - Processing Figure: data/intermediate/example/figures/page_6_figure_0.png
+[2026-03-07 17:15:04,085] [    INFO] figure_processor.py:122 - Figure 'page_6_figure_0_t0': YOLO found 17 raw data points.
+[2026-03-07 17:15:09,855] [    INFO] figure_processor.py:128 - Figure 'page_6_figure_0_t0': LegendMatcher matched 17 points to series.
+[2026-03-07 17:15:14,449] [    INFO] figure_processor.py:89 - Processing Figure: data/intermediate/example/figures/page_7_figure_1.png
+[2026-03-07 17:15:35,935] [    INFO] figure_processor.py:122 - Figure 'page_7_figure_1_t0': YOLO found 19 raw data points.
+[2026-03-07 17:15:35,947] [    INFO] figure_processor.py:128 - Figure 'page_7_figure_1_t0': LegendMatcher matched 19 points to series.
+[2026-03-07 17:15:44,812] [    INFO] figure_processor.py:89 - Processing Figure: data/intermediate/example/figures/page_2_figure_0.png
+[2026-03-07 17:15:45,871] [ WARNING] figure_processor.py:100 - Macro cleaning returned no results.
+[2026-03-07 17:15:45,871] [    INFO] figure_processor.py:89 - Processing Figure: data/intermediate/example/figures/page_5_figure_0.png

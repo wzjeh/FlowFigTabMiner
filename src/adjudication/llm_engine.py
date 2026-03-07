@@ -76,7 +76,8 @@ class LLMEngine:
                 response = dashscope.Generation.call(
                     model=self.model,
                     messages=messages,
-                    result_format='message'
+                    result_format='message',
+                    max_tokens=4000
                 )
                 if response.status_code == HTTPStatus.OK:
                     return response.output.choices[0].message.content
@@ -92,7 +93,8 @@ class LLMEngine:
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt}
                     ],
-                    temperature=0.1
+                    temperature=0.1,
+                    max_tokens=4000
                 )
                 return response.choices[0].message.content
                 

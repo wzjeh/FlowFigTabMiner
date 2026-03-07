@@ -61,13 +61,14 @@ class GlobalInfoExtractor:
         You are an expert chemist. Your task is to extract "Global Experimental Conditions" and "Unknown Abbreviations/Chemical Codes" from the provided Table/Figure metadata.
         
         1. "global_candidates": Conditions that likely apply to the WHOLE table/figure.
-           - Examples: "Reaction at 20°C", "Solvent: MeOH", "Base: NaH", "H2 Flow rate: 15 sccm" (Note: H2 might appear as "H 2" or with subscripts).
-           - **CRITICAL**: Do NOT label reactor systems (e.g., "H-flow", "H-Cube", "FlowSyn", "Micropacked bed") as "Catalyst". They are Equipment.
-           - Ignore variables that change per row/column.
+           - **LOOK FOR**: Temperature, Pressure, Residence Time, Flow Rate (liquid/gas), Conversion, Selectivity, Catalyst, Solvent, Concentration.
+           - Examples: "Reaction at 20°C", "Solvent: MeOH", "Base: NaH", "H2 Flow rate: 15 sccm".
+           - **NOTE**: Flow rates might be labeled as "liquid flow rate", "liquid flow", "fow rate" (due to OCR).
+           - **CRITICAL**: Do NOT label reactor systems (e.g., "H-flow", "H-Cube") as "Catalyst". They are Equipment.
+           - Variables that clearly change per row (e.g. X-axis in a chart) should be EXCLUDED from "global_candidates", as they vary.
         2. "unknown_terms": 
            - Any chemical abbreviation or code (e.g., "3,4-DCAN", "NB", "1a", "2b", "P1").
-           - Any acronym (e.g., "DMF", "THF" - though common, listing them allows checking specific grades if needed, but prioritize non-standard ones).
-           - Look at Column Headers and Cell Values in the snippet. If you see "3,4-DCAN" as a substrate, list it!
+           - Acronyms for catalysts or ligands (e.g., "Pd(PPh3)4", "TEMPO").
            
         Output only valid JSON:
         {

@@ -19,7 +19,7 @@ class EvidenceAssembler:
         text_evidence = self._process_text_crops(figure_id, intermediate_dir)
         
         # 2. Semantic Filtering
-        is_relevant = self._is_relevant_chart(text_evidence)
+        is_relevant = self._is_relevant_chart(text_evidence, figure_id)
         
         if not is_relevant:
             # [RETRY] Try to enrich with Shared Captions
@@ -27,7 +27,7 @@ class EvidenceAssembler:
             enriched = self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
             
             if enriched:
-                is_relevant = self._is_relevant_chart(text_evidence)
+                is_relevant = self._is_relevant_chart(text_evidence, figure_id)
                 if is_relevant:
                      print(f"      [Filter] SUCCESS! Saved by Shared Caption.")
                 else:
@@ -57,11 +57,11 @@ class EvidenceAssembler:
             if not is_relevant:
                  print(f"      [Filter] Discarding {figure_id} due to lack of result keywords.")
                  return None
-        else:
-            # Already checked, but let's just ensure we have it.
-            # Assuming caller only calls assemble if relevant, 
-            # OR we can re-verify if robust.
-            pass
+
+        # [NEW] If caption is empty, try to enrich from shared page context
+        if not any(item.get('text') for item in text_evidence.get('chart_text', [])):
+            print(f"      [Assembler] Local caption empty for {figure_id}. Checking shared page context...")
+            self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
 
         # 3. Structure the Data
         # User Request: Aggregate chart_text into a single caption field
@@ -85,7 +85,7 @@ class EvidenceAssembler:
             
         return output_path
 
-    def _is_relevant_chart(self, text_evidence):
+    def _is_relevant_chart(self, text_evidence, figure_id):
         """
         Determines if the chart is relevant based on keywords in extracted text.
         Robust logic: 
@@ -109,28 +109,59 @@ class EvidenceAssembler:
             for item in text_evidence.get(key, []):
                 all_text_bits.append(item['text'].lower())
         
-        full_text = "".join(all_text_bits) # Join without spaces first to preserve original order? 
+        raw_full_text = " ".join(all_text_bits)
         # Actually join with spaces then strip all non-alpha is safer for boundaries but we want to catch "S e l e c t i v i t y"
         # So: "S e l e c t i v i t y of Product" -> "selectivityofproduct"
         
         # Normalize: Remove all non-alphanumeric characters
         import re
-        normalized_text = re.sub(r'[^a-z0-9]', '', full_text)
+        normalized_text = re.sub(r'[^a-z0-9]', '', raw_full_text)
         
-        print(f"      [Filter Debug] Normalized Text Dump (len={len(normalized_text)}): {normalized_text[:100]}...")
+        # Check both normalized and raw text for keyword fragments
+        is_relevant = False
+        for k in keywords:
+            if k in normalized_text or k in raw_full_text:
+                is_relevant = True
+                break
         
-        for kw in keywords:
-            # Check if keyword exists in normalized text
-            if kw in normalized_text:
-                print(f"      [Filter] Match Found: '{kw}'")
-                return True
-                
-        # Fallback: Sliding window fuzzy match? 
-        # For now, strict substring on normalized text handles the user's "Selectivity" (spaced) case perfectly.
-        # "S e l e c t i v i t y" -> "selectivity" which contains "selectivity".
+        # Fuzzy fallback for first-letter OCR misses (common in axis titles)
+        if not is_relevant:
+            fuzzy_keywords = ['electivity', 'onversion', 'ield']
+            for fk in fuzzy_keywords:
+                if fk in normalized_text or fk in raw_full_text:
+                    is_relevant = True
+                    break
+
+        print(f"      [Filter Debug] Figure: {figure_id} | Relevant: {is_relevant} | Text Preview: {raw_full_text[:60]}")
+        return is_relevant, text_evidence
+
+    def _try_enrich_with_shared_caption(self, figure_id, intermediate_dir, text_evidence):
+        """
+        Fallback: If local caption is missing, look for ANY caption on the same page.
+        This handles sub-figures (e.g., Fig 6a, 6b) where the caption is shared.
+        """
+        # figure_id format: page_N_figure_M_tK
+        parts = figure_id.split('_')
+        if len(parts) < 3: return
+        page_pre = f"{parts[0]}_{parts[1]}" # page_N
         
-        print(f"      [Filter] FAILED. No keywords found in dump.")
-        return False
+        # 1. Look for existing caption crops on the same page
+        import glob
+        pattern = os.path.join(intermediate_dir, f"{page_pre}_figure_*_caption_*.png")
+        cap_files = glob.glob(pattern)
+        
+        if cap_files:
+            print(f"      [Fallback] Found {len(cap_files)} caption candidates on page {parts[1]}.")
+            for cap in cap_files:
+                txt = self.ocr.ocr_image(cap)
+                if txt:
+                    text_evidence['chart_text'].append({"text": txt, "source_file": os.path.basename(cap)})
+            return
+
+        # 2. Page-level Text Fallback (Advanced)
+        # If no caption crops, search the original page OCR (if available) for "Fig. N"
+        # We assume the caller might have page-level text, but for now we rely on crops.
+        print(f"      [Fallback] No caption crops found for page {parts[1]}.")
 
     def _process_text_crops(self, figure_id, intermediate_dir):
         """
