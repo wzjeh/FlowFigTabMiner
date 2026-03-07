@@ -128,7 +128,7 @@ class MolNexTRSingleton:
         # Set path
         # Set path
         base_path = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.abspath(os.path.join(base_path, "../../../")) # Assuming src/extraction/molnextr/MolNexTR.py
+        project_root = os.path.abspath(os.path.join(base_path, "../../../../")) 
         model_path = os.path.join(project_root, "models", "molnextr_model_best.pth")
         
         logger.info(f"Checking for model at {model_path}")

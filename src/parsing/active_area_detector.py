@@ -126,15 +126,11 @@ class ActiveAreaDetector:
     def save_crops(self, pdf_path: str, all_detections: dict, output_dir: str):
         """
         Crops detected regions from the PDF and saves them as images.
-        Organized by Document Name -> tables/figures
+        Organized by tables/figures inside the output_dir.
         """
         pdf = pdfium.PdfDocument(pdf_path)
         
-        # Extract document name for subfolder
-        doc_name = os.path.splitext(os.path.basename(pdf_path))[0]
-        doc_output_dir = os.path.join(output_dir, doc_name)
-        
-        os.makedirs(doc_output_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
         
         saved_paths = []
         
@@ -155,8 +151,8 @@ class ActiveAreaDetector:
                     # Scale box
                     crop_box = [coord * scale_factor for coord in box]
                     
-                    # Label directory: data/intermediate/doc_name/tables/
-                    label_dir = os.path.join(doc_output_dir, f"{label}s") 
+                    # Label directory: directory mapping to output_dir/tables/ or output_dir/figures/
+                    label_dir = os.path.join(output_dir, f"{label}s") 
                     os.makedirs(label_dir, exist_ok=True)
                     
                     # Crop and Save

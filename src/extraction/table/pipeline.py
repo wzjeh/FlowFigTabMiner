@@ -6,6 +6,8 @@ from src.extraction.table.structure import TableStructureRecognizer
 from src.extraction.table.cell_classifier import CellClassifier
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
+import json
+import glob
 
 class TablePipeline:
     def __init__(self, table_filter=None, structure_recognizer=None, molecule_processor=None, content_recognizer=None, sequential_mode=False):
@@ -337,20 +339,101 @@ class TablePipeline:
         csv_path = None
         if output_dir:
             basename = os.path.splitext(os.path.basename(image_path))[0]
-            csv_path = os.path.join(output_dir, f"{basename}.csv")
+            csv_path = os.path.join(output_dir, f"{basename}_extracted.csv")
             try:
                 df.to_csv(csv_path, index=False, header=False)
                 print(f"   -> Saved CSV to {csv_path}")
             except Exception as e:
                 print(f"   -> Failed to save CSV: {e}")
 
-        return {
+        # --- 7. Synthesize Context (Caption/Note) via OCR ---
+        context_data = {
+            "caption": [],
+            "table_note": []
+        }
+        
+        if table_output_dir:
+            # We assume table filter put captions/notes into table_output_dir just earlier!
+            # The filenames are e.g. {table_basename}_table_caption_*.png
+            cap_pattern = os.path.join(table_output_dir, f"{table_basename}_table_caption_*.png")
+            note_pattern = os.path.join(table_output_dir, f"{table_basename}_table_note_*.png")
+            
+            recognizer_for_context = self._get_model('content')
+            try:
+                for c_path in sorted(glob.glob(cap_pattern)):
+                     c_img = cv2.imread(c_path)
+                     if c_img is not None:
+                         c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                         pad = 50
+                         c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                         c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
+                         txt = recognizer_for_context._recognize_text(c_rgb)
+                         if txt.strip(): context_data["caption"].append(txt)
+
+                for n_path in sorted(glob.glob(note_pattern)):
+                     n_img = cv2.imread(n_path)
+                     if n_img is not None:
+                         n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                         pad = 50
+                         n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                         n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
+                         txt = recognizer_for_context._recognize_text(n_rgb)
+                         if txt.strip(): context_data["table_note"].append(txt)
+            finally:
+                self._unload_model(recognizer_for_context)
+
+        # 8. Check Relevance
+        import yaml
+        try:
+            # Fallback pathing logic from root
+            with open("keywords.yaml", 'r') as f:
+                kw_config = yaml.safe_load(f)
+                keywords = kw_config.get('keywords', [])
+        except Exception as e:
+            keywords = ['yield', 'conversion', 'selectivity', 'product', 'composition', 'conditions', 'reaction']
+
+        check_text = (" ".join(context_data["caption"]) + " " + " ".join(context_data["table_note"])).lower()
+        if not df.empty:
+            check_text += " " + df.head(3).to_string(index=False, header=False).lower()
+            
+        import re
+        norm_text = re.sub(r'[^a-z0-9]', '', check_text)
+        is_relevant = any(kw in norm_text for kw in keywords)
+        
+        if not is_relevant:
+            print(f"   --> Table rejected by keyword filter: '{norm_text[:50]}...'")
+            return {'is_valid': False, 'is_relevant': False, 'reason': 'No keywords found'}
+
+        # 9. Format Evidence JSON output
+        result_packet = {
             'is_valid': True,
+            'is_relevant': is_relevant,
             'csv_path': csv_path,
             'dataframe': df,
             'cells': cell_meta,
-            'structure': struct_res
+            'structure': struct_res,
+            'num_extracted': len(extracted_data),
+            'caption_text': " ".join(context_data["caption"]),
+            'table_note_text': " ".join(context_data["table_note"])
         }
+
+        if table_output_dir:
+             evidence_data = {
+                 "csv_path": csv_path,
+                 "num_extracted": len(extracted_data),
+                 "caption_text": result_packet["caption_text"],
+                 "table_note_text": result_packet["table_note_text"],
+                 "is_relevant": is_relevant
+             }
+             json_filename = f"{table_basename}_evidence.json"
+             json_path = os.path.join(table_output_dir, json_filename)
+             with open(json_path, 'w') as f:
+                 json.dump(evidence_data, f, indent=2)
+             result_packet['json_path'] = json_path
+             print(f"   -> Saved Evidence JSON to: {json_path}")
+             print(f"   -> Saved Evidence JSON to: {json_path}")
+
+        return result_packet
 
     def _assign_grid_indices(self, cells):
         # Very simple heuristic:

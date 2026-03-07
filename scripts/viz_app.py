@@ -30,6 +30,9 @@ PYTHON_EXEC = sys.executable if sys.executable else "python3"
 if os.path.exists("./flowfigtabminer/bin/python3"):
     PYTHON_EXEC = "./flowfigtabminer/bin/python3"
 
+LOG_FILE = "logs/streamlit_app.log"
+os.makedirs("logs", exist_ok=True)
+
 def run_script(script_path, args=[]):
     """Run a script and capture output."""
     cmd = [PYTHON_EXEC, script_path] + args
@@ -52,9 +55,26 @@ def run_script(script_path, args=[]):
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        
+        # Write to global log
+        with open(LOG_FILE, "a", encoding="utf-8") as lf:
+            lf.write(f"\n{'='*40}\n")
+            lf.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] RUN: {' '.join(cmd)}\n")
+            lf.write(f"RETURN CODE: {result.returncode}\n")
+            if result.stdout:
+                lf.write("--- STDOUT ---\n" + result.stdout + "\n")
+            if result.stderr:
+                lf.write("--- STDERR ---\n" + result.stderr + "\n")
+            lf.write(f"{'='*40}\n")
+            
         return result
     except Exception as e:
         print(f"Subprocess failed: {e}")
+        # Write error to global log
+        with open(LOG_FILE, "a", encoding="utf-8") as lf:
+            lf.write(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] RUN EXCEPTION: {' '.join(cmd)}\n")
+            lf.write(str(e) + "\n")
+            
         # Return a dummy completed process with error
         from subprocess import CompletedProcess
         return CompletedProcess(cmd, 1, stdout="", stderr=str(e))
@@ -127,96 +147,19 @@ if st.sidebar.button("🚀 Run Full Pipeline", type="primary"):
     log_expander = st.expander("📜 Pipeline Execution Logs", expanded=True)
     
     try:
-        # 1. Step 1: TF-ID
-        status_text.write("Step 1/4: Running TF-ID Extraction...")
+        status_text.write("Running Integrated FlowDevMiner API...")
         with log_expander:
-            st.markdown("### Step 1: TF-ID")
-            res1 = run_script("scripts/step1_tfid.py", [selected_pdf_path])
-            st.text(f"Return Code: {res1.returncode}")
-            if res1.stdout: st.code(res1.stdout, language='text')
-            if res1.stderr: st.code(res1.stderr, language='text')
-            
-        if res1.returncode != 0:
-            st.sidebar.error("Step 1 Failed!")
-            st.error(res1.stderr)
+            st.markdown("### Executing New 4-Layer Architecture")
+            res_api = run_script("scripts/run_pipeline_api.py", [selected_pdf_path])
+            st.text(f"Return Code: {res_api.returncode}")
+            if res_api.stdout: st.code(res_api.stdout, language='text')
+            if res_api.stderr: st.code(res_api.stderr, language='text')
+
+        if res_api.returncode != 0:
+            st.sidebar.error("Integrated Pipeline Failed!")
+            st.error(res_api.stderr)
             st.stop()
-        progress_bar.progress(25)
-        
-        # 2. Step 2: Intelligent Selection (Hybrid Agentic)
-        status_text.write("Step 2/5: Agentic Reasoning (Selecting Relevant Assets)...")
-        with log_expander:
-            st.markdown("### Step 2: Agentic Selector")
-            res_sel = run_script("scripts/step_llm_selector.py", [selected_pdf_path])
-            st.text(f"Return Code: {res_sel.returncode}")
-            if res_sel.stdout: st.code(res_sel.stdout, language='json')
-            if res_sel.stderr: st.code(res_sel.stderr, language='text')
-
-        if res_sel.returncode != 0:
-            st.sidebar.warning("Selector failed (check logs), falling back to processing ALL assets.")
-        else:
-            # Parse output to show what was selected
-            sel_json = parse_json_from_stdout(res_sel.stdout)
-            if sel_json:
-                n_fig = len(sel_json.get("selected_figures", []))
-                n_tab = len(sel_json.get("selected_tables", []))
-                st.sidebar.info(f"Agent Selected: {n_fig} Figs, {n_tab} Tabs")
-                
-                # Show reasons in main area
-                rich_data = sel_json.get("rich_metadata", [])
-                if rich_data:
-                    st.write("**Agent Selection Logic:**")
-                    for item in rich_data:
-                        fname = item.get("filename")
-                        reason = item.get("reason", "No reason provided")
-                        icon = "📊" if "Table" in fname else "📈"
-                        st.caption(f"{icon} **{fname}**: {reason}")
-        progress_bar.progress(40)
-        
-        # 3. Step 3: Figures
-        status_text.write("Step 3/5: Processing Selected Figures...")
-        with log_expander:
-            st.markdown("### Step 3: Figure Processing")
-            res2 = run_script("scripts/run_steps2_to_4.py", [selected_pdf_path])
-            st.text(f"Return Code: {res2.returncode}")
-            if res2.stdout: st.code(res2.stdout, language='text')
-            if res2.stderr: st.code(res2.stderr, language='text')
-
-        if res2.returncode != 0:
-            st.sidebar.warning("Figure pipeline had issues, continuing...")
-        progress_bar.progress(60)
-        
-        # 4. Step 4: Tables
-        status_text.write("Step 4/5: Processing Selected Tables...")
-        # Target specific table directory for this PDF
-        pdf_tables_dir = os.path.join(intermediate_dir, "tables")
-        if os.path.exists(pdf_tables_dir):
-            with log_expander:
-                st.markdown("### Step 4: Content Extraction (Tables)")
-                # We run batch pipeline on this specific folder
-                res3 = run_script("scripts/run_batch_tables.py", ["--input_dir", pdf_tables_dir])
-                st.text(f"Return Code: {res3.returncode}")
-                if res3.stdout: st.code(res3.stdout, language='text')
-                if res3.stderr: st.code(res3.stderr, language='text')
-
-            if res3.returncode != 0:
-                 st.sidebar.warning("Table pipeline loop had issues, continuing...")
-        else:
-            st.sidebar.info("No tables found to process.")
-        progress_bar.progress(80)
-
-        # 5. Step 5: Assembly
-        status_text.write("Step 5/5: Final Assembly & Synthesis...")
-        with log_expander:
-            st.markdown("### Step 5: Global Assembly")
-            res5 = run_script("scripts/step5_advanced.py", [selected_pdf_path])
-            st.text(f"Return Code: {res5.returncode}")
-            if res5.stdout: st.code(res5.stdout, language='text')
-            if res5.stderr: st.code(res5.stderr, language='text')
-
-        if res5.returncode != 0:
-             st.sidebar.error("Step 5 Failed!")
-             st.error(res5.stderr)
-             st.stop()
+            
         progress_bar.progress(100)
         
         status_text.write("✅ Pipeline Complete!")
@@ -891,3 +834,23 @@ with tab4:
                 st.json(j)
             except:
                 st.text(content)
+
+# --- GLOBAL LOGS FOOTER ---
+st.markdown("---")
+with st.expander("📝 运行日志 (System Execution Logs)", expanded=False):
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r", encoding="utf-8") as lf:
+            log_content = lf.read()
+            # Show last part of the log to prevent UI freezing if very large
+            if len(log_content) > 100000:
+                st.text(f"... showing last 100,000 chars of {len(log_content)} total ...")
+                st.code(log_content[-100000:], language='text')
+            else:
+                st.code(log_content, language='text')
+        
+        if st.button("清空日志 (Clear Logs)"):
+            with open(LOG_FILE, "w", encoding="utf-8") as lf:
+                lf.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Logs cleared.\n")
+            st.rerun()
+    else:
+        st.info("暂无日志 / No logs generated yet.")

@@ -1,20 +1,28 @@
-python-dotenv
-docling
+# Core AI & Computation
+torch>=2.0.0
+torchvision
+torchaudio
+transformers
+onmt
+paddlepaddle-gpu ; sys_platform == 'linux'
+paddlepaddle ; sys_platform == 'darwin'
+paddleocr>=2.6.0
+ultralytics  # YOLOv11 Support
+
+# Data Processing
 pandas
-streamlit
+numpy
 opencv-python
 pillow
-google-generativeai
-dashscope
-openai
-ipykernel
-einops
-ultralytics
-timm
-paddlepaddle
-paddleocr
-molscribe
-torch
-torchvision
-timm
-numpy<2.0
+scipy
+pyyaml
+
+# UI & Web
+streamlit
+requests
+
+# Layout & PDF
+pdf2image
+albumentations
+imutils
+fitz  # PyMuPDF

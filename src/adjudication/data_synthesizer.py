@@ -48,10 +48,13 @@ class DataSynthesizer:
         - For EACH row/point in Raw Data, output a standardized JSON object.
         - Merge Global Variables into each row. 
         - IF a row specifies a value, it OVERRIDES the Global Variable.
+        - **FOR FIGURES/CHARTS**: 
+          - Axis Labels indicate what the X and Y coordinates represent.
+          - 'Series' often refers to a Product or a Result category (e.g., "Yield of 3a").
+          - Map 'X' and 'Y' to the appropriate fields (e.g., if X is 'Temperature', put 'X' value into 'Temperature' field).
         - **CRITICAL 1**: Substitute ALL abbreviations with their full names from "Term Definitions". 
-          - e.g. If "NB" is resolved to "nitrobenzene", output "nitrobenzene" in the "name" field.
-        - **CRITICAL 2**: If the Product is listed generically (e.g., "Main product", "Product 3a", "Yield"), 
-          INFER the chemical name based on the Substrate and Reaction Type.
+        - **CRITICAL 2**: If the Product is listed generically (e.g., "Main product", "Series", "Yield"), 
+          INFER the chemical name based on Axis Labels, Legend, and context.
         - **CRITICAL 3**: Do NOT list equipment (e.g., "H-flow", "FlowSyn", "Reactor") as "Catalyst". 
           Catalyst must be a chemical substance (e.g., Pd/C, Raney Ni). If none, use null.
         

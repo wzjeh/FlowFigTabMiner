@@ -45,9 +45,17 @@ class GlobalInfoExtractor:
                 context_text += f"Data Snippet:\n{snippet}\n"
 
         else:
-            # Figure
-            context_text += f"Caption: {evidence_item.get('caption', '')}\n"
-            context_text += f"Axis Labels: {evidence_item.get('axis_labels', '')}\n" # specific to figure
+            # Figure - use text_evidence gathered by FigureProcessor
+            meta = evidence_item.get('meta', {})
+            context_text += f"Caption: {meta.get('caption', meta.get('caption_text', ''))}\n"
+            
+            text_ev = evidence_item.get('text_evidence', {})
+            if text_ev:
+                for key in ['x_axis_title', 'y_axis_title', 'chart_text', 'legend_text']:
+                    items = text_ev.get(key, [])
+                    if items:
+                        combined = " ".join([i.get('text', '') for i in items if isinstance(i, dict)])
+                        context_text += f"{key.replace('_', ' ').title()}: {combined}\n"
             
         system_prompt = """
         You are an expert chemist. Your task is to extract "Global Experimental Conditions" and "Unknown Abbreviations/Chemical Codes" from the provided Table/Figure metadata.

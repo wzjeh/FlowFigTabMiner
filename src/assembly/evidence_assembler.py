@@ -5,9 +5,7 @@ import re
 from paddleocr import PaddleOCR
 
 class EvidenceAssembler:
-    def __init__(self, output_dir="data/evidence"):
-        self.output_dir = output_dir
-        os.makedirs(self.output_dir, exist_ok=True)
+    def __init__(self):
         # Initialize PaddleOCR
         # use_angle_cls=True ensures we can read rotated y-axis text
         self.ocr = PaddleOCR(use_angle_cls=True, lang='en')
@@ -70,6 +68,7 @@ class EvidenceAssembler:
         caption_content = ". ".join([item['text'] for item in text_evidence.get('chart_text', [])])
         
         evidence_packet = {
+            "is_relevant": True, # If we are assembling, we passed the filter
             "meta": {
                 "figure_id": figure_id,
                 "source_intermediate_dir": intermediate_dir,
@@ -80,7 +79,7 @@ class EvidenceAssembler:
         }
         
         # 4. Save JSON
-        output_path = os.path.join(self.output_dir, f"{figure_id}_evidence.json")
+        output_path = os.path.join(intermediate_dir, f"{figure_id}_evidence.json")
         with open(output_path, 'w') as f:
             json.dump(evidence_packet, f, indent=2)
             

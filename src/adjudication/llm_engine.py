@@ -15,18 +15,18 @@ class LLMEngine:
         
         # Configuration Priorities: 
         # 1. Constructor Params
-        # 2. Environment Variables
-        # 3. Config.yaml Defaults
+        # 2. Config.yaml Defaults (Specific Context)
+        # 3. Environment Variables
         
-        self.provider = provider or os.getenv("LLM_PROVIDER") or llm_cfg.get("default_provider", "dashscope")
+        adj_cfg = llm_cfg.get("adjudication", {})
+        ext_cfg = llm_cfg.get("extraction", {})
+        
+        # Determine specific context: default to adjudication if unspecified
+        # Prefer YAML values if present, then environment variables
+        self.provider = provider or adj_cfg.get("provider") or os.getenv("LLM_PROVIDER") or llm_cfg.get("default_provider", "dashscope")
+        self.model = model or adj_cfg.get("model_name") or os.getenv("LLM_MODEL_NAME")
         self.api_key = api_key or os.getenv("LLM_API_KEY") or os.getenv("QWEN_API_KEY")
         self.base_url = base_url or os.getenv("LLM_BASE_URL")
-        
-        # Determine specific config section based on usage context? 
-        # For now, default to general or adjudication
-        adj_cfg = llm_cfg.get("adjudication", {})
-        
-        self.model = model or os.getenv("LLM_MODEL_NAME") or adj_cfg.get("model_name")
         
         # Defaults based on provider
         if self.provider == "dashscope":
@@ -39,6 +39,7 @@ class LLMEngine:
                  print("[LLMEngine] WARNING: No API Key found for DashScope.")
             else:
                  dashscope.api_key = self.api_key
+                 # Restore intl endpoint (required for sk-061... key)
                  dashscope.base_http_api_url = "https://dashscope-intl.aliyuncs.com/api/v1"
             
             self.model = self.model or "qwen-plus"
@@ -80,7 +81,9 @@ class LLMEngine:
                 if response.status_code == HTTPStatus.OK:
                     return response.output.choices[0].message.content
                 else:
-                    return f"Error: {response.code} - {response.message}"
+                    error_msg = f"Error: {response.code} - {response.message}"
+                    print(f"[LLMEngine] API Error: {error_msg}")
+                    return error_msg
             
             elif self.provider == "openai":
                 response = self.client.chat.completions.create(
