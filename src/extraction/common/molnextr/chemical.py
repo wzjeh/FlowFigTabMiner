@@ -226,9 +226,9 @@ def _verify_chirality(mol, coords, symbols, edges, debug=False):
 
         # if not chiral_center_ids:
         # # symbols 是一个原子符号列表（如 ['[F3C]', '[C@]', ...]）
-        chiral_tags = ['[C@]', '[C@@]', '[C@H]', '[C@@H]']
-        chiral_center_ids = [i for i, sym in enumerate(symbols) if any(tag in sym for tag in chiral_tags)]
-        print(f"chiral_center_ids (from symbols): {chiral_center_ids}")
+        # chiral_tags = ['[C@]', '[C@@]', '[C@H]', '[C@@H]']
+        # chiral_center_ids = [i for i, sym in enumerate(symbols) if any(tag in sym for tag in chiral_tags)]
+        # print(f"chiral_center_ids (from symbols): {chiral_center_ids}")
         
         # correction to clear pre-condition violation (for some corner cases)
         for bond in mol.GetBonds():

@@ -1,0 +1,599 @@
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+Florence2LanguageForConditionalGeneration has generative capabilities, as `prepare_inputs_for_generation` is explicitly defined. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/paddle/utils/cpp_extension/extension_utils.py:712: UserWarning: No ccache found. Please be aware that recompiling all source files may be required. You can download and install ccache from: https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
+  warnings.warn(warning_message)
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+[2026-03-08 10:52:57,518] [    INFO] pipeline.py:25 - Initializing Table Pipeline (Sequential Mode: False)
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_doc_ori`.[0m
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/UVDoc`.[0m
+[32mCreating model: ('PP-LCNet_x1_0_textline_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-LCNet_x1_0_textline_ori`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/PP-OCRv5_server_det`.[0m
+[32mCreating model: ('en_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the directory manually: `/Users/zhaowenyuan/.paddlex/official_models/en_PP-OCRv5_mobile_rec`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+--- Starting Pipeline for data/input/example.pdf ---
+Loading TF-ID (Florence-2) model: yifeihu/TF-ID-base on mps...
+PATCHING: Adding GenerationMixin to Florence2LanguageForConditionalGeneration bases for compatibility.
+PATCHING: Initializing missing generation_config for language_model.
+Loading YOLO model from models/bestYOLOn-2-1.pt...
+   -> Classes: {0: 'axis_break', 1: 'chart_text', 2: 'legend', 3: 'target_image', 4: 'x_axis_title', 5: 'y_axis_title'}
+Loading Stage 2 YOLO model from models/bestYOLOm-2-2.pt...
+Loading Table Segmentation YOLO model from models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/best.pt...
+Loading Table Segmentation YOLO model from models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/best.pt...
+Loading Table Structure model: microsoft/table-transformer-structure-recognition-v1.1-all on cpu...
+Loading PaddleOCR...
+Loading MolNexTR...
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/torch/functional.py:554: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:4324.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+MolNexTR Loaded Successfully.
+Traceback (most recent call last):
+  File "/Users/zhaowenyuan/Projects/FlowFigTabMiner/main.py", line 123, in main
+    if not df.empty:
+AttributeError: 'tuple' object has no attribute 'empty'
+Traceback (most recent call last):
+  File "/Users/zhaowenyuan/Projects/FlowFigTabMiner/main.py", line 123, in main
+    if not df.empty:
+AttributeError: 'tuple' object has no attribute 'empty'
+Traceback (most recent call last):
+  File "/Users/zhaowenyuan/Projects/FlowFigTabMiner/main.py", line 123, in main
+    if not df.empty:
+AttributeError: 'tuple' object has no attribute 'empty'
+Traceback (most recent call last):
+  File "/Users/zhaowenyuan/Projects/FlowFigTabMiner/main.py", line 123, in main
+    if not df.empty:
+AttributeError: 'tuple' object has no attribute 'empty'
+Traceback (most recent call last):
+  File "/Users/zhaowenyuan/Projects/FlowFigTabMiner/main.py", line 123, in main
+    if not df.empty:
+AttributeError: 'tuple' object has no attribute 'empty'
+[2026-03-08 10:53:29,570] [    INFO] pipeline.py:120 - Processing Table: data/intermediate/tables/page_1_table_0.png
+[2026-03-08 10:53:29,945] [    INFO] pipeline.py:130 -    -> Rejected by Table Filter (Conf: 0.0)
+[2026-03-08 10:53:29,945] [    INFO] pipeline.py:120 - Processing Table: data/intermediate/tables/page_4_table_0.png
+[2026-03-08 10:53:30,297] [    INFO] pipeline.py:146 -    -> Saving 3 component types to data/output/test_run/tables/page_4_table_0
+[2026-03-08 10:53:30,309] [    INFO] pipeline.py:161 -    -> Using cropped table body: data/output/test_run/tables/page_4_table_0/page_4_table_0_body_main.png
+[2026-03-08 10:53:30,309] [    INFO] pipeline.py:170 -    -> Detecting and masking molecules with YOLO...
+Loading Molecule Detection Model from models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt...
+Loading Molecule Detection Model from models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt...
+   MoleculeProcessor: YOLO model loaded successfully from models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt
+
+Step 1: Detecting Tables and Figures (TF-ID)...
+   Found 4 tables and 7 figures.
+
+Step 2: Processing Figures (Macro -> Micro -> Map)...
+   YOLO Processing: page_2_figure_0...
+      -> No target_image detected. Skipping.
+   YOLO Processing: page_3_figure_0...
+      -> No target_image detected. Skipping.
+   YOLO Processing: page_5_figure_0...
+      -> Saved page_5_figure_0_t0_cleaned.png (masked 4 elements)
+   YOLO Processing: page_5_figure_1...
+      -> Saved page_5_figure_1_t0_cleaned.png (masked 5 elements)
+   YOLO Processing: page_6_figure_0...
+      -> Saved page_6_figure_0_t0_cleaned.png (masked 4 elements)
+   YOLO Processing: page_6_figure_1...
+      -> Saved page_6_figure_1_t0_cleaned.png (masked 4 elements)
+   YOLO Processing: page_7_figure_1...
+      -> Saved page_7_figure_1_t0_cleaned.png (masked 3 elements)
+   Processing Plot: page_5_figure_0.png
+      -> Detected 25 data points.
+      -> Parsing 1 legend crops...
+      [DEBUG] Saved Master Legend to debug_master_legend.png
+      [DEBUG] Master Legend Markers: 34
+      [DEBUG] Master Legend Texts: 4
+      [DEBUG] Proto '3,4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'azo': HSV=[  0 ... 241]
+      [DEBUG] Proto 'dechloronitrobenzen': HSV=[134 ... 215]
+      [DEBUG] Proto 'dechloroaniline': HSV=[100 ... 245]
+      [DEBUG] Proto '3,4-dichloroaniline' Selected BEST from 1 candidates (Max Sat: 251).
+      [DEBUG] Final Proto '3,4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'azo' Selected BEST from 1 candidates (Max Sat: 184).
+      [DEBUG] Final Proto 'azo': HSV=[  0 ... 241]
+      [DEBUG] Proto 'dechloronitrobenzen' Selected BEST from 1 candidates (Max Sat: 234).
+      [DEBUG] Final Proto 'dechloronitrobenzen': HSV=[134 ... 215]
+      [DEBUG] Proto 'dechloroaniline' Selected BEST from 1 candidates (Max Sat: 232).
+      [DEBUG] Final Proto 'dechloroaniline': HSV=[100 ... 245]
+      -> Matching points...
+      [DEBUG] Point 0 HSV: [ 90 ... 205]
+        -> Dist to '3,4-dichloroaniline': 0.16
+        -> Dist to 'azo': 2.31
+        -> Dist to 'dechloronitrobenzen': 1.06
+        -> Dist to 'dechloroaniline': 0.35
+        -> Assigned: 3,4-dichloroaniline
+      -> Mapping coordinates using page_5_figure_0_t0_raw.png...
+      -> Error extraction figure: 'tuple' object has no attribute 'empty'
+   Processing Plot: page_5_figure_1.png
+      -> Detected 18 data points.
+      -> Parsing 2 legend crops...
+      [DEBUG] Saved Master Legend to debug_master_legend.png
+      [DEBUG] Master Legend Markers: 37
+      [DEBUG] Master Legend Texts: 4
+      [DEBUG] Proto '3.4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'dechloroaniline': HSV=[ 0 ... 91]
+      [DEBUG] Proto 'azo': HSV=[  0 ... 245]
+      [DEBUG] Proto 'azo': HSV=[100 ... 235]
+      [DEBUG] Proto 'dechloronitrobenzen': HSV=[134 ... 215]
+      [DEBUG] Proto 'dechloroaniline': HSV=[101 ... 245]
+      [DEBUG] Proto 'dechloroaniline': HSV=[ 91 ... 199]
+      [DEBUG] Proto 'dechloroaniline': HSV=[ 91 ... 197]
+      [DEBUG] Proto '3.4-dichloroaniline' Selected BEST from 1 candidates (Max Sat: 254).
+      [DEBUG] Final Proto '3.4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'dechloroaniline' Selected BEST from 3 candidates (Max Sat: 234).
+      [DEBUG] Final Proto 'dechloroaniline': HSV=[ 91 ... 197]
+      [DEBUG] Proto 'azo' Selected BEST from 2 candidates (Max Sat: 187).
+      [DEBUG] Final Proto 'azo': HSV=[  0 ... 245]
+      [DEBUG] Proto 'dechloronitrobenzen' Selected BEST from 1 candidates (Max Sat: 232).
+      [DEBUG] Final Proto 'dechloronitrobenzen': HSV=[134 ... 215]
+      -> Matching points...
+      [DEBUG] Point 0 HSV: [ 90 ... 205]
+        -> Dist to '3.4-dichloroaniline': 0.22
+        -> Dist to 'dechloroaniline': 0.13
+        -> Dist to 'azo': 2.26
+        -> Dist to 'dechloronitrobenzen': 1.08
+        -> Assigned: dechloroaniline
+      -> Mapping coordinates using page_5_figure_1_t0_raw.png...
+      -> Error extraction figure: 'tuple' object has no attribute 'empty'
+   Processing Plot: page_6_figure_0.png
+      -> Detected 35 data points.
+      -> Parsing 1 legend crops...
+      [DEBUG] Saved Master Legend to debug_master_legend.png
+      [DEBUG] Master Legend Markers: 32
+      [DEBUG] Master Legend Texts: 4
+      [DEBUG] Proto '3,4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'azo': HSV=[  0 ... 242]
+      [DEBUG] Proto 'dechloronitrobenzen': HSV=[134 ... 214]
+      [DEBUG] Proto 'dechloroaniline': HSV=[101 ... 245]
+      [DEBUG] Proto '3,4-dichloroaniline' Selected BEST from 1 candidates (Max Sat: 250).
+      [DEBUG] Final Proto '3,4-dichloroaniline': HSV=[ 90 ... 203]
+      [DEBUG] Proto 'azo' Selected BEST from 1 candidates (Max Sat: 185).
+      [DEBUG] Final Proto 'azo': HSV=[  0 ... 242]
+      [DEBUG] Proto 'dechloronitrobenzen' Selected BEST from 1 candidates (Max Sat: 228).
+      [DEBUG] Final Proto 'dechloronitrobenzen': HSV=[134 ... 214]
+      [DEBUG] Proto 'dechloroaniline' Selected BEST from 1 candidates (Max Sat: 225).
+      [DEBUG] Final Proto 'dechloroaniline': HSV=[101 ... 245]
+      -> Matching points...
+      [DEBUG] Point 0 HSV: [ 90 ... 206]
+        -> Dist to '3,4-dichloroaniline': 0.19
+        -> Dist to 'azo': 2.27
+        -> Dist to 'dechloronitrobenzen': 1.05
+        -> Dist to 'dechloroaniline': 0.36
+        -> Assigned: 3,4-dichloroaniline
+      -> Mapping coordinates using page_6_figure_0_t0_raw.png...
+      -> Error extraction figure: 'tuple' object has no attribute 'empty'
+   Processing Plot: page_6_figure_1.png
+      -> Detected 23 data points.
+      -> Parsing 1 legend crops...
+      [DEBUG] Saved Master Legend to debug_master_legend.png
+      [DEBUG] Master Legend Markers: 35
+      [DEBUG] Master Legend Texts: 4
+      [DEBUG] Proto '3,4-dichloroaniline': HSV=[ 90 ... 202]
+      [DEBUG] Proto 'azo': HSV=[  0 ... 245]
+      [DEBUG] Proto 'dechloronitrobenzene': HSV=[134 ... 215]
+      [DEBUG] Proto 'dechloroaniline': HSV=[100 ... 244]
+      [DEBUG] Proto '3,4-dichloroaniline' Selected BEST from 1 candidates (Max Sat: 250).
+      [DEBUG] Final Proto '3,4-dichloroaniline': HSV=[ 90 ... 202]
+      [DEBUG] Proto 'azo' Selected BEST from 1 candidates (Max Sat: 183).
+      [DEBUG] Final Proto 'azo': HSV=[  0 ... 245]
+      [DEBUG] Proto 'dechloronitrobenzene' Selected BEST from 1 candidates (Max Sat: 232).
+      [DEBUG] Final Proto 'dechloronitrobenzene': HSV=[134 ... 215]
+      [DEBUG] Proto 'dechloroaniline' Selected BEST from 1 candidates (Max Sat: 227).
+      [DEBUG] Final Proto 'dechloroaniline': HSV=[100 ... 244]
+      -> Matching points...
+      [DEBUG] Point 0 HSV: [ 90 ... 205]
+        -> Dist to '3,4-dichloroaniline': 0.25
+        -> Dist to 'azo': 2.23
+        -> Dist to 'dechloronitrobenzene': 1.14
+        -> Dist to 'dechloroaniline': 0.41
+        -> Assigned: 3,4-dichloroaniline
+      -> Mapping coordinates using page_6_figure_1_t0_raw.png...
+      -> Error extraction figure: 'tuple' object has no attribute 'empty'
+   Processing Plot: page_7_figure_1.png
+      -> Detected 18 data points.
+      -> Parsing 1 legend crops...
+      [DEBUG] Saved Master Legend to debug_master_legend.png
+      [DEBUG] Master Legend Markers: 23
+      [DEBUG] Master Legend Texts: 3
+      [DEBUG] Proto '90': HSV=[ 0 ... 69]
+      [DEBUG] Proto '70': HSV=[  0 ... 226]
+      [DEBUG] Proto '110': HSV=[107 ... 218]
+      [DEBUG] Proto '70': HSV=[ 80 ... 211]
+      [DEBUG] Proto '90': HSV=[179 ... 225]
+      [DEBUG] Proto '90': HSV=[  0 ... 243]
+      [DEBUG] Proto '70': HSV=[  0 ... 212]
+      [DEBUG] Proto '90': HSV=[ 0 ... 80]
+      [DEBUG] Proto '70': HSV=[  0 ... 226]
+      [DEBUG] Proto '90': HSV=[  0 ... 231]
+      [DEBUG] Proto '70': HSV=[ 82 ... 191]
+      [DEBUG] Proto '90': HSV=[ 0 ... 77]
+      [DEBUG] Proto '90': HSV=[  0 ... 222]
+      [DEBUG] Proto '110': HSV=[  1 ... 237]
+      [DEBUG] Proto '110': HSV=[179 ... 208]
+      [DEBUG] Proto '90': HSV=[178 ... 226]
+      [DEBUG] Proto '90' Selected BEST from 5 candidates (Max Sat: 188).
+      [DEBUG] Final Proto '90': HSV=[  0 ... 243]
+      [DEBUG] Proto '70' Selected BEST from 5 candidates (Max Sat: 251).
+      [DEBUG] Final Proto '70': HSV=[ 80 ... 211]
+      [DEBUG] Proto '110' Selected BEST from 3 candidates (Max Sat: 229).
+      [DEBUG] Final Proto '110': HSV=[107 ... 218]
+      -> Matching points...
+      [DEBUG] Point 0 HSV: [  0 ... 237]
+        -> Dist to '90': 0.11
+        -> Dist to '70': 2.29
+        -> Dist to '110': 1.99
+        -> Assigned: 90
+      -> Mapping coordinates using page_7_figure_1_t0_raw.png...
+      -> Error extraction figure: 'tuple' object has no attribute 'empty'
+
+Step 3: Processing Tables...
+   MoleculeProcessor: Starting YOLO inference on image 984x948...
+   MoleculeProcessor: YOLO inference done. Found 0 boxes.
+[2026-03-08 10:53:30,482] [    INFO] pipeline.py:196 -       -> No molecules detected in table
+   TableStructure: Running inference on cpu...
+   TableStructure: Inference done.
+[2026-03-08 10:53:30,639] [    INFO] pipeline.py:213 -    -> Detected 90 cells via TATR
+[2026-03-08 10:53:30,655] [    INFO] pipeline.py:249 -    -> Mapping cells to molecule detections...
+[2026-03-08 10:53:30,655] [    INFO] pipeline.py:295 -    -> 0 cells contain molecules, 90 cells need OCR
+[2026-03-08 10:53:30,655] [    INFO] pipeline.py:298 -    -> Running OCR on text/number cells...
+[2026-03-08 10:53:57,081] [    INFO] pipeline.py:346 -    -> Saved CSV to data/output/test_run/tables/page_4_table_0_extracted.csv
+[2026-03-08 10:54:11,514] [    INFO] pipeline.py:405 -    -> Table rejected by keyword filter (no flow chemistry keywords found)
+[2026-03-08 10:54:11,549] [    INFO] pipeline.py:120 - Processing Table: data/intermediate/tables/page_7_table_0.png
+[2026-03-08 10:54:12,738] [    INFO] pipeline.py:146 -    -> Saving 3 component types to data/output/test_run/tables/page_7_table_0
+[2026-03-08 10:54:12,744] [    INFO] pipeline.py:161 -    -> Using cropped table body: data/output/test_run/tables/page_7_table_0/page_7_table_0_body_main.png
+[2026-03-08 10:54:12,745] [    INFO] pipeline.py:170 -    -> Detecting and masking molecules with YOLO...
+   MoleculeProcessor: Starting YOLO inference on image 976x211...
+   MoleculeProcessor: YOLO inference done. Found 0 boxes.
+[2026-03-08 10:54:13,051] [    INFO] pipeline.py:196 -       -> No molecules detected in table
+   TableStructure: Running inference on cpu...
+   TableStructure: Inference done.
+[2026-03-08 10:54:13,421] [    INFO] pipeline.py:213 -    -> Detected 11 cells via TATR
+[2026-03-08 10:54:13,424] [    INFO] pipeline.py:249 -    -> Mapping cells to molecule detections...
+[2026-03-08 10:54:13,424] [    INFO] pipeline.py:295 -    -> 0 cells contain molecules, 11 cells need OCR
+[2026-03-08 10:54:13,424] [    INFO] pipeline.py:298 -    -> Running OCR on text/number cells...
+[2026-03-08 10:54:16,929] [    INFO] pipeline.py:346 -    -> Saved CSV to data/output/test_run/tables/page_7_table_0_extracted.csv
+[2026-03-08 10:54:36,169] [    INFO] pipeline.py:434 -    -> Saved Evidence JSON to: data/output/test_run/tables/page_7_table_0/page_7_table_0_evidence.json
+[2026-03-08 10:54:36,172] [    INFO] pipeline.py:120 - Processing Table: data/intermediate/tables/page_8_table_0.png
+[2026-03-08 10:54:37,126] [    INFO] pipeline.py:146 -    -> Saving 3 component types to data/output/test_run/tables/page_8_table_0
+[2026-03-08 10:54:37,141] [    INFO] pipeline.py:161 -    -> Using cropped table body: data/output/test_run/tables/page_8_table_0/page_8_table_0_body_main.png
+[2026-03-08 10:54:37,141] [    INFO] pipeline.py:170 -    -> Detecting and masking molecules with YOLO...
+   Extracted table: page_7_table_0.png
+   MoleculeProcessor: Starting YOLO inference on image 2001x1119...
+   MoleculeProcessor: YOLO inference done. Found 5 boxes.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/torch/_dynamo/eval_frame.py:929: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/torch/utils/checkpoint.py:85: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+   -> Detected 5 potential molecules.
+   -> Saved Molecule YOLO debug viz to data/output/test_run/tables/page_8_table_0/page_8_table_0_body_main_debug_yolo.png
+   -> [Debug] Box 0 sufficient size (345x336). Skipped Upscaling.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+   -> Box 0: SMILES='O=[N+]([O-])c1cc(Cl)ccc1Cl' | Masked (White Box)
+   -> [Debug] Box 1 sufficient size (340x228). Skipped Upscaling.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+   -> Box 1: SMILES='O=[N+]([O-])c1ccc(Cl)cc1Cl' | Masked (White Box)
+   -> [Debug] Box 2 sufficient size (334x216). Skipped Upscaling.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+   -> Box 2: SMILES='COc1ccc(Cl)cc1[N+](=O)[O-]' | Masked (White Box)
+   -> [Debug] Box 3 sufficient size (329x267). Skipped Upscaling.
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+   -> Box 3: SMILES='COc1ccc(Cl)c([N+](=O)[O-])c1' | Masked (White Box)
+   -> [Debug] Upscaled TINY box 4 by 1.7x (337x176 -> 574x300)
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+[33mChecking connectivity to the model hosters, this may take a while. To bypass this check, set `DISABLE_MODEL_SOURCE_CHECK` to `True`.[0m
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:48: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, dim=0):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_activations.py:68: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:13: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  def forward(ctx, input, target):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/flowfigtabminer/lib/python3.9/site-packages/onmt/modules/sparse_losses.py:37: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, grad_output):
+   -> Box 4: SMILES='CC1CC2=C34([N+](=O)[O-])C5=CC(Cl)=C2C3=C51[N+]4(=O)[O-]' | Masked (White Box)
+[2026-03-08 10:55:40,467] [    INFO] pipeline.py:191 -       -> Masked 5 molecules with white fills
+   TableStructure: Running inference on cpu...
+   TableStructure: Inference done.
+[2026-03-08 10:55:40,789] [    INFO] pipeline.py:213 -    -> Detected 45 cells via TATR
+[2026-03-08 10:55:40,809] [    INFO] pipeline.py:249 -    -> Mapping cells to molecule detections...
+[2026-03-08 10:55:40,809] [    INFO] pipeline.py:295 -    -> 5 cells contain molecules, 40 cells need OCR
+[2026-03-08 10:55:40,809] [    INFO] pipeline.py:298 -    -> Running OCR on text/number cells...
+[2026-03-08 10:55:57,032] [    INFO] pipeline.py:346 -    -> Saved CSV to data/output/test_run/tables/page_8_table_0_extracted.csv
+[2026-03-08 10:56:05,055] [    INFO] pipeline.py:434 -    -> Saved Evidence JSON to: data/output/test_run/tables/page_8_table_0/page_8_table_0_evidence.json
+   Extracted table: page_8_table_0.png
+
+--- Pipeline Complete in 197.9s! Results saved to data/output/test_run/example_results.json ---

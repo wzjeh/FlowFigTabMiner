@@ -80,10 +80,14 @@ def main():
         "figures": []
     }
 
+    # Ensure output directory exists early
+    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(os.path.join(args.output_dir, "tables"), exist_ok=True)
+
     # Step 2: Figure Processing Pipeline
     if figure_images:
         print("\nStep 2: Processing Figures (Macro -> Micro -> Map)...")
-        
+
         # 2A. Macro Cleaning (YOLOv11n)
         macro_results = yolo_macro.process_images(figure_images, output_base_dir=intermediate_dir, output_subdir_name="macro_cleaned")
         
@@ -172,7 +176,6 @@ def main():
 
 
     # Final Save
-    os.makedirs(args.output_dir, exist_ok=True)
     basename = os.path.splitext(os.path.basename(input_pdf))[0]
     output_json = os.path.join(args.output_dir, f"{basename}_results.json")
     

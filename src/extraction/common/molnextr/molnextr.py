@@ -10,7 +10,7 @@ from src.extraction.common.molnextr.model import molnextr
 logging.getLogger("absl").setLevel("ERROR")
 
 # Control level of debug output
-DEBUG_LEVEL = os.environ.get("MOLNEXTR_DEBUG", "INFO").upper()
+DEBUG_LEVEL = os.environ.get("MOLNEXTR_DEBUG", "WARNING").upper()
 
 # Filter specific PyTorch deprecation warnings from OpenNMT
 warnings.filterwarnings("ignore", message="torch.cuda.amp.custom_fwd.*is deprecated")

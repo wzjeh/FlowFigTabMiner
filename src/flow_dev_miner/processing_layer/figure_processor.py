@@ -88,13 +88,15 @@ class FigureProcessor:
         """
         logger.info(f"Processing Figure: {image_path}")
         
-        # 1. Macro Cleaning
+        # 1. Macro Cleaning (YOLO Segmentation)
+        logger.info(f"   -> Step 1: Running macro segmentation with YOLO...")
         macro_results = self.yolo_macro.process_images(
-            [image_path], 
-            output_base_dir=output_base_dir, 
+            [image_path],
+            output_base_dir=output_base_dir,
             output_subdir_name="macro_cleaned",
-            imgsz=1024 
+            imgsz=1024
         )
+        logger.debug(f"   -> Macro segmentation completed")
         
         if not macro_results:
             logger.warning("Macro cleaning returned no results.")
@@ -110,37 +112,44 @@ class FigureProcessor:
             
         macro_cleaned_dir = os.path.dirname(cleaned_plot_path)
         
-        # 2. Check Relevance (Optimization)
+        # 2. Check Relevance (Optimization - skip non-chemistry figures early)
+        logger.info(f"   -> Step 2: Checking relevance via keywords...")
         is_relevant, text_evidence = self.assembler.check_relevance(figure_id, macro_cleaned_dir)
         if not is_relevant:
-            logger.info(f"Figure '{figure_id}' is not relevant based on keywords.")
+            logger.info(f"   -> Figure '{figure_id}' skipped (no flow chemistry keywords found)")
             return {"status": "skipped", "reason": "not relevant", "figure_id": figure_id}
+        logger.info(f"   -> Figure '{figure_id}' is relevant: {text_evidence[:50]}...")
 
-        # 3. Micro Detection
+        # 3. Micro Detection (Scatter Point Detection)
+        logger.info(f"   -> Step 3: Detecting data points with YOLO (conf={self.micro_conf})...")
         micro_detections = self.yolo_micro.detect(cleaned_plot_path, conf=self.micro_conf, imgsz=1024, use_tiling=False)
         points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
-        logger.info(f"Figure '{figure_id}': YOLO found {len(points)} raw data points.")
-        
-        # 4. Legend Matching
+        logger.info(f"   -> Detected {len(points)} raw data points from figure '{figure_id}'")
+
+        # 4. Legend Matching (Assign Series Labels)
+        logger.info(f"   -> Step 4: Matching data points to legend series...")
         legend_crops = elements.get('legend', [])
         prototypes = self.legend_matcher.parse_legend_crops(legend_crops)
         matched_points = self.legend_matcher.match_points(points, prototypes, cleaned_plot_path)
-        logger.info(f"Figure '{figure_id}': LegendMatcher matched {len(matched_points)} points to series.")
+        logger.info(f"   -> Matched {len(matched_points)} points to {len(prototypes)} series")
         
-        # 5. Coordinate Mapping
+        # 5. Coordinate Mapping (Pixel → Physical Units)
+        logger.info(f"   -> Step 5: Mapping pixel coordinates to physical units...")
         other_detections = [d for d in micro_detections if d['label'] not in ['data_point', 'marker']]
         full_detections = other_detections + matched_points
-        
+
         try:
             df, _ = self.coord_mapper.map_coordinates(full_detections, cleaned_plot_path)
+            logger.info(f"   -> Coordinate mapping successful: {len(df)} points mapped")
         except Exception as e:
-            logger.warning(f"Coordinate Mapping Warning: {e}")
+            logger.warning(f"   -> Coordinate mapping failed: {e}")
             df = pd.DataFrame()
-            
+
         extraction_data = []
         if not df.empty:
             extraction_data = df.to_dict(orient='records')
         else:
+            logger.warning(f"   -> Falling back to pixel coordinates (mapping failed)")
             for p in matched_points:
                 extraction_data.append({
                     "series": p.get('series', 'Unknown'),
@@ -148,10 +157,12 @@ class FigureProcessor:
                     "y_pixel": p['center'][1],
                     "note": "CoordMapping Failed"
                 })
-                
-        # 6. Assembly & Saving
+
+        # 6. Assembly & Saving Evidence JSON
+        logger.info(f"   -> Step 6: Assembling evidence JSON...")
         json_path = self.assembler.assemble(figure_id, extraction_data, macro_cleaned_dir, text_evidence=text_evidence)
-        
+        logger.info(f"   -> Evidence saved to: {json_path}")
+
         return {
             "status": "success",
             "figure_id": figure_id,
