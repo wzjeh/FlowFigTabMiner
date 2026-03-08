@@ -38,7 +38,7 @@ class MoleculeProcessor:
         
         Args:
             image_path_or_array: Path to image or cv2 image array (BGR).
-            content_recognizer: Instance of ContentRecognizer (must have molscribe loaded).
+            content_recognizer: Instance of ContentRecognizer (MolNexTR for SMILES).
             mask_only (bool): If True, only mask the molecule with white box (no text).
             output_path (str): Optional path to save the molecule detection visualization.
             
@@ -116,7 +116,7 @@ class MoleculeProcessor:
                 
                 # 1. Tight Crop with Safety Margin (10px) (Original: 5px)
                 # Extra margin ensures we don't cut off dangling bonds/labels
-                # MolScribe is robust to white space but sensitive to cut-offs.
+                # MolNexTR is robust to white space but sensitive to cut-offs.
                 margin = 10 
                 tc_x1 = max(0, x1 - margin)
                 tc_y1 = max(0, y1 - margin)
@@ -140,7 +140,7 @@ class MoleculeProcessor:
 
                 # 3. Resolution Upscaling (Refined)
                 # Only upscale if significantly small (< 192px).
-                # MolScribe handles ~200-300px fine naturally.
+                # MolNexTR handles ~200-300px fine naturally.
                 # If we upscale 230px -> 400px using Cubic, we might add ringing that confuses it.
                 h_crop, w_crop = mol_crop.shape[:2]
                 target_upscale_h = 300
@@ -159,7 +159,7 @@ class MoleculeProcessor:
                     print(f"   -> [Debug] Box {i} sufficient size ({w_crop}x{h_crop}). Skipped Upscaling.")
                 
                 # 2. Convert to SMILES
-                # MolScribe expects PIL image or array. ContentRecognizer now supports array.
+                # MolNexTR expects numpy array. ContentRecognizer now supports array.
                 smiles = ""
                 try:
                     # We use 'Structure' type to trigger _recognize_structure
@@ -170,7 +170,7 @@ class MoleculeProcessor:
                 logging_smiles = smiles if smiles else "[NoSMILES]"
                 
                 if not smiles or smiles == "<invalid>":
-                     print(f"   -> [Debug] MolScribe failed or returned <invalid>. Attempting OCR Fallback...", flush=True)
+                     print(f"   -> [Debug] MolNexTR failed or returned <invalid>. Attempting OCR Fallback...", flush=True)
                      # Fallback to OCR
                      ocr_text = content_recognizer.recognize_content(mol_crop, "Text")
                      if ocr_text and len(ocr_text.strip()) > 0:

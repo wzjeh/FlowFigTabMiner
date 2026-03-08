@@ -42,7 +42,8 @@ tables:
     model_path: "models/cell_classifier.pt"
 
   content:
-    molscribe_path: "models/swin_base_char_aux_1m680k.pth"
+    # MolNexTR is auto-loaded from src/extraction/common/molnextr/
+    # No molscribe_path needed - MolScribe has been replaced by MolNexTR
     ocr_engine: "paddle"
 
 # LLM & Adjudication

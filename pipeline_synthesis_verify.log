@@ -928,3 +928,512 @@
     "Source": "Raw Data Row 15"
   }
 ]
+[LLMEngine] Chat Request via dashscope...
+[LLMEngine] Initialized DashScope Native SDK (Model: qwen-plus-2025-12-01)
+[LLMEngine] Chat Request via dashscope...
+[DataSynthesizer] Raw LLM Response for page_6_figure_1_t0:
+[
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.48%",
+        "conversion": null,
+        "selectivity": "1.30"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.9989168281560498,
+      "Y_Left": 99.4784799972461,
+      "Y_Right/Data_Value": 1.29908246438361
+    },
+    "Source": "Raw Data Row 1"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.81%",
+        "conversion": null,
+        "selectivity": "1.49"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.4000155019511722,
+      "Y_Left": 99.80891594731642,
+      "Y_Right/Data_Value": 1.491946933324191
+    },
+    "Source": "Raw Data Row 2"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.50%",
+        "conversion": null,
+        "selectivity": "1.31"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.8488671107200658,
+      "Y_Left": 99.50124950530568,
+      "Y_Right/Data_Value": 1.3123722685923054
+    },
+    "Source": "Raw Data Row 3"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.58%",
+        "conversion": null,
+        "selectivity": "1.36"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.1979608606852068,
+      "Y_Left": 99.58104445306162,
+      "Y_Right/Data_Value": 1.3589459244545548
+    },
+    "Source": "Raw Data Row 4"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.43%",
+        "conversion": null,
+        "selectivity": "1.27"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.3980345468763433,
+      "Y_Left": 99.43178769877562,
+      "Y_Right/Data_Value": 1.271829723432732
+    },
+    "Source": "Raw Data Row 5"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.80%",
+        "conversion": null,
+        "selectivity": "1.49"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.5501020810112487,
+      "Y_Left": 99.79734892094673,
+      "Y_Right/Data_Value": 1.4851956449200787
+    },
+    "Source": "Raw Data Row 6"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "3,4-dichloroaniline",
+        "smiles": null,
+        "yield": "99.85%",
+        "conversion": null,
+        "selectivity": "1.51"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.6983860907256947,
+      "Y_Left": 99.8454141308541,
+      "Y_Right/Data_Value": 1.5132497085936216
+    },
+    "Source": "Raw Data Row 7"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "yield": "97.42%",
+        "conversion": null,
+        "selectivity": "0.095"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.5484699948806704,
+      "Y_Left": 97.41540717523446,
+      "Y_Right/Data_Value": 0.09493550604466061
+    },
+    "Source": "Raw Data Row 8"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "yield": "97.51%",
+        "conversion": null,
+        "selectivity": "0.153"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.1967622040215407,
+      "Y_Left": 97.5142536958346,
+      "Y_Right/Data_Value": 0.15262893104309505
+    },
+    "Source": "Raw Data Row 9"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "yield": "97.56%",
+        "conversion": null,
+        "selectivity": "0.181"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.399310462055067,
+      "Y_Left": 97.56227046445373,
+      "Y_Right/Data_Value": 0.18065472114856296
+    },
+    "Source": "Raw Data Row 10"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "yield": "97.40%",
+        "conversion": null,
+        "selectivity": "0.084"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.40200364406557687,
+      "Y_Left": 97.39738277000131,
+      "Y_Right/Data_Value": 0.08441526046447945
+    },
+    "Source": "Raw Data Row 11"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "yield": "97.46%",
+        "conversion": null,
+        "selectivity": "0.120"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.0023994971551016,
+      "Y_Left": 97.45918625994898,
+      "Y_Right/Data_Value": 0.12048790106212826
+    },
+    "Source": "Raw Data Row 12"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "yield": "97.61%",
+        "conversion": null,
+        "selectivity": "0.211"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 1.0002024581331694,
+      "Y_Left": 97.61453340900272,
+      "Y_Right/Data_Value": 0.21115886285459684
+    },
+    "Source": "Raw Data Row 13"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "yield": "97.26%",
+        "conversion": null,
+        "selectivity": "0.0048"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.6988059252232531,
+      "Y_Left": 97.26096369198234,
+      "Y_Right/Data_Value": 0.004791983911502484
+    },
+    "Source": "Raw Data Row 14"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "azo",
+        "smiles": null,
+        "yield": "97.78%",
+        "conversion": null,
+        "selectivity": "0.306"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.8482768361204659,
+      "Y_Left": 97.77674832016388,
+      "Y_Right/Data_Value": 0.305838308867296
+    },
+    "Source": "Raw Data Row 15"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloronitrobenzen",
+        "smiles": null,
+        "yield": "97.27%",
+        "conversion": null,
+        "selectivity": "0.011"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL/min liquid",
+      "X": 0.4038739583219176,
+      "Y_Left": 97.27131710383578,
+      "Y_Right/Data_Value": 0.01083492590499091
+    },
+    "Source": "Raw Data Row 16"
+  },
+  {
+    "Reactants": [
+      {
+        "name": "dechloroaniline",
+        "smiles": null,
+        "role": "substrate"
+      }
+    ],
+    "Products": [
+      {
+        "name": "dechloroaniline",
+        "smiles": null,
+        "yield": "97.31%",
+        "conversion": null,
+        "selectivity": "0.031"
+      }
+    ],
+    "Catalyst": null,
+    "Solvent": null,
+    "Temperature": null,
+    "Pressure": null,
+    "Time": null,
+    "Other Parameters": {
+      "Flow Rate": "mL

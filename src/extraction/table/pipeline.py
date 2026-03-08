@@ -3,11 +3,13 @@ import cv2
 import pandas as pd
 from src.parsing.table_filter import TableFilter
 from src.extraction.table.structure import TableStructureRecognizer
-from src.extraction.table.cell_classifier import CellClassifier
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
 import json
 import glob
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TablePipeline:
     def __init__(self, table_filter=None, structure_recognizer=None, molecule_processor=None, content_recognizer=None, sequential_mode=False):
@@ -20,18 +22,18 @@ class TablePipeline:
             content_recognizer: Optional pre-loaded ContentRecognizer instance.
             sequential_mode (bool): If True, models are loaded/unloaded on demand to save memory.
         """
-        print(f"Initializing Table Pipeline (Sequential Mode: {sequential_mode})...")
+        logger.info(f"Initializing Table Pipeline (Sequential Mode: {sequential_mode})")
         from src.utils.config import load_config
         self.cfg = load_config()
         self.tables_cfg = self.cfg.get("tables", {})
         self.sequential_mode = sequential_mode
-        
+
         # Initialize placeholders
         self.filter = table_filter
         self.structure = structure_recognizer
         self.recognizer = content_recognizer
         self.molecule_processor = molecule_processor
-        self.classifier = CellClassifier()
+        # Removed CellClassifier - we use YOLO molecule detection instead
 
         # If NOT sequential, load everything now (Standard Behavior)
         if not self.sequential_mode:
@@ -48,10 +50,9 @@ class TablePipeline:
             struct_model = self.tables_cfg.get("structure", {}).get("model_path")
             self.structure = TableStructureRecognizer(model_name=struct_model)
 
-        # 3. Content Recognizer (OCR + MolScribe)
+        # 3. Content Recognizer (OCR + MolNexTR)
         if not self.recognizer:
-            molscribe_path = self.tables_cfg.get("content", {}).get("molscribe_path")
-            self.recognizer = ContentRecognizer(molscribe_path=molscribe_path)
+            self.recognizer = ContentRecognizer()
 
         # 4. Molecule Processor
         if not self.molecule_processor:
@@ -81,8 +82,7 @@ class TablePipeline:
             
         elif model_type == 'content':
             if self.recognizer: return self.recognizer
-            molscribe_path = self.tables_cfg.get("content", {}).get("molscribe_path")
-            return ContentRecognizer(molscribe_path=molscribe_path)
+            return ContentRecognizer()
         return None
 
     def _unload_model(self, model_instance):
@@ -116,8 +116,8 @@ class TablePipeline:
         """
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
-            
-        print(f"Processing Table: {image_path}")
+
+        logger.info(f"Processing Table: {image_path}")
         
         # 1. Filter
         filter_model = self._get_model('filter')
@@ -127,7 +127,7 @@ class TablePipeline:
             self._unload_model(filter_model)
 
         if not filter_res['is_table']:
-            print(f"   -> Rejected by Table Filter (Conf: {filter_res.get('conf')}).")
+            logger.info(f"   -> Rejected by Table Filter (Conf: {filter_res.get('conf')})")
             return {'is_valid': False, 'reason': 'Filtered by YOLO'}
 
         # Prepare output structure: data/intermediate/{pdf_name}/tables/{table_basename}/
@@ -143,7 +143,7 @@ class TablePipeline:
         # Save all segmented components
         components = filter_res.get('components', {})
         if table_output_dir and components:
-            print(f"   -> Saving components to {table_output_dir}...")
+            logger.info(f"   -> Saving {len(components)} component types to {table_output_dir}")
             for label, items in components.items():
                 for i, item in enumerate(items):
                     comp_filename = f"{table_basename}_{label}_{i}.png"
@@ -158,7 +158,7 @@ class TablePipeline:
                 body_path = os.path.join(table_output_dir, f"{table_basename}_body_main.png")
                 cv2.imwrite(body_path, body_crop)
                 current_image_path = body_path
-                print(f"   -> Using cropped table body: {body_path}")
+                logger.info(f"   -> Using cropped table body: {body_path}")
             else:
                 import tempfile
                 fd, body_path = tempfile.mkstemp(suffix=".png")
@@ -166,10 +166,10 @@ class TablePipeline:
                 cv2.imwrite(body_path, body_crop)
                 current_image_path = body_path
         
-        # --- Process Molecules (Detect -> MolScribe -> Replace) ---
-        print("   -> Processing Molecules...")
+        # --- Process Molecules (Detect -> MolNexTR -> Mask) ---
+        logger.info("   -> Detecting and masking molecules with YOLO...")
         mol_processor = self._get_model('molecule')
-        recognizer_for_mol = self._get_model('content') # Needed for MolScribe
+        recognizer_for_mol = self._get_model('content') # Needed for MolNexTR
         mol_meta = []
         try:
             # Construct debug path for molecule detection visualization
@@ -186,15 +186,14 @@ class TablePipeline:
         finally:
             self._unload_model(mol_processor)
             self._unload_model(recognizer_for_mol)
-        
+
         if modified_img is not None and mol_meta:
-            print(f"      Replaced {len(mol_meta)} molecules with White Masks (for Structure Rec).")
-            # Rename to _masked to reflect that it is just masked, not text-replaced
+            logger.info(f"      -> Masked {len(mol_meta)} molecules with white fills")
             modified_body_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_masked.png")
             cv2.imwrite(modified_body_path, modified_img)
             current_image_path = modified_body_path
         else:
-            print("      No molecules detected or model not loaded.")
+            logger.info("      -> No molecules detected in table")
             
         # 2. Structure (on the body, potentially modified)
         structure_model = self._get_model('structure')
@@ -208,10 +207,10 @@ class TablePipeline:
             self._unload_model(structure_model)
 
         if not cells:
-            print("   -> No cells detected.")
+            logger.warning("   -> No cells detected by TATR")
             return {'is_valid': False, 'reason': 'No cells detected'}
-            
-        print(f"   -> Detected {len(cells)} cells.")
+
+        logger.info(f"   -> Detected {len(cells)} cells via TATR")
 
         # 3. Process Cells (Crop -> Classify -> Recognize)
         original_img = cv2.imread(current_image_path)
@@ -246,80 +245,82 @@ class TablePipeline:
             
             cell_meta.append(cell)
 
-        # 4. Classify Batch
-        print("   -> Classifying cells...")
-        
-        cells_to_classify_indices = []
-        cells_to_classify_crops = []
-        
-        # Reuse robust overlapping logic from previous version
-        def get_overlap(box1, box2):
-             # Simplified for brevity in replacement, but ideally should be robust
-             # Let's rely on overlap logic implemented below
-             pass 
+        # 4. Cell Content Recognition (Optimized: No Classification Needed)
+        logger.info("   -> Mapping cells to molecule detections...")
+
+        # Map cells to YOLO-detected molecules using IoU overlap
+        def calculate_iou_overlap(boxA, boxB):
+            """Calculate IoU overlap between two boxes [x1, y1, x2, y2]"""
+            xA = max(boxA[0], boxB[0])
+            yA = max(boxA[1], boxB[1])
+            xB = min(boxA[2], boxB[2])
+            yB = min(boxA[3], boxB[3])
+
+            interArea = max(0, xB - xA) * max(0, yB - yA)
+            if interArea == 0:
+                return 0.0
+
+            boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+            if boxAArea <= 0:
+                return 0.0
+
+            return interArea / boxAArea
+
+        # Mark cells that contain molecules
+        cells_with_molecules = []
+        cells_for_ocr = []
 
         for i, cell in enumerate(cell_meta):
-             match_mol = None
-             if mol_meta:
-                 for m in mol_meta:
-                     # Robust IoU Logic inline
-                     boxA = m['box']
-                     boxB = cell['box']
-                     xA = max(boxA[0], boxB[0])
-                     yA = max(boxA[1], boxB[1])
-                     xB = min(boxA[2], boxB[2])
-                     yB = min(boxA[3], boxB[3])
-                     interArea = max(0, xB - xA) * max(0, yB - yA)
-                     boxAArea = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
-                     
-                     overlap_mol = 0.0
-                     if boxAArea > 0: overlap_mol = interArea / boxAArea
-                     
-                     if overlap_mol > 0.5: 
-                         match_mol = m
-                         break
-             
-             if match_mol:
-                 cell['class'] = 'Molecule'
-                 cell['content'] = match_mol.get('smiles', '')
-             else:
-                 cells_to_classify_indices.append(i)
-                 cells_to_classify_crops.append(cell_crops[i])
-        
-        if cells_to_classify_crops:
-             cls_results = self.classifier.classify_cells(cells_to_classify_crops)
-        else:
-             cls_results = []
-             
-        # 5. Recognize Content (for non-molecules)
-        print("   -> Recognizing content...")
-        if not cells_to_classify_indices:
-             print("      (All cells matched to molecules)")
+            match_mol = None
+            best_overlap = 0.0
+
+            if mol_meta:
+                for m in mol_meta:
+                    overlap = calculate_iou_overlap(m['box'], cell['box'])
+                    if overlap > 0.5 and overlap > best_overlap:
+                        match_mol = m
+                        best_overlap = overlap
+
+            if match_mol:
+                cell['class'] = 'Molecule'
+                cell['content'] = match_mol.get('smiles', '')
+                cell['cell_index'] = i
+                cells_with_molecules.append(i)
+                logger.debug(f"      Cell {i} -> Molecule: {cell['content'][:20]}...")
+            else:
+                cell['class'] = 'Text'  # Default to text/number (OCR will handle both)
+                cell['cell_index'] = i
+                cells_for_ocr.append(i)
+
+        logger.info(f"   -> {len(cells_with_molecules)} cells contain molecules, {len(cells_for_ocr)} cells need OCR")
+
+        # 5. OCR for non-molecule cells
+        logger.info("   -> Running OCR on text/number cells...")
 
         extracted_data = []
         if cell_meta and 'row_index' not in cell_meta[0]:
              self._assign_grid_indices(cell_meta)
-        
-        # Load Content Recognizer AGAIN for OCR
+
+        # Run OCR on non-molecule cells
         recognizer_for_ocr = self._get_model('content')
         try:
-            cls_idx = 0
             for i, cell in enumerate(cell_meta):
-                 if 'content' in cell and cell.get('class') == 'Molecule':
-                     content = cell['content']
-                     cls = 'Molecule'
-                 else:
-                     cls = cls_results[cls_idx]
-                     content = recognizer_for_ocr.recognize_content(cell_crops[i], cls)
-                     cell['class'] = cls
-                     cell['content'] = content
-                     cls_idx += 1
-                
-                 extracted_data.append({
+                if cell.get('class') == 'Molecule':
+                    # Already has SMILES from YOLO detection
+                    content = cell['content']
+                    logger.debug(f"      Cell {i} (Molecule): {content[:30]}...")
+                else:
+                    # OCR for text/numbers (ContentRecognizer handles both)
+                    content = recognizer_for_ocr.recognize_content(cell_crops[i], 'Text')
+                    cell['content'] = content
+                    logger.debug(f"      Cell {i} (Text/Number): {content[:30]}...")
+
+                extracted_data.append({
                     'row': cell['row_index'],
                     'col': cell['col_index'],
-                    'content': content
-                 })
+                    'content': content,
+                    'type': cell.get('class', 'Text')
+                })
         finally:
             self._unload_model(recognizer_for_ocr)
 
@@ -342,9 +343,9 @@ class TablePipeline:
             csv_path = os.path.join(output_dir, f"{basename}_extracted.csv")
             try:
                 df.to_csv(csv_path, index=False, header=False)
-                print(f"   -> Saved CSV to {csv_path}")
+                logger.info(f"   -> Saved CSV to {csv_path}")
             except Exception as e:
-                print(f"   -> Failed to save CSV: {e}")
+                logger.error(f"   -> Failed to save CSV: {e}")
 
         # --- 7. Synthesize Context (Caption/Note) via OCR ---
         context_data = {
@@ -401,7 +402,7 @@ class TablePipeline:
         is_relevant = any(kw in norm_text for kw in keywords)
         
         if not is_relevant:
-            print(f"   --> Table rejected by keyword filter: '{norm_text[:50]}...'")
+            logger.info(f"   -> Table rejected by keyword filter (no flow chemistry keywords found)")
             return {'is_valid': False, 'is_relevant': False, 'reason': 'No keywords found'}
 
         # 9. Format Evidence JSON output
@@ -430,8 +431,7 @@ class TablePipeline:
              with open(json_path, 'w') as f:
                  json.dump(evidence_data, f, indent=2)
              result_packet['json_path'] = json_path
-             print(f"   -> Saved Evidence JSON to: {json_path}")
-             print(f"   -> Saved Evidence JSON to: {json_path}")
+             logger.info(f"   -> Saved Evidence JSON to: {json_path}")
 
         return result_packet
 

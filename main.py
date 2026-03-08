@@ -8,34 +8,42 @@ from src.parsing.yolo_detector import YoloDetector
 from src.parsing.stage2_detector import Stage2Detector
 from src.extraction.figure.legend_matcher import LegendMatcher
 from src.extraction.figure.coordinate_mapper import CoordinateMapper
-from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.extraction.table.pipeline import TablePipeline
+from src.utils.config import load_config
 
 def main():
     parser = argparse.ArgumentParser(description="FlowFigTabMiner: Extract data from Flow Chemistry Papers")
     parser.add_argument("pdf_path", help="Path to the input PDF file")
     parser.add_argument("--output_dir", default="data/output", help="Directory to save final results")
-    
+
     args = parser.parse_args()
     input_pdf = args.pdf_path
-    
+
     if not os.path.exists(input_pdf):
         print(f"Error: File not found: {input_pdf}")
         return
 
     print(f"--- Starting Pipeline for {input_pdf} ---")
     start_time = time.time()
-    
+
+    # Load configuration
+    cfg = load_config()
+    figures_cfg = cfg.get("figures", {})
+
     # Initialize Models
     try:
         # Stage 1 (TF-ID)
         tf_id_detector = ActiveAreaDetector()
-        
-        # Stage 1.5 (YOLOv11n - Clean & Mask)
-        yolo_macro = YoloDetector(model_path="models/bestYOLOn-2-1.pt")
-        
-        # Stage 2 (YOLOv11m - Micro Detection)
-        yolo_micro = Stage2Detector(model_path="models/bestYOLOm-2-2.pt")
+
+        # Stage 2 Macro (Figure Segmentation) - from config.yaml
+        macro_model_path = figures_cfg.get("step2_macro", {}).get("model_path", "models/yolo11m-fig-seg-0207-nobreaknocharttext/runs/detect/train/weights/best.pt")
+        macro_conf = figures_cfg.get("step2_macro", {}).get("confidence_threshold", 0.5)
+        yolo_macro = YoloDetector(model_path=macro_model_path)
+
+        # Stage 3 Micro (Scatter Point Detection) - from config.yaml
+        micro_model_path = figures_cfg.get("step3_micro", {}).get("model_path", "models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt")
+        micro_conf = figures_cfg.get("step3_micro", {}).get("confidence_threshold", 0.15)
+        yolo_micro = Stage2Detector(model_path=micro_model_path)
         
         # Module 2 & 3
         legend_matcher = LegendMatcher(yolo_model=yolo_micro)
@@ -117,12 +125,20 @@ def main():
                     raw_plot_path = cleaned_plot_path
                 
                 print(f"      -> Mapping coordinates using {os.path.basename(raw_plot_path)}...")
-                df = coord_mapper.map_coordinates(matched_points, raw_plot_path)
-                
+                df, debug_log = coord_mapper.map_coordinates(matched_points, raw_plot_path)
+
+                # Print debug log for diagnosis
+                if df.empty:
+                    print(f"      -> WARNING: No data extracted. Debug log:")
+                    for log_line in debug_log[-10:]:  # Last 10 lines
+                        print(f"         {log_line}")
+
                 # Save Data
                 if not df.empty:
                      csv_name = os.path.splitext(os.path.basename(cleaned_plot_path))[0] + ".csv"
                      csv_path = os.path.join(args.output_dir, csv_name)
+                     # Round numeric columns to 2 decimal places
+                     df = df.round({'X': 2, 'Y_Left': 2, 'Y_Right/Data_Value': 2})
                      df.to_csv(csv_path, index=False)
                      print(f"      -> Extracted {len(df)} rows. Saved to {csv_path}")
                      

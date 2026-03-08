@@ -32,10 +32,9 @@ class BatchTablePipeline:
         print(f"Loading Structure Recognizer: {struct_model}")
         self.structure_recognizer = TableStructureRecognizer(model_name=struct_model)
         
-        # 3. Load Content Recognizer (PaddleOCR + MolScribe)
-        molscribe_path = tables_cfg.get("content", {}).get("molscribe_path")
-        print(f"Loading Content Recognizer (OCR + MolScribe: {molscribe_path})")
-        self.content_recognizer = ContentRecognizer(molscribe_path=molscribe_path)
+        # 3. Load Content Recognizer (PaddleOCR + MolNexTR)
+        print("Loading Content Recognizer (OCR + MolNexTR)")
+        self.content_recognizer = ContentRecognizer()
 
         # 4. Load Molecule Processor (YOLO Molecules)
         mol_det_cfg = tables_cfg.get("molecule_detection", {})

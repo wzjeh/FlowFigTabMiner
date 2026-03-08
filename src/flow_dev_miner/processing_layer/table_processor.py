@@ -24,7 +24,7 @@ class TableProcessor:
     - Table Segmentation: YOLO filtering to locate table body.
     - Structure Recognition: TATR (Table Transformer) cell detection.
     - Molecule Detection: YOLO detection of molecules within cells.
-    - Content Recognition: MolScribe (for SMILES) & OCR (for text).
+    - Content Recognition: MolNexTR (for SMILES) & OCR (for text).
     - Layout Assembly: Producing final CSV/JSON representation.
     """
     def __init__(self):
@@ -35,7 +35,7 @@ class TableProcessor:
         # Configuration Paths
         self.seg_model = tables_cfg.get("segmentation", {}).get("model_path")
         self.struct_model = tables_cfg.get("structure", {}).get("model_path")
-        self.molscribe_path = tables_cfg.get("content", {}).get("molscribe_path")
+        # MolScribe removed - MolNexTR is auto-loaded by ContentRecognizer
         
         mol_det_cfg = tables_cfg.get("molecule_detection", {})
         self.mol_model_path = mol_det_cfg.get("model_path")
@@ -65,8 +65,8 @@ class TableProcessor:
     @property
     def content_recognizer(self):
         if self._content_recognizer is None:
-            logger.info(f"Loading Content Recognizer (MolScribe: {self.molscribe_path})")
-            self._content_recognizer = ContentRecognizer(molscribe_path=self.molscribe_path)
+            logger.info("Loading Content Recognizer (MolNexTR)")
+            self._content_recognizer = ContentRecognizer()
         return self._content_recognizer
 
     @property

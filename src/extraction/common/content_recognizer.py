@@ -2,17 +2,14 @@ import os
 # Disable connectivity checks to prevent hangs
 os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "1"
 os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "1"
+os.environ["HF_HUB_OFFLINE"] = "1"  # Disable HuggingFace connectivity checks
 from paddleocr import PaddleOCR
-try:
-    from molscribe import MolScribe
-except ImportError:
-    MolScribe = None
-    print("Warning: MolScribe not found. Chemical structure recognition will fail.")
 
 class ContentRecognizer:
-    def __init__(self, molscribe_path=None):
+    def __init__(self):
         """
-        Initialize OCR and MolNexTR models.
+        Initialize PaddleOCR and MolNexTR models.
+        Note: MolScribe has been fully replaced by MolNexTR.
         """
         # PaddleOCR
         # use_angle_cls=True loads the direction classifier
@@ -36,11 +33,11 @@ class ContentRecognizer:
             pass
 
         self.ocr = PaddleOCR(
-            use_angle_cls=True, 
+            use_angle_cls=True,
             lang='en'
         )
-        
-        # MolScribe (Deprecated) -> MolNexTR (Active)
+
+        # MolNexTR for chemical structure recognition
         self.molnextr = None
         try:
             from src.extraction.common.molnextr.molnextr import MolNexTRSingleton
