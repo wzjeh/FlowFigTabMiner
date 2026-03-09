@@ -18,7 +18,14 @@ class PDFParser:
         if os.path.exists(txt_path):
             print(f"[PDFParser] Loading cached text from {txt_path}")
             with open(txt_path, "r", encoding="utf-8") as f:
-                return f.read()
+                content = f.read()
+                # Re-truncate in case of old cache
+                truncated = self._truncate_text(content)
+                if len(truncated) < len(content):
+                    with open(txt_path, "w", encoding="utf-8") as fw:
+                        fw.write(truncated)
+                    return truncated
+                return content
                 
         # Parse PDF
         print(f"[PDFParser] Parsing {pdf_path}...")
@@ -48,32 +55,36 @@ class PDFParser:
         """
         Truncate text after References/Bibliography/Conclusion to save tokens.
         """
-        # Lowercase for search
+        import re
         text_lower = text.lower()
         
-        # Keywords to cut off
-        # We look for section headers that typically appear at the end.
-        # "conclusions" or "conclusion" is often the last section before refs.
-        # "references" is the definitive end.
+        # We only consider the last 40% of the document to avoid false positives.
+        min_pos = int(len(text) * 0.6)
         
-        cutoff_keywords = [
-            "\nreferences", "\nbibliography", "\nacknowledgements", 
-            "\nconclusion", "\nconclusions", "experimental section"
+        # We can use regex to find section headers robustly
+        patterns = [
+            r'\n\s*(?:[0-9]*\.?\s*)?references\s*\n',
+            r'\n\s*(?:[0-9]*\.?\s*)?bibliography\s*\n',
+            r'\n\s*(?:[0-9]*\.?\s*)?acknowledgements?\s*\n',
+            r'\n\s*(?:[0-9]*\.?\s*)?conclusions?\s*\n',
+            r'\n\s*(?:[0-9]*\.?\s*)?notes\s*and\s*references\s*\n'
         ]
         
         cutoff_idx = len(text)
         
-        # We want to find the *first* occurrence of these *after* the middle of the document
-        # to avoid matching "See references" in the intro.
-        
-        min_pos = len(text) * 0.6 
-        
-        for kw in cutoff_keywords:
-            idx = text_lower.find(kw, int(min_pos))
-            if idx != -1:
-                # We found a keyword near the end.
-                # Use the earliest one found (e.g. Conclusion comes before References)
+        for pattern in patterns:
+            match = re.search(pattern, text_lower[min_pos:])
+            if match:
+                idx = min_pos + match.start()
                 if idx < cutoff_idx:
+                    cutoff_idx = idx
+                    
+        # Fallback to simple rfind for references if regex misses
+        if cutoff_idx == len(text):
+            fallback_keywords = ["\nreferences", "\nacknowledgement"]
+            for kw in fallback_keywords:
+                idx = text_lower.rfind(kw)
+                if idx > min_pos and idx < cutoff_idx:
                     cutoff_idx = idx
         
         if cutoff_idx < len(text):

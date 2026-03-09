@@ -1,0 +1,38 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: tfid-service
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/cpu-throttling: "false"
+    spec:
+      timeoutSeconds: 3600
+      containers:
+      - image: gcr.io/gen-lang-client-0080522548/tfid-service:latest
+        resources:
+          limits:
+            memory: "16Gi"
+            cpu: "4"
+        env:
+        - name: TRANSFORMERS_CACHE
+          value: /models/models/hub
+        - name: HF_HUB_CACHE
+          value: /models/models/hub
+        - name: HUGGINGFACE_HUB_CACHE
+          value: /models/models/hub
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: TRANSFORMERS_OFFLINE
+          value: "1"
+        volumeMounts:
+        - name: models-vol
+          mountPath: /models
+      volumes:
+      - name: models-vol
+        csi:
+          driver: gcsfuse.run.googleapis.com
+          volumeAttributes:
+            bucketName: flowfigtabminer-models

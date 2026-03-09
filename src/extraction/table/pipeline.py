@@ -385,25 +385,30 @@ class TablePipeline:
 
         # 8. Check Relevance
         import yaml
-        try:
-            # Fallback pathing logic from root
-            with open("keywords.yaml", 'r') as f:
-                kw_config = yaml.safe_load(f)
-                keywords = kw_config.get('keywords', [])
-        except Exception as e:
-            keywords = ['yield', 'conversion', 'selectivity', 'product', 'composition', 'conditions', 'reaction']
+        kw_candidates = [
+            "keywords.yaml",
+            os.path.join(os.getcwd(), "keywords.yaml"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "..", "keywords.yaml"),
+        ]
+        keywords = ['yield', 'conversion', 'selectivity', 'product', 'composition', 'conditions', 'reaction']
+        for kw_path in kw_candidates:
+            if os.path.exists(kw_path):
+                try:
+                    with open(kw_path, 'r') as f:
+                        kw_config = yaml.safe_load(f)
+                        keywords = kw_config.get('keywords', keywords)
+                    break
+                except Exception:
+                    pass
 
         check_text = (" ".join(context_data["caption"]) + " " + " ".join(context_data["table_note"])).lower()
         if not df.empty:
             check_text += " " + df.head(3).to_string(index=False, header=False).lower()
-            
-        import re
-        norm_text = re.sub(r'[^a-z0-9]', '', check_text)
-        is_relevant = any(kw in norm_text for kw in keywords)
-        
+
+        is_relevant = any(kw in check_text for kw in keywords)
+
         if not is_relevant:
-            logger.info(f"   -> Table rejected by keyword filter (no flow chemistry keywords found)")
-            return {'is_valid': False, 'is_relevant': False, 'reason': 'No keywords found'}
+            logger.info(f"   -> Table marked not relevant by keyword filter (soft reject, CSV still written)")
 
         # 9. Format Evidence JSON output
         result_packet = {

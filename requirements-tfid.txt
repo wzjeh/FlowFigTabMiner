@@ -1,0 +1,12 @@
+# tfid-service: Florence-2 (TF-ID) based PDF figure/table detection
+# torch installed with CUDA 12.1 support via extra-index-url in Dockerfile
+transformers==4.57.3
+tokenizers==0.22.2
+einops==0.8.1
+timm==0.4.12
+pypdfium2
+Pillow
+google-cloud-storage
+fastapi
+uvicorn[standard]
+pyyaml

@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: table-service
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/cpu-throttling: "false"
+    spec:
+      timeoutSeconds: 600
+      containers:
+      - image: gcr.io/gen-lang-client-0080522548/table-service:latest
+        resources:
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+        volumeMounts:
+        - name: models-vol
+          mountPath: /models
+      volumes:
+      - name: models-vol
+        csi:
+          driver: gcsfuse.run.googleapis.com
+          volumeAttributes:
+            bucketName: flowfigtabminer-models

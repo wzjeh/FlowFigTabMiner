@@ -1,0 +1,35 @@
+# tfid-service: Florence-2 inference (GPU via Cloud Run NVIDIA L4)
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install torch with CUDA 12.1 support first (separate step for caching)
+RUN pip install --no-cache-dir \
+    --extra-index-url https://download.pytorch.org/whl/cu121 \
+    torch torchvision
+
+# Install remaining dependencies
+COPY requirements-tfid.txt .
+RUN pip install --no-cache-dir -r requirements-tfid.txt
+
+COPY src/ src/
+COPY keywords.yaml .
+COPY deploy/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# GCS bucket flowfigtabminer-models mounted at /models/ at runtime.
+# entrypoint.sh symlinks /app/models -> /models/models
+ENV HF_HOME=/models/models
+ENV HF_HUB_CACHE=/models/models/hub
+ENV HF_MODULES_CACHE=/models/models/modules
+ENV HF_HUB_OFFLINE=1
+ENV TRANSFORMERS_OFFLINE=1
+ENV PYTHONPATH=/app
+
+EXPOSE 8080
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["uvicorn", "src.services.tfid_service:app", "--host", "0.0.0.0", "--port", "8080"]

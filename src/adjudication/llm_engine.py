@@ -185,7 +185,7 @@ Analyze the following scientific text (from a PDF) to resolve specific abbreviat
 1. **Term Mapping**: Search the text for the definition of the terms above. Map the abbreviation to its full chemical name or entity.
    - Format: "Abbreviation": "Full Name"
 2. **Global Conditions**: Identify experimental conditions that appear to be constant/fixed for the visualized experiments (e.g. "All reactions were carried out at 0.1 MPa", "Temperature was fixed at 25C").
-   - Extract: Pressure, Temperature, Solvent, Catalyst (if constant).
+   - Extract: Pressure, Temperature, Solvent, Catalyst (if constant), Reactor Type, Reactor Inner Diameter (ID).
    - Format: "Condition Name": "Value"
 
 ## Output Format:
@@ -197,7 +197,9 @@ Return ONLY a valid JSON object. Do not include markdown formatting or explanati
     }},
     "global_conditions": {{
         "Pressure": "0.1 MPa",
-        "Solvent": "Toluene"
+        "Solvent": "Toluene",
+        "Reactor Type": "Microreactor",
+        "Reactor ID": "0.8 mm"
     }}
 }}
 

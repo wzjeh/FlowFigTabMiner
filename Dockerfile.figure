@@ -1,43 +1,29 @@
-# Use a slim Python 3.9 image
-FROM python:3.9-slim
+# figure-service: YOLO macro/micro + PaddleOCR + coordinate mapping (CPU)
+FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \\
-    libglib2.0-0 \\
-    libsm6 \\
-    libxext6 \\
-    libxrender-dev \\
-    libgl1-mesa-glx \\
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    libopenblas0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file and install python dependencies
-COPY services/requirements_figure.txt .
-RUN pip install --no-cache-dir -r requirements_figure.txt
+COPY requirements-figure.txt .
+RUN pip install --no-cache-dir -r requirements-figure.txt
 
-# Copy necessary source code for figure service
-COPY src/extraction/figure/ src/extraction/figure/
-COPY src/extraction/common/ src/extraction/common/
-COPY src/parsing/ src/parsing/
-COPY src/assembly/ src/assembly/
-COPY src/pipeline/ src/pipeline/
-COPY src/utils/ src/utils/
+COPY src/ src/
+COPY keywords.yaml .
+COPY config.yaml .
+COPY deploy/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Copy the API service itself
-COPY services/figure_api.py services/figure_api.py
+ENV PYTHONPATH=/app
 
-# Models/Configs should ideally be downloaded from GCS or mounted:
-# COPY models/ models/
-# COPY config.yaml config.yaml
-
-RUN mkdir -p /tmp /app/data
-
-# Cloud Run defaults mapping
-ENV PORT=8080
 EXPOSE 8080
-
-ENV PYTHONPATH="/app:${PYTHONPATH}"
-
-# Start Uvicorn
-CMD ["uvicorn", "services.figure_api:app", "--host", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["uvicorn", "src.services.figure_service:app", "--host", "0.0.0.0", "--port", "8080"]

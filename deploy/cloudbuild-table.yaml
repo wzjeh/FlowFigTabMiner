@@ -1,0 +1,14 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - -t
+      - gcr.io/$PROJECT_ID/table-service:latest
+      - -f
+      - Dockerfile.table
+      - .
+images:
+  - gcr.io/$PROJECT_ID/table-service:latest
+options:
+  machineType: 'E2_HIGHCPU_8'
+timeout: '1800s'
