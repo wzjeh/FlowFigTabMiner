@@ -73,15 +73,27 @@ class LLMEngine:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ]
-                response = dashscope.Generation.call(
+                responses = dashscope.Generation.call(
                     model=self.model,
                     messages=messages,
-                    result_format='message'
+                    result_format='message',
+                    max_tokens=32000,
+                    enable_thinking=False,
+                    stream=True,
+                    incremental_output=True,
                 )
-                if response.status_code == HTTPStatus.OK:
-                    return response.output.choices[0].message.content
+                chunks = []
+                last_status = None
+                for chunk in responses:
+                    last_status = chunk.status_code
+                    if chunk.status_code == HTTPStatus.OK:
+                        text = chunk.output.choices[0].message.content
+                        if text:
+                            chunks.append(text)
+                if last_status == HTTPStatus.OK:
+                    return "".join(chunks)
                 else:
-                    error_msg = f"Error: {response.code} - {response.message}"
+                    error_msg = f"Error: {chunk.code} - {chunk.message}"
                     print(f"[LLMEngine] API Error: {error_msg}")
                     return error_msg
             

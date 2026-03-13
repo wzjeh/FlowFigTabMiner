@@ -46,6 +46,10 @@ tables:
     # No molscribe_path needed - MolScribe has been replaced by MolNexTR
     ocr_engine: "paddle"
 
+  scheme_parsing:
+    model_path: "models/tab-scheme-seg/best.pt"   # 训练完成后替换
+    confidence_threshold: 0.3
+
 # LLM & Adjudication
 llm:
   # This sets the default provider for generic tasks.
@@ -62,5 +66,5 @@ llm:
 
   # Configuration for Data Extraction (if different)
   extraction:
-    model_name: "qwen3-max-2026-01-23"
+    model_name: "qwen3-max"
     temperature: 0.1

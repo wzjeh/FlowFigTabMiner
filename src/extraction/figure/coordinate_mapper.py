@@ -630,11 +630,10 @@ class CoordinateMapper:
                         real_yr = label_val
                 
                 if real_x is not None:
-                    # Physically plausible constraints:
-                    # Yield, Selectivity, Conversion, Temperature (K/C) are usually >= 0.
-                    # Negative values usually indicate extrapolation errors in RANSAC.
-                    # Setting to None is better than 0.0 as it signals "data not found/invalid"
-                    f_yl = float(real_yl) if (real_yl is not None and real_yl >= 0) else None
+                    # Y_Left (e.g. temperature) can be negative (°C), so no >= 0 constraint.
+                    # X (e.g. residence time) is always positive; keep >= 0 guard for it.
+                    # Y_Right/Data_Value (yield %) is always >= 0.
+                    f_yl = float(real_yl) if real_yl is not None else None
                     f_yr = float(real_yr) if (real_yr is not None and real_yr >= 0) else None
                     f_x = float(real_x) if (real_x is not None and real_x >= 0) else None
                     

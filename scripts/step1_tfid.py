@@ -21,7 +21,9 @@ def run_step1(input_pdf):
         cfg = load_config()
         detector = ActiveAreaDetector()
         detections = detector.process_pdf(input_pdf)
-        intermediate_dir = cfg.get("global", {}).get("intermediate_dir", "data/intermediate")
+        base_intermediate_dir = cfg.get("global", {}).get("intermediate_dir", "data/intermediate")
+        basename = os.path.splitext(os.path.basename(input_pdf))[0]
+        intermediate_dir = os.path.join(base_intermediate_dir, basename)
         saved_paths = detector.save_crops(input_pdf, detections, intermediate_dir)
         
         print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")

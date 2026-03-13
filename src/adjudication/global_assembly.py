@@ -44,22 +44,21 @@ class GlobalAssembly:
         # Or maybe we assume we run one PDF at a time and clear evidence?
         # Or we should check `meta['source_intermediate_dir']` inside JSONs?
         
-        evidence_dir = "data/evidence"
+        # Figure evidence JSONs are saved in data/intermediate/{basename}/macro_cleaned/
         figure_data = []
-        if os.path.exists(evidence_dir):
-            all_jsons = glob.glob(os.path.join(evidence_dir, "*.json"))
-            for jpath in all_jsons:
-                try:
-                    with open(jpath, 'r') as f:
-                        data = json.load(f)
-                    
-                    # check source
-                    meta = data.get('meta', {})
-                    source_dir = meta.get('source_intermediate_dir', '')
-                    if basename in source_dir:
-                        figure_data.append(data)
-                except: pass
-                
+        macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
+        for evidence_dir in [macro_cleaned_dir, "data/evidence"]:
+            if os.path.exists(evidence_dir):
+                for jpath in glob.glob(os.path.join(evidence_dir, "*_evidence.json")):
+                    try:
+                        with open(jpath, 'r') as f:
+                            d = json.load(f)
+                        meta = d.get('meta', {})
+                        source_dir = meta.get('source_intermediate_dir', '')
+                        if basename in source_dir or evidence_dir == macro_cleaned_dir:
+                            figure_data.append(d)
+                    except: pass
+
         print(f"   -> Found {len(figure_data)} figure evidence packets.")
         
         # 3. Get Table Data
@@ -83,34 +82,206 @@ class GlobalAssembly:
         
         print(f"   -> Found {len(table_data)} table data packets.")
 
+        # 3.5. Load sub-variable libraries
+        local_vars_map = {}
+        local_vars_dir = os.path.join(intermediate_dir, "local_vars")
+        if os.path.exists(local_vars_dir):
+            for lv_path in glob.glob(os.path.join(local_vars_dir, "*_local_vars.json")):
+                try:
+                    with open(lv_path) as f:
+                        lv = json.load(f)
+                    local_vars_map[lv["source_id"]] = lv
+                except Exception:
+                    pass
+        print(f"   -> Loaded {len(local_vars_map)} local_vars entries.")
+
+        # Inject local_vars into figure evidence packets
+        for d in figure_data:
+            src_id = d.get("meta", {}).get("figure_id", "")
+            if src_id in local_vars_map:
+                d["local_vars"] = local_vars_map[src_id]
+
+        # Inject local_vars into table evidence packets
+        for d in table_data:
+            src_id = d["table_name"].replace("_extracted.csv", "")
+            if src_id in local_vars_map:
+                d["local_vars"] = local_vars_map[src_id]
+
+        # 5. 读取 Tab-Scheme-Seg 结果
+        reactant_pool = {}
+        product_pool = {}
+        compound_pool = {}
+        pool_path = os.path.join(intermediate_dir, "compound_pool.json")
+        if os.path.exists(pool_path):
+            with open(pool_path) as f:
+                pool_data = json.load(f)
+            # 向后兼容：若 pool_data 是旧格式 flat dict（无 reactant_pool key）
+            if not isinstance(pool_data.get("reactant_pool"), dict):
+                compound_pool = pool_data
+                reactant_pool = {}
+                product_pool = {}
+            else:
+                reactant_pool = pool_data.get("reactant_pool", {})
+                product_pool  = pool_data.get("product_pool", {})
+                compound_pool = pool_data.get("compound_pool", {})
+            total = len(reactant_pool) + len(product_pool) + len(compound_pool)
+            print(f"   -> Loaded compound pool: {total} entries (reactant={len(reactant_pool)}, product={len(product_pool)}, fallback={len(compound_pool)})")
+
+        scheme_conditions = ""
+        cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+        if os.path.exists(cond_path):
+            with open(cond_path) as f:
+                scheme_conditions = f.read().strip()
+            print(f"   -> Loaded scheme conditions text")
+
         # 4. LLM Prompt
-        # Construct the prompt
-        system_prompt = "You are an expert material scientist. Your goal is to assemble a final dataset from extracted figures and tables, using the full paper text to strictly verify and enrich the data."
-        
-        user_prompt = f"""
-        Paper Text (Truncated):
-        {full_text[:50000]} # Hard cap just in case
+        system_prompt = (
+            "You are an expert flow chemistry data extractor. "
+            "Your sole task is to extract structured reaction data from flow chemistry papers. "
+            "You must be precise, grounded, and never hallucinate values not present in the provided text or tables."
+        )
 
-        --- Extracted Tables ---
-        {json.dumps(table_data, indent=2)}
+        compound_section = ""
+        if reactant_pool:
+            compound_section += f"""
+=== REACTANT STRUCTURE POOL (from scheme, left of reaction arrow) ===
+Use for reactant_smiles when label matches:
+{json.dumps(reactant_pool, indent=2)}
+"""
+        if product_pool:
+            compound_section += f"""
+=== PRODUCT STRUCTURE POOL (from scheme, right of reaction arrow) ===
+Use for product_smiles when label matches:
+{json.dumps(product_pool, indent=2)}
+"""
+        if compound_pool:
+            compound_section += f"""
+=== COMPOUND STRUCTURE POOL (role undetermined, no arrow detected) ===
+{json.dumps(compound_pool, indent=2)}
+"""
 
-        --- Extracted Figures ---
-        {json.dumps(figure_data, indent=2)}
+        scheme_cond_section = ""
+        if scheme_conditions:
+            scheme_cond_section = f"""
+=== SCHEME CONDITIONS (apply to all records from this paper unless table overrides) ===
+{scheme_conditions}
+"""
 
-        --- Request ---
-        1. contextualize the data points (e.g. adding reaction conditions found in text).
-        2. assemble the final dataset where the core is the data points from figures/tables.
-        3. Output strict JSON format.
-        """
+        user_prompt = f"""You are extracting reaction data from a flow chemistry paper.
+
+=== PAPER TEXT (truncated) ===
+{full_text[:50000]}
+
+=== EXTRACTED TABLES (CSV content) ===
+{json.dumps(table_data, indent=2)}
+
+=== EXTRACTED FIGURES (coordinate data + axis labels) ===
+{json.dumps(figure_data, indent=2)}
+{compound_section}{scheme_cond_section}
+=== LOCAL VARIABLE LIBRARIES ===
+Each table and figure above may contain a "local_vars" field. USE it to:
+- Map axes/columns to the correct output fields (local_vars overrides your own interpretation).
+- Apply fixed_conditions to ALL records from that source (merge with scheme conditions if not conflicting).
+- Use reaction_context as context for reactant/product identification.
+- Trust data_interpretation_notes for ambiguous cell or point values.
+
+=== TASK ===
+Extract ALL reaction records from the tables and figures above. Every row in a table and every data point in figure raw_data must become one record in the output — do NOT skip or merge any.
+Use the paper text to fill in context (reaction conditions, abbreviation meanings, shared conditions).
+
+For each reaction record, output one JSON object with these fields:
+{{
+  "reactant1_smiles": "...",       // SMILES of reactant 1 if available, else null (do NOT guess)
+  "reactant1_name": "...",         // name/label of reactant 1 if SMILES not available, else null
+  "reactant2_smiles": "...",       // SMILES of reactant 2 if available, else null (do NOT guess)
+  "reactant2_name": "...",         // name/label of reactant 2 if SMILES not available, else null
+  "product_smiles": "...",         // SMILES if available in data, else null (do NOT guess)
+  "product_name": "...",           // name/label if SMILES not available, else null
+  "product_label": "...",          // e.g. "4a", "compound 3", null if absent
+  "yield_pct": null,               // numeric yield %, null if absent
+  "conversion_pct": null,          // numeric conversion %, null if absent
+  "selectivity_pct": null,         // numeric selectivity/regioselectivity %, null if absent
+  "ee_pct": null,                  // enantiomeric excess %, null if absent
+  "conditions": {{
+    "temperature_C": null,         // reaction temperature in °C (numeric only)
+    "residence_time_s": null,      // residence time in seconds (convert ms→s if needed)
+    "flow_rate_mL_min": null,      // total flow rate in mL/min
+    "solvent": null,               // solvent name(s)
+    "catalyst": null,              // catalyst/reagent name
+    "pressure_bar": null,          // pressure in bar
+    "reactor_type": null           // e.g. "microreactor", "packed bed reactor"
+  }},
+  "other_metrics": {{}},           // any other numeric metrics not covered above (e.g. TON, TOF, productivity g/h, K/S)
+  "source_table_or_figure": "...", // e.g. "Table 1", "Figure 3", "page_3_table_0_extracted.csv"
+  "notes": null                    // any important notes
+}}
+
+=== RULES ===
+1. SUBSTRATE SCOPE TABLES: Each row is one reaction record. Extract every row. If a reaction has two distinct reactants, put them in reactant1 and reactant2 fields separately — do NOT combine them into one field.
+2. OPTIMIZATION/SCREENING TABLES: Extract each condition set as a separate record.
+3. FIGURES: Extract EVERY SINGLE data point from figure raw_data as one separate record. Do NOT summarize or skip any points.
+   (a) Standard scatter/line: axes are yield/conversion/selectivity vs a variable → each raw_data row is one record; X→condition field, Y_Left or Y_Right→metric field.
+   (b) Heatmap (x_axis_title=residence time, y_axis_title=temperature): each raw_data row is one record with conditions.residence_time_s=X, conditions.temperature_C=Y_Left, yield_pct=Y_Right/Data_Value. Extract ALL rows including those with yield=0.
+4. CONDITIONS: If conditions are shared across a table (stated in caption or paper text), apply them to ALL records from that table.
+5. SMILES: Use SMILES only if directly provided in the paper text or figure data. If only a name is given, set reactant1_name/reactant2_name/product_name and leave SMILES null — do NOT invent SMILES.
+6. SOURCE RESTRICTION: Extract data ONLY from the provided tables and figures. Do NOT extract data from the Introduction, Related Work, or References sections. If the paper discusses prior work or comparative data from other papers, skip it.
+7. OTHER METRICS: If the paper reports metrics other than yield/conversion/selectivity (e.g. TON, TOF, productivity in g/h, K/S value, ee, dr, purity %), put them in "other_metrics" as a dict.
+8. NO HALLUCINATION: Every numeric value must come from the extracted tables/figures. Use null for missing fields.
+9. OUTPUT: Return ONLY a valid JSON array. No markdown fences, no explanation text.
+10. SMILES LOOKUP:
+    - If product_label matches a key in PRODUCT STRUCTURE POOL → set product_smiles to that value.
+    - If reactant label matches a key in REACTANT STRUCTURE POOL → set reactant1_smiles or reactant2_smiles accordingly.
+    - If only COMPOUND STRUCTURE POOL exists (no arrow detected), use context to infer role and assign accordingly.
+    Do not modify SMILES strings.
+11. SCHEME CONDITIONS: If Scheme Conditions are provided and a table record lacks certain condition fields (temperature, solvent, catalyst), use the Scheme Conditions as fallback.
+12. LOCAL VARS: If a source has a "local_vars" field, its axis_semantics and fixed_conditions OVERRIDE your general interpretation. Trust local_vars.data_interpretation_notes for ambiguous cell or point values.
+
+Output a JSON array of all extracted reaction records:"""
         
         print("   -> Sending to LLM...")
         response = self.llm.chat(system_prompt, user_prompt)
-        
+
+        # Strip markdown fences if present
+        cleaned = response.strip()
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned
+            if cleaned.rstrip().endswith("```"):
+                cleaned = cleaned.rstrip().rsplit("\n", 1)[0]
+
         # 5. Save Output
         out_file = os.path.join(self.output_dir, f"{basename}_final.json")
         with open(out_file, 'w') as f:
-            # Try to save raw response or parsed JSON if possible
-            f.write(response) # LLMEngine returns string usually
-            
+            f.write(cleaned)
+
         print(f"   -> Saved final result to {out_file}")
+
+        # 6. Excel 输出
+        try:
+            records = json.loads(cleaned)
+            if isinstance(records, list):
+                self._save_excel(records, basename)
+        except Exception as e:
+            print(f"[GlobalAssembly] Excel export skipped: {e}")
+
         return out_file
+
+    def _save_excel(self, records, basename):
+        import pandas as pd
+        out_path = os.path.join(self.output_dir, f"{basename}_final.xlsx")
+        flat = []
+        for r in records:
+            row = dict(r)
+            conds = row.pop("conditions", {}) or {}
+            other = row.pop("other_metrics", {}) or {}
+            row.update(conds)
+            row.update(other)
+            flat.append(row)
+        df = pd.DataFrame(flat)
+        src_col = "source_table_or_figure"
+        if src_col not in df.columns:
+            df[src_col] = "unknown"
+        with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
+            for src, grp in df.groupby(src_col, sort=False):
+                sheet = str(src)[:31]
+                grp.to_excel(writer, sheet_name=sheet, index=False)
+        print(f"   -> Saved Excel to {out_path}")

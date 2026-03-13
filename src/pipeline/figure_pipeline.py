@@ -1,4 +1,5 @@
 import os
+import re
 import glob
 import pandas as pd
 import json
@@ -155,9 +156,18 @@ class FigurePipeline:
                 # 3C: Coordinate Mapping
                 other_detections = [d for d in micro_detections if d['label'] not in ['data_point', 'marker']]
                 full_detections = other_detections + matched_points
-                
+
+                # 热图自动检测：legend 文本含 yield 范围（如 "60 ~ 80%", "< 20%", "> 80%"）
+                is_heatmap = self._detect_heatmap(text_evidence)
+                if is_heatmap:
+                    print(f"      [Heatmap] Detected heatmap-style legend → enabling extract_point_labels + log_x")
+
                 try:
-                    df, _ = self.coord_mapper.map_coordinates(full_detections, cleaned_plot_path)
+                    df, _ = self.coord_mapper.map_coordinates(
+                        full_detections, cleaned_plot_path,
+                        force_log_x=is_heatmap,
+                        extract_point_labels=is_heatmap,
+                    )
                 except Exception as e:
                     print(f"      [Mapper Warning] {e}")
                     df = pd.DataFrame()
@@ -191,3 +201,18 @@ class FigurePipeline:
                 traceback.print_exc()
 
         return extracted_results
+
+    def _detect_heatmap(self, text_evidence: dict) -> bool:
+        """
+        检测图是否为热图（yield range legend）。
+        判据：legend 文本含 yield 范围模式，如 "60 ~ 80%", "< 20%", "> 80%"
+        """
+        if not text_evidence:
+            return False
+        legend_items = text_evidence.get('legend_text', [])
+        for item in legend_items:
+            text = item.get('text', '')
+            # 匹配 "数字 ~ 数字 %" 或 "< 数字 %" 或 "> 数字 %"
+            if re.search(r'(\d+\s*[~\-]\s*\d+\s*%|[<>]\s*\d+\s*%)', text):
+                return True
+        return False
