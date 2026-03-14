@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/cpu-throttling: "false"
+    spec:
+      timeoutSeconds: 580
+      containers:
+      - image: gcr.io/gen-lang-client-0080522548/frontend-service:latest
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        env:
+        - name: FIGURE_SERVICE_URL
+          value: "https://figure-service-h6pakhgb2a-uc.a.run.app"
+        - name: TABLE_SERVICE_URL
+          value: "https://table-service-h6pakhgb2a-uc.a.run.app"
+        - name: FRONTEND_PASSWORD
+          value: "nagaki2024"
+        - name: FRONTEND_SECRET
+          value: "flowfigtabminer-secret-2024"

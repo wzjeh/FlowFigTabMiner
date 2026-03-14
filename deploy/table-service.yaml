@@ -8,6 +8,7 @@ spec:
       annotations:
         run.googleapis.com/execution-environment: gen2
         run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/startup-cpu-boost: "true"
     spec:
       timeoutSeconds: 600
       containers:

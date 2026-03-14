@@ -10,6 +10,7 @@ sys.path.insert(0, os.getcwd())
 from src.pipeline.figure_pipeline import FigurePipeline
 from src.extraction.table.pipeline import TablePipeline
 from src.adjudication.global_assembly import GlobalAssembly
+from src.adjudication.post_processor import PostProcessor
 
 def run_step1_tfid(pdf_path):
     print("\n=== Step 1: TF-ID Parsing ===")
@@ -31,6 +32,10 @@ def main():
     parser.add_argument("pdf_path", help="Path to input PDF")
     parser.add_argument("--skip-tfid", action="store_true",
                         help="Skip Step 1 if intermediate figures already exist")
+    parser.add_argument("--force-assembly", action="store_true",
+                        help="Force re-run Step 5 LLM even if _final.json already exists")
+    parser.add_argument("--smiles-lookup", action="store_true",
+                        help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
     args = parser.parse_args()
 
     pdf_path = args.pdf_path
@@ -147,6 +152,14 @@ def main():
     os.makedirs(local_vars_dir, exist_ok=True)
     builder = LocalVarsBuilder()
 
+    # Read scheme_conditions.txt once; shared across all table evidence
+    scheme_cond_text = ""
+    cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+    if os.path.exists(cond_path):
+        with open(cond_path) as f:
+            scheme_cond_text = f.read().strip()
+        print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
+
     # Figure evidence
     macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
     for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
@@ -173,14 +186,20 @@ def main():
                         if csv_path and os.path.exists(csv_path):
                             with open(csv_path) as cf:
                                 csv_head = "".join(cf.readlines()[:6])
-                        builder.build(src_id, "table", ev, paper_text, local_vars_dir, csv_head=csv_head)
+                        builder.build(src_id, "table", ev, paper_text, local_vars_dir,
+                                      csv_head=csv_head, scheme_conditions=scheme_cond_text)
                     except Exception as e:
                         print(f"   [LocalVars] Table error {ev_path}: {e}")
 
     # 4. Global Assembly
     print("\n=== Step 5: Global Assembly ===")
     assembler = GlobalAssembly()
-    assembler.run(pdf_path, intermediate_dir)
+    assembler.run(pdf_path, intermediate_dir, force=args.force_assembly)
+
+    # 5. Post-processing / normalisation
+    print("\n=== Step 6: Post-Processing (Normalisation) ===")
+    post = PostProcessor()
+    post.run(pdf_path, intermediate_dir, smiles_lookup=args.smiles_lookup)
 
     print("\n=== Pipeline Complete ===")
 

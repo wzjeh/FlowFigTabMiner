@@ -11,14 +11,28 @@ class GlobalAssembly:
         self.llm = LLMEngine()
         self.pdf_parser = PDFParser()
 
-    def run(self, pdf_path, intermediate_dir=None):
+    def run(self, pdf_path, intermediate_dir=None, force=False):
         """
         Run global assembly for a PDF.
+        If force=False and _final.json already exists, skip LLM call and return cached path.
         """
         basename = os.path.splitext(os.path.basename(pdf_path))[0]
         if not intermediate_dir:
             intermediate_dir = os.path.join("data/intermediate", basename)
-        
+
+        out_file = os.path.join(self.output_dir, f"{basename}_final.json")
+        if not force and os.path.exists(out_file):
+            print(f"[GlobalAssembly] Cache hit — skipping LLM (use --force-assembly to rerun): {out_file}")
+            # Still run Excel export from cached JSON
+            try:
+                with open(out_file) as f:
+                    records = json.load(f)
+                if isinstance(records, list):
+                    self._save_excel(records, basename)
+            except Exception as e:
+                print(f"[GlobalAssembly] Excel from cache skipped: {e}")
+            return out_file
+
         print(f"[GlobalAssembly] Assembling final dataset for {basename}...")
         
         # 1. Get Text
@@ -178,6 +192,15 @@ Use for product_smiles when label matches:
 === EXTRACTED FIGURES (coordinate data + axis labels) ===
 {json.dumps(figure_data, indent=2)}
 {compound_section}{scheme_cond_section}
+=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
+- For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,
+  it is typically a "T-shaped micromixer + capillary/coil reactor" setup. Apply this default ONLY
+  if the paper context confirms flow microreactor use and local_vars.fixed_conditions.reactor_type is null.
+- Solvent abbreviations: THF=tetrahydrofuran, Et2O=diethyl ether, DCM/CH2Cl2=dichloromethane,
+  MeCN=acetonitrile, EtOAc=ethyl acetate, MeOH=methanol, toluene/PhMe, hexane, MTBE, dioxane,
+  DMF=dimethylformamide, DMSO. Expand these abbreviations when filling the solvent field.
+- If scheme_conditions contain solvent info, apply it to ALL records from tables in the same paper.
+
 === LOCAL VARIABLE LIBRARIES ===
 Each table and figure above may contain a "local_vars" field. USE it to:
 - Map axes/columns to the correct output fields (local_vars overrides your own interpretation).
@@ -199,20 +222,25 @@ For each reaction record, output one JSON object with these fields:
   "product_name": "...",           // name/label if SMILES not available, else null
   "product_label": "...",          // e.g. "4a", "compound 3", null if absent
   "yield_pct": null,               // numeric yield %, null if absent
+  "yield_type": null,              // how yield was measured: "isolated" | "GC" | "NMR" | "crude" | null
   "conversion_pct": null,          // numeric conversion %, null if absent
   "selectivity_pct": null,         // numeric selectivity/regioselectivity %, null if absent
   "ee_pct": null,                  // enantiomeric excess %, null if absent
+  "reaction_class": "...",          // REQUIRED — choose ONE from: "C-C coupling" | "anionic polymerization" | "carbolithiation" | "C-N coupling" | "C-O coupling" | "halogenation" | "oxidation" | "reduction" | "other". Must not be null. Use "other" if unsure. This is the same for all records from the same paper.
+  "paper_doi": null,               // DOI found in paper text (e.g. "10.1039/c2cc16855c"), null if not found
   "conditions": {{
     "temperature_C": null,         // reaction temperature in °C (numeric only)
     "residence_time_s": null,      // residence time in seconds (convert ms→s if needed)
     "flow_rate_mL_min": null,      // total flow rate in mL/min
-    "solvent": null,               // solvent name(s)
-    "catalyst": null,              // catalyst/reagent name
+    "solvent": null,               // solvent full name(s); expand abbreviations (THF→tetrahydrofuran, DCM/CH2Cl2→dichloromethane, Et2O→diethyl ether, MeCN→acetonitrile, EtOAc→ethyl acetate, MeOH→methanol, DMF→dimethylformamide, DMSO→dimethyl sulfoxide)
+    "catalyst": null,              // full catalyst/reagent text as-is from paper
+    "catalyst_metal": null,        // central metal only, e.g. "Pd" | "Cu" | "Li" | "Ru" | null
+    "catalyst_loading_pct": null,  // numeric mol% loading if stated, else null
     "pressure_bar": null,          // pressure in bar
     "reactor_type": null           // e.g. "microreactor", "packed bed reactor"
   }},
   "other_metrics": {{}},           // any other numeric metrics not covered above (e.g. TON, TOF, productivity g/h, K/S)
-  "source_table_or_figure": "...", // e.g. "Table 1", "Figure 3", "page_3_table_0_extracted.csv"
+  "source_table_or_figure": "...", // prefer human-readable label e.g. "Table 1", "Figure 3"; use filename only if no label available
   "notes": null                    // any important notes
 }}
 
@@ -235,6 +263,7 @@ For each reaction record, output one JSON object with these fields:
     Do not modify SMILES strings.
 11. SCHEME CONDITIONS: If Scheme Conditions are provided and a table record lacks certain condition fields (temperature, solvent, catalyst), use the Scheme Conditions as fallback.
 12. LOCAL VARS: If a source has a "local_vars" field, its axis_semantics and fixed_conditions OVERRIDE your general interpretation. Trust local_vars.data_interpretation_notes for ambiguous cell or point values.
+13. REACTION CLASS: reaction_class MUST be filled for every record. Read the paper text, identify the main reaction type, and pick the best match from the allowed list. Use "other" if none fit. Never leave reaction_class as null.
 
 Output a JSON array of all extracted reaction records:"""
         
@@ -248,8 +277,11 @@ Output a JSON array of all extracted reaction records:"""
             if cleaned.rstrip().endswith("```"):
                 cleaned = cleaned.rstrip().rsplit("\n", 1)[0]
 
+        # Remove invalid control characters (except tab/newline/CR) that break JSON parsing
+        import re as _re
+        cleaned = _re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', cleaned)
+
         # 5. Save Output
-        out_file = os.path.join(self.output_dir, f"{basename}_final.json")
         with open(out_file, 'w') as f:
             f.write(cleaned)
 

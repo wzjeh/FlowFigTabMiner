@@ -7,7 +7,7 @@ class LocalVarsBuilder:
     def __init__(self):
         self.llm = LLMEngine()
 
-    def build(self, source_id, source_type, evidence_data, paper_text, output_dir, csv_head=""):
+    def build(self, source_id, source_type, evidence_data, paper_text, output_dir, csv_head="", scheme_conditions=""):
         """
         Build a sub-variable library JSON for a single figure or table.
 
@@ -40,7 +40,7 @@ class LocalVarsBuilder:
             )
         else:
             system_prompt, user_prompt = self._build_table_prompts(
-                source_id, evidence_data, text_window, csv_head
+                source_id, evidence_data, text_window, csv_head, scheme_conditions
             )
 
         raw = self.llm.chat(system_prompt, user_prompt)
@@ -57,6 +57,14 @@ class LocalVarsBuilder:
     #  Prompt builders
     # ------------------------------------------------------------------ #
 
+    _SOLVENT_ABBREV = (
+        "Common solvent abbreviations: THF=tetrahydrofuran, Et2O=diethyl ether, "
+        "DCM/CH2Cl2=dichloromethane, MeCN=acetonitrile, EtOAc=ethyl acetate, "
+        "MeOH=methanol, toluene/PhMe, hexane/hex, MTBE=methyl tert-butyl ether, "
+        "dioxane, DMF=dimethylformamide, DMSO. "
+        "If you see these abbreviations in the context, treat them as valid solvent names."
+    )
+
     def _build_figure_prompts(self, source_id, ev, text_window):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
@@ -65,7 +73,8 @@ class LocalVarsBuilder:
             "to interpret each axis and series.\n"
             "Rules:\n"
             "(1) No SMILES. (2) Only state fixed_conditions explicitly mentioned in the context. "
-            "(3) Output valid JSON only, no markdown fences."
+            "(3) Output valid JSON only, no markdown fences.\n"
+            f"{self._SOLVENT_ABBREV}"
         )
 
         meta = ev.get("meta", {})
@@ -133,20 +142,32 @@ conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, oth
 
         return system_prompt, user_prompt
 
-    def _build_table_prompts(self, source_id, ev, text_window, csv_head):
+    def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions=""):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
             "Analyze a single extracted table from a flow chemistry paper and produce "
             "a structured JSON sub-variable library documenting what it measures and how "
             "to interpret each column.\n"
             "Rules:\n"
-            "(1) No SMILES. (2) Only state fixed_conditions explicitly mentioned in the context. "
-            "(3) Output valid JSON only, no markdown fences."
+            "(1) No SMILES. "
+            "(2) For fixed_conditions: search BOTH the table caption/note AND the paper text context for "
+            "conditions that apply uniformly to ALL rows of this table (e.g. temperature stated in the caption, "
+            "solvent mentioned in surrounding text, reactor type described in the experimental section). "
+            "Fill fixed_conditions even if the condition is only mentioned in the paper text, not the CSV. "
+            "(3) Output valid JSON only, no markdown fences.\n"
+            f"{self._SOLVENT_ABBREV}"
         )
 
         caption = ev.get("caption_text", "") or ""
         note = ev.get("table_note_text", "") or ""
         num_extracted = ev.get("num_extracted", 0)
+
+        scheme_cond_block = ""
+        if scheme_conditions:
+            scheme_cond_block = f"""
+=== SCHEME CONDITIONS (from reaction scheme image, may contain solvent/catalyst info) ===
+{scheme_conditions}
+"""
 
         user_prompt = f"""=== TABLE EVIDENCE ===
 Source ID: {source_id}
@@ -158,7 +179,7 @@ CSV preview (first 6 rows):
 
 === RELEVANT PAPER TEXT CONTEXT (4000 chars) ===
 {text_window}
-
+{scheme_cond_block}
 === OUTPUT SCHEMA ===
 Output a single valid JSON object (no markdown):
 {{
@@ -181,7 +202,13 @@ Output a single valid JSON object (no markdown):
   }},
   "data_interpretation_notes": "..."
 }}
-For residence_time_s: convert minutes×60 if needed."""
+For residence_time_s: convert minutes×60 if needed.
+IMPORTANT: fixed_conditions should capture ANY condition that is constant across ALL rows of this table,
+even if stated only in the paper text or caption (not as a CSV column). Common examples:
+- "all reactions were performed at -78°C" → temperature_C: -78
+- "using THF as solvent" → solvent: "tetrahydrofuran"
+- "T-shaped micromixer connected to a capillary reactor" → reactor_type: "T-shaped micromixer + capillary reactor"
+If a condition varies row-by-row (i.e. it IS a CSV column), leave it null in fixed_conditions."""
 
         return system_prompt, user_prompt
 

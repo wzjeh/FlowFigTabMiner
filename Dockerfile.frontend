@@ -1,0 +1,18 @@
+# frontend-service: lightweight FastAPI web UI
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-frontend.txt .
+RUN pip install --no-cache-dir -r requirements-frontend.txt
+
+COPY src/services/frontend_service.py src/services/frontend_service.py
+COPY src/services/examples/            src/services/examples/
+
+ENV PYTHONPATH=/app
+
+EXPOSE 8080
+CMD ["uvicorn", "src.services.frontend_service:app", "--host", "0.0.0.0", "--port", "8080"]

@@ -76,8 +76,12 @@ class LegendMatcher:
             ocr_scale = 3
             ocr_img = cv2.resize(master_img, (img_w*ocr_scale, img_h*ocr_scale), interpolation=cv2.INTER_CUBIC)
             
-        ocr_result = self.ocr.ocr(ocr_img)
-        
+        try:
+            ocr_result = self.ocr.ocr(ocr_img)
+        except Exception as _ocr_e:
+            print(f"[OCR Error] legend OCR failed: {_ocr_e}")
+            ocr_result = None
+
         texts = []
         if ocr_result:
             # Handle PaddleX / New PaddleOCR Dict Format

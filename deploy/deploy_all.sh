@@ -35,21 +35,19 @@ gcloud builds submit \
 
 echo ""
 echo "=== [4] Deploying services to Cloud Run (${REGION}) ==="
-gcloud run services replace deploy/tfid-service.yaml \
-  --region "${REGION}" \
-  --project "${PROJECT_ID}"
-
-gcloud run services replace deploy/figure-service.yaml \
-  --region "${REGION}" \
-  --project "${PROJECT_ID}"
-
-gcloud run services replace deploy/table-service.yaml \
-  --region "${REGION}" \
-  --project "${PROJECT_ID}"
+# NOTE: Use 'gcloud run deploy --image' (not 'services replace') to force
+# Cloud Run to pull the updated :latest image digest.
+for SVC in tfid-service figure-service table-service frontend-service; do
+  IMAGE="gcr.io/${PROJECT_ID}/${SVC}:latest"
+  gcloud run deploy "${SVC}" \
+    --image "${IMAGE}" \
+    --region "${REGION}" \
+    --project "${PROJECT_ID}"
+done
 
 echo ""
 echo "=== [5] Setting public access (--allow-unauthenticated) ==="
-for SVC in tfid-service figure-service table-service; do
+for SVC in tfid-service figure-service table-service frontend-service; do
   gcloud run services add-iam-policy-binding "${SVC}" \
     --region="${REGION}" \
     --project="${PROJECT_ID}" \
@@ -60,7 +58,7 @@ done
 echo ""
 echo "=== Deployment complete ==="
 echo "Service URLs:"
-for SVC in tfid-service figure-service table-service; do
+for SVC in tfid-service figure-service table-service frontend-service; do
   URL=$(gcloud run services describe "${SVC}" \
     --region="${REGION}" \
     --project="${PROJECT_ID}" \

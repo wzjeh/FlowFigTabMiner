@@ -27,6 +27,14 @@ ENV HF_HOME=/models/models
 ENV HF_HUB_CACHE=/models/models/hub
 ENV HF_HUB_OFFLINE=1
 ENV TRANSFORMERS_OFFLINE=1
+# PaddleX model dir (GCS-mounted at /models/models/paddlex)
+ENV PADDLE_PDX_CACHE_HOME=/models/models/paddlex
+# Disable OneDNN (MKL-DNN) to avoid NotImplementedError on Cloud Run CPUs
+ENV FLAGS_use_mkldnn=0
+ENV FLAGS_pir_apply_mkldnn_pass=0
+# Disable PaddleX network connectivity check at startup (prevents 20-min hang)
+ENV DISABLE_MODEL_SOURCE_CHECK=True
+ENV PADDLEPD_DISABLE_MODEL_SOURCE_CHECK=True
 ENV PYTHONPATH=/app
 
 EXPOSE 8080
