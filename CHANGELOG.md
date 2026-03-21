@@ -1,5 +1,40 @@
 # FlowFigTabMiner 更改日志 (Changelog)
 
+## 2026-03-21: 扩充反应类型词典（有机锂专项）+ 未知类型自动记录
+
+### 背景
+
+Zhao 主要提取有机锂流动化学文献，原 19 类未覆盖有机锂核心反应类型。
+
+### 改动一：新增 4 个有机锂专项类型（`post_processor.py`）
+
+| 新类型 | 覆盖场景 |
+|---|---|
+| `nucleophilic addition` | RLi + 醛/酮/亚胺/酯/CO₂ 等亲电试剂 |
+| `halogen-metal exchange` | ArX + n-BuLi → ArLi（卤代物-金属交换） |
+| `directed metalation` | C-H 去质子化（DOMe、侧链 metalation、苄基 deprotonation） |
+| `anionic cyclization` | 分子内碳负离子关环、Brook 重排、anionic cascade |
+
+同步扩充通用类型：`polymerization` 增加 living/ROP 同义词；`reduction` 增加 Birch；`C-C coupling` 增加 Grignard/Reformatsky；共 24 个 canonical class。
+
+### 改动二：未知类型自动记录（`post_processor.py`）
+
+- 新增 `_CANONICAL_CLASSES` 集合（快速成员检查）
+- 新增 `_UNKNOWN_CLASS_LOG = "evaluation/unknown_reaction_classes.txt"`
+- `PostProcessor.run()` 处理每条记录时：若 `reaction_class` 归一化后仍不在 canonical set → 追加到日志文件（去重，格式 `class_value  |  pdf_name`），并打印提示
+- 日志文件供 Zhao 定期审核，决定是否扩充词典
+
+**工作流**：
+1. 运行完一批 PDF 后，查看 `evaluation/unknown_reaction_classes.txt`
+2. 确认哪些值值得加入词典，告诉 Claude 扩充 `_REACTION_CLASS_SYNONYMS`
+
+### 改动三：GlobalAssembly prompt 更新（`global_assembly.py`）
+
+- `reaction_class` 候选列表更新为 24 个类型
+- 新增有机锂识别提示：优先用 `nucleophilic addition` / `halogen-metal exchange` / `directed metalation` / `anionic cyclization`
+
+---
+
 ## 2026-03-21: P1 评估框架 + P2 反应类型标准化与单位工具函数
 
 ### P1 — 评估框架（`evaluation/`）

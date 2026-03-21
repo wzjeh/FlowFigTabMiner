@@ -230,7 +230,7 @@ For each reaction record, output one JSON object with these fields:
   "ee_pct": null,                  // enantiomeric excess %, null if absent
   "diastereomeric_ratio": null,    // diastereoselectivity as string, e.g. "anti:syn = 99:1", null if absent
   "stoichiometry": null,           // molar ratio or equivalents, e.g. "[M]/[RAFT]=100", "1.2 equiv", null if absent
-  "reaction_class": "...",         // REQUIRED — choose ONE from: "C-C coupling" | "anionic polymerization" | "carbolithiation" | "C-N coupling" | "C-O coupling" | "halogenation" | "oxidation" | "reduction" | "other". Must not be null. Use "other" if unsure. This is the same for all records from the same paper.
+  "reaction_class": "...",         // REQUIRED — choose ONE from: "nucleophilic addition" | "halogen-metal exchange" | "directed metalation" | "anionic cyclization" | "C-C coupling" | "C-N coupling" | "C-O coupling" | "polymerization" | "halogenation" | "oxidation" | "reduction" | "hydrogenation" | "esterification" | "amidation" | "alkylation" | "acylation" | "photocatalysis" | "hydrolysis" | "other". Must not be null. Use "other" if unsure. For organolithium papers: prefer "nucleophilic addition" (RLi + carbonyl/imine), "halogen-metal exchange" (ArX + RLi → ArLi), "directed metalation" (C-H deprotonation), "anionic cyclization" (intramolecular). This is the same for all records from the same paper.
   "paper_doi": null,               // DOI found in paper text (e.g. "10.1039/c2cc16855c"), null if not found
   "conditions": {{
     "temperature_C": null,         // reaction temperature in °C (numeric only)

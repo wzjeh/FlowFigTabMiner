@@ -300,30 +300,61 @@ def _extract_stoichiometry(notes: str) -> tuple:
 # ---------------------------------------------------------------------------
 
 _REACTION_CLASS_SYNONYMS: dict[str, set[str]] = {
+    # ── General organic ──────────────────────────────────────────────────────
     "hydrogenation":         {"hydrogenation", "h2 addition", "catalytic hydrogenation"},
     "nitration":             {"nitration"},
     "oxidation":             {"oxidation", "oxidative"},
-    "reduction":             {"reduction", "reductive"},
+    "reduction":             {"reduction", "reductive", "birch reduction"},
     "photoreduction":        {"photoreduction", "photo-reduction"},
     "esterification":        {"esterification"},
     "amidation":             {"amidation", "amide coupling"},
     "halogenation":          {"halogenation", "chlorination", "bromination",
                               "fluorination", "iodination"},
-    "alkylation":            {"alkylation", "c-alkylation", "n-alkylation"},
+    "alkylation":            {"alkylation", "c-alkylation", "n-alkylation",
+                              "o-alkylation"},
     "acylation":             {"acylation", "friedel-crafts acylation"},
     "isomerization":         {"isomerization", "isomerisation"},
     "dehydration":           {"dehydration"},
     "dehydrogenation":       {"dehydrogenation"},
     "polymerization":        {"polymerization", "polymerisation",
-                              "raft polymerization", "anionic polymerization"},
-    "C-C coupling":          {"c-c coupling", "cross-coupling", "suzuki", "heck",
-                              "negishi", "sonogashira", "kumada", "buchwald",
-                              "carbolithiation"},
-    "C-N coupling":          {"c-n coupling", "buchwald-hartwig"},
-    "C-O coupling":          {"c-o coupling", "etherification"},
+                              "raft polymerization", "anionic polymerization",
+                              "living polymerization", "ring-opening polymerization",
+                              "rop"},
     "hydrolysis":            {"hydrolysis"},
     "photocatalysis":        {"photocatalysis", "photo-catalysis",
                               "photoredox", "photo-oxidation"},
+    # ── Coupling reactions ────────────────────────────────────────────────────
+    "C-C coupling":          {"c-c coupling", "cross-coupling", "suzuki",
+                              "suzuki-miyaura", "heck", "negishi", "sonogashira",
+                              "kumada", "buchwald", "carbolithiation",
+                              "grignard addition", "reformatsky"},
+    "C-N coupling":          {"c-n coupling", "buchwald-hartwig",
+                              "ullmann coupling"},
+    "C-O coupling":          {"c-o coupling", "etherification",
+                              "williamson ether"},
+    # ── Organolithium-specific ────────────────────────────────────────────────
+    "nucleophilic addition": {"nucleophilic addition", "addition to carbonyl",
+                              "organolithium addition", "rli addition",
+                              "addition to aldehyde", "addition to ketone",
+                              "addition to imine", "addition to ester",
+                              "carbanion addition", "addition reaction",
+                              "1,2-addition", "1,4-addition", "conjugate addition"},
+    "halogen-metal exchange": {"halogen-metal exchange", "halogen-lithium exchange",
+                               "lithium-halogen exchange", "lhx", "hmx",
+                               "transmetalation from halide",
+                               "aryllithium generation"},
+    "directed metalation":   {"directed metalation", "directed ortho metalation",
+                              "dom", "lateral metalation", "lateral lithiation",
+                              "directed lithiation", "deprotonative metalation",
+                              "c-h deprotonation", "deprotonation",
+                              "benzylic deprotonation", "allylic deprotonation",
+                              "alpha-deprotonation"},
+    "anionic cyclization":   {"anionic cyclization", "anionic ring closure",
+                              "carbanion cyclization", "intramolecular addition",
+                              "intramolecular carbolithiation",
+                              "anionic cascade", "anionic rearrangement",
+                              "brook rearrangement", "retro-brook rearrangement"},
+    # ── Catch-all ─────────────────────────────────────────────────────────────
     "other":                 {"other"},
 }
 
@@ -332,6 +363,12 @@ _REACTION_CLASS_REJECT = {
     "conversion", "selectivity", "yield", "production",
     "regime", "synthesis", "process", "purge",
 }
+
+# Canonical set for fast membership check (used for unknown-class logging)
+_CANONICAL_CLASSES: set[str] = set(_REACTION_CLASS_SYNONYMS.keys())
+
+# Path for accumulating unknown reaction classes found during processing
+_UNKNOWN_CLASS_LOG = "evaluation/unknown_reaction_classes.txt"
 
 
 def _normalize_reaction_class(value: str | None) -> str | None:
@@ -539,6 +576,11 @@ class PostProcessor:
             if nr.get("reaction_class"):
                 nr["reaction_class"] = _normalize_reaction_class(nr["reaction_class"])
 
+            # Log unknown reaction classes for future taxonomy expansion
+            rc = nr.get("reaction_class")
+            if rc and rc not in _CANONICAL_CLASSES:
+                self._log_unknown_class(rc, basename)
+
             # -- Source label --
             nr["source_table_or_figure"] = humanise_source(nr.get("source_table_or_figure", ""))
 
@@ -614,6 +656,27 @@ class PostProcessor:
             print(f"[PostProcessor] Excel export failed: {e}")
 
         return norm_json
+
+    def _log_unknown_class(self, reaction_class: str, basename: str) -> None:
+        """
+        Append unrecognised reaction_class values to evaluation/unknown_reaction_classes.txt
+        for periodic human review and taxonomy expansion.
+        Each line: "reaction_class_value  |  source_pdf"
+        """
+        try:
+            os.makedirs(os.path.dirname(_UNKNOWN_CLASS_LOG), exist_ok=True)
+            # Read existing lines to avoid duplicates for this value+basename pair
+            existing: set[str] = set()
+            if os.path.exists(_UNKNOWN_CLASS_LOG):
+                with open(_UNKNOWN_CLASS_LOG, encoding="utf-8") as f:
+                    existing = {ln.strip() for ln in f if ln.strip()}
+            entry = f"{reaction_class}  |  {basename}"
+            if entry not in existing:
+                with open(_UNKNOWN_CLASS_LOG, "a", encoding="utf-8") as f:
+                    f.write(entry + "\n")
+                print(f"[PostProcessor] Unknown reaction_class logged: {reaction_class!r}")
+        except Exception:
+            pass  # logging failure must not break the pipeline
 
     def _load_fulltext(self, pdf_path, intermediate_dir):
         """Try to load cached fulltext, otherwise extract via PDFParser."""
