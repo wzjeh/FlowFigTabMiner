@@ -1,7 +1,16 @@
 import cv2
 import numpy as np
 import os
-from paddleocr import PaddleOCR
+if os.environ.get('USE_EASYOCR', '0') != '1':
+    os.environ["FLAGS_use_mkldnn"] = "0"
+    os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
+    os.environ["FLAGS_enable_pir_api"] = "0"
+    import paddle
+    try:
+        paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
+    except Exception:
+        pass
+from src.extraction.common.ocr_backend import get_ocr_instance
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 from collections import defaultdict
@@ -13,7 +22,7 @@ class LegendMatcher:
         """
         self.yolo = yolo_model
         # Initialize OCR - suppress logs
-        self.ocr = PaddleOCR(use_angle_cls=False, lang='en')
+        self.ocr = get_ocr_instance(use_angle_cls=False)
 
     def parse_legend_crops(self, legend_crops):
         """

@@ -1,8 +1,17 @@
 import os
-# Disable connectivity checks to prevent hangs
-os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "1"
-os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "1"
-os.environ["HF_HUB_OFFLINE"] = "1"  # Disable HuggingFace connectivity checks
+# Must be set BEFORE any paddle/paddleocr import
+os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
+os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
+os.environ["HF_HUB_OFFLINE"] = "1"
+# Disable OneDNN (MKL-DNN) — causes NotImplementedError on Cloud Run CPUs
+os.environ["FLAGS_use_mkldnn"] = "0"
+os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
+os.environ["FLAGS_enable_pir_api"] = "0"
+import paddle
+try:
+    paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
+except Exception:
+    pass
 from paddleocr import PaddleOCR
 
 class ContentRecognizer:
@@ -34,7 +43,8 @@ class ContentRecognizer:
 
         self.ocr = PaddleOCR(
             use_angle_cls=True,
-            lang='en'
+            lang='en',
+            enable_mkldnn=False,
         )
 
         # MolNexTR for chemical structure recognition

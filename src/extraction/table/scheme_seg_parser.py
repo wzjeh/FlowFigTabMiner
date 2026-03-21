@@ -43,7 +43,7 @@ class SchemeSegParser:
     def _get_ocr(self):
         if self._ocr is None:
             from paddleocr import PaddleOCR
-            self._ocr = PaddleOCR(use_angle_cls=False, lang='en')
+            self._ocr = PaddleOCR(use_angle_cls=False, lang='en', enable_mkldnn=False)
         return self._ocr
 
     def _ocr_crop(self, img, box):

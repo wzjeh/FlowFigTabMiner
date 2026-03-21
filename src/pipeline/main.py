@@ -2,7 +2,6 @@ import os
 import sys
 import argparse
 import glob
-import subprocess
 
 # Ensure src is importable from project root
 sys.path.insert(0, os.getcwd())
@@ -11,21 +10,24 @@ from src.pipeline.figure_pipeline import FigurePipeline
 from src.extraction.table.pipeline import TablePipeline
 from src.adjudication.global_assembly import GlobalAssembly
 from src.adjudication.post_processor import PostProcessor
+from src.parsing.active_area_detector import ActiveAreaDetector
+from src.utils.config import load_config
 
 def run_step1_tfid(pdf_path):
     print("\n=== Step 1: TF-ID Parsing ===")
-    # Using existing script wrapper for now as Step 1 logic is simple but relies on subprocess or specific imports
-    # scripts/step1_tfid.py exists. We can import its logic or subprocess call it.
-    # To avoid import issues if it's not in src, let's subprocess it for safety/cleanliness, 
-    # or better: refactor step1 logic into src/parsing/tfid.py later.
-    # For now, subprocess is robust.
-    
-    cmd = [sys.executable, "scripts/step1_tfid.py", pdf_path]
-    ret = subprocess.run(cmd)
-    if ret.returncode != 0:
-        print("Step 1 Failed.")
+    try:
+        cfg = load_config()
+        detector = ActiveAreaDetector()
+        detections = detector.process_pdf(pdf_path)
+        base_intermediate_dir = cfg.get("global", {}).get("intermediate_dir", "data/intermediate")
+        basename = os.path.splitext(os.path.basename(pdf_path))[0]
+        intermediate_dir = os.path.join(base_intermediate_dir, basename)
+        saved_paths = detector.save_crops(pdf_path, detections, intermediate_dir)
+        print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")
+        return True
+    except Exception as e:
+        print(f"Step 1 Failed: {e}")
         return False
-    return True
 
 def main():
     parser = argparse.ArgumentParser(description="FlowFigTabMiner Unified Pipeline")

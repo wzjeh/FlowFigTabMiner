@@ -3,6 +3,7 @@ import cv2
 import pandas as pd
 from src.parsing.table_filter import TableFilter
 from src.extraction.table.structure import TableStructureRecognizer
+from src.extraction.table.header_corrector import HeaderCorrector
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
 import json
@@ -34,6 +35,10 @@ class TablePipeline:
         self.recognizer = content_recognizer
         self.molecule_processor = molecule_processor
         # Removed CellClassifier - we use YOLO molecule detection instead
+
+        # VLM header corrector (lightweight, no model loaded at init)
+        header_cfg = self.tables_cfg.get("header_correction", {})
+        self.header_corrector = HeaderCorrector(header_cfg)
 
         # If NOT sequential, load everything now (Standard Behavior)
         if not self.sequential_mode:
@@ -330,11 +335,16 @@ class TablePipeline:
 
         max_row = max(d['row'] for d in extracted_data)
         max_col = max(d['col'] for d in extracted_data)
-        
+
         grid = [["" for _ in range(max_col + 1)] for _ in range(max_row + 1)]
         for item in extracted_data:
             grid[item['row']][item['col']] = item['content']
-            
+
+        # 6b. VLM Header Correction (if enabled and heuristic triggers)
+        if self.header_corrector.enabled and self.header_corrector.needs_correction(grid, struct_res):
+            logger.info("   -> Header quality low, calling VLM for correction...")
+            grid = self.header_corrector.correct(current_image_path, grid, struct_res)
+
         df = pd.DataFrame(grid)
         
         csv_path = None

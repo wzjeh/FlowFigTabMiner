@@ -86,31 +86,40 @@ def combine_all(output_path):
                 row["reaction_class"] = r.get("reaction_class")
 
                 # Compound fields
-                row["reactant1_smiles"] = r.get("reactant1_smiles")
                 row["reactant1_name"] = r.get("reactant1_name")
-                row["reactant2_smiles"] = r.get("reactant2_smiles")
+                row["reactant1_smiles"] = r.get("reactant1_smiles")
                 row["reactant2_name"] = r.get("reactant2_name")
-                row["product_smiles"] = r.get("product_smiles")
+                row["reactant2_smiles"] = r.get("reactant2_smiles")
                 row["product_name"] = r.get("product_name")
+                row["product_smiles"] = r.get("product_smiles")
                 row["product_label"] = r.get("product_label")
+                row["reaction_smiles"] = r.get("reaction_smiles")
 
                 # Result fields
                 row["yield_pct"] = r.get("yield_pct")
                 row["yield_type"] = r.get("yield_type")
+                row["batch_yield_pct"] = r.get("batch_yield_pct")
                 row["conversion_pct"] = r.get("conversion_pct")
                 row["selectivity_pct"] = r.get("selectivity_pct")
+                row["diastereomeric_ratio"] = r.get("diastereomeric_ratio")
                 row["ee_pct"] = r.get("ee_pct")
+                row["stoichiometry"] = r.get("stoichiometry")
 
                 # Conditions
                 conds = r.get("conditions") or {}
                 row["temperature_C"] = conds.get("temperature_C")
                 row["residence_time_s"] = conds.get("residence_time_s")
                 row["flow_rate_mL_min"] = conds.get("flow_rate_mL_min")
+                row["flow_rate_stream1_mL_min"] = conds.get("flow_rate_stream1_mL_min")
+                row["flow_rate_stream2_mL_min"] = conds.get("flow_rate_stream2_mL_min")
                 row["solvent"] = conds.get("solvent")
                 row["solvent_list"] = ", ".join(conds["solvent_list"]) if conds.get("solvent_list") else None
                 row["catalyst"] = conds.get("catalyst")
                 row["catalyst_metal"] = conds.get("catalyst_metal")
                 row["catalyst_loading_pct"] = conds.get("catalyst_loading_pct")
+                row["ligand"] = conds.get("ligand")
+                row["ligand_loading_pct"] = conds.get("ligand_loading_pct")
+                row["additive"] = conds.get("additive")
                 row["pressure_bar"] = conds.get("pressure_bar")
                 row["reactor_type"] = conds.get("reactor_type")
 

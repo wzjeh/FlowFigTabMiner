@@ -79,19 +79,27 @@ class LocalVarsBuilder:
 
         meta = ev.get("meta", {})
         raw_data = ev.get("raw_data", [])
-        axes = ev.get("axes", {})
-        series_list = ev.get("series", [])
-
-        x_title = axes.get("x_axis_title", "")
-        yl_title = axes.get("y_left_axis_title", "")
-        yr_title = axes.get("y_right_axis_title", "")
-        legend_texts = axes.get("legend_text", [])
-        chart_texts = axes.get("chart_text", [])
+        text_ev = ev.get("text_evidence", {})
         figure_type = meta.get("figure_type", "unknown")
 
-        x_vals = [pt.get("x") for pt in raw_data if pt.get("x") is not None]
-        yl_vals = [pt.get("y_left") for pt in raw_data if pt.get("y_left") is not None]
-        unique_series = list({pt.get("series", "") for pt in raw_data if pt.get("series")})
+        def _join_texts(items):
+            """Extract text strings from [{text:..., source_file:...}, ...] or plain list."""
+            if not items:
+                return ""
+            if isinstance(items[0], dict):
+                return " | ".join(it.get("text", "") for it in items if it.get("text"))
+            return " | ".join(str(it) for it in items)
+
+        x_title = _join_texts(text_ev.get("x_axis_title", []))
+        yl_title = _join_texts(text_ev.get("y_axis_title", []))
+        yr_title = _join_texts(text_ev.get("y_right_axis_title", []))
+        legend_texts = _join_texts(text_ev.get("legend_text", []))
+        chart_texts = _join_texts(text_ev.get("chart_text", []))
+
+        # raw_data keys use Title-case: "X", "Y_Left", "Series"
+        x_vals = [pt.get("X") for pt in raw_data if pt.get("X") is not None]
+        yl_vals = [pt.get("Y_Left") for pt in raw_data if pt.get("Y_Left") is not None]
+        unique_series = list({pt.get("Series", "") for pt in raw_data if pt.get("Series")})
 
         x_range = f"{min(x_vals):.3g} to {max(x_vals):.3g}" if x_vals else "N/A"
         yl_range = f"{min(yl_vals):.3g} to {max(yl_vals):.3g}" if yl_vals else "N/A"

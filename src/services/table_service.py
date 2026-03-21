@@ -7,6 +7,12 @@ POST /extract
 """
 import os
 import sys
+# Disable PaddlePaddle OneDNN (MKL-DNN) BEFORE any paddle import
+os.environ["FLAGS_use_mkldnn"] = "0"
+os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
+os.environ["FLAGS_enable_pir_api"] = "0"
+os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
+os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
 import logging
 import tempfile
 
@@ -51,7 +57,7 @@ def extract(req: ExtractRequest):
       "status": "success" | "filtered_yolo" | "filtered_keywords" | "no_cells" | "error",
       "is_relevant": bool,
       "csv_gcs_uri": "gs://..." | null,
-      "cell_count": int,
+      "row_count": int,
       "caption_text": str
     }
     """
@@ -78,7 +84,7 @@ def extract(req: ExtractRequest):
                 "status": "error",
                 "is_relevant": False,
                 "csv_gcs_uri": None,
-                "cell_count": 0,
+                "row_count": 0,
                 "caption_text": "",
             }
 
@@ -87,7 +93,7 @@ def extract(req: ExtractRequest):
                 "status": "error",
                 "is_relevant": False,
                 "csv_gcs_uri": None,
-                "cell_count": 0,
+                "row_count": 0,
                 "caption_text": "",
             }
 
@@ -97,7 +103,7 @@ def extract(req: ExtractRequest):
                 "status": "filtered_yolo",
                 "is_relevant": False,
                 "csv_gcs_uri": None,
-                "cell_count": 0,
+                "row_count": 0,
                 "caption_text": "",
             }
 
@@ -125,7 +131,7 @@ def extract(req: ExtractRequest):
             "status": status,
             "is_relevant": is_relevant,
             "csv_gcs_uri": csv_uri,
-            "cell_count": len(cells),
+            "row_count": len(cells),
             "caption_text": caption_text,
         }
 

@@ -221,34 +221,49 @@ For each reaction record, output one JSON object with these fields:
   "product_smiles": "...",         // SMILES if available in data, else null (do NOT guess)
   "product_name": "...",           // name/label if SMILES not available, else null
   "product_label": "...",          // e.g. "4a", "compound 3", null if absent
+  "entry_number": null,            // table entry number, e.g. "1", "2a", null if absent
   "yield_pct": null,               // numeric yield %, null if absent
   "yield_type": null,              // how yield was measured: "isolated" | "GC" | "NMR" | "crude" | null
+  "batch_yield_pct": null,         // yield of the analogous batch reaction for comparison, numeric %, null if absent; e.g. if paper says "batch yield 34%", set 34.0
   "conversion_pct": null,          // numeric conversion %, null if absent
   "selectivity_pct": null,         // numeric selectivity/regioselectivity %, null if absent
   "ee_pct": null,                  // enantiomeric excess %, null if absent
-  "reaction_class": "...",          // REQUIRED — choose ONE from: "C-C coupling" | "anionic polymerization" | "carbolithiation" | "C-N coupling" | "C-O coupling" | "halogenation" | "oxidation" | "reduction" | "other". Must not be null. Use "other" if unsure. This is the same for all records from the same paper.
+  "diastereomeric_ratio": null,    // diastereoselectivity as string, e.g. "anti:syn = 99:1", null if absent
+  "stoichiometry": null,           // molar ratio or equivalents, e.g. "[M]/[RAFT]=100", "1.2 equiv", null if absent
+  "reaction_class": "...",         // REQUIRED — choose ONE from: "C-C coupling" | "anionic polymerization" | "carbolithiation" | "C-N coupling" | "C-O coupling" | "halogenation" | "oxidation" | "reduction" | "other". Must not be null. Use "other" if unsure. This is the same for all records from the same paper.
   "paper_doi": null,               // DOI found in paper text (e.g. "10.1039/c2cc16855c"), null if not found
   "conditions": {{
     "temperature_C": null,         // reaction temperature in °C (numeric only)
     "residence_time_s": null,      // residence time in seconds (convert ms→s if needed)
-    "flow_rate_mL_min": null,      // total flow rate in mL/min
+    "flow_rate_mL_min": null,      // total combined flow rate in mL/min
+    "flow_rate_stream1_mL_min": null, // flow rate of organic phase / first stream (mL/min), null if not separately stated; e.g. Qorg=0.5 mL/min → 0.5
+    "flow_rate_stream2_mL_min": null, // flow rate of aqueous phase / second stream (mL/min), null if not separately stated; e.g. Qaq=0.3 mL/min → 0.3
     "solvent": null,               // solvent full name(s); expand abbreviations (THF→tetrahydrofuran, DCM/CH2Cl2→dichloromethane, Et2O→diethyl ether, MeCN→acetonitrile, EtOAc→ethyl acetate, MeOH→methanol, DMF→dimethylformamide, DMSO→dimethyl sulfoxide)
-    "catalyst": null,              // full catalyst/reagent text as-is from paper
+    "catalyst": null,              // catalyst main body name ONLY — no ligand, no loading; e.g. "CuBr·Me2S" not "CuBr·Me2S (5 mol%)"
     "catalyst_metal": null,        // central metal only, e.g. "Pd" | "Cu" | "Li" | "Ru" | null
-    "catalyst_loading_pct": null,  // numeric mol% loading if stated, else null
+    "catalyst_loading_pct": null,  // numeric mol% loading extracted from catalyst string, e.g. "Pd(OAc)2 (2 mol%)" → 2.0; null if not stated
+    "ligand": null,                // ligand name only (split from catalyst string), e.g. "BINAP", "L2", null if absent
+    "ligand_loading_pct": null,    // ligand loading in mol%, e.g. "L2 (6 mol%)" → 6.0, null if absent
+    "additive": null,              // additive or co-reagent not counted as catalyst or ligand, e.g. "BF3·OEt2", "K2CO3", null if absent
     "pressure_bar": null,          // pressure in bar
     "reactor_type": null           // e.g. "microreactor", "packed bed reactor"
   }},
   "other_metrics": {{}},           // any other numeric metrics not covered above (e.g. TON, TOF, productivity g/h, K/S)
   "source_table_or_figure": "...", // prefer human-readable label e.g. "Table 1", "Figure 3"; use filename only if no label available
-  "notes": null                    // any important notes
+  "data_correction_note": null,    // ONLY OCR correction or numeric inference note, max 1 sentence; e.g. "OCR read '8l' corrected to '81'"; null if no correction needed
+  "notes": null                    // ONLY narrative context that cannot fit any structured field above; if all info is captured elsewhere, set null
 }}
 
 === RULES ===
 1. SUBSTRATE SCOPE TABLES: Each row is one reaction record. Extract every row. If a reaction has two distinct reactants, put them in reactant1 and reactant2 fields separately — do NOT combine them into one field.
 2. OPTIMIZATION/SCREENING TABLES: Extract each condition set as a separate record.
-3. FIGURES: Extract EVERY SINGLE data point from figure raw_data as one separate record. Do NOT summarize or skip any points.
-   (a) Standard scatter/line: axes are yield/conversion/selectivity vs a variable → each raw_data row is one record; X→condition field, Y_Left or Y_Right→metric field.
+3. FIGURES: Extract EVERY SINGLE data point from figure raw_data as one separate record. Do NOT summarize, merge, or skip any points.
+   IMPORTANT COUNT CHECK: if a figure evidence packet has N items in raw_data, you MUST output exactly N records from that figure.
+   (a) Standard scatter/line: each raw_data row is one record.
+       - X value → place into the condition field named by local_vars.axis_semantics.x_axis.maps_to_field (e.g. if maps_to_field="conditions.flow_rate_mL_min", set conditions.flow_rate_mL_min=X). NEVER leave X unused.
+       - Y_Left → the metric field named by local_vars.axis_semantics.y_left_axis.maps_to_field (e.g. selectivity_pct=Y_Left).
+       - Y_Right/Data_Value → the metric field named by local_vars.axis_semantics.y_right_axis.maps_to_field (if present).
+       - Series name → product_name (or reactant_name if the series represents a reactant).
    (b) Heatmap (x_axis_title=residence time, y_axis_title=temperature): each raw_data row is one record with conditions.residence_time_s=X, conditions.temperature_C=Y_Left, yield_pct=Y_Right/Data_Value. Extract ALL rows including those with yield=0.
 4. CONDITIONS: If conditions are shared across a table (stated in caption or paper text), apply them to ALL records from that table.
 5. SMILES: Use SMILES only if directly provided in the paper text or figure data. If only a name is given, set reactant1_name/reactant2_name/product_name and leave SMILES null — do NOT invent SMILES.
@@ -262,8 +277,15 @@ For each reaction record, output one JSON object with these fields:
     - If only COMPOUND STRUCTURE POOL exists (no arrow detected), use context to infer role and assign accordingly.
     Do not modify SMILES strings.
 11. SCHEME CONDITIONS: If Scheme Conditions are provided and a table record lacks certain condition fields (temperature, solvent, catalyst), use the Scheme Conditions as fallback.
-12. LOCAL VARS: If a source has a "local_vars" field, its axis_semantics and fixed_conditions OVERRIDE your general interpretation. Trust local_vars.data_interpretation_notes for ambiguous cell or point values.
+12. LOCAL VARS: If a source has a "local_vars" field:
+    - axis_semantics.x_axis.maps_to_field tells you which output field to assign the X value to (MANDATORY — never leave X unused).
+    - axis_semantics.y_left_axis.maps_to_field and y_right_axis.maps_to_field tell you which output fields to assign Y_Left and Y_Right/Data_Value to.
+    - fixed_conditions apply to ALL records from that source.
+    - data_interpretation_notes explain how to interpret ambiguous values.
+    These OVERRIDE your own interpretation.
 13. REACTION CLASS: reaction_class MUST be filled for every record. Read the paper text, identify the main reaction type, and pick the best match from the allowed list. Use "other" if none fit. Never leave reaction_class as null.
+14. NOTES: Only use the notes field for narrative context that cannot fit any other field. If all information is captured in other fields, set notes to null. Do NOT repeat information already in other fields such as entry_number, diastereomeric_ratio, batch_yield_pct, stoichiometry, flow rate streams, ligand, or data_correction_note.
+15. CATALYST SPLITTING: Write only the catalyst main body in "catalyst" (e.g. "CuI", "Pd(OAc)2"). Extract the loading into catalyst_loading_pct. Put the ligand name in "ligand" and its loading in "ligand_loading_pct". Put any remaining co-reagent (not the main catalyst, not a ligand) in "additive".
 
 Output a JSON array of all extracted reaction records:"""
         
@@ -299,6 +321,7 @@ Output a JSON array of all extracted reaction records:"""
 
     def _save_excel(self, records, basename):
         import pandas as pd
+        from src.adjudication.post_processor import PREFERRED_COLUMNS
         out_path = os.path.join(self.output_dir, f"{basename}_final.xlsx")
         flat = []
         for r in records:
@@ -312,7 +335,14 @@ Output a JSON array of all extracted reaction records:"""
         src_col = "source_table_or_figure"
         if src_col not in df.columns:
             df[src_col] = "unknown"
+
+        # Apply fixed column order
+        ordered = [c for c in PREFERRED_COLUMNS if c in df.columns]
+        extra = sorted(c for c in df.columns if c not in PREFERRED_COLUMNS)
+        df = df[ordered + extra]
+
         with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
+            df.to_excel(writer, sheet_name="All Records", index=False)
             for src, grp in df.groupby(src_col, sort=False):
                 sheet = str(src)[:31]
                 grp.to_excel(writer, sheet_name=sheet, index=False)

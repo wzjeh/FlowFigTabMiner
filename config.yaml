@@ -50,6 +50,13 @@ tables:
     model_path: "models/tab-scheme-seg/best.pt"   # 训练完成后替换
     confidence_threshold: 0.3
 
+  header_correction:
+    enabled: true
+    provider: "dashscope"        # 与 llm.default_provider 一致，共用 QWEN_API_KEY
+    model_name: "qwen-vl-plus"   # DashScope 视觉模型 ID
+    trigger_threshold: 0.5       # row-0 非空比例低于此值时触发 VLM
+    send_header_crop_only: false  # 发送完整表格图，让 VLM 借助数据行判断列数
+
 # LLM & Adjudication
 llm:
   # This sets the default provider for generic tasks.

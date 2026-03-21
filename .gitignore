@@ -39,3 +39,4 @@ flowfigtabminer/
 
 # Local Models
 models/
+!src/**/models/

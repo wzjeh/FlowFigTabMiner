@@ -10,7 +10,7 @@ spec:
         run.googleapis.com/cpu-throttling: "false"
         run.googleapis.com/startup-cpu-boost: "true"
     spec:
-      timeoutSeconds: 600
+      timeoutSeconds: 3600
       containers:
       - image: gcr.io/gen-lang-client-0080522548/figure-service:latest
         resources:

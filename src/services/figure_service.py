@@ -7,6 +7,17 @@ POST /extract
 """
 import os
 import sys
+# Disable PaddlePaddle OneDNN (MKL-DNN) BEFORE any paddle import
+os.environ["FLAGS_use_mkldnn"] = "0"
+os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
+os.environ["FLAGS_enable_pir_api"] = "0"
+os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
+os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
+import paddle
+try:
+    paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
+except Exception:
+    pass
 import logging
 import tempfile
 

@@ -264,6 +264,35 @@ HTML_PAGE = """<!DOCTYPE html>
   }
   #download-btn:hover { background: #eff6ff; }
 
+  /* ── Feedback ── */
+  .feedback-wrap {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .feedback-wrap label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .fb-btn {
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all .15s;
+  }
+  .fb-btn.error { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+  .fb-btn.error:hover:not(:disabled) { background: #ffedd5; }
+  .fb-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  #feedback-msg { font-size: 12px; color: #64748b; }
+
   /* ── Login overlay ── */
   #login-overlay {
     position: fixed; inset: 0;
@@ -331,7 +360,11 @@ HTML_PAGE = """<!DOCTYPE html>
 
 <header>
   <h1>FlowFigTabMiner</h1>
-  <span>Automated Data Extraction from Chemistry Figures &amp; Tables</span>
+  <span>Automated Data Extraction from Flow Chemistry Figures &amp; Tables</span>
+  <span style="margin-left:auto;font-size:15px;color:#cbd5e1;">
+    Developed by <a href="https://wwwchem.sci.hokudai.ac.jp/~yuhan/" target="_blank" rel="noopener"
+      style="color:#fff;text-decoration:none;font-weight:700;">Nagaki Lab, Hokkaido University</a>
+  </span>
 </header>
 
 <main>
@@ -362,11 +395,11 @@ HTML_PAGE = """<!DOCTYPE html>
     <div class="examples-row">
       <span style="font-size:12px;color:#94a3b8;align-self:center;">Try an example:</span>
       <a class="ex-btn" onclick="loadExample('figure')" href="#">
-        <img src="/examples/example_figure.png" alt="Example figure">
+        <img src="/examples/example_figure.png?v=2" alt="Example figure">
         Example Figure
       </a>
       <a class="ex-btn" onclick="loadExample('table')" href="#">
-        <img src="/examples/example_table.png" alt="Example table">
+        <img src="/examples/example_table.png?v=2" alt="Example table">
         Example Table
       </a>
     </div>
@@ -418,12 +451,17 @@ HTML_PAGE = """<!DOCTYPE html>
     </div>
     <div class="row-count" id="row-count"></div>
     <button id="download-btn" onclick="downloadCSV()">⬇ Download CSV</button>
+    <div class="feedback-wrap" id="feedback-wrap" style="display:none;">
+      <label>Spot an issue?</label>
+      <button class="fb-btn error" id="fb-error" onclick="doFeedback('error')">✗ Report Errors</button>
+      <span id="feedback-msg"></span>
+    </div>
   </div>
 
 </main>
 
 <footer>
-  Developed by <a href="#">Nagaki Lab, Hokkaido University</a> &nbsp;·&nbsp;
+  Developed by <a href="https://wwwchem.sci.hokudai.ac.jp/~yuhan/" target="_blank" rel="noopener">Nagaki Lab, Hokkaido University</a> &nbsp;·&nbsp;
   FlowFigTabMiner &nbsp;·&nbsp; For research use only
 </footer>
 
@@ -432,6 +470,7 @@ let currentMode  = 'figure';
 let currentFile  = null;   // File object from upload
 let exampleMode  = null;   // 'figure' | 'table' if using built-in example
 let csvRows      = [];
+let currentGcsUri = null;  // GCS URI of last uploaded image (for feedback)
 
 // ── Auth ──────────────────────────────────────────────────────────────────
 function getCookie(name) {
@@ -511,7 +550,7 @@ function loadExample(type) {
   setMode(type);
   exampleMode = type;
   currentFile = null;
-  showPreview(`/examples/example_${type}.png`, `example_${type}.png`);
+  showPreview(`/examples/example_${type}.png?v=2`, `example_${type}.png`);
   document.getElementById('submit-btn').disabled = false;
   return false;
 }
@@ -542,7 +581,11 @@ async function doExtract() {
   setStatus('running', 'Processing…');
   startTimer();
   document.getElementById('results-wrap').style.display = 'none';
+  document.getElementById('feedback-wrap').style.display = 'none';
+  document.getElementById('feedback-msg').textContent = '';
+  document.getElementById('fb-error').disabled = false;
   csvRows = [];
+  currentGcsUri = null;
 
   let body, url;
   if (exampleMode) {
@@ -572,6 +615,7 @@ async function handleExtractResponse(res) {
     setStatus('error', data.error || 'Extraction failed. Check the image requirements.');
     return;
   }
+  if (data.gcs_uri) currentGcsUri = data.gcs_uri;
   const rows = data.csv_rows || [];
   if (data.status === 'success') {
     setStatus('success', `Extraction complete — ${data.row_count} rows`);
@@ -585,6 +629,9 @@ async function handleExtractResponse(res) {
   }
   if (rows.length > 0) {
     renderTable(rows);
+    if (currentGcsUri) {
+      document.getElementById('feedback-wrap').style.display = 'flex';
+    }
   }
 }
 
@@ -638,6 +685,25 @@ function downloadCSV() {
   a.href     = URL.createObjectURL(blob);
   a.download = `extracted_${currentMode}_${Date.now()}.csv`;
   a.click();
+}
+
+// ── Feedback ──────────────────────────────────────────────────────────────
+async function doFeedback(label) {
+  const token = getCookie('auth_token');
+  if (!token || !currentGcsUri) return;
+  document.getElementById('fb-error').disabled = true;
+  document.getElementById('feedback-msg').textContent = 'Saving…';
+  try {
+    const res = await fetch('/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label, gcs_uri: currentGcsUri, auth_token: token })
+    });
+    document.getElementById('feedback-msg').textContent =
+      res.ok ? '✓ Flagged for review. Thanks!' : 'Could not save feedback.';
+  } catch {
+    document.getElementById('feedback-msg').textContent = 'Network error.';
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
@@ -704,7 +770,7 @@ async def _call_service(ex_type: str, gcs_uri: str, job_id: str) -> JSONResponse
     last_error = None
     for attempt in range(2):  # retry once on failure
         try:
-            async with httpx.AsyncClient(timeout=540) as client:
+            async with httpx.AsyncClient(timeout=3300) as client:
                 resp = await client.post(f"{service_url}/extract", json=payload)
                 resp.raise_for_status()
             break  # success
@@ -733,6 +799,37 @@ async def _call_service(ex_type: str, gcs_uri: str, job_id: str) -> JSONResponse
 
     return JSONResponse({
         "status":    result.get("status", "unknown"),
-        "row_count": result.get("row_count") or result.get("cell_count") or 0,
+        "row_count": result.get("row_count") or 0,
         "csv_rows":  csv_rows,
+        "gcs_uri":   gcs_uri,
     })
+
+
+@app.post("/feedback")
+async def feedback(request: Request):
+    from fastapi import HTTPException
+    body       = await request.json()
+    auth_token = body.get("auth_token", "")
+    if not _authenticated(auth_token):
+        raise HTTPException(status_code=401)
+
+    label   = body.get("label")   # "good" | "error"
+    gcs_uri = body.get("gcs_uri", "")
+    if label not in ("good", "error") or not gcs_uri.startswith(f"gs://{GCS_DATA_BUCKET}/"):
+        raise HTTPException(status_code=400, detail="Invalid feedback payload")
+
+    src_path = gcs_uri.removeprefix(f"gs://{GCS_DATA_BUCKET}/")
+    filename = src_path.replace("/", "__")          # flatten path into filename
+    dst_path = f"feedback/{label}/{filename}"
+
+    try:
+        client   = storage.Client()
+        bucket   = client.bucket(GCS_DATA_BUCKET)
+        src_blob = bucket.blob(src_path)
+        bucket.copy_blob(src_blob, bucket, dst_path)
+        logger.info(f"Feedback '{label}': copied {src_path} -> {dst_path}")
+    except Exception as e:
+        logger.error(f"Feedback copy failed: {e}")
+        raise HTTPException(status_code=500, detail="GCS copy failed")
+
+    return JSONResponse({"ok": True})

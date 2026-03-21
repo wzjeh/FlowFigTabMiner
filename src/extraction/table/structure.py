@@ -59,7 +59,8 @@ class TableStructureRecognizer:
             cells = []
             rows = []
             columns = []
-            
+            header_regions = []
+
             for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
                 box = [round(i, 2) for i in box.tolist()]
                 label_str = self.model.config.id2label[label.item()]
@@ -68,26 +69,27 @@ class TableStructureRecognizer:
                     'score': round(score.item(), 2),
                     'label': label_str
                 }
-                
+
                 if label_str == 'table row':
                     rows.append(item)
                 elif label_str == 'table column':
                     columns.append(item)
                 elif label_str == 'table column header':
+                    header_regions.append(item)
+                elif label_str == 'table':
                     pass
-                elif label_str == 'table': 
-                    pass 
                 else:
                     # PubTables-1M specific: 'table cell', 'table header', 'table spanning cell'
                     # It natively detects cells much better.
                     cells.append(item)
-            
+
             # Prefer grid intersection if we have rows and columns, as it provides a complete grid
             # The 'cells' list often only contains spanning cells or specific types in this model
             structure = {
                 'cells': cells,
                 'rows': sorted(rows, key=lambda x: x['box'][1]), # Sort by Y
                 'columns': sorted(columns, key=lambda x: x['box'][0]), # Sort by X
+                'header_regions': header_regions,  # TATR-detected header bounding boxes
                 'image_size': image.size
             }
             

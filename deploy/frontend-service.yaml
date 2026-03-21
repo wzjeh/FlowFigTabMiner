@@ -9,7 +9,7 @@ spec:
         run.googleapis.com/execution-environment: gen2
         run.googleapis.com/cpu-throttling: "false"
     spec:
-      timeoutSeconds: 580
+      timeoutSeconds: 3600
       containers:
       - image: gcr.io/gen-lang-client-0080522548/frontend-service:latest
         resources:
@@ -22,6 +22,6 @@ spec:
         - name: TABLE_SERVICE_URL
           value: "https://table-service-h6pakhgb2a-uc.a.run.app"
         - name: FRONTEND_PASSWORD
-          value: "nagaki2024"
+          value: "yuhan2026"
         - name: FRONTEND_SECRET
           value: "flowfigtabminer-secret-2024"

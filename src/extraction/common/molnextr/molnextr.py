@@ -132,10 +132,31 @@ class MolNexTRSingleton:
         model_path = os.path.join(project_root, "models", "molnextr_model_best.pth")
         
         logger.info(f"Checking for model at {model_path}")
-        
+
         if not os.path.exists(model_path):
              raise FileNotFoundError(f"MolNexTR model not found at {model_path}. Please download it to known location.")
-        
+
+        # If model is on a network filesystem (GCS FUSE at /models/), download via GCS client first.
+        # torch.load does random seeks — very slow on GCS FUSE (14+ min for 1GB).
+        # GCS client download uses parallel chunked HTTP, much faster (~1-2 min).
+        tmp_path = "/tmp/molnextr_model_best.pth"
+        if model_path.startswith("/models/") and not os.path.exists(tmp_path):
+            try:
+                from google.cloud import storage as gcs
+                # model is at gs://flowfigtabminer-models/models/molnextr_model_best.pth
+                logger.info("Downloading MolNexTR model via GCS client to /tmp/ ...")
+                client = gcs.Client()
+                bucket = client.bucket("flowfigtabminer-models")
+                blob = bucket.blob("models/molnextr_model_best.pth")
+                blob.download_to_filename(tmp_path)
+                logger.info("MolNexTR model download complete.")
+            except Exception as e:
+                logger.warning(f"GCS download failed ({e}), falling back to shutil.copy2...")
+                import shutil
+                shutil.copy2(model_path, tmp_path)
+        if os.path.exists(tmp_path):
+            model_path = tmp_path
+
         logger.info(f"✅ Using model at {model_path}")
         
         # Initialize model with the detected device

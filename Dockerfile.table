@@ -32,6 +32,7 @@ ENV PADDLE_PDX_CACHE_HOME=/models/models/paddlex
 # Disable OneDNN (MKL-DNN) to avoid NotImplementedError on Cloud Run CPUs
 ENV FLAGS_use_mkldnn=0
 ENV FLAGS_pir_apply_mkldnn_pass=0
+ENV FLAGS_enable_pir_api=0
 # Disable PaddleX network connectivity check at startup (prevents 20-min hang)
 ENV DISABLE_MODEL_SOURCE_CHECK=True
 ENV PADDLEPD_DISABLE_MODEL_SOURCE_CHECK=True
