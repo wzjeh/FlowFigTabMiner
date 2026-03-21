@@ -295,6 +295,99 @@ def _extract_stoichiometry(notes: str) -> tuple:
     return None, notes
 
 
+# ---------------------------------------------------------------------------
+# Reaction class normalisation (19-type controlled vocabulary)
+# ---------------------------------------------------------------------------
+
+_REACTION_CLASS_SYNONYMS: dict[str, set[str]] = {
+    "hydrogenation":         {"hydrogenation", "h2 addition", "catalytic hydrogenation"},
+    "nitration":             {"nitration"},
+    "oxidation":             {"oxidation", "oxidative"},
+    "reduction":             {"reduction", "reductive"},
+    "photoreduction":        {"photoreduction", "photo-reduction"},
+    "esterification":        {"esterification"},
+    "amidation":             {"amidation", "amide coupling"},
+    "halogenation":          {"halogenation", "chlorination", "bromination",
+                              "fluorination", "iodination"},
+    "alkylation":            {"alkylation", "c-alkylation", "n-alkylation"},
+    "acylation":             {"acylation", "friedel-crafts acylation"},
+    "isomerization":         {"isomerization", "isomerisation"},
+    "dehydration":           {"dehydration"},
+    "dehydrogenation":       {"dehydrogenation"},
+    "polymerization":        {"polymerization", "polymerisation",
+                              "raft polymerization", "anionic polymerization"},
+    "C-C coupling":          {"c-c coupling", "cross-coupling", "suzuki", "heck",
+                              "negishi", "sonogashira", "kumada", "buchwald",
+                              "carbolithiation"},
+    "C-N coupling":          {"c-n coupling", "buchwald-hartwig"},
+    "C-O coupling":          {"c-o coupling", "etherification"},
+    "hydrolysis":            {"hydrolysis"},
+    "photocatalysis":        {"photocatalysis", "photo-catalysis",
+                              "photoredox", "photo-oxidation"},
+    "other":                 {"other"},
+}
+
+# Tokens that indicate a mistaken classification (LLM describing a metric, not a reaction)
+_REACTION_CLASS_REJECT = {
+    "conversion", "selectivity", "yield", "production",
+    "regime", "synthesis", "process", "purge",
+}
+
+
+def _normalize_reaction_class(value: str | None) -> str | None:
+    """
+    Map free-text reaction_class to a controlled vocabulary entry.
+    Returns None if the value looks like a metric rather than a reaction type.
+    """
+    if not value or not isinstance(value, str):
+        return value
+    v = value.strip().lower()
+    if not v:
+        return value
+    # Reject metric-like values
+    if any(tok in v for tok in _REACTION_CLASS_REJECT):
+        return value  # return as-is; caller decides whether to keep or null
+    # Pass 1: exact match (v must be in the synonym set)
+    for canonical, synonyms in _REACTION_CLASS_SYNONYMS.items():
+        if v in synonyms:
+            return canonical
+    # Pass 2: substring match (any synonym is contained in v)
+    for canonical, synonyms in _REACTION_CLASS_SYNONYMS.items():
+        if any(s in v for s in synonyms):
+            return canonical
+    return value  # unrecognised but not a metric — keep original
+
+
+# ---------------------------------------------------------------------------
+# Unit parsing utilities (for future ORD export and condition normalisation)
+# ---------------------------------------------------------------------------
+
+def _strip_to_float(s: str | None) -> float | None:
+    """
+    Extract the first numeric value from a string like "80 °C", "2.5 bar",
+    "30 s", "-78°C".  Returns None if no number found.
+    """
+    if s is None:
+        return None
+    m = re.search(r"-?\d+\.?\d*", str(s))
+    return float(m.group(0)) if m else None
+
+
+def _parse_value_and_unit(s: str | None) -> tuple[float | None, str | None]:
+    """
+    Split a condition string like "80 °C" into (80.0, "°C").
+    Returns (None, None) if no number found.
+    """
+    if s is None:
+        return None, None
+    m = re.match(r"\s*(-?\d+\.?\d*)\s*(.*)", str(s).strip())
+    if not m:
+        return None, None
+    value = float(m.group(1))
+    unit = m.group(2).strip() or None
+    return value, unit
+
+
 def build_reaction_smiles(record: dict) -> str | None:
     """
     Build a reaction SMILES string in ORD-compatible format:
@@ -441,6 +534,10 @@ class PostProcessor:
             conds["reactor_type"] = normalise_reactor(conds.get("reactor_type"))
 
             nr["conditions"] = conds
+
+            # -- Reaction class --
+            if nr.get("reaction_class"):
+                nr["reaction_class"] = _normalize_reaction_class(nr["reaction_class"])
 
             # -- Source label --
             nr["source_table_or_figure"] = humanise_source(nr.get("source_table_or_figure", ""))

@@ -1,5 +1,43 @@
 # FlowFigTabMiner 更改日志 (Changelog)
 
+## 2026-03-21: P1 评估框架 + P2 反应类型标准化与单位工具函数
+
+### P1 — 评估框架（`evaluation/`）
+
+**文件**：`evaluation/evaluate.py`、`evaluation/ground_truth/TEMPLATE.json`
+
+**问题**：FigTabMiner 没有自动化质量评估，只能人工检查，无法量化改动效果。
+
+**改动**：
+- 新建 `evaluation/evaluate.py` — 逐字段 Precision/Recall/F1 评估脚本（方案C：先搭框架，不依赖外部 ground truth）
+  - 支持 JSON 对象 `{}` 和 JSON 数组 `[]` 两种格式
+  - **两阶段记录匹配**：Pass 1 精确匹配 `(source_table_or_figure, entry_number)`，Pass 2 仅匹配 source（fallback）
+  - **字段级比较**：数值字段允许 1% 相对误差 / 0.01 绝对误差；字符串字段 case-insensitive + 括号缩写匹配
+  - 未匹配的 GT 记录计入 FN（被惩罚）
+  - 输出：每字段 TP/FP/FN/Precision/Recall/F1 + 宏平均 F1
+  - 支持 `--out` 保存结果 JSON
+- 新建 `evaluation/ground_truth/TEMPLATE.json` — 人工标注模板，包含三种填写模式的示例
+
+**用法**：
+```bash
+flowfigtabminer/bin/python -m evaluation.evaluate \
+    --gt  evaluation/ground_truth/example.json \
+    --pred data/final_output/example_normalized.json
+```
+
+### P2 — 反应类型标准化 + 单位工具函数（`post_processor.py`）
+
+**改动**：
+- 新增 `_REACTION_CLASS_SYNONYMS` 字典：19 种标准反应类型 + 同义词映射（借鉴 FlowChemAgents，扩充了 C-C/C-N/C-O coupling）
+- 新增 `_normalize_reaction_class(value)` — 两步匹配（先全局精确匹配，再全局子串匹配，避免 `photo-oxidation` 被误判为 `oxidation`）；含拒绝词列表（conversion/yield 等误分类词）
+- 新增 `_strip_to_float(s)` — 从 `"80 °C"` 提取 `80.0`（为未来 ORD 导出准备）
+- 新增 `_parse_value_and_unit(s)` — 将 `"30 s"` 拆分为 `(30.0, "s")`（为未来 ORD 导出准备）
+- `PostProcessor.run()` 现在对每条记录调用 `_normalize_reaction_class(reaction_class)`
+
+**验证**：10 组单元测试全部通过（含 photo-oxidation → photocatalysis 的精确匹配修复）。
+
+---
+
 ## 2026-03-21: P1 借鉴 FlowChemAgents — JSON 清洗与 PDF 文本提取改进
 
 ### 背景
