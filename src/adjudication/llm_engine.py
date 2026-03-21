@@ -1,8 +1,63 @@
 import os
+import re
 import json
 import dashscope
 from http import HTTPStatus
 from dotenv import load_dotenv
+
+
+def sanitize_json_text(text: str) -> str:
+    """
+    Multi-pass JSON sanitization adapted from FlowChemAgents.
+    Handles both JSON objects ({}) and arrays ([]).
+
+    Steps:
+    1. Strip markdown code fences
+    2. Remove control characters
+    3. Extract the largest complete { } or [ ] block
+    4. Remove // and /* */ comments
+    5. Remove trailing commas before } or ]
+    6. Normalize ellipsis (... / …) to null
+    """
+    s = text or ""
+
+    # 1. Strip markdown fences  ```json ... ``` or ``` ... ```
+    s = re.sub(r"```(?:json)?\s*", "", s, flags=re.IGNORECASE)
+    s = re.sub(r"```\s*", "", s)
+
+    # 2. Remove control characters (keep tab \x09, newline \x0a, CR \x0d)
+    s = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", s)
+
+    # 3. Find the largest complete JSON structure (object or array)
+    candidates = []
+    for open_ch, close_ch in [("{", "}"), ("[", "]")]:
+        depth = 0
+        start = -1
+        for i, ch in enumerate(s):
+            if ch == open_ch:
+                if depth == 0:
+                    start = i
+                depth += 1
+            elif ch == close_ch:
+                if depth > 0:
+                    depth -= 1
+                    if depth == 0 and start != -1:
+                        candidates.append(s[start:i + 1])
+                        start = -1
+    if candidates:
+        s = max(candidates, key=len)
+
+    # 4. Remove // line comments and /* block comments */
+    s = re.sub(r"//.*?(?=\n|$)", "", s)
+    s = re.sub(r"/\*[\s\S]*?\*/", "", s)
+
+    # 5. Remove trailing commas before } or ]
+    s = re.sub(r",\s*([\}\]])", r"\1", s)
+
+    # 6. Normalize ellipsis to null
+    s = re.sub(r":\s*(\.\.\.|…)\s*([,\}\]])", r": null\2", s)
+
+    return s.strip()
 
 class LLMEngine:
     def __init__(self, api_key=None, base_url=None, model=None, provider=None):
@@ -221,17 +276,11 @@ Return ONLY a valid JSON object. Do not include markdown formatting or explanati
 """
 
     def _clean_json(self, content):
-        """Helper to strip markdown ```json ... ```"""
-        content = content.strip()
-        if content.startswith("```"):
-            # Remove first line
-            content = content.split("\n", 1)[1]
-            # Remove last line if ```
-            if content.rstrip().endswith("```"):
-                content = content.rstrip().rsplit("\n", 1)[0]
+        """Parse LLM response to dict using sanitize_json_text."""
+        cleaned = sanitize_json_text(content)
         try:
-            return json.loads(content)
+            return json.loads(cleaned)
         except json.JSONDecodeError:
-            print("[LLMEngine] JSON Decode Error. Raw content:")
-            print(content)
+            print("[LLMEngine] JSON Decode Error. Cleaned content:")
+            print(cleaned)
             return {"term_mapping": {}, "global_conditions": {}}

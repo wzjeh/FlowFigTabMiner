@@ -1,5 +1,21 @@
 import os
+import re
 import fitz  # PyMuPDF
+
+
+def _normalize_text(s: str) -> str:
+    """Normalize ligatures, quotes, and hyphen line-breaks."""
+    # Ligature normalization
+    s = s.replace("ﬁ", "fi").replace("ﬂ", "fl")
+    # Typographic quotes → ASCII
+    s = s.replace("\u2018", "'").replace("\u2019", "'")
+    s = s.replace("\u201c", '"').replace("\u201d", '"')
+    # Hyphen at word boundary followed by whitespace (line-break repair)
+    s = re.sub(r"\b-\s+", "", s)
+    # Collapse multiple spaces
+    s = re.sub(r" {2,}", " ", s)
+    return s.strip()
+
 
 class PDFParser:
     def __init__(self):
@@ -7,48 +23,69 @@ class PDFParser:
 
     def extract_text(self, pdf_path):
         """
-        Extracts full text from a PDF.
-        Caches the result to a .txt file in the same directory.
+        Extracts full text from a PDF using block-level extraction.
+        - Skips header/footer regions (top/bottom 5% of page height)
+        - Filters pure page-number lines
+        - Normalizes ligatures, quotes, hyphen line-breaks
+        - Truncates at References/Acknowledgements
+        Caches the result to a .txt file next to the PDF.
         """
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"PDF not found: {pdf_path}")
-            
-        # Check cache
+
         txt_path = pdf_path.replace(".pdf", "_fulltext.txt")
         if os.path.exists(txt_path):
             print(f"[PDFParser] Loading cached text from {txt_path}")
             with open(txt_path, "r", encoding="utf-8") as f:
                 content = f.read()
-                # Re-truncate in case of old cache
-                truncated = self._truncate_text(content)
-                if len(truncated) < len(content):
-                    with open(txt_path, "w", encoding="utf-8") as fw:
-                        fw.write(truncated)
-                    return truncated
-                return content
-                
-        # Parse PDF
+            truncated = self._truncate_text(content)
+            if len(truncated) < len(content):
+                with open(txt_path, "w", encoding="utf-8") as fw:
+                    fw.write(truncated)
+                return truncated
+            return content
+
         print(f"[PDFParser] Parsing {pdf_path}...")
-        full_text = []
+        out_blocks = []
         try:
             doc = fitz.open(pdf_path)
             for page in doc:
-                text = page.get_text()
-                full_text.append(text)
+                ph = page.rect.height
+                top_cut = ph * 0.05
+                bot_cut = ph * 0.95
+                blocks = page.get_text("blocks") or []
+                blocks.sort(key=lambda b: (b[1], b[0]))
+                for b in blocks:
+                    x0, y0, x1, y1 = b[0], b[1], b[2], b[3]
+                    raw_text = b[4] if len(b) > 4 else ""
+                    if not raw_text or not raw_text.strip():
+                        continue
+                    # Skip header/footer regions unless they contain obvious body keywords
+                    if y0 < top_cut or y1 > bot_cut:
+                        low = raw_text.lower()
+                        body_kw = ["introduction", "abstract", "experiment", "method",
+                                   "result", "discussion", "conclusion", "flow", "reactor"]
+                        if not any(k in low for k in body_kw):
+                            continue
+                    # Filter pure page-number lines
+                    lines = [ln for ln in raw_text.splitlines()
+                             if not re.match(r"^\s*\d+\s*$", ln)]
+                    if not lines:
+                        continue
+                    block_text = _normalize_text(" ".join(lines))
+                    if block_text:
+                        out_blocks.append(block_text)
             doc.close()
         except Exception as e:
             print(f"[PDFParser] Error parsing PDF: {e}")
             return ""
-            
-        combined_text = "\n".join(full_text)
-        
-        # Truncate
+
+        combined_text = "\n\n".join(out_blocks)
         combined_text = self._truncate_text(combined_text)
-        
-        # Save cache
+
         with open(txt_path, "w", encoding="utf-8") as f:
             f.write(combined_text)
-            
+
         return combined_text
 
     def _truncate_text(self, text):

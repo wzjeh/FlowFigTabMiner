@@ -1,7 +1,7 @@
 import os
 import json
 import glob
-from src.adjudication.llm_engine import LLMEngine
+from src.adjudication.llm_engine import LLMEngine, sanitize_json_text
 from src.adjudication.pdf_parser import PDFParser
 
 class GlobalAssembly:
@@ -292,16 +292,7 @@ Output a JSON array of all extracted reaction records:"""
         print("   -> Sending to LLM...")
         response = self.llm.chat(system_prompt, user_prompt)
 
-        # Strip markdown fences if present
-        cleaned = response.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned
-            if cleaned.rstrip().endswith("```"):
-                cleaned = cleaned.rstrip().rsplit("\n", 1)[0]
-
-        # Remove invalid control characters (except tab/newline/CR) that break JSON parsing
-        import re as _re
-        cleaned = _re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', cleaned)
+        cleaned = sanitize_json_text(response)
 
         # 5. Save Output
         with open(out_file, 'w') as f:

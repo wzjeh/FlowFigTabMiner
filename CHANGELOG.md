@@ -1,5 +1,57 @@
 # FlowFigTabMiner 更改日志 (Changelog)
 
+## 2026-03-21: P1 借鉴 FlowChemAgents — JSON 清洗与 PDF 文本提取改进
+
+### 背景
+
+对比分析 FlowChemAgents 项目后，识别出两处高 ROI 的可借鉴改进点，本次实现 P1 优先级行动。
+
+### 改动一：多层 JSON 清洗（`sanitize_json_text`）
+
+**文件**：`src/adjudication/llm_engine.py`、`src/adjudication/global_assembly.py`
+
+**问题**：原 `_clean_json()` 只做 markdown 代码块剥离 + `json.loads()`，LLM 输出带注释或 trailing comma 时直接解析失败。
+
+**改动**：
+- 新增模块级函数 `sanitize_json_text(text)` — 6 步清洗流水线：
+  1. 剥离 markdown 代码块（`` ```json `` / `` ``` ``）
+  2. 去除控制字符（保留 tab/换行/CR）
+  3. 追踪花括号/方括号对，提取最大完整 JSON 结构（支持 `{}` 和 `[]`）
+  4. 去除 `//` 行注释和 `/* */` 块注释
+  5. 去除 `}` / `]` 前的 trailing comma
+  6. 将省略号（`...` / `…`）规范化为 `null`
+- `_clean_json()` 改为调用 `sanitize_json_text` + `json.loads`
+- `global_assembly.py` 中 LLM 响应解析（原 3 行 strip + 控制字符清洗）统一改为 `sanitize_json_text`
+
+**收益**：JSON 解析失败率直接降低；代码路径统一，两处不再各自维护不同的清洗逻辑。
+
+### 改动二：PDF 文本提取升级（`pdf_parser.py`）
+
+**文件**：`src/adjudication/pdf_parser.py`
+
+**问题**：原实现用 `page.get_text()`（简单全文提取），无页眉/页脚过滤，含连字符、连字、页码噪音。
+
+**改动**：切换到 `page.get_text("blocks")` 块级提取，新增：
+- **页眉/页脚过滤**：跳过页面高度前后 5% 区域内的块（保留含正文关键词的块以避免误删）
+- **纯页码过滤**：去除纯数字行
+- **文本规范化**（新增 `_normalize_text` 函数）：
+  - 连字修复：`ﬁ` → `fi`，`ﬂ` → `fl`
+  - 印刷引号转 ASCII
+  - 连字符换行修复（`word-\n breaking` → `wordbreaking`）
+  - 多空格压缩
+
+**收益**：GlobalAssembly 送给 LLM 的文本质量提升（去除页眉/页脚/页码噪音），尤其改善多栏期刊 PDF 的提取质量。
+
+### 验证
+
+`sanitize_json_text` 四组单元测试全部通过：
+- markdown fence + trailing comma + 注释
+- JSON 数组 + trailing comma
+- 省略号规范化
+- JSON 前有垃圾文本（仅保留最大 JSON 块）
+
+---
+
 ## 2026-03-20: 架构重构——分层清理、封装改进、接口契约
 
 ### 背景：架构评估（2026-03-20）
