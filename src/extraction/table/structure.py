@@ -8,9 +8,12 @@ class TableStructureRecognizer:
         """
         Initialize Table Transformer for structure recognition.
         """
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        # CRITICAL: Limit CPU threads to prevent overheating when running multiple instances or alongside other models
-        if self.device == "cpu":
+        if torch.cuda.is_available():
+            self.device = "cuda"
+        elif torch.backends.mps.is_available():
+            self.device = "mps"
+        else:
+            self.device = "cpu"
             torch.set_num_threads(1)
             
         print(f"Loading Table Structure model: {model_name} on {self.device}...")

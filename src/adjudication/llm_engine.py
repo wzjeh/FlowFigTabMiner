@@ -115,12 +115,28 @@ class LLMEngine:
             self.model = self.model or "model" # Default for many local servers
             print(f"[LLMEngine] Initialized Generic OpenAI Client (URL: {self.base_url}, Model: {self.model})")
 
-    def chat(self, system_prompt, user_prompt):
+    def chat(self, system_prompt, user_prompt, max_retries: int = 1) -> str:
         """
-        Generic chat completion.
+        Generic chat completion with retry on failure.
+        Returns empty string on unrecoverable error (never returns an error
+        message string, which would break downstream JSON parsing).
         """
+        import time
         print(f"[LLMEngine] Chat Request via {self.provider}...")
-        
+
+        for attempt in range(max_retries + 1):
+            result = self._chat_once(system_prompt, user_prompt)
+            if result is not None:
+                return result
+            if attempt < max_retries:
+                print(f"[LLMEngine] Retrying in 5s (attempt {attempt + 2}/{max_retries + 1})...")
+                time.sleep(5)
+
+        print("[LLMEngine] All attempts failed — returning empty string.")
+        return ""
+
+    def _chat_once(self, system_prompt, user_prompt):
+        """Single chat attempt. Returns None on failure (triggers retry)."""
         try:
             if self.provider == "dashscope":
                 import dashscope
@@ -138,20 +154,21 @@ class LLMEngine:
                     incremental_output=True,
                 )
                 chunks = []
-                last_status = None
+                last_chunk = None
                 for chunk in responses:
-                    last_status = chunk.status_code
+                    last_chunk = chunk
                     if chunk.status_code == HTTPStatus.OK:
                         text = chunk.output.choices[0].message.content
                         if text:
                             chunks.append(text)
-                if last_status == HTTPStatus.OK:
+                if last_chunk is not None and last_chunk.status_code == HTTPStatus.OK:
                     return "".join(chunks)
                 else:
-                    error_msg = f"Error: {chunk.code} - {chunk.message}"
-                    print(f"[LLMEngine] API Error: {error_msg}")
-                    return error_msg
-            
+                    code = getattr(last_chunk, 'code', 'unknown') if last_chunk else 'no_response'
+                    msg  = getattr(last_chunk, 'message', '') if last_chunk else ''
+                    print(f"[LLMEngine] API Error: {code} — {msg}")
+                    return None  # triggers retry
+
             elif self.provider == "openai":
                 response = self.client.chat.completions.create(
                     model=self.model,
@@ -162,12 +179,14 @@ class LLMEngine:
                     temperature=0.1
                 )
                 return response.choices[0].message.content
-                
+
             else:
-                return f"Error: Unknown provider {self.provider}"
+                print(f"[LLMEngine] Unknown provider: {self.provider}")
+                return None
 
         except Exception as e:
-            return f"Error during chat: {e}"
+            print(f"[LLMEngine] Exception during chat: {e}")
+            return None
 
     def adjucate(self, pdf_text, unique_terms, pdf_name):
         """

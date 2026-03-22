@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import torch
 from ultralytics import YOLO
 
 class TableFilter:
@@ -28,6 +29,9 @@ class TableFilter:
                 if torch.get_num_threads() > 1:
                     torch.set_num_threads(1)
                 self.model = YOLO(model_path)
+                _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+                self.model.to(_torch_device)
+                print(f"   -> TableFilter Device: {_torch_device.upper()}")
             except Exception as e:
                 print(f"Warning: Failed to load Table Filter model: {e}")
         else:

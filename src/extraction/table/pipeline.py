@@ -171,26 +171,25 @@ class TablePipeline:
                 cv2.imwrite(body_path, body_crop)
                 current_image_path = body_path
         
+        # --- Load ContentRecognizer ONCE for the entire table ---
+        # (PaddleOCR + MolNexTR ~1 GB — load once, reuse for molecule/OCR/context, unload at end)
+        shared_recognizer = self._get_model('content')
+
         # --- Process Molecules (Detect -> MolNexTR -> Mask) ---
         logger.info("   -> Detecting and masking molecules with YOLO...")
         mol_processor = self._get_model('molecule')
-        recognizer_for_mol = self._get_model('content') # Needed for MolNexTR
         mol_meta = []
         try:
-            # Construct debug path for molecule detection visualization
             base_body = os.path.splitext(os.path.basename(current_image_path))[0]
             debug_mol_path = os.path.join(os.path.dirname(current_image_path), f"{base_body}_debug_yolo.png")
-            
-            # Use mask_only=True to white-out molecules without writing text, preventing TATR interference.
             modified_img, mol_meta = mol_processor.process_image(
-                current_image_path, 
-                recognizer_for_mol, 
+                current_image_path,
+                shared_recognizer,
                 mask_only=True,
                 output_path=debug_mol_path
             )
         finally:
             self._unload_model(mol_processor)
-            self._unload_model(recognizer_for_mol)
 
         if modified_img is not None and mol_meta:
             logger.info(f"      -> Masked {len(mol_meta)} molecules with white fills")
@@ -306,28 +305,22 @@ class TablePipeline:
         if cell_meta and 'row_index' not in cell_meta[0]:
              self._assign_grid_indices(cell_meta)
 
-        # Run OCR on non-molecule cells
-        recognizer_for_ocr = self._get_model('content')
-        try:
-            for i, cell in enumerate(cell_meta):
-                if cell.get('class') == 'Molecule':
-                    # Already has SMILES from YOLO detection
-                    content = cell['content']
-                    logger.debug(f"      Cell {i} (Molecule): {content[:30]}...")
-                else:
-                    # OCR for text/numbers (ContentRecognizer handles both)
-                    content = recognizer_for_ocr.recognize_content(cell_crops[i], 'Text')
-                    cell['content'] = content
-                    logger.debug(f"      Cell {i} (Text/Number): {content[:30]}...")
+        # Run OCR on non-molecule cells (reuse shared_recognizer)
+        for i, cell in enumerate(cell_meta):
+            if cell.get('class') == 'Molecule':
+                content = cell['content']
+                logger.debug(f"      Cell {i} (Molecule): {content[:30]}...")
+            else:
+                content = shared_recognizer.recognize_content(cell_crops[i], 'Text')
+                cell['content'] = content
+                logger.debug(f"      Cell {i} (Text/Number): {content[:30]}...")
 
-                extracted_data.append({
-                    'row': cell['row_index'],
-                    'col': cell['col_index'],
-                    'content': content,
-                    'type': cell.get('class', 'Text')
-                })
-        finally:
-            self._unload_model(recognizer_for_ocr)
+            extracted_data.append({
+                'row': cell['row_index'],
+                'col': cell['col_index'],
+                'content': content,
+                'type': cell.get('class', 'Text')
+            })
 
         # 6. Construct DataFrame
         if not extracted_data:
@@ -369,29 +362,26 @@ class TablePipeline:
             cap_pattern = os.path.join(table_output_dir, f"{table_basename}_table_caption_*.png")
             note_pattern = os.path.join(table_output_dir, f"{table_basename}_table_note_*.png")
             
-            recognizer_for_context = self._get_model('content')
-            try:
-                for c_path in sorted(glob.glob(cap_pattern)):
-                     c_img = cv2.imread(c_path)
-                     if c_img is not None:
-                         c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                         pad = 50
-                         c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-                         c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
-                         txt = recognizer_for_context._recognize_text(c_rgb)
-                         if txt.strip(): context_data["caption"].append(txt)
+            # Reuse shared_recognizer for caption/note OCR
+            for c_path in sorted(glob.glob(cap_pattern)):
+                c_img = cv2.imread(c_path)
+                if c_img is not None:
+                    c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                    pad = 50
+                    c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
+                    txt = shared_recognizer._recognize_text(c_rgb)
+                    if txt.strip(): context_data["caption"].append(txt)
 
-                for n_path in sorted(glob.glob(note_pattern)):
-                     n_img = cv2.imread(n_path)
-                     if n_img is not None:
-                         n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                         pad = 50
-                         n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-                         n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
-                         txt = recognizer_for_context._recognize_text(n_rgb)
-                         if txt.strip(): context_data["table_note"].append(txt)
-            finally:
-                self._unload_model(recognizer_for_context)
+            for n_path in sorted(glob.glob(note_pattern)):
+                n_img = cv2.imread(n_path)
+                if n_img is not None:
+                    n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                    pad = 50
+                    n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
+                    txt = shared_recognizer._recognize_text(n_rgb)
+                    if txt.strip(): context_data["table_note"].append(txt)
 
         # 8. Check Relevance
         import yaml
@@ -447,6 +437,9 @@ class TablePipeline:
                  json.dump(evidence_data, f, indent=2)
              result_packet['json_path'] = json_path
              logger.info(f"   -> Saved Evidence JSON to: {json_path}")
+
+        # Unload ContentRecognizer once per table (not 3× per table)
+        self._unload_model(shared_recognizer)
 
         return result_packet
 

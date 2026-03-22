@@ -27,11 +27,17 @@ FINAL_DIR = "data/final_output"
 
 
 def get_all_pdfs():
+    if not os.path.isdir(PDF_DIR):
+        print(f"[ERROR] PDF directory not found: {PDF_DIR}")
+        print(f"        Create it and place your PDFs there, then re-run.")
+        sys.exit(1)
     pdfs = sorted([
         os.path.join(PDF_DIR, f)
         for f in os.listdir(PDF_DIR)
         if f.endswith(".pdf")
     ])
+    if not pdfs:
+        print(f"[WARN] No PDFs found in {PDF_DIR}")
     return pdfs
 
 

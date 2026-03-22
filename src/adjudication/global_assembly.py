@@ -71,7 +71,8 @@ class GlobalAssembly:
                         source_dir = meta.get('source_intermediate_dir', '')
                         if basename in source_dir or evidence_dir == macro_cleaned_dir:
                             figure_data.append(d)
-                    except: pass
+                    except Exception as _e:
+                        print(f"[GlobalAssembly] Warning: skipped evidence file {jpath}: {_e}")
 
         print(f"   -> Found {len(figure_data)} figure evidence packets.")
         
@@ -292,21 +293,36 @@ Output a JSON array of all extracted reaction records:"""
         print("   -> Sending to LLM...")
         response = self.llm.chat(system_prompt, user_prompt)
 
+        # Save raw LLM response for debugging (overwritten each run)
+        raw_path = os.path.join(self.output_dir, f"{basename}_final_raw.txt")
+        try:
+            with open(raw_path, 'w') as f:
+                f.write(response)
+        except Exception:
+            pass
+
         cleaned = sanitize_json_text(response)
 
-        # 5. Save Output
-        with open(out_file, 'w') as f:
-            f.write(cleaned)
-
-        print(f"   -> Saved final result to {out_file}")
-
-        # 6. Excel 输出
+        # 5. Parse JSON — save [] on failure so PostProcessor gets valid (empty) input
         try:
             records = json.loads(cleaned)
-            if isinstance(records, list):
-                self._save_excel(records, basename)
+            if not isinstance(records, list):
+                raise ValueError(f"Expected JSON array, got {type(records).__name__}")
         except Exception as e:
-            print(f"[GlobalAssembly] Excel export skipped: {e}")
+            print(f"[GlobalAssembly] JSON parse failed: {e}  (raw saved to {raw_path})")
+            records = []
+            cleaned = "[]"
+
+        with open(out_file, 'w') as f:
+            f.write(cleaned)
+        print(f"   -> Saved final result to {out_file} ({len(records)} records)")
+
+        # 6. Excel 输出
+        if records:
+            try:
+                self._save_excel(records, basename)
+            except Exception as e:
+                print(f"[GlobalAssembly] Excel export skipped: {e}")
 
         return out_file
 

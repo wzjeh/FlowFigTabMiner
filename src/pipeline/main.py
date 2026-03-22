@@ -57,14 +57,30 @@ def main():
 
     # 2. Figure Pipeline (Path A)
     print("\n=== Step 2-4: Figure Extraction ===")
-    fig_pipeline = FigurePipeline()
-    fig_pipeline.process_pdf_figures(pdf_path)
-    del fig_pipeline
-    import gc; gc.collect()
+    try:
+        fig_pipeline = FigurePipeline()
+        fig_pipeline.process_pdf_figures(pdf_path)
+    except Exception as e:
+        print(f"[FigurePipeline] Error: {e} — continuing to table extraction.")
+    finally:
+        try:
+            del fig_pipeline
+        except NameError:
+            pass
+        import gc; gc.collect()
 
     # 3. Table Pipeline (Path B)
     print("\n=== Step Table: Table Extraction ===")
-    tab_pipeline = TablePipeline(sequential_mode=True)
+
+    # Pre-create ContentRecognizer once for ALL tables.
+    # Keeps PaddleX workers alive between tables → eliminates per-table
+    # "Python quit unexpectedly" macOS notifications + saves ~N×init time.
+    # Memory impact: +~150MB (PaddleOCR), acceptable since MolNexTR singleton
+    # already stays loaded regardless.
+    from src.extraction.common.content_recognizer import ContentRecognizer
+    shared_content_rec = ContentRecognizer()
+
+    tab_pipeline = TablePipeline(sequential_mode=True, content_recognizer=shared_content_rec)
     
     # Needs to find table images extracted by TF-ID
     tables_dir = os.path.join(intermediate_dir, "tables")

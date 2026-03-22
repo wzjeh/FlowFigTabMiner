@@ -16,6 +16,7 @@ Tab-Scheme-Seg Parser
 import os
 import cv2
 import numpy as np
+import torch
 from ultralytics import YOLO
 from src.extraction.common.content_recognizer import ContentRecognizer
 
@@ -34,7 +35,9 @@ class SchemeSegParser:
         self.model = None
         if model_path and os.path.exists(model_path):
             self.model = YOLO(model_path)
-            print(f"[SchemeSegParser] Loaded model: {model_path}")
+            _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+            self.model.to(_torch_device)
+            print(f"[SchemeSegParser] Loaded model: {model_path} (device: {_torch_device.upper()})")
         else:
             print(f"[SchemeSegParser] Model not found at {model_path}, step will be skipped.")
         self.content_recognizer = ContentRecognizer()  # MolNexTR

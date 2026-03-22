@@ -8,6 +8,9 @@ class Stage2Detector:
     def __init__(self, model_path="models/bestYOLOm-2-2.pt"):
         print(f"Loading Stage 2 YOLO model from {model_path}...")
         self.model = YOLO(model_path)
+        _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+        self.model.to(_torch_device)
+        print(f"   -> Stage2 Device: {_torch_device.upper()}")
         # Class Mapping (User needs to verify this matches bestYOLOm-2-2.pt training)
         # Assuming typical ordering: data_point, tick_mark, etc.
         # This mapping *must* match the training data.yaml.

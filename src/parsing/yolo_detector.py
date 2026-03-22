@@ -13,6 +13,9 @@ class YoloDetector:
             torch.set_num_threads(1)
             
         self.model = YOLO(model_path)
+        _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+        self.model.to(_torch_device)
+        print(f"   -> Device: {_torch_device.upper()}")
         # Dynamic Class Mapping from Model
         if hasattr(self.model.names, 'items'):
             self.CLASS_MAP = self.model.names

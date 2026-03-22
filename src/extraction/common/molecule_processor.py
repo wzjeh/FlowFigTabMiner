@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import torch
 from ultralytics import YOLO
 import PIL.Image
 
@@ -23,7 +24,9 @@ class MoleculeProcessor:
                 if torch.get_num_threads() > 1:
                     torch.set_num_threads(1)
                 self.model = YOLO(model_path)
-                print(f"   MoleculeProcessor: YOLO model loaded successfully from {model_path}")
+                _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+                self.model.to(_torch_device)
+                print(f"   MoleculeProcessor: YOLO model loaded successfully from {model_path} (device: {_torch_device.upper()})")
             except Exception as e:
                 print(f"Error loading Molecule Model: {e}")
                 self.model = None
