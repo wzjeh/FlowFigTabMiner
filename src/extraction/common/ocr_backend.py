@@ -4,6 +4,9 @@ USE_EASYOCR=1 → EasyOCR (Cloud Run, avoids PaddlePaddle PIR crash)
 otherwise      → PaddleOCR (local, default)
 """
 import os
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
 
 
 def get_ocr_instance(use_angle_cls=True, lang='en', enable_mkldnn=False):
@@ -18,7 +21,12 @@ class _EasyOCRWrapper:
 
     def __init__(self):
         import easyocr
-        self._reader = easyocr.Reader(['en'], gpu=False, verbose=False)
+        try:
+            import torch
+            use_gpu = torch.cuda.is_available()
+        except Exception:
+            use_gpu = False
+        self._reader = easyocr.Reader(['en'], gpu=use_gpu, verbose=False)
 
     def ocr(self, img_or_path, **kwargs):
         """

@@ -1,0 +1,5 @@
+Transfer manifest (copy these paths):
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/requirements-windows.txt
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/.env
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/data/input/
+/Users/zhaowenyuan/Projects/FlowFigTabMiner/models/

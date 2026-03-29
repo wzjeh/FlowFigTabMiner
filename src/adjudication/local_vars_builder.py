@@ -27,8 +27,10 @@ class LocalVarsBuilder:
         # Cache check
         if os.path.exists(out_path):
             print(f"[LocalVarsBuilder] Cache hit: {source_id}")
-            with open(out_path) as f:
-                return json.load(f)
+            cached = self._load_json_with_fallback(out_path)
+            if cached is not None:
+                return cached
+            print(f"[LocalVarsBuilder] Cache unreadable, rebuilding: {source_id}")
 
         print(f"[LocalVarsBuilder] Building local vars for {source_id} ({source_type})...")
 
@@ -47,11 +49,20 @@ class LocalVarsBuilder:
         result = self._clean_json(raw, source_id, source_type)
 
         os.makedirs(output_dir, exist_ok=True)
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
 
         print(f"[LocalVarsBuilder] Saved -> {out_path}")
         return result
+
+    def _load_json_with_fallback(self, path):
+        for encoding in ("utf-8", "utf-8-sig", "cp1252", "gbk"):
+            try:
+                with open(path, encoding=encoding) as f:
+                    return json.load(f)
+            except Exception:
+                continue
+        return None
 
     # ------------------------------------------------------------------ #
     #  Prompt builders

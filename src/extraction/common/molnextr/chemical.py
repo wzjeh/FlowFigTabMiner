@@ -1,8 +1,11 @@
 """ chemical rules"""
 import copy
-import traceback
-import numpy as np
+import itertools
 import multiprocessing
+import os
+import traceback
+
+import numpy as np
 import rdkit
 import rdkit.Chem as Chem
 rdkit.RDLogger.DisableLog('rdApp.*')
@@ -10,6 +13,16 @@ from SmilesPE.pretokenizer import atomwise_tokenizer
 from src.extraction.common.molnextr.abbrs import RGROUP_SYMBOLS, ABBREVIATIONS, VALENCES, FORMULA_REGEX,SUBSTITUTIONS
 import difflib
 import re
+
+
+def _should_use_multiprocessing(num_workers):
+    if num_workers is None or num_workers <= 1:
+        return False
+    if os.name == "nt":
+        return False
+    if os.environ.get("MOLNEXTR_DISABLE_MP", "0") == "1":
+        return False
+    return True
 
 
 
@@ -164,8 +177,11 @@ def _convert_smiles_to_inchi(smiles):
 
 
 def convert_smiles_to_inchi(smiles_list, num_workers=16):
-    with multiprocessing.Pool(num_workers) as p:
-        inchi_list = p.map(_convert_smiles_to_inchi, smiles_list, chunksize=128)
+    if _should_use_multiprocessing(num_workers):
+        with multiprocessing.Pool(num_workers) as p:
+            inchi_list = p.map(_convert_smiles_to_inchi, smiles_list, chunksize=128)
+    else:
+        inchi_list = list(map(_convert_smiles_to_inchi, smiles_list))
     n_success = sum([x is not None for x in inchi_list])
     r_success = n_success / len(inchi_list)
     inchi_list = [x if x else 'InChI=1S/H2O/h1H2' for x in inchi_list]
@@ -192,8 +208,11 @@ def _get_num_atoms(smiles):
 def get_num_atoms(smiles, num_workers=16):
     if type(smiles) is str:
         return _get_num_atoms(smiles)
-    with multiprocessing.Pool(num_workers) as p:
-        num_atoms = p.map(_get_num_atoms, smiles)
+    if _should_use_multiprocessing(num_workers):
+        with multiprocessing.Pool(num_workers) as p:
+            num_atoms = p.map(_get_num_atoms, smiles)
+    else:
+        num_atoms = list(map(_get_num_atoms, smiles))
     return num_atoms
 
 
@@ -963,7 +982,7 @@ def convert_graph_to_smiles(coords, symbols, edges, images=None, num_workers=16)
     else:
         args_zip = zip(coords, symbols, edges, images)
 
-    if num_workers <= 1:
+    if not _should_use_multiprocessing(num_workers):
         results = itertools.starmap(_convert_graph_to_smiles, args_zip)
         results = list(results)
     else:
@@ -1006,11 +1025,17 @@ def _postprocess_smiles(smiles, coords=None, symbols=None, edges=None, molblock=
 
 
 def postprocess_smiles(smiles, coords=None, symbols=None, edges=None, molblock=False, num_workers=16):
-    with multiprocessing.Pool(num_workers) as p:
+    if _should_use_multiprocessing(num_workers):
+        with multiprocessing.Pool(num_workers) as p:
+            if coords is not None and symbols is not None and edges is not None:
+                results = p.starmap(_postprocess_smiles, zip(smiles, coords, symbols, edges), chunksize=128)
+            else:
+                results = p.map(_postprocess_smiles, smiles, chunksize=128)
+    else:
         if coords is not None and symbols is not None and edges is not None:
-            results = p.starmap(_postprocess_smiles, zip(smiles, coords, symbols, edges), chunksize=128)
+            results = list(itertools.starmap(_postprocess_smiles, zip(smiles, coords, symbols, edges)))
         else:
-            results = p.map(_postprocess_smiles, smiles, chunksize=128)
+            results = list(map(_postprocess_smiles, smiles))
     smiles_list, molblock_list, success = zip(*results)
     r_success = np.mean(success)
     return smiles_list, molblock_list, r_success
@@ -1031,6 +1056,9 @@ def _keep_main_molecule(smiles, debug=False):
 
 
 def keep_main_molecule(smiles, num_workers=16):
-    with multiprocessing.Pool(num_workers) as p:
-        results = p.map(_keep_main_molecule, smiles, chunksize=128)
+    if _should_use_multiprocessing(num_workers):
+        with multiprocessing.Pool(num_workers) as p:
+            results = p.map(_keep_main_molecule, smiles, chunksize=128)
+    else:
+        results = list(map(_keep_main_molecule, smiles))
     return results

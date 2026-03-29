@@ -2,18 +2,30 @@ import os
 import cv2
 import numpy as np
 import glob
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from ultralytics import YOLO
+import torch
+
+
+def _select_torch_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 class YoloDetector:
     def __init__(self, model_path="models/bestYOLOn-2-1.pt"):
         print(f"Loading YOLO model from {model_path}...")
         # ultralytics uses torch. Force torch to respect limits if not already
-        import torch
         if torch.get_num_threads() > 1:
             torch.set_num_threads(1)
             
         self.model = YOLO(model_path)
-        _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+        _torch_device = _select_torch_device()
         self.model.to(_torch_device)
         print(f"   -> Device: {_torch_device.upper()}")
         # Dynamic Class Mapping from Model

@@ -2,7 +2,19 @@ import os
 import cv2
 import numpy as np
 import torch
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from ultralytics import YOLO
+
+
+def _select_torch_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 class TableFilter:
     def __init__(self, model_path="models/bestYOLOm.pt"):
@@ -25,11 +37,10 @@ class TableFilter:
             print(f"Loading Table Segmentation YOLO model from {model_path}...")
             print(f"Loading Table Segmentation YOLO model from {model_path}...")
             try:
-                import torch
                 if torch.get_num_threads() > 1:
                     torch.set_num_threads(1)
                 self.model = YOLO(model_path)
-                _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+                _torch_device = _select_torch_device()
                 self.model.to(_torch_device)
                 print(f"   -> TableFilter Device: {_torch_device.upper()}")
             except Exception as e:

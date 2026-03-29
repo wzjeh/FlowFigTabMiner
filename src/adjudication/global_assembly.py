@@ -1,8 +1,14 @@
 import os
 import json
 import glob
+import sys
 from src.adjudication.llm_engine import LLMEngine, sanitize_json_text
 from src.adjudication.pdf_parser import PDFParser
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 class GlobalAssembly:
     def __init__(self, output_dir="data/final_output"):
@@ -25,7 +31,7 @@ class GlobalAssembly:
             print(f"[GlobalAssembly] Cache hit — skipping LLM (use --force-assembly to rerun): {out_file}")
             # Still run Excel export from cached JSON
             try:
-                with open(out_file) as f:
+                with open(out_file, encoding="utf-8") as f:
                     records = json.load(f)
                 if isinstance(records, list):
                     self._save_excel(records, basename)
@@ -65,7 +71,7 @@ class GlobalAssembly:
             if os.path.exists(evidence_dir):
                 for jpath in glob.glob(os.path.join(evidence_dir, "*_evidence.json")):
                     try:
-                        with open(jpath, 'r') as f:
+                        with open(jpath, 'r', encoding="utf-8") as f:
                             d = json.load(f)
                         meta = d.get('meta', {})
                         source_dir = meta.get('source_intermediate_dir', '')
@@ -88,7 +94,7 @@ class GlobalAssembly:
                     if file.endswith(".csv"):
                          csv_path = os.path.join(root, file)
                          # Load CSV content
-                         with open(csv_path, 'r') as f:
+                         with open(csv_path, 'r', encoding="utf-8", errors="replace") as f:
                              csv_content = f.read()
                          table_data.append({
                              "table_name": file,
@@ -103,8 +109,9 @@ class GlobalAssembly:
         if os.path.exists(local_vars_dir):
             for lv_path in glob.glob(os.path.join(local_vars_dir, "*_local_vars.json")):
                 try:
-                    with open(lv_path) as f:
-                        lv = json.load(f)
+                    lv = self._load_json_with_fallback(lv_path)
+                    if lv is None:
+                        raise ValueError("unreadable local_vars")
                     local_vars_map[lv["source_id"]] = lv
                 except Exception:
                     pass
@@ -128,7 +135,7 @@ class GlobalAssembly:
         compound_pool = {}
         pool_path = os.path.join(intermediate_dir, "compound_pool.json")
         if os.path.exists(pool_path):
-            with open(pool_path) as f:
+            with open(pool_path, encoding="utf-8") as f:
                 pool_data = json.load(f)
             # 向后兼容：若 pool_data 是旧格式 flat dict（无 reactant_pool key）
             if not isinstance(pool_data.get("reactant_pool"), dict):
@@ -145,7 +152,7 @@ class GlobalAssembly:
         scheme_conditions = ""
         cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
         if os.path.exists(cond_path):
-            with open(cond_path) as f:
+            with open(cond_path, encoding="utf-8") as f:
                 scheme_conditions = f.read().strip()
             print(f"   -> Loaded scheme conditions text")
 
@@ -277,6 +284,7 @@ For each reaction record, output one JSON object with these fields:
     - If reactant label matches a key in REACTANT STRUCTURE POOL → set reactant1_smiles or reactant2_smiles accordingly.
     - If only COMPOUND STRUCTURE POOL exists (no arrow detected), use context to infer role and assign accordingly.
     Do not modify SMILES strings.
+    - If a reactant/product name is only a generic label like "Compound 1", first resolve it to the full chemical name from the scheme, caption, paper text, or local_vars.reaction_context. Only keep the numbered label if no explicit name is available.
 11. SCHEME CONDITIONS: If Scheme Conditions are provided and a table record lacks certain condition fields (temperature, solvent, catalyst), use the Scheme Conditions as fallback.
 12. LOCAL VARS: If a source has a "local_vars" field:
     - axis_semantics.x_axis.maps_to_field tells you which output field to assign the X value to (MANDATORY — never leave X unused).
@@ -296,24 +304,39 @@ Output a JSON array of all extracted reaction records:"""
         # Save raw LLM response for debugging (overwritten each run)
         raw_path = os.path.join(self.output_dir, f"{basename}_final_raw.txt")
         try:
-            with open(raw_path, 'w') as f:
+            with open(raw_path, 'w', encoding='utf-8') as f:
                 f.write(response)
         except Exception:
             pass
 
         cleaned = sanitize_json_text(response)
 
-        # 5. Parse JSON — save [] on failure so PostProcessor gets valid (empty) input
+        # 5. Parse JSON – save [] on failure so PostProcessor gets valid (empty) input
         try:
             records = json.loads(cleaned)
+            if isinstance(records, dict):
+                for key in ("records", "items", "data", "output", "result"):
+                    val = records.get(key)
+                    if isinstance(val, list):
+                        records = val
+                        break
+                else:
+                    if records and all(not isinstance(v, (dict, list)) for v in records.values()):
+                        records = [records]
             if not isinstance(records, list):
                 raise ValueError(f"Expected JSON array, got {type(records).__name__}")
         except Exception as e:
-            print(f"[GlobalAssembly] JSON parse failed: {e}  (raw saved to {raw_path})")
-            records = []
-            cleaned = "[]"
+            recovered = self._recover_json_records(response)
+            if recovered:
+                print(f"[GlobalAssembly] JSON parse recovered {len(recovered)} records from malformed array.")
+                records = recovered
+                cleaned = json.dumps(records, ensure_ascii=False, indent=2)
+            else:
+                print(f"[GlobalAssembly] JSON parse failed: {e}  (raw saved to {raw_path})")
+                records = []
+                cleaned = "[]"
 
-        with open(out_file, 'w') as f:
+        with open(out_file, 'w', encoding='utf-8') as f:
             f.write(cleaned)
         print(f"   -> Saved final result to {out_file} ({len(records)} records)")
 
@@ -325,6 +348,61 @@ Output a JSON array of all extracted reaction records:"""
                 print(f"[GlobalAssembly] Excel export skipped: {e}")
 
         return out_file
+
+    def _load_json_with_fallback(self, path):
+        for encoding in ("utf-8", "utf-8-sig", "cp1252", "gbk"):
+            try:
+                with open(path, encoding=encoding) as f:
+                    return json.load(f)
+            except Exception:
+                continue
+        return None
+
+    def _recover_json_records(self, text):
+        """
+        Best-effort recovery for malformed JSON arrays returned by the LLM.
+        Scans for top-level object spans and parses each object independently.
+        """
+        if not text:
+            return []
+        start = text.find("[")
+        if start == -1:
+            return []
+        payload = text[start + 1:]
+        records = []
+        depth = 0
+        in_string = False
+        escape = False
+        obj_start = None
+        for idx, ch in enumerate(payload):
+            if in_string:
+                if escape:
+                    escape = False
+                elif ch == "\\":
+                    escape = True
+                elif ch == '"':
+                    in_string = False
+                continue
+            if ch == '"':
+                in_string = True
+                continue
+            if ch == "{":
+                if depth == 0:
+                    obj_start = idx
+                depth += 1
+            elif ch == "}":
+                if depth > 0:
+                    depth -= 1
+                    if depth == 0 and obj_start is not None:
+                        chunk = payload[obj_start:idx + 1]
+                        try:
+                            obj = json.loads(chunk)
+                            if isinstance(obj, dict):
+                                records.append(obj)
+                        except Exception:
+                            pass
+                        obj_start = None
+        return records
 
     def _save_excel(self, records, basename):
         import pandas as pd

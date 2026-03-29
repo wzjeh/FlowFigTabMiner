@@ -1,4 +1,8 @@
 import os
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 import torch
 from PIL import Image
 from transformers import AutoProcessor, AutoModelForCausalLM
@@ -11,15 +15,17 @@ class ActiveAreaDetector:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         if torch.backends.mps.is_available():
              self.device = "mps"
+        load_path = self._resolve_model_path(model_id)
         
-        print(f"Loading TF-ID (Florence-2) model: {model_id} on {self.device}...")
+        print(f"Loading TF-ID (Florence-2) model: {load_path} on {self.device}...")
         # Florence-2 uses AutoProcessor and AutoModelForCausalLM
-        self.processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
+        self.processor = AutoProcessor.from_pretrained(load_path, trust_remote_code=True, local_files_only=True)
         # Added attn_implementation="eager" to fix _supports_sdpa error
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_id, 
+            load_path, 
             trust_remote_code=True, 
-            attn_implementation="eager"
+            attn_implementation="eager",
+            local_files_only=True
         ).to(self.device).eval()
 
         # --- Compatibility Patch for Transformers > 4.40 ---
@@ -31,8 +37,11 @@ class ActiveAreaDetector:
             
             # 1. Fix Inheritance
             if GenerationMixin not in target_class.__bases__:
-                print(f"PATCHING: Adding GenerationMixin to {target_class.__name__} bases for compatibility.")
-                target_class.__bases__ = (GenerationMixin,) + target_class.__bases__
+                print(f"PATCHING: Attempting to add GenerationMixin to {target_class.__name__} bases for compatibility.")
+                try:
+                    target_class.__bases__ = (GenerationMixin,) + target_class.__bases__
+                except TypeError as exc:
+                    print(f"PATCHING: Skipped GenerationMixin base patch due to MRO conflict: {exc}")
             
             # 2. Fix generation_config (AttributeError: 'NoneType' object has no attribute '_from_model_config')
             if not hasattr(self.model.language_model, "generation_config") or self.model.language_model.generation_config is None:
@@ -56,6 +65,18 @@ class ActiveAreaDetector:
             # If past_key_values is a DynamicCache, it doesn't support indexing like that.
             # We force use_cache=False for this specific debug/inference usage to avoid KV cache incompatibilities completely.
             self.model.language_model.generation_config.use_cache = False  # DISABLE KV CACHE to bypass structure mismatch
+
+    def _resolve_model_path(self, model_id: str) -> str:
+        if os.path.exists(model_id):
+            return model_id
+
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        repo_cache_dir = os.path.join(project_root, "models", "hub", "models--yifeihu--TF-ID-base", "snapshots")
+        if os.path.isdir(repo_cache_dir):
+            snapshots = sorted(os.listdir(repo_cache_dir))
+            if snapshots:
+                return os.path.join(repo_cache_dir, snapshots[-1])
+        return model_id
 
 
     def detect_tables_figures(self, image: Image.Image):

@@ -1,0 +1,37 @@
+{
+  "total_candidates": 2884,
+  "ml_tier_distribution": {
+    "B": 2152,
+    "C": 517,
+    "A": 118,
+    "missing": 97
+  },
+  "stability_class_distribution": {
+    "unknown": 2869,
+    "moderately_sensitive": 2,
+    "must_trap_immediately": 4,
+    "stable": 6,
+    "highly_unstable": 3
+  },
+  "lifetime_bucket_distribution": {
+    "unknown": 2562,
+    "1-10 s": 69,
+    ">300 s": 81,
+    "10-300 s": 76,
+    "<1 s": 89,
+    "qualitative_only": 7
+  },
+  "intermediate_class_distribution": {
+    "organolithium_generic": 812,
+    "unknown": 1995,
+    "aryllithium": 46,
+    "alkyllithium": 4,
+    "ynolate": 7,
+    "oxiranyllithium": 20
+  },
+  "batch_or_flow_distribution": {
+    "flow": 1826,
+    "unknown": 806,
+    "batch": 252
+  }
+}

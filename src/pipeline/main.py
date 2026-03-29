@@ -38,6 +38,8 @@ def main():
                         help="Force re-run Step 5 LLM even if _final.json already exists")
     parser.add_argument("--smiles-lookup", action="store_true",
                         help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
+    parser.add_argument("--stop-before-llm", action="store_true",
+                        help="Run only Steps 1-3.5 and stop before local_vars / Global Assembly / Post-Processing")
     args = parser.parse_args()
 
     pdf_path = args.pdf_path
@@ -148,15 +150,21 @@ def main():
             "product_pool": product_pool,
             "compound_pool": compound_pool,
         }
-        with open(pool_path, 'w') as f:
+        with open(pool_path, 'w', encoding='utf-8') as f:
             _json.dump(pool_to_save, f, indent=2)
         total = len(reactant_pool) + len(product_pool) + len(compound_pool)
         print(f"   -> Compound pool ({total} total) -> {pool_path}")
     if scheme_conditions_texts:
         cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
-        with open(cond_path, 'w') as f:
+        with open(cond_path, 'w', encoding='utf-8') as f:
             f.write("\n".join(scheme_conditions_texts))
         print(f"   -> Scheme conditions saved -> {cond_path}")
+
+    if args.stop_before_llm:
+        print("\n=== Stop Before LLM ===")
+        print("Skipped Steps 4.5, 5, and 6 by request.")
+        print("\n=== Pipeline Complete ===")
+        return
 
     # 4.5. Sub-Variable Libraries
     print("\n=== Step 4.5: Build Sub-Variable Libraries ===")
@@ -174,7 +182,7 @@ def main():
     scheme_cond_text = ""
     cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
     if os.path.exists(cond_path):
-        with open(cond_path) as f:
+        with open(cond_path, encoding='utf-8') as f:
             scheme_cond_text = f.read().strip()
         print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
 
@@ -182,7 +190,7 @@ def main():
     macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
     for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
         try:
-            with open(jpath) as f:
+            with open(jpath, encoding='utf-8') as f:
                 ev = _json2.load(f)
             src_id = ev.get("meta", {}).get("figure_id", os.path.basename(jpath).replace("_evidence.json", ""))
             builder.build(src_id, "figure", ev, paper_text, local_vars_dir)
@@ -196,13 +204,13 @@ def main():
                 if fname.endswith("_evidence.json"):
                     ev_path = os.path.join(root, fname)
                     try:
-                        with open(ev_path) as f:
+                        with open(ev_path, encoding='utf-8') as f:
                             ev = _json2.load(f)
                         src_id = fname.replace("_evidence.json", "")
                         csv_path = ev.get("csv_path", "")
                         csv_head = ""
                         if csv_path and os.path.exists(csv_path):
-                            with open(csv_path) as cf:
+                            with open(csv_path, encoding='utf-8', errors='replace') as cf:
                                 csv_head = "".join(cf.readlines()[:6])
                         builder.build(src_id, "table", ev, paper_text, local_vars_dir,
                                       csv_head=csv_head, scheme_conditions=scheme_cond_text)

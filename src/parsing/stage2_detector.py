@@ -1,14 +1,26 @@
 import cv2
 import numpy as np
 import torch
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from ultralytics import YOLO
 from torchvision.ops import nms
+
+
+def _select_torch_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 class Stage2Detector:
     def __init__(self, model_path="models/bestYOLOm-2-2.pt"):
         print(f"Loading Stage 2 YOLO model from {model_path}...")
         self.model = YOLO(model_path)
-        _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+        _torch_device = _select_torch_device()
         self.model.to(_torch_device)
         print(f"   -> Stage2 Device: {_torch_device.upper()}")
         # Class Mapping (User needs to verify this matches bestYOLOm-2-2.pt training)

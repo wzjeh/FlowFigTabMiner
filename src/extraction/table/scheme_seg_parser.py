@@ -17,10 +17,23 @@ import os
 import cv2
 import numpy as np
 import torch
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from ultralytics import YOLO
 from src.extraction.common.content_recognizer import ContentRecognizer
+from src.extraction.common.ocr_backend import get_ocr_instance
 
 CLASS_MAP = {0: "arrow", 1: "molecule", 2: "table-condition", 3: "table-mark"}
+
+
+def _select_torch_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 
 class SchemeSegParser:
@@ -35,7 +48,7 @@ class SchemeSegParser:
         self.model = None
         if model_path and os.path.exists(model_path):
             self.model = YOLO(model_path)
-            _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+            _torch_device = _select_torch_device()
             self.model.to(_torch_device)
             print(f"[SchemeSegParser] Loaded model: {model_path} (device: {_torch_device.upper()})")
         else:
@@ -45,8 +58,7 @@ class SchemeSegParser:
 
     def _get_ocr(self):
         if self._ocr is None:
-            from paddleocr import PaddleOCR
-            self._ocr = PaddleOCR(use_angle_cls=False, lang='en', enable_mkldnn=False)
+            self._ocr = get_ocr_instance(use_angle_cls=False, lang='en', enable_mkldnn=False)
         return self._ocr
 
     def _ocr_crop(self, img, box):

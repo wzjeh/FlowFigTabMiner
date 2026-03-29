@@ -1,0 +1,133 @@
+80_normalized.json
+Achternbosch et al. 2022 - Selective monosubstitution on a trichlorosilane with highly reactive organolithium compounds in a microflow reactor_normalized.json
+Asai et al. 2012 - Practical synthesis of photochromic diarylethenes in integrated flow microreactor systems_normalized.json
+asymmetric-carbolithiation-of-conjugated-enynes-a-flow-microreactor-enables-the-use-of-configurationally-unstable_normalized.json
+Bohara et al. 2025 - Flow process for production of crisaborole using organolithium chemistry with control over impurity formation_normalized.json
+Branca et al. 2008 - Tertiary aromatic amide for memory of chirality - access to enantioenriched alpha-substituted valine_normalized.json
+Br¨¦gent et al. 2022 - Continuous-flow divergent lithiation of 2,3-dihalopyridines - Deprotolithiation versus halogen dance_normalized.json
+Bre?gent et al. 2022 - Continuous-flow divergent lithiation of 2,3-dihalopyridines - Deprotolithiation versus halogen dance_normalized.json
+c2cc16855c_normalized.json
+c3sc53047g_normalized.json
+carbolithiation-of-conjugated-enynes-with-aryllithiums-in-microflow-system-and-applications-to-synthesis-of_normalized.json
+carbolithiation-of-conjugated-enynes-with-aryllithiums-in-microflow-system-and-applications-to-synthesis-of-2_normalized.json
+cation-pool-initiated-controlled-living-polymerization-using-microsystems_normalized.json
+Chada et al. 2017 - Synthesis of a key intermediate towards the preparation of efavirenz using n-butyllithium_normalized.json
+Cole et al. 2020 - Development and production of an enantioselective tet ... ne synthesis enabled by continuous cryogenic lithium¨Chalogen exchange_normalized.json
+d0cc03768k_normalized.json
+d0ra06101h_normalized.json
+d1cc06460f_normalized.json
+d1cc06460f-2_normalized.json
+d3cc00756a_normalized.json
+De Angelis et al. 2018 - Sequential ¦Á-lithiation and aerobic oxidation o ... lacetic acid - continuous-flow synthesis of cyclopentyl mandelic acid_normalized.json
+Degennaro et al. 2016 - A direct and sustainable synthesis of tertiary butyl esters enabled by flow microreactors_normalized.json
+Degennaro et al. 2016 - Flow microreactor synthesis of 2,2-disubstituted oxetanes via 2-phenyloxetan-2-yl lithium_normalized.json
+design-of-a-numbering-up-system-of-monolithic-microreactors-and-its-application-to-synthesis-of-a-key-intermediate-of_normalized.json
+Djukanovic et al. 2021 - Continuous flow acylation of (hetero)aryllithiums with polyfunctional N,N-dimethylamides and tetramethylurea in toluene_normalized.json
+Dunn et al. 2019 - Selective continuous flow iodination guided by direct spectroscopic observation of equilibrating aryl lithium regioisomers_normalized.json
+example_normalized.json
+example1_normalized.json
+feasibility-study-on-continuous-flow-controlled-living-anionic-polymerization-processes_normalized.json
+Franklin et al. 2024 - Pilot-scale operation and characterization of an ... n in flow to form a ketone intermediate on the route to nemtabrutinib_normalized.json
+Fukuyama et al. 2014 - Flow update for the carbonylation of 1-silyl-substituted organolithiums under CO pressure_normalized.json
+Fukuyama et al. 2016 - Application of continuous flow for DIBAL-H reduct ... BuLi mediated coupling reaction in the synthesis of eribulin mesylate_normalized.json
+Ganiek et al. 2017 - Barbier continuous flow preparation and reactions of carbamoyllithiums for nucleophilic amidation_normalized.json
+Ganiek et al. 2018 - Mild homologation of esters through continuous flow chloroacetate Claisen reactions_normalized.json
+Giovine et al. 2013 - Synthesis of 1,2,3,4-tetrahydroisoquinolines by mi ... -mediated thermal isomerization of laterally lithiated arylaziridines_normalized.json
+Gupta et al. 2009 - Lithium diisopropylamide-mediated ortholithiations - lithium chloride catalysis_normalized.json
+Gustafsson et al. 2012 - Development of a continuous flow scale-up approach of reflux inhibitor AZD6906_normalized.json
+Hafner et al. 2016 - A simple scale-up strategy for organolithium chemistry in flow mode - From feasibility to kilogram quantities_normalized.json
+Hafner et al. 2016 - Flow chemistry on multigram scale - Continuous synthesis of boronic acids within 1 s_normalized.json
+Hafner et al. 2017 - Dichloromethyllithium - Synthesis and application in continuous flow mode_normalized.json
+Heijnen et al. 2017 - Oxygen activated, palladium nanoparticle catalyzed, ultrafast cross-coupling of organolithium reagents_normalized.json
+highly-productive-flow-synthesis-for-lithiation-borylation-and-or-suzuki-coupling-reaction_normalized.json
+Homocoupling of aryl halides in flow- Space integration of lithiation and FeCl-sub-3--sub- promoted homocoupling_normalized.json
+Ichinari et al. 2020 - A novel approach to functionalization of aryl azi ... of organolithium species bearing masked azides in flow microreactors_normalized.json
+Ivanova et al. 2022 - Continuous flow synthesis of Celecoxib from 2-bromo-3,3,3-trifluoropropene_normalized.json
+J?rgensen et al. 2013 - 14-step synthesis of (+)-ingenol from (+)-3-carene_normalized.json
+Kang and Kim 2024 - Ultrafast flow synthesis of o-functionalized benzene ... yl fluorides and subsequent SuFEx connections via lithiated chemistry_normalized.json
+Kawale et al. 2023 - Rapid flow synthesis of fenofibrate via scalable flash chemistry with in-line Li recovery_normalized.json
+Ketels et al. 2017 - Selective lithiation, magnesiation, and zincation of unsymmetrical azobenzenes using continuous flow_normalized.json
+Ketels et al. 2017 - Synthesis of polyfunctional diorganomagnesium and d ... ange of highly functionalized (hetero)aryl halides in continuous flow_normalized.json
+Kim et al. 2011 - A flow-microreactor approach to protecting-group-free synthesis using organolithium compounds_normalized.json
+Kim et al. 2015 - Integrated one-flow synthesis of heterocyclic thioquin ... es through serial microreactions with two organolithium intermediates_normalized.json
+Kim et al. 2018 - A catalyst-free amination of functional organolithium reagents by flow chemistry_normalized.json
+Klatt et al. 2013 - Generation of functionalized aryl and heteroaryl aluminum reagents by halogen-lithium exchange_normalized.json
+Knochel et al. 2020 - Preparation of diorganomagnesium reagents by halog ... es and subsequent in situ trapping with MgCl2¡¤LiCl in continuous flow_normalized.json
+Ko?ckinger et al. 2018 - Utilization of fluoroform for difluoromethylation in continuous flow - a concise synthesis of ¦Á-difluoromethyl-amino acids_normalized.json
+K?ckinger et al. 2018 - Utilization of fluoroform for difluoromethylation in continuous flow - a concise synthesis of ¦Á-difluoromethyl-amino acids_normalized.json
+Kohyama et al. 2025 - Continuous flow synthesis of cyclobutenes via lithium ynolates_normalized.json
+Kremsmair et al. 2023 - In situ quench reactions of enantioenriched seco ... ithium reagents in batch and continuous flow using an I - Li-exchange_normalized.json
+Kupracz and Kirschning 2013 - Multiple organolithium generation in the continuous flow synthesis of amitriptyline_normalized.json
+Laue et al. 2016 - Experience with scale-up of low-temperature organometallic reactions in continuous flow_normalized.json
+Lee et al. 2021 - Continuous-flow Si¨CH functionalizations of hydrosilane ... quential organolithium reactions catalyzed by potassium tert-butoxide_normalized.json
+Li et al. 2017 - Flow asymmetric propargylation - Development of continuous processes for the preparation of a chiral ¦Â-amino alcohol_normalized.json
+Lima et al. 2020 - Continuous flow as enabling technology - Synthesis of heteroaromatic sulfinates as bench stable cross-coupling partners_normalized.json
+Lima et al. 2021 - Continuous flow as an enabling technology - a fast and versatile entry to functionalized glyoxal derivatives_normalized.json
+Mambrini et al. 2018 - Memory of chirality in a flow©\based system - Enan ... ective synthesis of Quaternary ¦Á©\amino acids using flow microreactors_normalized.json
+microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates_normalized.json
+microflow-system-controlled-anionic-polymerization-of-styrenes_normalized.json
+Miyagishi et al. 2024 - Expanding the scope of C-glycoside synthesis from unstable organolithium reagents using flow microreactors_normalized.json
+modern-strategies-in-electroorganic-synthesis_normalized.json
+molecular-weight-distribution-of-polymers-produced-by-anionic-polymerization-enables-mixability-evaluation_normalized.json
+Moon et al. 2015 - Synthesis of ketones via organolithium addition to acid chlorides using continuous flow chemistry_normalized.json
+M¨¹ller et al. 2016 - Ethyl lithiodiazoacetate - Extremely unstable intermediate handled efficiently in flow_normalized.json
+Mu?ller et al. 2016 - Ethyl lithiodiazoacetate - Extremely unstable intermediate handled efficiently in flow_normalized.json
+n-acyliminium-ion-pool-as-a-heterodiene-in-4-2-cycloaddition-reaction_normalized.json
+Nagaki et al. 2008 - Aryllithium compounds bearing alkoxycarbonyl groups - generation and reactions using a microflow system_normalized.json
+Nagaki et al. 2010 - A flow microreactor system enables organolithium reactions without protecting alkoxycarbonyl groups_normalized.json
+Nagaki et al. 2010 - Chemistry A European J - 2010 - Nagaki - A Flow Microreactor System Enables Organolithium Reactions without Protecting_normalized.json
+Nagaki et al. 2010 - Cross-coupling in a flow microreactor - space integration of lithiation and Murahashi coupling_normalized.json
+Nagaki et al. 2010 - Generation and reaction of cyano-substituted aryllithium compounds using microreactors_normalized.json
+Nagaki et al. 2010 - Generation and reactions of oxiranyllithiums by use of a flow microreactor system_normalized.json
+Nagaki et al. 2011 - Flash synthesis of TAC-101 and its analogues from 1,3,5-tribromobenzene using integrated flow microreactor systems_normalized.json
+Nagaki et al. 2011 - Flow microreactor synthesis of disubstituted pyridi ... romopyridines via Br - Li exchange without using cryogenic conditions_normalized.json
+Nagaki et al. 2011 - Homocoupling of aryl halides in flow - Space integration of lithiation and FeCl(3) promoted homocoupling_normalized.json
+Nagaki et al. 2012 - Cross-coupling of aryllithiums with aryl and vinyl halides in flow microreactors_normalized.json
+Nagaki et al. 2012 - Generation and reactions of vinyllithiums using flow microreactor systems_normalized.json
+Nagaki et al. 2012 - Lithiation of 1,2-dichloroethene in flow microreact ... le synthesis of alkenes and alkynes by precise residence-time control_normalized.json
+Nagaki et al. 2013 - Generation and reactions of pyridyllithiums via Br - Li exchange reactions using continuous flow microreactor systems_normalized.json
+Nagaki et al. 2013 - Reactions of organolithiums with dialkyl oxalates. A flow microreactor approach to synthesis of functionalized ¦Á-keto esters_normalized.json
+Nagaki et al. 2013 - Synthesis of functionalized aryl fluorides using organolithium reagents in flow microreactors_normalized.json
+Nagaki et al. 2015 - Flash chemistry using trichlorovinyllithium - Switching the reaction pathways by high-resolution reaction time control_normalized.json
+Nagaki et al. 2015 - Reactions of difunctional electrophiles with functi ... ryllithium compounds - remarkable chemoselectivity by flash chemistry_normalized.json
+Nagaki et al. 2016 - Generation and reaction of carbamoyl anions in flow ... tions in the three-component synthesis of functionalized ¦Á-ketoamides_normalized.json
+Nagaki et al. 2017 - Micromixing enables chemoselective reactions of difunctional electrophiles with functional aryllithiums_normalized.json
+Nagaki et al. 2019 - Generation and reaction of functional alkyllithiums ... oreactors and their application to heterotelechelic polymer synthesis_normalized.json
+Nagaki et al. 2019 - Synthesis of functionalized ketones from acid chlorides and organolithiums by extremely fast micromixing_normalized.json
+Naik et al. 2025 - Generation of lithium ethenolate by lithiation of tetrahydrofuran in flow mode_normalized.json
+ncomms1264_normalized.json
+Newby et al. 2014 - Investigation of a lithium-halogen exchange flow process for the preparation of boronates by using a cryo-flow reactor_normalized.json
+Okano et al. 2020 - Trapping of transient thienyllithiums generated by deprotonation of 2,3- or 2,5-dibromothiophene in a flow microreactor_normalized.json
+Otte et al. 2024 - Development of a green and sustainable manufacturing ... K-1026) - Sequential deprotonation¨Clithiation as a batch¨Cflow process_normalized.json
+photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines_normalized.json
+Pieber et al. 2014 - Flash carboxylation - fast lithiation¨Ccarboxylation sequence at room temperature in continuous flow_normalized.json
+Qenawy et al. 2025 - Efficient and selective transformations of ¦Á-keto esters into ¦Á-arylated ¦Á-hydroxy esters using continuous-flow system_normalized.json
+Ramanjaneyulu et al. 2020 - Ultrafast synthesis of 2-(benzhydrylthio)ben ... an unstable lithium thiolate intermediate in a capillary microreactor_normalized.json
+Seghers et al. 2018 - Design of a mesoscale continuous©\flow route toward lithiated methoxyallene_normalized.json
+Selective monosubstitution on a trichlorosilane with highly reactive organolithium compounds in a microflow reactor_normalized.json
+Sharma et al. 2022 - Cyanide-free cyanation of sp2 and sp-carbon atoms by an oxazole-based masked CN source using flow microreactors_normalized.json
+Slocum et al. 2012 - Near-ambient temperature halogen-lithium exchange of p-bromoanisole and related substrates - Flow - batch studies_normalized.json
+Stueckler et al. 2019 - Development of a continuous flow process for a M ... m lab scale to full-scale production of a pharmaceutical intermediate_normalized.json
+Sun et al. 2020 - Practical and rapid construction of 2-pyridyl ketone library in continuous flow_normalized.json
+Takizawa et al. 2012 - Flow microreactor synthesis of tricyclic sulfonamides via N-tosylaziridinyllithiums_normalized.json
+Thaisrivongs et al. 2016 - Using flow to outpace fast proton transfer in an organometallic reaction for the manufacture of verubecestat (MK-8931)_normalized.json
+the-resurrection-of-murahashi-coupling-after-four-decades_normalized.json
+three-component-coupling-based-on-flash-chemistry-carbolithiation-of-benzyne-with-functionalized-aryllithiums-followed_normalized.json
+Umezu et al. 2014 - Generation of ynolates via reductive lithiation using flow microreactors_normalized.json
+Usutani et al. 2007 - Generation and reactions of o-bromophenyllithium without benzyne formation using a microreactor_normalized.json
+Venturoni et al. 2010 - The application of flow microreactors to the preparation of a family of casein kinase I inhibitors_normalized.json
+Vil¨¦ et al. 2019 - Enantiospecific cyclization of methyl N-(tert-butoxyc ... inate to 2-methylproline derivative via ¡®memory of chirality¡¯ in flow_normalized.json
+Vile? et al. 2019 - Enantiospecific cyclization of methyl N-(tert-butoxyc ... inate to 2-methylproline derivative via ¡®memory of chirality¡¯ in flow_normalized.json
+von Keutz et al. 2020 - Continuous flow C-glycosylation via metal¨Chaloge ... tanding and improvements toward efficient manufacturing of remdesivir_normalized.json
+von Keutz et al. 2021 - Flash chemistry approach to organometallic C-glycosylation for the synthesis of remdesivir_normalized.json
+Weidmann et al. 2020 - Continuous flow preparation of (hetero)benzylic lithiums via iodine-lithium exchange reaction under Barbier conditions_normalized.json
+Weidmann et al. 2020 - Halogen¨Clithium exchange of sensitive (hetero)aromatic halides under Barbier conditions in a continuous flow set-up_normalized.json
+Wietelmann et al. 2022 - Continuous processing of concentrated organolithiums in flow using static and dynamic spinning disc reactor technologies_normalized.json
+Wong et al. 2019 - Batch versus flow lithiation-substitution of 1,3,4-oxadiazoles - Exploitation of unstable intermediates using flow chemistry_normalized.json
+Wong et al. 2021 - Flash chemistry enables high productivity metalation-substitution of 5-alkyltetrazoles_normalized.json
+Wu et al. 2014 - Continuous flow synthesis of ketones from carbon dioxide and organolithium or Grignard reagents_normalized.json
+Yano et al. 2024 - Establishment and development of organolithium-mediated continuous flow process for intermediate of canagliflozin_normalized.json
+Yoshida et al. 2020 - Integrated synthesis using isothiocyanate-substituted aryllithiums by flow chemistry_normalized.json
+zz_codex_smoke_80_finalcheck_normalized.json
+zz_codex_smoke_80_fix_normalized.json
+zz_codex_smoke_80_normalized.json

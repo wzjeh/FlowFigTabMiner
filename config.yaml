@@ -67,11 +67,15 @@ llm:
   adjudication:
     # You can override the provider here if you want adjudication to run on a specific model
     # provider: "openai" 
-    model_name: "qwen3.5-plus"
+    model_name: "qwen3-max-2025-09-23"
+    model_fallbacks:
+      - "qwen-plus-latest"
     temperature: 0.1
     prompt_template: "templates/adjudication.txt" # Path relative to project root
 
   # Configuration for Data Extraction (if different)
   extraction:
-    model_name: "qwen3.5-plus"
+    model_name: "qwen3-max-2025-09-23"
+    model_fallbacks:
+      - "qwen-plus-latest"
     temperature: 0.1

@@ -1,0 +1,40 @@
+# Windows (GPU) focused requirements
+# Note: install PyTorch separately with the correct CUDA build for your GPU/driver.
+# Example (CUDA 12.1):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Core AI & Computation
+torch
+torchvision
+torchaudio
+transformers
+OpenNMT-py==2.2.0
+paddlepaddle
+paddleocr>=2.6.0
+ultralytics
+timm==0.4.12
+pypdfium2
+scikit-learn
+python-dotenv
+dashscope
+SmilesPE
+rdkit
+easyocr
+
+# Data Processing
+pandas
+numpy
+opencv-python
+pillow
+scipy
+pyyaml
+
+# UI & Web
+streamlit
+requests
+
+# Layout & PDF
+pdf2image
+albumentations==1.1.0
+imutils
+PyMuPDF

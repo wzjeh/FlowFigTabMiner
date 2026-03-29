@@ -1,4 +1,9 @@
 import os
+from src.utils.runtime_env import configure_runtime_env
+from src.extraction.common.ocr_backend import get_ocr_instance
+
+configure_runtime_env()
+
 # Must be set BEFORE any paddle/paddleocr import
 os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
 os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
@@ -7,12 +12,6 @@ os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["FLAGS_use_mkldnn"] = "0"
 os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
 os.environ["FLAGS_enable_pir_api"] = "0"
-import paddle
-try:
-    paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
-except Exception:
-    pass
-from paddleocr import PaddleOCR
 
 class ContentRecognizer:
     def __init__(self):
@@ -20,28 +19,28 @@ class ContentRecognizer:
         Initialize PaddleOCR and MolNexTR models.
         Note: MolScribe has been fully replaced by MolNexTR.
         """
-        # PaddleOCR
-        # use_angle_cls=True loads the direction classifier
-        # lang='en' for English tables
-        print("Loading PaddleOCR...")
+        use_easyocr = os.environ.get('USE_EASYOCR', '0') == '1'
+        print("Loading EasyOCR..." if use_easyocr else "Loading PaddleOCR...")
         # Force single thread for torch interaction (MolScribe uses torch)
         try:
             import torch
             if torch.get_num_threads() > 1:
                 torch.set_num_threads(1)
-        except:
+        except Exception:
             pass
             
         # Check if gpu is available
         use_gpu = False # Set to False by default to avoid issues if paddle-gpu not installed
-        try:
-            import paddle
-            if paddle.device.is_compiled_with_cuda():
-                use_gpu = True
-        except:
-            pass
+        if not use_easyocr:
+            try:
+                import paddle
+                paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
+                if paddle.device.is_compiled_with_cuda():
+                    use_gpu = True
+            except Exception:
+                pass
 
-        self.ocr = PaddleOCR(
+        self.ocr = get_ocr_instance(
             use_angle_cls=True,
             lang='en',
             enable_mkldnn=False,

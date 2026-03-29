@@ -2,8 +2,20 @@ import os
 import cv2
 import numpy as np
 import torch
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from ultralytics import YOLO
 import PIL.Image
+
+
+def _select_torch_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 class MoleculeProcessor:
     def __init__(self, model_path=None, conf_threshold=0.25):
@@ -20,11 +32,10 @@ class MoleculeProcessor:
             print(f"Loading Molecule Detection Model from {model_path}...")
             print(f"Loading Molecule Detection Model from {model_path}...")
             try:
-                import torch
                 if torch.get_num_threads() > 1:
                     torch.set_num_threads(1)
                 self.model = YOLO(model_path)
-                _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+                _torch_device = _select_torch_device()
                 self.model.to(_torch_device)
                 print(f"   MoleculeProcessor: YOLO model loaded successfully from {model_path} (device: {_torch_device.upper()})")
             except Exception as e:

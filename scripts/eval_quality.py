@@ -18,6 +18,10 @@ import argparse
 
 sys.path.insert(0, os.getcwd())
 
+if hasattr(sys.stdout, "reconfigure"):
+    # Windows consoles often default to GBK and choke on accented paper names.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 OUTPUT_DIR = "data/robustness"
 FINAL_DIR = "data/final_output"
 REPORT_CSV = os.path.join(OUTPUT_DIR, "quality_report.csv")
@@ -129,7 +133,7 @@ def evaluate_json(json_path):
     basename = basename.replace("_final", "")
 
     try:
-        with open(json_path) as f:
+        with open(json_path, encoding="utf-8") as f:
             content = f.read().strip()
         data = json.loads(content)
     except Exception as e:
@@ -215,7 +219,7 @@ def main():
 
     fieldnames = ["pdf", "n_records", "avg_score", "pct_has_smiles", "pct_has_yield",
                   "pct_has_conditions", "low_score_examples"]
-    with open(REPORT_CSV, "w", newline="") as f:
+    with open(REPORT_CSV, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)

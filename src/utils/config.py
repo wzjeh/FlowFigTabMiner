@@ -122,7 +122,7 @@ def load_config(path: str = "config.yaml") -> dict:
             f"Configuration file '{path}' not found in search paths: {candidates}"
         )
 
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
     _check_required(cfg)

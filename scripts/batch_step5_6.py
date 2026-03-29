@@ -1,9 +1,9 @@
 """
-Batch runner: re-run Step 5 (GlobalAssembly) + Step 6 (PostProcessor) for all organolithium PDFs,
-then combine all _normalized.json into one Excel for submission.
+Batch runner: run Step 4.5 (local_vars) + Step 5 (GlobalAssembly) + Step 6 (PostProcessor)
+for all organolithium PDFs, then combine all _normalized.json into one Excel for submission.
 
 Usage:
-  python scripts/batch_step5_6.py [--force-assembly] [--smiles-lookup]
+  python scripts/batch_step5_6.py [--force-assembly] [--smiles-lookup] [--limit N]
 
   --force-assembly : Force LLM re-run even if _final.json already exists
   --smiles-lookup  : Query PubChem to fill missing SMILES (slow)
@@ -21,9 +21,20 @@ sys.path.insert(0, os.getcwd())
 
 from src.adjudication.global_assembly import GlobalAssembly
 from src.adjudication.post_processor import PostProcessor
+from src.adjudication.local_vars_builder import LocalVarsBuilder
+from src.adjudication.pdf_parser import PDFParser
 
 PDF_DIR = "data/input/organolithium"
 FINAL_DIR = "data/final_output"
+
+
+def safe_print(text):
+    try:
+        sys.stdout.buffer.write((str(text) + "\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.flush()
+    except UnicodeEncodeError:
+        sys.stdout.buffer.write((str(text).encode("utf-8", errors="replace") + b"\n"))
+        sys.stdout.buffer.flush()
 
 
 def get_all_pdfs():
@@ -34,35 +45,91 @@ def get_all_pdfs():
     pdfs = sorted([
         os.path.join(PDF_DIR, f)
         for f in os.listdir(PDF_DIR)
-        if f.endswith(".pdf")
+        if f.endswith(".pdf") and not f.startswith("._")
     ])
     if not pdfs:
         print(f"[WARN] No PDFs found in {PDF_DIR}")
     return pdfs
 
 
+def build_local_vars(pdf_path, intermediate_dir):
+    import glob
+
+    basename = os.path.splitext(os.path.basename(pdf_path))[0]
+    paper_text = PDFParser().extract_text(pdf_path)
+    local_vars_dir = os.path.join(intermediate_dir, "local_vars")
+    os.makedirs(local_vars_dir, exist_ok=True)
+    builder = LocalVarsBuilder()
+
+    scheme_cond_text = ""
+    cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+    if os.path.exists(cond_path):
+        with open(cond_path, encoding="utf-8") as f:
+            scheme_cond_text = f.read().strip()
+
+    macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
+    for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
+        try:
+            with open(jpath, encoding="utf-8") as f:
+                ev = json.load(f)
+            src_id = ev.get("meta", {}).get("figure_id", os.path.basename(jpath).replace("_evidence.json", ""))
+            builder.build(src_id, "figure", ev, paper_text, local_vars_dir)
+        except Exception as e:
+            safe_print(f"   [LocalVars] Figure error {jpath}: {e}")
+
+    tables_dir = os.path.join(intermediate_dir, "tables")
+    if os.path.exists(tables_dir):
+        for root, _, files in os.walk(tables_dir):
+            for fname in files:
+                if fname.endswith("_evidence.json"):
+                    ev_path = os.path.join(root, fname)
+                    try:
+                        with open(ev_path, encoding="utf-8") as f:
+                            ev = json.load(f)
+                        src_id = fname.replace("_evidence.json", "")
+                        csv_path = ev.get("csv_path", "")
+                        csv_head = ""
+                        if csv_path and os.path.exists(csv_path):
+                            with open(csv_path, encoding="utf-8", errors="ignore") as cf:
+                                csv_head = "".join(cf.readlines()[:6])
+                        builder.build(
+                            src_id,
+                            "table",
+                            ev,
+                            paper_text,
+                            local_vars_dir,
+                            csv_head=csv_head,
+                            scheme_conditions=scheme_cond_text,
+                        )
+                    except Exception as e:
+                        safe_print(f"   [LocalVars] Table error {ev_path}: {e}")
+
+    safe_print(f"[Step4.5] local_vars built for {basename}")
+
+
 def run_step5_6(pdf_path, assembler, post, force_assembly, smiles_lookup):
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     intermediate_dir = os.path.join("data/intermediate", basename)
-    print(f"\n{'='*60}")
-    print(f"Processing: {basename}")
-    print(f"{'='*60}")
+    safe_print(f"\n{'='*60}")
+    safe_print(f"Processing: {basename}")
+    safe_print(f"{'='*60}")
     try:
+        build_local_vars(pdf_path, intermediate_dir)
         assembler.run(pdf_path, intermediate_dir, force=force_assembly)
         norm = post.run(pdf_path, intermediate_dir, smiles_lookup=smiles_lookup)
         return norm
     except Exception as e:
-        print(f"[ERROR] {basename}: {e}")
+        safe_print(f"[ERROR] {basename}: {e}")
         traceback.print_exc()
         return None
 
 
-def combine_all(output_path):
+def combine_all(output_path, single_sheet=False):
     """
     Combine all _normalized.json into one Excel.
     Sheet structure:
       - "All Records"     : every record from every paper, flat
-      - "By Paper"        : pivot-style summary (one row per paper)
+      - "By Paper"        : pivot-style summary (one row per paper), unless single_sheet=True
       Per-source sheets are omitted in the combined file to keep it manageable.
     """
     import pandas as pd
@@ -79,8 +146,12 @@ def combine_all(output_path):
     for nf in norm_files:
         basename = os.path.basename(nf).replace("_normalized.json", "")
         try:
-            with open(nf) as f:
-                records = json.load(f)
+            try:
+                with open(nf, encoding="utf-8") as f:
+                    records = json.load(f)
+            except UnicodeDecodeError:
+                with open(nf, encoding="gbk", errors="ignore") as f:
+                    records = json.load(f)
             if not isinstance(records, list):
                 continue
             for r in records:
@@ -99,6 +170,10 @@ def combine_all(output_path):
                 row["product_name"] = r.get("product_name")
                 row["product_smiles"] = r.get("product_smiles")
                 row["product_label"] = r.get("product_label")
+                row["structure_resolution_status"] = r.get("structure_resolution_status")
+                row["structure_resolution_source"] = r.get("structure_resolution_source")
+                row["ml_tier"] = r.get("ml_tier")
+                row["ml_exclusion_reason"] = r.get("ml_exclusion_reason")
                 row["reaction_smiles"] = r.get("reaction_smiles")
 
                 # Result fields
@@ -149,30 +224,27 @@ def combine_all(output_path):
 
     df = pd.DataFrame(all_rows)
 
-    # --- By Paper summary sheet ---
-    paper_summary = []
-    for basename, grp in df.groupby("paper_basename", sort=True):
-        summary = {
-            "paper_basename": basename,
-            "paper_doi": grp["paper_doi"].dropna().iloc[0] if grp["paper_doi"].notna().any() else None,
-            "paper_year": grp["paper_year"].dropna().iloc[0] if grp["paper_year"].notna().any() else None,
-            "reaction_class": grp["reaction_class"].dropna().iloc[0] if grp["reaction_class"].notna().any() else None,
-            "total_records": len(grp),
-            "records_with_yield": grp["yield_pct"].notna().sum(),
-            "records_with_ee": grp["ee_pct"].notna().sum(),
-            "records_with_conversion": grp["conversion_pct"].notna().sum(),
-            "unique_solvents": ", ".join(sorted(grp["solvent"].dropna().unique())),
-            "unique_catalysts": ", ".join(sorted(grp["catalyst"].dropna().unique())),
-            "temp_range_C": f"{grp['temperature_C'].min()} ~ {grp['temperature_C'].max()}" if grp["temperature_C"].notna().any() else None,
-        }
-        paper_summary.append(summary)
-
-    df_summary = pd.DataFrame(paper_summary)
-
     # Write Excel
     with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
         df.to_excel(writer, sheet_name="All Records", index=False)
-        df_summary.to_excel(writer, sheet_name="By Paper", index=False)
+        if not single_sheet:
+            paper_summary = []
+            for basename, grp in df.groupby("paper_basename", sort=True):
+                summary = {
+                    "paper_basename": basename,
+                    "paper_doi": grp["paper_doi"].dropna().iloc[0] if grp["paper_doi"].notna().any() else None,
+                    "paper_year": grp["paper_year"].dropna().iloc[0] if grp["paper_year"].notna().any() else None,
+                    "reaction_class": grp["reaction_class"].dropna().iloc[0] if grp["reaction_class"].notna().any() else None,
+                    "total_records": len(grp),
+                    "records_with_yield": grp["yield_pct"].notna().sum(),
+                    "records_with_ee": grp["ee_pct"].notna().sum(),
+                    "records_with_conversion": grp["conversion_pct"].notna().sum(),
+                    "unique_solvents": ", ".join(sorted(grp["solvent"].dropna().unique())),
+                    "unique_catalysts": ", ".join(sorted(grp["catalyst"].dropna().unique())),
+                    "temp_range_C": f"{grp['temperature_C'].min()} ~ {grp['temperature_C'].max()}" if grp["temperature_C"].notna().any() else None,
+                }
+                paper_summary.append(summary)
+            pd.DataFrame(paper_summary).to_excel(writer, sheet_name="By Paper", index=False)
 
     print(f"\n[Combine] Total records: {len(df)}")
     print(f"[Combine] Papers covered: {df['paper_basename'].nunique()}")
@@ -189,6 +261,12 @@ def main():
                         help="PubChem SMILES lookup (slow)")
     parser.add_argument("--combine-only", action="store_true",
                         help="Skip Step 5+6, only rebuild combined Excel")
+    parser.add_argument("--single-sheet", action="store_true",
+                        help="Write only the All Records sheet in the combined Excel")
+    parser.add_argument("--start", type=int, default=1,
+                        help="1-based start index into the PDF list")
+    parser.add_argument("--limit", type=int, default=None,
+                        help="Process only the first N PDFs")
     args = parser.parse_args()
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
@@ -196,25 +274,30 @@ def main():
 
     if not args.combine_only:
         pdfs = get_all_pdfs()
-        print(f"Found {len(pdfs)} PDFs to process")
+        start_idx = max(1, args.start) - 1
+        if start_idx:
+            pdfs = pdfs[start_idx:]
+        if args.limit is not None:
+            pdfs = pdfs[:args.limit]
+        safe_print(f"Found {len(pdfs)} PDFs to process")
 
         assembler = GlobalAssembly()
         post = PostProcessor()
         failed = []
 
         for i, pdf_path in enumerate(pdfs, 1):
-            print(f"\n[{i}/{len(pdfs)}] {os.path.basename(pdf_path)}")
+            safe_print(f"\n[{i}/{len(pdfs)}] {os.path.basename(pdf_path)}")
             result = run_step5_6(pdf_path, assembler, post, args.force_assembly, args.smiles_lookup)
             if result is None:
                 failed.append(os.path.basename(pdf_path))
 
         if failed:
-            print(f"\n[WARN] Failed PDFs ({len(failed)}):")
+            safe_print(f"\n[WARN] Failed PDFs ({len(failed)}):")
             for f in failed:
-                print(f"  - {f}")
+                safe_print(f"  - {f}")
 
-    combine_all(combined_path)
-    print(f"\nDone. Combined file: {combined_path}")
+    combine_all(combined_path, single_sheet=args.single_sheet)
+    safe_print(f"\nDone. Combined file: {combined_path}")
 
 
 if __name__ == "__main__":

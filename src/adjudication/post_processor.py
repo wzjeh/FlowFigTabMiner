@@ -14,7 +14,14 @@ import os
 import re
 import json
 import glob
+import sys
 import requests
+from typing import Any
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -98,6 +105,33 @@ REACTOR_NORM = {
     "pfr": "plug-flow reactor",
     "cstr": "continuous stirred tank reactor",
     "flow microreactor": "flow microreactor",
+}
+
+COMMON_NAME_TO_SMILES = {
+    "mei": "CI",
+    "methyl iodide": "CI",
+    "meotf": "CO[S](=O)(=O)C(F)(F)F",
+    "methyl triflate": "CO[S](=O)(=O)C(F)(F)F",
+    "nbuli": "CCCC[Li]",
+    "n-buli": "CCCC[Li]",
+    "n-butyllithium": "CCCC[Li]",
+    "phli": "[Li]c1ccccc1",
+    "phenyllithium": "[Li]c1ccccc1",
+    "khmds": "[K+].[N-](Si(C)(C)C)(Si(C)(C)C)",
+    "potassium hexamethyldisilazide": "[K+].[N-](Si(C)(C)C)(Si(C)(C)C)",
+    "lithium hexamethyldisilazide": "[Li+].[N-](Si(C)(C)C)(Si(C)(C)C)",
+    "dmpu": "CN1CC(=O)N(C)CC1",
+    "dme": "COCCOC",
+    "18-c-6": "C1COCCOCCOCCOCCO1",
+    "18-crown-6": "C1COCCOCCOCCOCCO1",
+    "thf": "C1CCOC1",
+    "tetrahydrofuran": "C1CCOC1",
+    "et2o": "CCOCC",
+    "diethyl ether": "CCOCC",
+    "toluene": "Cc1ccccc1",
+    "methanol": "CO",
+    "ethanol": "CCO",
+    "dichloromethane": "ClCCl",
 }
 
 
@@ -204,10 +238,20 @@ def humanise_source(raw: str) -> str:
     return raw
 
 
+def _simplify_name_key(name: str) -> str:
+    key = re.sub(r"\s+", " ", str(name or "").strip().lower())
+    key = key.replace("−", "-")
+    key = re.sub(r"[^\w\-\+\.\(\)\s]", "", key)
+    return key
+
+
 def lookup_smiles(name: str) -> str | None:
     """Query PubChem REST API for SMILES by compound name. Returns None on failure."""
     if not name or not name.strip():
         return None
+    key = _simplify_name_key(name)
+    if key in COMMON_NAME_TO_SMILES:
+        return COMMON_NAME_TO_SMILES[key]
     url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{requests.utils.quote(name)}/property/IsomericSMILES/JSON"
     try:
         resp = requests.get(url, timeout=5)
@@ -217,6 +261,103 @@ def lookup_smiles(name: str) -> str | None:
     except Exception:
         pass
     return None
+
+
+def _read_text_with_fallback(path: str) -> str:
+    raw = open(path, "rb").read()
+    for enc in ("utf-8", "gbk", "latin-1"):
+        try:
+            return raw.decode(enc)
+        except Exception:
+            continue
+    return raw.decode("utf-8", errors="ignore")
+
+
+def _extract_compound_aliases(text: str) -> dict[str, str]:
+    aliases: dict[str, str] = {}
+    if not text:
+        return aliases
+
+    patterns = [
+        r"\bcompound\s*([0-9]+[a-z]?)\s*\(([^)]+)\)",
+        r"\bcompound\s*([0-9]+[a-z]?)\s*(?:is|=|:)\s*([A-Za-z][^.;,\n]{3,120})",
+    ]
+    for pat in patterns:
+        for m in re.finditer(pat, text, flags=re.IGNORECASE):
+            label = f"compound {m.group(1).strip().lower()}"
+            expanded = re.sub(r"\s+", " ", m.group(2).strip())
+            expanded = re.sub(r"^(the|a|an)\s+", "", expanded, flags=re.IGNORECASE)
+            expanded = re.sub(r"\s*(throughout|using|with|for)\b.*$", "", expanded, flags=re.IGNORECASE)
+            if expanded and len(expanded) >= 4:
+                aliases[label] = expanded
+    return aliases
+
+
+def _build_compound_alias_map(full_text: str, local_vars_dir: str) -> dict[str, str]:
+    alias_map = _extract_compound_aliases(full_text)
+    if os.path.isdir(local_vars_dir):
+        for fp in glob.glob(os.path.join(local_vars_dir, "*_local_vars.json")):
+            try:
+                alias_map.update(_extract_compound_aliases(_read_text_with_fallback(fp)))
+            except Exception:
+                continue
+    return alias_map
+
+
+def _resolve_compound_label(name: Any, alias_map: dict[str, str]) -> tuple[Any, str | None]:
+    if not isinstance(name, str):
+        return name, None
+    stripped = re.sub(r"\s+", " ", name.strip())
+    m = re.fullmatch(r"compound\s*([0-9]+[a-z]?)", stripped, flags=re.IGNORECASE)
+    if not m:
+        return name, None
+    key = f"compound {m.group(1).lower()}"
+    if key in alias_map:
+        return alias_map[key], "compound_alias_map"
+    return name, None
+
+
+def _count_present_condition_fields(nr: dict) -> int:
+    conds = nr.get("conditions") or {}
+    fields = [
+        conds.get("temperature_C"),
+        conds.get("residence_time_s"),
+        conds.get("flow_rate_mL_min"),
+        conds.get("flow_rate_stream1_mL_min"),
+        conds.get("flow_rate_stream2_mL_min"),
+        conds.get("solvent"),
+        conds.get("catalyst"),
+        conds.get("additive"),
+        conds.get("pressure_bar"),
+    ]
+    return sum(1 for v in fields if v not in (None, "", []))
+
+
+def _assign_ml_tier(nr: dict) -> tuple[str, str | None]:
+    has_product_smiles = bool(nr.get("product_smiles"))
+    has_reactant_smiles = any(nr.get(f"reactant{i}_smiles") for i in range(1, 6))
+    has_numeric_outcome = any(nr.get(k) not in (None, "") for k in ("yield_pct", "conversion_pct", "selectivity_pct", "ee_pct"))
+    cond_count = _count_present_condition_fields(nr)
+    has_any_structure = has_product_smiles or has_reactant_smiles
+    has_any_names = any(nr.get(k) for k in ("reactant1_name", "reactant2_name", "product_name"))
+
+    if has_product_smiles and has_reactant_smiles and has_numeric_outcome and cond_count >= 2:
+        return "A", None
+    if (has_any_structure or has_any_names) and cond_count >= 2:
+        reasons = []
+        if not has_product_smiles:
+            reasons.append("missing_product_smiles")
+        if not has_reactant_smiles:
+            reasons.append("missing_reactant_smiles")
+        if not has_numeric_outcome:
+            reasons.append("missing_outcome_metric")
+        return "B", ",".join(reasons) if reasons else None
+    reasons = []
+    if not (has_any_structure or has_any_names):
+        reasons.append("missing_structure_and_names")
+    if cond_count < 2:
+        reasons.append("insufficient_conditions")
+    return "C", ",".join(reasons) if reasons else None
 
 
 # ---------------------------------------------------------------------------
@@ -497,6 +638,8 @@ PREFERRED_COLUMNS = [
     "reactant1_name", "reactant1_smiles",
     "reactant2_name", "reactant2_smiles",
     "product_name", "product_smiles", "product_label",
+    "structure_resolution_status", "structure_resolution_source",
+    "ml_tier", "ml_exclusion_reason",
     "reaction_smiles",
     "reaction_class",
     "yield_pct", "yield_type", "batch_yield_pct",
@@ -538,7 +681,7 @@ class PostProcessor:
             print(f"[PostProcessor] No _final.json found for {basename}, skipping.")
             return None
 
-        with open(final_path) as f:
+        with open(final_path, encoding="utf-8") as f:
             try:
                 records = json.load(f)
             except json.JSONDecodeError as e:
@@ -553,12 +696,14 @@ class PostProcessor:
         full_text = self._load_fulltext(pdf_path, intermediate_dir)
         paper_doi = extract_doi(full_text)
         paper_year = extract_year(full_text)
+        compound_alias_map = _build_compound_alias_map(full_text, os.path.join(intermediate_dir, "local_vars"))
 
         print(f"[PostProcessor] {basename}: {len(records)} records, DOI={paper_doi}, year={paper_year}")
 
         normalised = []
         for rec in records:
             nr = dict(rec)
+            resolution_sources = []
 
             # -- Solvent --
             conds = dict(nr.get("conditions") or {})
@@ -594,14 +739,30 @@ class PostProcessor:
             if not nr.get("yield_type"):
                 nr["yield_type"] = infer_yield_type(nr)
 
+            # -- Restore numbered compound labels to fuller chemical names when local context provides them --
+            for field in ("reactant1_name", "reactant2_name", "product_name"):
+                resolved_name, source = _resolve_compound_label(nr.get(field), compound_alias_map)
+                if source and resolved_name != nr.get(field):
+                    nr[field] = resolved_name
+                    resolution_sources.append(source)
+
             # -- SMILES lookup (optional, slow) --
             if smiles_lookup:
                 if not nr.get("reactant1_smiles") and nr.get("reactant1_name"):
-                    nr["reactant1_smiles"] = lookup_smiles(nr["reactant1_name"])
+                    looked_up = lookup_smiles(nr["reactant1_name"])
+                    if looked_up:
+                        nr["reactant1_smiles"] = looked_up
+                        resolution_sources.append("name_to_smiles")
                 if not nr.get("reactant2_smiles") and nr.get("reactant2_name"):
-                    nr["reactant2_smiles"] = lookup_smiles(nr["reactant2_name"])
+                    looked_up = lookup_smiles(nr["reactant2_name"])
+                    if looked_up:
+                        nr["reactant2_smiles"] = looked_up
+                        resolution_sources.append("name_to_smiles")
                 if not nr.get("product_smiles") and nr.get("product_name"):
-                    nr["product_smiles"] = lookup_smiles(nr["product_name"])
+                    looked_up = lookup_smiles(nr["product_name"])
+                    if looked_up:
+                        nr["product_smiles"] = looked_up
+                        resolution_sources.append("name_to_smiles")
 
             # -- Notes rescue parsing --
             notes_raw = str(nr.get("notes") or "")
@@ -641,11 +802,20 @@ class PostProcessor:
             if not nr.get("reaction_smiles"):
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
 
+            if resolution_sources:
+                nr["structure_resolution_status"] = "resolved"
+                nr["structure_resolution_source"] = ",".join(sorted(set(resolution_sources)))
+            else:
+                nr["structure_resolution_status"] = "original"
+                nr["structure_resolution_source"] = None
+
+            nr["ml_tier"], nr["ml_exclusion_reason"] = _assign_ml_tier(nr)
+
             normalised.append(nr)
 
         # Save _normalized.json
         norm_json = os.path.join(self.output_dir, f"{basename}_normalized.json")
-        with open(norm_json, "w") as f:
+        with open(norm_json, "w", encoding="utf-8") as f:
             json.dump(normalised, f, indent=2, ensure_ascii=False)
         print(f"[PostProcessor] -> {norm_json}")
 

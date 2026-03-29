@@ -1,3 +1,9 @@
+import os
+
+from src.utils.runtime_env import configure_runtime_env
+
+configure_runtime_env()
+
 from transformers import TableTransformerForObjectDetection, AutoImageProcessor
 import torch
 from PIL import Image
@@ -16,13 +22,37 @@ class TableStructureRecognizer:
             self.device = "cpu"
             torch.set_num_threads(1)
             
-        print(f"Loading Table Structure model: {model_name} on {self.device}...")
+        load_path = self._resolve_model_path(model_name)
+        print(f"Loading Table Structure model: {load_path} on {self.device}...")
         try:
-            self.processor = AutoImageProcessor.from_pretrained(model_name)
-            self.model = TableTransformerForObjectDetection.from_pretrained(model_name).to(self.device)
+            self.processor = AutoImageProcessor.from_pretrained(load_path, local_files_only=True)
+            self.model = TableTransformerForObjectDetection.from_pretrained(
+                load_path,
+                local_files_only=True,
+            ).to(self.device)
         except Exception as e:
             print(f"Error loading Table Structure model: {e}")
             self.model = None
+
+    def _resolve_model_path(self, model_name: str) -> str:
+        if os.path.exists(model_name):
+            return model_name
+
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        repo_cache_dir = os.path.join(
+            project_root,
+            "models",
+            "hub",
+            "models--microsoft--table-transformer-structure-recognition-v1.1-all",
+            "snapshots",
+        )
+        if os.path.isdir(repo_cache_dir):
+            snapshots = sorted(
+                name for name in os.listdir(repo_cache_dir) if not name.startswith("._")
+            )
+            if snapshots:
+                return os.path.join(repo_cache_dir, snapshots[-1])
+        return model_name
 
     def recognize_structure(self, image_path):
         """

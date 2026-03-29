@@ -3,6 +3,15 @@ import re
 import fitz  # PyMuPDF
 
 
+def _safe_print(text):
+    try:
+        import sys
+        sys.stdout.buffer.write((str(text) + "\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.flush()
+    except Exception:
+        pass
+
+
 def _normalize_text(s: str) -> str:
     """Normalize ligatures, quotes, and hyphen line-breaks."""
     # Ligature normalization
@@ -35,7 +44,7 @@ class PDFParser:
 
         txt_path = pdf_path.replace(".pdf", "_fulltext.txt")
         if os.path.exists(txt_path):
-            print(f"[PDFParser] Loading cached text from {txt_path}")
+            _safe_print(f"[PDFParser] Loading cached text from {txt_path}")
             with open(txt_path, "r", encoding="utf-8") as f:
                 content = f.read()
             truncated = self._truncate_text(content)
@@ -45,7 +54,7 @@ class PDFParser:
                 return truncated
             return content
 
-        print(f"[PDFParser] Parsing {pdf_path}...")
+        _safe_print(f"[PDFParser] Parsing {pdf_path}...")
         out_blocks = []
         try:
             doc = fitz.open(pdf_path)
@@ -77,7 +86,7 @@ class PDFParser:
                         out_blocks.append(block_text)
             doc.close()
         except Exception as e:
-            print(f"[PDFParser] Error parsing PDF: {e}")
+            _safe_print(f"[PDFParser] Error parsing PDF: {e}")
             return ""
 
         combined_text = "\n\n".join(out_blocks)
@@ -125,7 +134,7 @@ class PDFParser:
                     cutoff_idx = idx
         
         if cutoff_idx < len(text):
-            print(f"[PDFParser] Truncated text at index {cutoff_idx}/{len(text)} (detected ending section).")
+            _safe_print(f"[PDFParser] Truncated text at index {cutoff_idx}/{len(text)} (detected ending section).")
             return text[:cutoff_idx]
             
         return text
