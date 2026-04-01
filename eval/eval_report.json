@@ -1,0 +1,161 @@
+{
+  "layer1_figure": {
+    "per_sample": {
+      "F1": {
+        "mode": "人工判断",
+        "n_predicted": 63,
+        "n_gt": 63,
+        "matched": 13,
+        "precision": 0.2063,
+        "recall": 0.2063,
+        "f1": 0.2063
+      },
+      "F10": {
+        "status": "未标注",
+        "n_predicted": 13
+      },
+      "F2": {
+        "status": "未标注",
+        "n_predicted": 47
+      },
+      "F3": {
+        "status": "未标注",
+        "n_predicted": 38
+      },
+      "F4": {
+        "status": "未标注",
+        "n_predicted": 29
+      },
+      "F5": {
+        "status": "未标注",
+        "n_predicted": 29
+      },
+      "F6": {
+        "status": "未标注",
+        "n_predicted": 22
+      },
+      "F7": {
+        "status": "未标注",
+        "n_predicted": 17
+      },
+      "F8": {
+        "status": "未标注",
+        "n_predicted": 16
+      },
+      "F9": {
+        "status": "未标注",
+        "n_predicted": 15
+      }
+    },
+    "overall": {
+      "precision": 0.2063,
+      "recall": 0.2063,
+      "f1": 0.2063,
+      "total_predicted": 63,
+      "total_gt": 63,
+      "total_matched": 13
+    }
+  },
+  "layer1_table": {
+    "per_sample": {
+      "T1": {
+        "status": "未标注",
+        "n_cells": 65
+      },
+      "T10": {
+        "status": "未标注",
+        "n_cells": 61
+      },
+      "T2": {
+        "status": "未标注",
+        "n_cells": 62
+      },
+      "T3": {
+        "n_cells": 50,
+        "text_accuracy": 0.15,
+        "smiles_valid_rate": 1.0,
+        "smiles_canonical_match": "N/A",
+        "overall_cell_accuracy": 0.16
+      },
+      "T4": {
+        "status": "未标注",
+        "n_cells": 21
+      },
+      "T5": {
+        "status": "未标注",
+        "n_cells": 60
+      },
+      "T6": {
+        "status": "未标注",
+        "n_cells": 48
+      },
+      "T7": {
+        "status": "未标注",
+        "n_cells": 110
+      },
+      "T8": {
+        "status": "未标注",
+        "n_cells": 39
+      },
+      "T9": {
+        "status": "未标注",
+        "n_cells": 30
+      }
+    },
+    "overall": {
+      "text_accuracy": 0.15,
+      "smiles_valid_rate": 1.0,
+      "smiles_canonical_match": "N/A",
+      "overall_cell_accuracy": 0.16,
+      "total_cells": 50,
+      "text_cells": 20,
+      "smiles_cells": 30
+    }
+  },
+  "layer2_final": {
+    "per_field": {
+      "catalyst": {
+        "n": 8,
+        "correct": 8,
+        "accuracy": 1.0
+      },
+      "conversion_pct": {
+        "n": 8,
+        "correct": 8,
+        "accuracy": 1.0
+      },
+      "residence_time_s": {
+        "n": 8,
+        "correct": 8,
+        "accuracy": 1.0
+      },
+      "solvent": {
+        "n": 8,
+        "correct": 4,
+        "accuracy": 0.5
+      },
+      "temperature_C": {
+        "n": 8,
+        "correct": 4,
+        "accuracy": 0.5
+      },
+      "yield_pct": {
+        "n": 8,
+        "correct": 4,
+        "accuracy": 0.5
+      }
+    },
+    "per_paper": {
+      "example1": {
+        "n": 48,
+        "correct": 36,
+        "accuracy": 0.75
+      }
+    },
+    "overall": {
+      "accuracy": 0.75,
+      "total_fields_evaluated": 48,
+      "total_correct": 36
+    }
+  }
+}

@@ -1,0 +1,598 @@
+{
+  "x_axis_title": "log10(tR1 / s)",
+  "y_axis_title": "T1 / °C",
+  "y_right_axis_title": null,
+  "series": [
+    {
+      "name": "(a) 1,2-dibromobenzene",
+      "points": [
+        {
+          "X": -2.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 30
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 51
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 60
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 37
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 15
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 3
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 31
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 38
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 62
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 74
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 71
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 46
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 22
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 9
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 26
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 29
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 41
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 49
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 68
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 80
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 74
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 60
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 19
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 14
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 17
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 27
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 36
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 52
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 76
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 81
+        }
+      ]
+    },
+    {
+      "name": "(b) 1-bromo-2-iodobenzene",
+      "points": [
+        {
+          "X": -2.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 75
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 85
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 58
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 37
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 33
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 14
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 74
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 88
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 84
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 81
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 64
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 18
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 18
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 8
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 76
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 83
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 93
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 90
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 89
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 83
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 71
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 60
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 70
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 79
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 86
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 80
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 87
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 81
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 81
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 76
+        }
+      ]
+    },
+    {
+      "name": "(c) 1,2-diiodobenzene",
+      "points": [
+        {
+          "X": -2.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 58
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 17
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -50,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 80
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 59
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 10
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 8
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 8
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 8
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 8
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 81
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 75
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 55
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 36
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 14
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -70,
+          "Y_Right": null,
+          "Z_Value": 0
+        },
+        {
+          "X": -2.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 76
+        },
+        {
+          "X": -1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 72
+        },
+        {
+          "X": -1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 68
+        },
+        {
+          "X": -0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 71
+        },
+        {
+          "X": 0.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 65
+        },
+        {
+          "X": 0.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 43
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 23
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Z_Value": 4
+        }
+      ]
+    }
+  ]
+}

@@ -40,3 +40,12 @@ flowfigtabminer/
 # Local Models
 models/
 !src/**/models/
+
+# Large external datasets
+other dataset/
+
+# Claude Code worktrees
+.claude/worktrees/
+
+# Numbers files (binary, not diffable)
+*.numbers

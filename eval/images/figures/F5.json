@@ -1,0 +1,257 @@
+{
+  "x_axis_title": "operation time (min)",
+  "y_axis_title": "flow rate (ml/min)",
+  "y_right_axis_title": null,
+  "series": [
+    {
+      "name": "MR1",
+      "points": [
+        {
+          "X": 5,
+          "Y_Left": 0.552,
+          "Y_Right": null
+        },
+        {
+          "X": 10,
+          "Y_Left": 0.558,
+          "Y_Right": null
+        },
+        {
+          "X": 15,
+          "Y_Left": 0.553,
+          "Y_Right": null
+        },
+        {
+          "X": 20,
+          "Y_Left": 0.548,
+          "Y_Right": null
+        },
+        {
+          "X": 30,
+          "Y_Left": 0.548,
+          "Y_Right": null
+        },
+        {
+          "X": 40,
+          "Y_Left": 0.539,
+          "Y_Right": null
+        },
+        {
+          "X": 50,
+          "Y_Left": 0.554,
+          "Y_Right": null
+        },
+        {
+          "X": 60,
+          "Y_Left": 0.553,
+          "Y_Right": null
+        },
+        {
+          "X": 90,
+          "Y_Left": 0.554,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "MR2",
+      "points": [
+        {
+          "X": 5,
+          "Y_Left": 0.489,
+          "Y_Right": null
+        },
+        {
+          "X": 10,
+          "Y_Left": 0.486,
+          "Y_Right": null
+        },
+        {
+          "X": 15,
+          "Y_Left": 0.490,
+          "Y_Right": null
+        },
+        {
+          "X": 20,
+          "Y_Left": 0.487,
+          "Y_Right": null
+        },
+        {
+          "X": 30,
+          "Y_Left": 0.485,
+          "Y_Right": null
+        },
+        {
+          "X": 40,
+          "Y_Left": 0.493,
+          "Y_Right": null
+        },
+        {
+          "X": 50,
+          "Y_Left": 0.492,
+          "Y_Right": null
+        },
+        {
+          "X": 60,
+          "Y_Left": 0.491,
+          "Y_Right": null
+        },
+        {
+          "X": 90,
+          "Y_Left": 0.492,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "MR3",
+      "points": [
+        {
+          "X": 5,
+          "Y_Left": 0.493,
+          "Y_Right": null
+        },
+        {
+          "X": 10,
+          "Y_Left": 0.488,
+          "Y_Right": null
+        },
+        {
+          "X": 15,
+          "Y_Left": 0.495,
+          "Y_Right": null
+        },
+        {
+          "X": 20,
+          "Y_Left": 0.500,
+          "Y_Right": null
+        },
+        {
+          "X": 30,
+          "Y_Left": 0.498,
+          "Y_Right": null
+        },
+        {
+          "X": 40,
+          "Y_Left": 0.513,
+          "Y_Right": null
+        },
+        {
+          "X": 50,
+          "Y_Left": 0.503,
+          "Y_Right": null
+        },
+        {
+          "X": 60,
+          "Y_Left": 0.505,
+          "Y_Right": null
+        },
+        {
+          "X": 90,
+          "Y_Left": 0.505,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "MR4",
+      "points": [
+        {
+          "X": 5,
+          "Y_Left": 0.460,
+          "Y_Right": null
+        },
+        {
+          "X": 10,
+          "Y_Left": 0.461,
+          "Y_Right": null
+        },
+        {
+          "X": 15,
+          "Y_Left": 0.456,
+          "Y_Right": null
+        },
+        {
+          "X": 20,
+          "Y_Left": 0.457,
+          "Y_Right": null
+        },
+        {
+          "X": 30,
+          "Y_Left": 0.461,
+          "Y_Right": null
+        },
+        {
+          "X": 40,
+          "Y_Left": 0.451,
+          "Y_Right": null
+        },
+        {
+          "X": 50,
+          "Y_Left": 0.446,
+          "Y_Right": null
+        },
+        {
+          "X": 60,
+          "Y_Left": 0.448,
+          "Y_Right": null
+        },
+        {
+          "X": 90,
+          "Y_Left": 0.442,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "MR5",
+      "points": [
+        {
+          "X": 5,
+          "Y_Left": 0.506,
+          "Y_Right": null
+        },
+        {
+          "X": 10,
+          "Y_Left": 0.506,
+          "Y_Right": null
+        },
+        {
+          "X": 15,
+          "Y_Left": 0.506,
+          "Y_Right": null
+        },
+        {
+          "X": 20,
+          "Y_Left": 0.508,
+          "Y_Right": null
+        },
+        {
+          "X": 30,
+          "Y_Left": 0.507,
+          "Y_Right": null
+        },
+        {
+          "X": 40,
+          "Y_Left": 0.503,
+          "Y_Right": null
+        },
+        {
+          "X": 50,
+          "Y_Left": 0.503,
+          "Y_Right": null
+        },
+        {
+          "X": 60,
+          "Y_Left": 0.501,
+          "Y_Right": null
+        },
+        {
+          "X": 90,
+          "Y_Left": 0.507,
+          "Y_Right": null
+        }
+      ]
+    }
+  ]
+}

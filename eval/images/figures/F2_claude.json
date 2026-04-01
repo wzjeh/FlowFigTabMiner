@@ -1,0 +1,327 @@
+{
+  "x_axis_title": "Residence time / s",
+  "y_axis_title": "Temperature / °C",
+  "y_right_axis_title": null,
+  "series": [
+    {
+      "name": "100% (1 in organic phase)",
+      "points": [
+        {
+          "X": 0.0,
+          "Y_Left": 28,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": 90,
+          "Y_Right": null
+        },
+        {
+          "X": 1.5,
+          "Y_Left": 155,
+          "Y_Right": null
+        },
+        {
+          "X": 2.0,
+          "Y_Left": 182,
+          "Y_Right": null
+        },
+        {
+          "X": 2.5,
+          "Y_Left": 205,
+          "Y_Right": null
+        },
+        {
+          "X": 3.0,
+          "Y_Left": 215,
+          "Y_Right": null
+        },
+        {
+          "X": 3.5,
+          "Y_Left": 222,
+          "Y_Right": null
+        },
+        {
+          "X": 4.0,
+          "Y_Left": 224,
+          "Y_Right": null
+        },
+        {
+          "X": 4.5,
+          "Y_Left": 225,
+          "Y_Right": null
+        },
+        {
+          "X": 5.0,
+          "Y_Left": 225,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 222,
+          "Y_Right": null
+        },
+        {
+          "X": 6.0,
+          "Y_Left": 220,
+          "Y_Right": null
+        },
+        {
+          "X": 6.5,
+          "Y_Left": 220,
+          "Y_Right": null
+        },
+        {
+          "X": 7.0,
+          "Y_Left": 219,
+          "Y_Right": null
+        },
+        {
+          "X": 7.5,
+          "Y_Left": 218,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "75% (1 in organic phase)",
+      "points": [
+        {
+          "X": 0.0,
+          "Y_Left": 27,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": 45,
+          "Y_Right": null
+        },
+        {
+          "X": 1.5,
+          "Y_Left": 63,
+          "Y_Right": null
+        },
+        {
+          "X": 2.0,
+          "Y_Left": 95,
+          "Y_Right": null
+        },
+        {
+          "X": 2.5,
+          "Y_Left": 115,
+          "Y_Right": null
+        },
+        {
+          "X": 3.0,
+          "Y_Left": 120,
+          "Y_Right": null
+        },
+        {
+          "X": 3.5,
+          "Y_Left": 123,
+          "Y_Right": null
+        },
+        {
+          "X": 4.0,
+          "Y_Left": 125,
+          "Y_Right": null
+        },
+        {
+          "X": 4.5,
+          "Y_Left": 127,
+          "Y_Right": null
+        },
+        {
+          "X": 5.0,
+          "Y_Left": 128,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 129,
+          "Y_Right": null
+        },
+        {
+          "X": 6.0,
+          "Y_Left": 130,
+          "Y_Right": null
+        },
+        {
+          "X": 6.5,
+          "Y_Left": 130,
+          "Y_Right": null
+        },
+        {
+          "X": 7.0,
+          "Y_Left": 131,
+          "Y_Right": null
+        },
+        {
+          "X": 7.5,
+          "Y_Left": 132,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "50% (1 in organic phase)",
+      "points": [
+        {
+          "X": 0.0,
+          "Y_Left": 25,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": 28,
+          "Y_Right": null
+        },
+        {
+          "X": 1.5,
+          "Y_Left": 35,
+          "Y_Right": null
+        },
+        {
+          "X": 2.0,
+          "Y_Left": 42,
+          "Y_Right": null
+        },
+        {
+          "X": 2.5,
+          "Y_Left": 55,
+          "Y_Right": null
+        },
+        {
+          "X": 3.0,
+          "Y_Left": 75,
+          "Y_Right": null
+        },
+        {
+          "X": 3.5,
+          "Y_Left": 80,
+          "Y_Right": null
+        },
+        {
+          "X": 4.0,
+          "Y_Left": 85,
+          "Y_Right": null
+        },
+        {
+          "X": 4.5,
+          "Y_Left": 88,
+          "Y_Right": null
+        },
+        {
+          "X": 5.0,
+          "Y_Left": 92,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 95,
+          "Y_Right": null
+        },
+        {
+          "X": 6.0,
+          "Y_Left": 97,
+          "Y_Right": null
+        },
+        {
+          "X": 6.5,
+          "Y_Left": 98,
+          "Y_Right": null
+        },
+        {
+          "X": 7.0,
+          "Y_Left": 99,
+          "Y_Right": null
+        },
+        {
+          "X": 7.5,
+          "Y_Left": 100,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "25% (1 in organic phase)",
+      "points": [
+        {
+          "X": 0.0,
+          "Y_Left": 24,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": 26,
+          "Y_Right": null
+        },
+        {
+          "X": 1.5,
+          "Y_Left": 33,
+          "Y_Right": null
+        },
+        {
+          "X": 2.0,
+          "Y_Left": 37,
+          "Y_Right": null
+        },
+        {
+          "X": 2.5,
+          "Y_Left": 42,
+          "Y_Right": null
+        },
+        {
+          "X": 3.0,
+          "Y_Left": 48,
+          "Y_Right": null
+        },
+        {
+          "X": 3.5,
+          "Y_Left": 52,
+          "Y_Right": null
+        },
+        {
+          "X": 4.0,
+          "Y_Left": 55,
+          "Y_Right": null
+        },
+        {
+          "X": 4.5,
+          "Y_Left": 58,
+          "Y_Right": null
+        },
+        {
+          "X": 5.0,
+          "Y_Left": 60,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 62,
+          "Y_Right": null
+        },
+        {
+          "X": 6.0,
+          "Y_Left": 64,
+          "Y_Right": null
+        },
+        {
+          "X": 6.5,
+          "Y_Left": 65,
+          "Y_Right": null
+        },
+        {
+          "X": 7.0,
+          "Y_Left": 67,
+          "Y_Right": null
+        },
+        {
+          "X": 7.5,
+          "Y_Left": 68,
+          "Y_Right": null
+        }
+      ]
+    }
+  ]
+}

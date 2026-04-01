@@ -1,0 +1,377 @@
+{
+  "figures": [
+    {
+      "label": "A",
+      "title": "Catalytic HDC of 2-chlorophenol",
+      "x_axis_title": "t / min",
+      "y_axis_title": "Conv. / %",
+      "y_right_axis_title": null,
+      "series": [
+        {
+          "name": "2-Chlorophenol conversion",
+          "points": [
+            {
+              "X": 0,
+              "Y_Left": 0,
+              "Y_Right": null
+            },
+            {
+              "X": 10,
+              "Y_Left": 15,
+              "Y_Right": null
+            },
+            {
+              "X": 20,
+              "Y_Left": 25,
+              "Y_Right": null
+            },
+            {
+              "X": 40,
+              "Y_Left": 41,
+              "Y_Right": null
+            },
+            {
+              "X": 60,
+              "Y_Left": 51,
+              "Y_Right": null
+            },
+            {
+              "X": 80,
+              "Y_Left": 73,
+              "Y_Right": null
+            },
+            {
+              "X": 100,
+              "Y_Left": 87,
+              "Y_Right": null
+            },
+            {
+              "X": 120,
+              "Y_Left": 92,
+              "Y_Right": null
+            },
+            {
+              "X": 140,
+              "Y_Left": 93,
+              "Y_Right": null
+            },
+            {
+              "X": 160,
+              "Y_Left": 96,
+              "Y_Right": null
+            },
+            {
+              "X": 180,
+              "Y_Left": 98,
+              "Y_Right": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "B",
+      "title": "Catalytic HDC of 2,4-dichlorophenol",
+      "x_axis_title": "t / min",
+      "y_axis_title": "Yield and Conv. / %",
+      "y_right_axis_title": null,
+      "series": [
+        {
+          "name": "Phenol",
+          "points": [
+            {
+              "X": 0,
+              "Y_Left": 0,
+              "Y_Right": null
+            },
+            {
+              "X": 15,
+              "Y_Left": 8,
+              "Y_Right": null
+            },
+            {
+              "X": 30,
+              "Y_Left": 15,
+              "Y_Right": null
+            },
+            {
+              "X": 60,
+              "Y_Left": 22,
+              "Y_Right": null
+            },
+            {
+              "X": 100,
+              "Y_Left": 30,
+              "Y_Right": null
+            },
+            {
+              "X": 150,
+              "Y_Left": 40,
+              "Y_Right": null
+            },
+            {
+              "X": 200,
+              "Y_Left": 49,
+              "Y_Right": null
+            },
+            {
+              "X": 250,
+              "Y_Left": 58,
+              "Y_Right": null
+            },
+            {
+              "X": 300,
+              "Y_Left": 63,
+              "Y_Right": null
+            },
+            {
+              "X": 350,
+              "Y_Left": 72,
+              "Y_Right": null
+            },
+            {
+              "X": 400,
+              "Y_Left": 79,
+              "Y_Right": null
+            },
+            {
+              "X": 450,
+              "Y_Left": 82,
+              "Y_Right": null
+            },
+            {
+              "X": 500,
+              "Y_Left": 84,
+              "Y_Right": null
+            },
+            {
+              "X": 600,
+              "Y_Left": 87,
+              "Y_Right": null
+            }
+          ]
+        },
+        {
+          "name": "2-Chlorophenol",
+          "points": [
+            {
+              "X": 0,
+              "Y_Left": 2,
+              "Y_Right": null
+            },
+            {
+              "X": 15,
+              "Y_Left": 7,
+              "Y_Right": null
+            },
+            {
+              "X": 30,
+              "Y_Left": 9,
+              "Y_Right": null
+            },
+            {
+              "X": 60,
+              "Y_Left": 9,
+              "Y_Right": null
+            },
+            {
+              "X": 100,
+              "Y_Left": 8,
+              "Y_Right": null
+            },
+            {
+              "X": 150,
+              "Y_Left": 7,
+              "Y_Right": null
+            },
+            {
+              "X": 200,
+              "Y_Left": 6,
+              "Y_Right": null
+            },
+            {
+              "X": 250,
+              "Y_Left": 5,
+              "Y_Right": null
+            },
+            {
+              "X": 300,
+              "Y_Left": 4,
+              "Y_Right": null
+            },
+            {
+              "X": 350,
+              "Y_Left": 2,
+              "Y_Right": null
+            },
+            {
+              "X": 400,
+              "Y_Left": 1,
+              "Y_Right": null
+            },
+            {
+              "X": 500,
+              "Y_Left": 1,
+              "Y_Right": null
+            },
+            {
+              "X": 600,
+              "Y_Left": 0,
+              "Y_Right": null
+            }
+          ]
+        },
+        {
+          "name": "4-Chlorophenol",
+          "points": [
+            {
+              "X": 0,
+              "Y_Left": 1,
+              "Y_Right": null
+            },
+            {
+              "X": 15,
+              "Y_Left": 2,
+              "Y_Right": null
+            },
+            {
+              "X": 30,
+              "Y_Left": 2,
+              "Y_Right": null
+            },
+            {
+              "X": 60,
+              "Y_Left": 3,
+              "Y_Right": null
+            },
+            {
+              "X": 100,
+              "Y_Left": 4,
+              "Y_Right": null
+            },
+            {
+              "X": 150,
+              "Y_Left": 5,
+              "Y_Right": null
+            },
+            {
+              "X": 200,
+              "Y_Left": 5,
+              "Y_Right": null
+            },
+            {
+              "X": 250,
+              "Y_Left": 5,
+              "Y_Right": null
+            },
+            {
+              "X": 300,
+              "Y_Left": 6,
+              "Y_Right": null
+            },
+            {
+              "X": 350,
+              "Y_Left": 6,
+              "Y_Right": null
+            },
+            {
+              "X": 400,
+              "Y_Left": 7,
+              "Y_Right": null
+            },
+            {
+              "X": 450,
+              "Y_Left": 7,
+              "Y_Right": null
+            },
+            {
+              "X": 500,
+              "Y_Left": 8,
+              "Y_Right": null
+            },
+            {
+              "X": 600,
+              "Y_Left": 8,
+              "Y_Right": null
+            }
+          ]
+        },
+        {
+          "name": "2,4-Dichlorophenol",
+          "points": [
+            {
+              "X": 0,
+              "Y_Left": 96,
+              "Y_Right": null
+            },
+            {
+              "X": 15,
+              "Y_Left": 82,
+              "Y_Right": null
+            },
+            {
+              "X": 30,
+              "Y_Left": 74,
+              "Y_Right": null
+            },
+            {
+              "X": 60,
+              "Y_Left": 65,
+              "Y_Right": null
+            },
+            {
+              "X": 100,
+              "Y_Left": 56,
+              "Y_Right": null
+            },
+            {
+              "X": 150,
+              "Y_Left": 40,
+              "Y_Right": null
+            },
+            {
+              "X": 200,
+              "Y_Left": 30,
+              "Y_Right": null
+            },
+            {
+              "X": 250,
+              "Y_Left": 22,
+              "Y_Right": null
+            },
+            {
+              "X": 300,
+              "Y_Left": 15,
+              "Y_Right": null
+            },
+            {
+              "X": 350,
+              "Y_Left": 10,
+              "Y_Right": null
+            },
+            {
+              "X": 400,
+              "Y_Left": 8,
+              "Y_Right": null
+            },
+            {
+              "X": 450,
+              "Y_Left": 5,
+              "Y_Right": null
+            },
+            {
+              "X": 500,
+              "Y_Left": 4,
+              "Y_Right": null
+            },
+            {
+              "X": 600,
+              "Y_Left": 2,
+              "Y_Right": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

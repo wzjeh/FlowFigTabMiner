@@ -1,0 +1,545 @@
+{
+  "figure": {
+    "scope": "F1-F5 (comparable) + F1-F10 (pipeline only)",
+    "pipeline_F1_F5": {
+      "precision": 0.8764,
+      "recall": 0.9318,
+      "f1": 0.892
+    },
+    "pipeline_all10": {
+      "precision": 0.913,
+      "recall": 0.835,
+      "f1": 0.873
+    },
+    "gemini_F1_F5": {
+      "precision": 0.5307,
+      "recall": 0.6595,
+      "f1": 0.5754
+    },
+    "claude_F1_F5": {
+      "precision": 0.5134,
+      "recall": 0.6506,
+      "f1": 0.5615
+    },
+    "pipeline_per_figure": {
+      "F1": {
+        "n": 63,
+        "correct": 61,
+        "wrong": 2,
+        "gt_miss": 2,
+        "P": 0.968,
+        "R": 0.968,
+        "F1": 0.968
+      },
+      "F2": {
+        "n": 47,
+        "correct": 46,
+        "wrong": 1,
+        "gt_miss": 6,
+        "P": 0.979,
+        "R": 0.885,
+        "F1": 0.929
+      },
+      "F3": {
+        "n": 38,
+        "correct": 27,
+        "wrong": 11,
+        "gt_miss": 0,
+        "P": 0.711,
+        "R": 1.0,
+        "F1": 0.831
+      },
+      "F4": {
+        "n": 29,
+        "correct": 21,
+        "wrong": 8,
+        "gt_miss": 0,
+        "P": 0.724,
+        "R": 1.0,
+        "F1": 0.84
+      },
+      "F5": {
+        "n": 29,
+        "correct": 29,
+        "wrong": 0,
+        "gt_miss": 7,
+        "P": 1.0,
+        "R": 0.806,
+        "F1": 0.892
+      },
+      "F6": {
+        "n": 22,
+        "correct": 20,
+        "wrong": 2,
+        "gt_miss": 2,
+        "P": 0.909,
+        "R": 0.909,
+        "F1": 0.909
+      },
+      "F7": {
+        "n": 17,
+        "correct": 17,
+        "wrong": 0,
+        "gt_miss": 35,
+        "P": 1.0,
+        "R": 0.327,
+        "F1": 0.493
+      },
+      "F8": {
+        "n": 16,
+        "correct": 16,
+        "wrong": 0,
+        "gt_miss": 0,
+        "P": 1.0,
+        "R": 1.0,
+        "F1": 1.0
+      },
+      "F9": {
+        "n": 15,
+        "correct": 15,
+        "wrong": 0,
+        "gt_miss": 0,
+        "P": 1.0,
+        "R": 1.0,
+        "F1": 1.0
+      },
+      "F10": {
+        "n": 13,
+        "correct": 12,
+        "wrong": 1,
+        "gt_miss": 0,
+        "P": 0.923,
+        "R": 1.0,
+        "F1": 0.96
+      }
+    },
+    "vlm_per_figure": {
+      "F1": {
+        "gemini": {
+          "n": 73,
+          "matched": 53,
+          "P": 0.726,
+          "R": 0.8413,
+          "F1": 0.7794
+        },
+        "claude": {
+          "n": 66,
+          "matched": 44,
+          "P": 0.6667,
+          "R": 0.6984,
+          "F1": 0.6822
+        }
+      },
+      "F2": {
+        "gemini": {
+          "n": 52,
+          "matched": 42,
+          "P": 0.8077,
+          "R": 0.8936,
+          "F1": 0.8485
+        },
+        "claude": {
+          "n": 60,
+          "matched": 43,
+          "P": 0.7167,
+          "R": 0.9149,
+          "F1": 0.8037
+        }
+      },
+      "F3": {
+        "gemini": {
+          "n": 96,
+          "matched": 24,
+          "P": 0.25,
+          "R": 0.6316,
+          "F1": 0.3582
+        },
+        "claude": {
+          "n": 95,
+          "matched": 23,
+          "P": 0.2421,
+          "R": 0.6053,
+          "F1": 0.3459
+        }
+      },
+      "F4": {
+        "gemini": {
+          "n": 28,
+          "matched": 20,
+          "P": 0.7143,
+          "R": 0.6897,
+          "F1": 0.7018
+        },
+        "claude": {
+          "n": 28,
+          "matched": 20,
+          "P": 0.7143,
+          "R": 0.6897,
+          "F1": 0.7018
+        }
+      },
+      "F5": {
+        "gemini": {
+          "n": 45,
+          "matched": 7,
+          "P": 0.1556,
+          "R": 0.2414,
+          "F1": 0.1892
+        },
+        "claude": {
+          "n": 44,
+          "matched": 10,
+          "P": 0.2273,
+          "R": 0.3448,
+          "F1": 0.274
+        }
+      }
+    }
+  },
+  "table_cell": {
+    "scope": "T1-T5 (comparable) + T1-T10 (pipeline only)",
+    "pipeline_T1_T5": {
+      "precision": 0.8434,
+      "recall": 0.814,
+      "f1": 0.8272
+    },
+    "pipeline_all10": {
+      "precision": 0.894,
+      "recall": 0.855,
+      "f1": 0.874
+    },
+    "gemini_T1_T5": {
+      "precision": 0.98,
+      "recall": 0.98,
+      "f1": 0.98,
+      "note": "Zhao 评测 ~100%"
+    },
+    "claude_T1_T5": {
+      "precision": 0.99,
+      "recall": 0.99,
+      "f1": 0.99,
+      "note": "Zhao 评测 ~100%, 列标题更好"
+    },
+    "pipeline_per_table": {
+      "T1": {
+        "n": 65,
+        "correct": 64,
+        "wrong": 1,
+        "gt_miss": 0,
+        "P": 0.985,
+        "R": 0.985,
+        "F1": 0.985
+      },
+      "T2": {
+        "n": 62,
+        "correct": 62,
+        "wrong": 0,
+        "gt_miss": 0,
+        "P": 1.0,
+        "R": 1.0,
+        "F1": 1.0
+      },
+      "T3": {
+        "n": 50,
+        "correct": 36,
+        "wrong": 14,
+        "gt_miss": 0,
+        "P": 0.72,
+        "R": 0.72,
+        "F1": 0.72
+      },
+      "T4": {
+        "n": 21,
+        "correct": 16,
+        "wrong": 5,
+        "gt_miss": 5,
+        "P": 0.762,
+        "R": 0.615,
+        "F1": 0.681
+      },
+      "T5": {
+        "n": 60,
+        "correct": 45,
+        "wrong": 15,
+        "gt_miss": 0,
+        "P": 0.75,
+        "R": 0.75,
+        "F1": 0.75
+      },
+      "T6": {
+        "n": 48,
+        "correct": 43,
+        "wrong": 5,
+        "gt_miss": 20,
+        "P": 0.896,
+        "R": 0.632,
+        "F1": 0.741
+      },
+      "T7": {
+        "n": 110,
+        "correct": 110,
+        "wrong": 0,
+        "gt_miss": 0,
+        "P": 1.0,
+        "R": 1.0,
+        "F1": 1.0
+      },
+      "T8": {
+        "n": 39,
+        "correct": 38,
+        "wrong": 1,
+        "gt_miss": 0,
+        "P": 0.974,
+        "R": 0.974,
+        "F1": 0.974
+      },
+      "T9": {
+        "n": 30,
+        "correct": 26,
+        "wrong": 4,
+        "gt_miss": 0,
+        "P": 0.867,
+        "R": 0.867,
+        "F1": 0.867
+      },
+      "T10": {
+        "n": 61,
+        "correct": 48,
+        "wrong": 12,
+        "gt_miss": 0,
+        "P": 0.787,
+        "R": 0.787,
+        "F1": 0.787
+      }
+    }
+  },
+  "table_smiles": {
+    "scope": "T1-T5",
+    "pipeline": {
+      "precision": 0.9254,
+      "recall": 0.6966,
+      "f1": 0.7949,
+      "valid": 62,
+      "total": 67
+    },
+    "gemini": {
+      "precision": 0.9438,
+      "recall": 0.9438,
+      "f1": 0.9438,
+      "valid": 84,
+      "total": 89
+    },
+    "claude": {
+      "precision": 0.8929,
+      "recall": 0.8427,
+      "f1": 0.8671,
+      "valid": 75,
+      "total": 84
+    },
+    "recall_denominator": 89,
+    "per_table": {
+      "T1": {
+        "gemini": {
+          "total": 30,
+          "valid": 30,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "claude": {
+          "total": 27,
+          "valid": 24,
+          "invalid": 3,
+          "invalid_examples": [
+            "I/C(F)([SnBu3])F",
+            "I/C(F)([SnPh3])F",
+            "I/C(F)([SnBu2Ph])F"
+          ]
+        },
+        "pipeline": {
+          "total": 19,
+          "valid": 18,
+          "invalid": 1,
+          "invalid_examples": [
+            "77 (87)(cl"
+          ]
+        },
+        "gemini_vs_claude": {
+          "compared": 27,
+          "canonical_match": 4,
+          "match_rate": 0.1481
+        },
+        "gemini_vs_pipeline": {
+          "compared": 18,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        },
+        "claude_vs_pipeline": {
+          "compared": 17,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        }
+      },
+      "T2": {
+        "gemini": {
+          "total": 36,
+          "valid": 36,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "claude": {
+          "total": 32,
+          "valid": 32,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "pipeline": {
+          "total": 22,
+          "valid": 21,
+          "invalid": 1,
+          "invalid_examples": [
+            "CC12=CC=C13(C)C145=CC=CC6=C7=C38(C)C=61C13(=CC=CC="
+          ]
+        },
+        "gemini_vs_claude": {
+          "compared": 32,
+          "canonical_match": 28,
+          "match_rate": 0.875
+        },
+        "gemini_vs_pipeline": {
+          "compared": 22,
+          "canonical_match": 2,
+          "match_rate": 0.0909
+        },
+        "claude_vs_pipeline": {
+          "compared": 20,
+          "canonical_match": 2,
+          "match_rate": 0.1
+        }
+      },
+      "T3": {
+        "gemini": {
+          "total": 18,
+          "valid": 18,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "claude": {
+          "total": 19,
+          "valid": 19,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "pipeline": {
+          "total": 22,
+          "valid": 22,
+          "invalid": 0,
+          "invalid_examples": []
+        },
+        "gemini_vs_claude": {
+          "compared": 18,
+          "canonical_match": 16,
+          "match_rate": 0.8889
+        },
+        "gemini_vs_pipeline": {
+          "compared": 16,
+          "canonical_match": 16,
+          "match_rate": 1.0
+        },
+        "claude_vs_pipeline": {
+          "compared": 16,
+          "canonical_match": 14,
+          "match_rate": 0.875
+        }
+      },
+      "T4": {
+        "gemini": {
+          "total": 3,
+          "valid": 0,
+          "invalid": 3,
+          "invalid_examples": [
+            "[Pd(μ-I)P(tBu)3]2",
+            "Pd[P(tBu)3]2",
+            "Pd[P(tBu)3]2/O2^c"
+          ]
+        },
+        "claude": {
+          "total": 4,
+          "valid": 0,
+          "invalid": 4,
+          "invalid_examples": [
+            "[Pd(μ-I)P(tBu)3]2",
+            "Pd[P(tBu)3]2",
+            "Pd[P(tBu)3]2/O2[c]"
+          ]
+        },
+        "pipeline": {
+          "total": 2,
+          "valid": 0,
+          "invalid": 2,
+          "invalid_examples": [
+            "P(tBu)3]",
+            "Pd{P(tBu)3]2/O2"
+          ]
+        },
+        "gemini_vs_claude": {
+          "compared": 3,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        },
+        "gemini_vs_pipeline": {
+          "compared": 2,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        },
+        "claude_vs_pipeline": {
+          "compared": 2,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        }
+      },
+      "T5": {
+        "gemini": {
+          "total": 2,
+          "valid": 0,
+          "invalid": 2,
+          "invalid_examples": [
+            "N(CH3)CH2CH=CH2",
+            "N(CH2Ph)CH2CH=CH2"
+          ]
+        },
+        "claude": {
+          "total": 2,
+          "valid": 0,
+          "invalid": 2,
+          "invalid_examples": [
+            "N(CH3)CH2CH=CH2",
+            "N(CH2Ph)CH2CH=CH2"
+          ]
+        },
+        "pipeline": {
+          "total": 2,
+          "valid": 1,
+          "invalid": 1,
+          "invalid_examples": [
+            "N(CH2Ph)CH2CH=CH2"
+          ]
+        },
+        "gemini_vs_claude": {
+          "compared": 2,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        },
+        "gemini_vs_pipeline": {
+          "compared": 1,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        },
+        "claude_vs_pipeline": {
+          "compared": 1,
+          "canonical_match": 0,
+          "match_rate": 0.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,347 @@
+{
+  "figure_comments": {
+    "gemini": {
+      "overall": "以上都是x不准，另外gemini提取的统一没有第二个y坐标轴",
+      "F1": "X不准",
+      "F2": "X不准",
+      "F3": "X不准",
+      "F4": "X不准, 无Y_Right",
+      "F5": "X不准"
+    },
+    "claude": {
+      "F1": "缺3个/系列，x只有第一个对，其他x全不对",
+      "F2": "不缺，x值差挺多，y没问题",
+      "F3": "缺1个x的数据，略有出入；后续没啥问题",
+      "F4": "没提取出yield值(Y_Right为空)",
+      "F5": "x不准，y没大问题"
+    }
+  },
+  "figure_quantitative": {
+    "F1": {
+      "pipeline_n": 63,
+      "gemini": {
+        "n": 73,
+        "matched": 53,
+        "P": 0.726,
+        "R": 0.8413,
+        "F1": 0.7794
+      },
+      "claude": {
+        "n": 66,
+        "matched": 44,
+        "P": 0.6667,
+        "R": 0.6984,
+        "F1": 0.6822
+      }
+    },
+    "F2": {
+      "pipeline_n": 47,
+      "gemini": {
+        "n": 52,
+        "matched": 42,
+        "P": 0.8077,
+        "R": 0.8936,
+        "F1": 0.8485
+      },
+      "claude": {
+        "n": 60,
+        "matched": 43,
+        "P": 0.7167,
+        "R": 0.9149,
+        "F1": 0.8037
+      }
+    },
+    "F3": {
+      "pipeline_n": 38,
+      "gemini": {
+        "n": 96,
+        "matched": 24,
+        "P": 0.25,
+        "R": 0.6316,
+        "F1": 0.3582
+      },
+      "claude": {
+        "n": 95,
+        "matched": 23,
+        "P": 0.2421,
+        "R": 0.6053,
+        "F1": 0.3459
+      }
+    },
+    "F4": {
+      "pipeline_n": 29,
+      "gemini": {
+        "n": 28,
+        "matched": 20,
+        "P": 0.7143,
+        "R": 0.6897,
+        "F1": 0.7018
+      },
+      "claude": {
+        "n": 28,
+        "matched": 20,
+        "P": 0.7143,
+        "R": 0.6897,
+        "F1": 0.7018
+      }
+    },
+    "F5": {
+      "pipeline_n": 29,
+      "gemini": {
+        "n": 45,
+        "matched": 7,
+        "P": 0.1556,
+        "R": 0.2414,
+        "F1": 0.1892
+      },
+      "claude": {
+        "n": 44,
+        "matched": 10,
+        "P": 0.2273,
+        "R": 0.3448,
+        "F1": 0.274
+      }
+    }
+  },
+  "smiles_validation": {
+    "T1": {
+      "gemini": {
+        "total": 30,
+        "valid": 30,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "claude": {
+        "total": 27,
+        "valid": 24,
+        "invalid": 3,
+        "invalid_examples": [
+          "I/C(F)([SnBu3])F",
+          "I/C(F)([SnPh3])F",
+          "I/C(F)([SnBu2Ph])F"
+        ]
+      },
+      "pipeline": {
+        "total": 19,
+        "valid": 18,
+        "invalid": 1,
+        "invalid_examples": [
+          "77 (87)(cl"
+        ]
+      },
+      "gemini_vs_claude": {
+        "compared": 27,
+        "canonical_match": 4,
+        "match_rate": 0.1481
+      },
+      "gemini_vs_pipeline": {
+        "compared": 18,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      },
+      "claude_vs_pipeline": {
+        "compared": 17,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      }
+    },
+    "T2": {
+      "gemini": {
+        "total": 36,
+        "valid": 36,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "claude": {
+        "total": 32,
+        "valid": 32,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "pipeline": {
+        "total": 22,
+        "valid": 21,
+        "invalid": 1,
+        "invalid_examples": [
+          "CC12=CC=C13(C)C145=CC=CC6=C7=C38(C)C=61C13(=CC=CC="
+        ]
+      },
+      "gemini_vs_claude": {
+        "compared": 32,
+        "canonical_match": 28,
+        "match_rate": 0.875
+      },
+      "gemini_vs_pipeline": {
+        "compared": 22,
+        "canonical_match": 2,
+        "match_rate": 0.0909
+      },
+      "claude_vs_pipeline": {
+        "compared": 20,
+        "canonical_match": 2,
+        "match_rate": 0.1
+      }
+    },
+    "T3": {
+      "gemini": {
+        "total": 18,
+        "valid": 18,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "claude": {
+        "total": 19,
+        "valid": 19,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "pipeline": {
+        "total": 22,
+        "valid": 22,
+        "invalid": 0,
+        "invalid_examples": []
+      },
+      "gemini_vs_claude": {
+        "compared": 18,
+        "canonical_match": 16,
+        "match_rate": 0.8889
+      },
+      "gemini_vs_pipeline": {
+        "compared": 16,
+        "canonical_match": 16,
+        "match_rate": 1.0
+      },
+      "claude_vs_pipeline": {
+        "compared": 16,
+        "canonical_match": 14,
+        "match_rate": 0.875
+      }
+    },
+    "T4": {
+      "gemini": {
+        "total": 3,
+        "valid": 0,
+        "invalid": 3,
+        "invalid_examples": [
+          "[Pd(μ-I)P(tBu)3]2",
+          "Pd[P(tBu)3]2",
+          "Pd[P(tBu)3]2/O2^c"
+        ]
+      },
+      "claude": {
+        "total": 4,
+        "valid": 0,
+        "invalid": 4,
+        "invalid_examples": [
+          "[Pd(μ-I)P(tBu)3]2",
+          "Pd[P(tBu)3]2",
+          "Pd[P(tBu)3]2/O2[c]"
+        ]
+      },
+      "pipeline": {
+        "total": 2,
+        "valid": 0,
+        "invalid": 2,
+        "invalid_examples": [
+          "P(tBu)3]",
+          "Pd{P(tBu)3]2/O2"
+        ]
+      },
+      "gemini_vs_claude": {
+        "compared": 3,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      },
+      "gemini_vs_pipeline": {
+        "compared": 2,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      },
+      "claude_vs_pipeline": {
+        "compared": 2,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      }
+    },
+    "T5": {
+      "gemini": {
+        "total": 2,
+        "valid": 0,
+        "invalid": 2,
+        "invalid_examples": [
+          "N(CH3)CH2CH=CH2",
+          "N(CH2Ph)CH2CH=CH2"
+        ]
+      },
+      "claude": {
+        "total": 2,
+        "valid": 0,
+        "invalid": 2,
+        "invalid_examples": [
+          "N(CH3)CH2CH=CH2",
+          "N(CH2Ph)CH2CH=CH2"
+        ]
+      },
+      "pipeline": {
+        "total": 2,
+        "valid": 1,
+        "invalid": 1,
+        "invalid_examples": [
+          "N(CH2Ph)CH2CH=CH2"
+        ]
+      },
+      "gemini_vs_claude": {
+        "compared": 2,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      },
+      "gemini_vs_pipeline": {
+        "compared": 1,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      },
+      "claude_vs_pipeline": {
+        "compared": 1,
+        "canonical_match": 0,
+        "match_rate": 0.0
+      }
+    }
+  },
+  "table_cell_counts": {
+    "T1": {
+      "pipeline_cells": 65,
+      "gemini_rows": 15,
+      "claude_rows": 15
+    },
+    "T2": {
+      "pipeline_cells": 62,
+      "gemini_rows": 12,
+      "claude_rows": 12
+    },
+    "T3": {
+      "pipeline_cells": 50,
+      "gemini_rows": 11,
+      "claude_rows": 11
+    },
+    "T4": {
+      "pipeline_cells": 21,
+      "gemini_rows": 18,
+      "claude_rows": 18
+    },
+    "T5": {
+      "pipeline_cells": 60,
+      "gemini_rows": 10,
+      "claude_rows": 10
+    }
+  },
+  "summary": {
+    "figure": "Pipeline F1≈0.89 >> Gemini F1≈0.57 > Claude F1≈0.55",
+    "table_text": "Gemini ≈ Claude (~100%) >> Pipeline (T4/T5 OCR issues)",
+    "smiles_rdkit": {
+      "gemini": "84 valid / 5 invalid",
+      "claude": "75 valid / 9 invalid",
+      "pipeline": "62 valid / 5 invalid",
+      "gemini_claude_canonical_match": "48/82"
+    }
+  }
+}

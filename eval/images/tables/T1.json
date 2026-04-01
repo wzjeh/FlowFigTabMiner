@@ -1,0 +1,149 @@
+{
+  "columns": [
+    "Electrophile",
+    "Lithiating agent",
+    "Product",
+    "",
+    "Yield [%] Internal in batch",
+    "Yield [%] External in flow[a]",
+    "Productivity [g h−1][d]"
+  ],
+  "rows": [
+    [
+      "CN(OC(=O)CCC1=CC=CC=C1)C",
+      "MeLi",
+      "O=C(F)CCC1=CC=CC=C1",
+      "4a",
+      "34[b]",
+      "70 (82)[c]",
+      "2.8"
+    ],
+    [
+      "CN(OC(=O)/C=C/C1=CC=CC=C1)C",
+      "MeLi",
+      "O=C(F)/C=C/C1=CC=CC=C1",
+      "4b",
+      "41[b]",
+      "80 (88)[c]",
+      "3.2"
+    ],
+    [
+      "CN(OC(=O)C1=CC=CC=C1)C",
+      "MeLi",
+      "O=C(F)C1=CC=CC=C1",
+      "4c",
+      "58[b]",
+      "66 (79)[c]",
+      "2.2"
+    ],
+    [
+      "CN(OC(=O)C1=CC=CS1)C",
+      "MeLi",
+      "O=C(F)C1=CC=CS1",
+      "4d",
+      "45[b]",
+      "68 (80)[c]",
+      "2.4"
+    ],
+    [
+      "CN(OC(=O)C1=CC=C(C2=CC=CC=C2)C=C1)C",
+      "MeLi",
+      "O=C(F)C1=CC=C(C2=CC=CC=C2)C=C1",
+      "4e",
+      "53[b]",
+      "60 (72)[c]",
+      "3.1"
+    ],
+    [
+      "CCC(C1=CC=CC=C1)C(=O)N(C)OC",
+      "MeLi",
+      "CCC(C1=CC=CC=C1)C(=O)F",
+      "4f",
+      "30[b]",
+      "60 (65)[c]",
+      "2.6"
+    ],
+    [
+      "CN(OC(=O)C1=CC(F)=CC=C1)C",
+      "MeLi",
+      "O=C(F)C1=CC(F)=CC=C1",
+      "4g",
+      "47[b]",
+      "80 (93)[c]",
+      "3.0"
+    ],
+    [
+      "CN(OC(=O)C1=CC=C(C(F)(F)F)C=C1)C",
+      "MeLi",
+      "O=C(F)C1=CC=C(C(F)(F)F)C=C1",
+      "4h",
+      "41[b]",
+      "75 (84)[c]",
+      "3.7"
+    ],
+    [
+      "CN(OC(=O)C1=CC=C(F)C=C1)C",
+      "MeLi",
+      "O=C(F)C1=CC=C(F)C=C1",
+      "4i",
+      "55[b]",
+      "77 (87)[c]",
+      "2.9"
+    ],
+    [
+      "CCCC[Sn](CCCC)(CCCC)Cl",
+      "LDA",
+      "CCCC[Sn](CCCC)(CCCC)C(F)I",
+      "5a",
+      "21[c]",
+      "84 (99)[c]",
+      "9.1"
+    ],
+    [
+      "C1=CC=C(C=C1)[Sn](C2=CC=CC=C2)(C3=CC=CC=C3)Cl",
+      "LDA",
+      "C1=CC=C(C=C1)[Sn](C2=CC=CC=C2)(C3=CC=CC=C3)C(F)I",
+      "5b",
+      "41[c]",
+      "80 (95)[c]",
+      "9.8"
+    ],
+    [
+      "CCCC[Sn](CCCC)(C1=CC=CC=C1)Cl",
+      "LDA",
+      "CCCC[Sn](CCCC)(C1=CC=CC=C1)C(F)I",
+      "5c",
+      "-",
+      "60 (65)[c]",
+      "6.8"
+    ],
+    [
+      "O=C(C1=CC=CC=C1)C2=CC=CC=C2",
+      "LDA",
+      "FC1(I)OC1(C2=CC=CC=C2)C3=CC=CC=C3",
+      "6a",
+      "49[c]",
+      "76 (99)[c]",
+      "3.9"
+    ],
+    [
+      "O=C(C1=CC=C(F)C=C1)C2=CC=C(F)C=C2",
+      "LDA",
+      "FC1(I)OC1(C2=CC=C(F)C=C2)C3=CC=C(F)C=C3",
+      "6b",
+      "42[c]",
+      "56 (99)[c]",
+      "3.4"
+    ],
+    [
+      "CC(C)C(=O)C1=CC=CC=C1",
+      "LDA",
+      "CC(C)C1(OC1(F)I)C2=CC=CC=C2",
+      "6c",
+      "80[c]",
+      "85 (95)[c]",
+      "3.7"
+    ]
+  ]
+}
+```

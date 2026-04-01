@@ -1,0 +1,547 @@
+﻿label,paper_id,table_id,data_row,col_idx,col_name,cell_type,predicted_value,gt_value,is_correct,ref_image,description
+T1,example1,page_3_table_0,1,4,Yield [%],text,Internal,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,1,5,,text,External,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,0,Electrophile,smiles,CON(C)C(=O)CCc1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,2,roduct,smiles,O=C(CF)CCc1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,3,,text,4a,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,4,Yield [%],smiles,34[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,5,,smiles,70 (82)c,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,2,6,Productivit,text,2.8,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,0,Electrophile,smiles,CON(C)C(=O)/C=C/c1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,2,roduct,smiles,O=C(/C=C/c1ccccc1)CF,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,3,,text,4b,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,4,Yield [%],smiles,4] [b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,5,,smiles,80 (88),,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,3,6,Productivit,text,3.2,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,0,Electrophile,smiles,CON(C)C(=O)c1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,2,roduct,smiles,O=C(CF)c1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,3,,text,4c,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,4,Yield [%],smiles,58[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,5,,smiles,66 (79)c,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,4,6,Productivit,text,2.2,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,0,Electrophile,smiles,CON(C)C(=O)c1cccs1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,2,roduct,smiles,O=C(CF)c1cccs1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,3,,text,4d,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,4,Yield [%],smiles,45[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,5,,smiles,68(80),,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,5,6,Productivit,text,2.4,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,0,Electrophile,smiles,CON(C)C(=O)c1ccc(-c2ccccc2)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,2,roduct,smiles,O=C(CF)c1ccc(-c2ccccc2)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,3,,text,4e,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,4,Yield [%],smiles,53[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,5,,smiles,60 (72)[c],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,6,6,Productivit,text,3.1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,0,Electrophile,smiles,CCC(C(=O)N(C)OC)c1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,2,roduct,smiles,CCC(C(=O)CF)c1ccccc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,3,,text,4 f,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,4,Yield [%],smiles,30[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,5,,smiles,60 (65)(],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,7,6,Productivit,text,2.6,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,0,Electrophile,smiles,CON(C)C(=O)c1cccc(F)c1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,2,roduct,smiles,O=C(CF)c1cccc(F)c1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,3,,text,4g,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,4,Yield [%],smiles,47[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,5,,smiles,80 (93),,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,8,6,Productivit,text,3.0,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,0,Electrophile,smiles,CON(C)C(=O)c1ccc(C(F)(F)F)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,2,roduct,smiles,O=C(CF)c1ccc(C(F)(F)F)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,3,,text,4h,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,4,Yield [%],smiles,4] [b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,5,,smiles,75 (84)(c,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,9,6,Productivit,text,3.7,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,0,Electrophile,smiles,CON(C)C(=O)c1ccc(F)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,1,Lithiating,text,MeLi,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,2,roduct,smiles,O=C(CF)c1ccc(F)cc1,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,3,,text,4i,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,4,Yield [%],smiles,55[b],,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,5,,smiles,77 (87)(cl,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T1,example1,page_3_table_0,10,6,Productivit,text,2.9,,,data/intermediate/example1/tables/page_3_table_0.png,亲电试剂 + 产物 SMILES + 产率，含 MolNexTR
+T2,80,page_6_table_0,1,1,Conditions of,text,tR1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,1,2,,text,Temperature,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,1,5,Yield (%) a,text,Condition,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,1,6,,text,Condition,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,0,Ar1-X,smiles,CC.N#Cc1ccc(Br)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,3,Ar{2-X,smiles,N#Cc1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,4,Product,smiles,C#Cc1ccc(-c2ccc(C)cc2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,5,Yield (%) a,text,68,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,2,6,,text,91,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,3,Ar{2-X,smiles,N#Cc1cccc(I)c1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,4,Product,smiles,N#Cc1ccc(-c2cccc(C#N)c2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,5,Yield (%) a,text,17,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,3,6,,text,83,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,3,Ar{2-X,smiles,N#Cc1ccccc1I,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,4,Product,smiles,N#Cc1ccc(-c2ccccc2C#N)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,5,Yield (%) a,text,12,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,4,6,,text,91,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,3,Ar{2-X,smiles,COC(=O)c1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,4,Product,smiles,[C-]#[N+]c1ccc(-c2ccc(C(=C)C)cc2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,5,Yield (%) a,text,34,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,5,6,,text,84,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,0,Ar1-X,smiles,N#Cc1cccc(Br)c1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,3,Ar{2-X,smiles,N#Cc1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,4,Product,smiles,N#Cc1ccc(-c2cccc(C#N)c2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,5,Yield (%) a,text,63,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,6,6,,text,97,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,3,Ar{2-X,smiles,COC(=O)c1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,4,Product,smiles,COC(=O)c1ccc(-c2cccc(C#N)c2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,5,Yield (%) a,text,15,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,7,6,,text,87,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,0,Ar1-X,smiles,N#Cc1ccccc1Br,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,2,,text,24,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,3,Ar{2-X,smiles,N#Cc1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,4,Product,smiles,N#Cc1ccc(-c2ccccc2C#N)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,5,Yield (%) a,text,63,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,8,6,,text,98,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,2,,text,24,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,3,Ar{2-X,smiles,COC(=O)c1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,4,Product,smiles,COC(=O)c1ccc(-c2ccccc2C#N)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,5,Yield (%) a,text,2,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,9,6,,text,52,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,0,Ar1-X,smiles,Brc1ccc(-c2ccc(Br)cc2)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,1,Conditions of,text,0.059,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,2,,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,3,Ar{2-X,smiles,N#Cc1ccc(I)cc1,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,4,Product,smiles,CC12=CC=C13(C)C145=CC=CC6=C7=C38(C)C=61C13(=CC=CC=C41)(C1=C3C=CC=C1)C258=C7,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,5,Yield (%) a,text,0,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T2,80,page_6_table_0,10,6,,text,54 b,,,data/intermediate/80/tables/page_6_table_0.png,Suzuki coupling，底物 + 产物 SMILES
+T3,107,page_8_table_0,1,0,Entry,text,1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,1,1,Substrate,smiles,O=[N+]([O-])c1ccccc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,1,2,Product,smiles,Nc1ccccc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,1,3,Product,smiles,Nc1ccccc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,1,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,2,0,Entry,text,2,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,2,1,Substrate,smiles,Cc1ccccc1[N+](=O)[O-],,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,2,2,Product,smiles,Cc1ccccc1N,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,2,3,Product,smiles,Cc1ccccc1N,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,2,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,3,0,Entry,text,3,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,3,1,Substrate,smiles,Cc1cccc([N+](=O)[O-])c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,3,2,Product,smiles,Cc1cccc(N)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,3,3,Product,smiles,Cc1cccc(N)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,3,4,Yield (%),text,66,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,4,0,Entry,text,4,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,4,1,Substrate,smiles,Cc1ccc([N+](=O)[O-])cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,4,2,Product,smiles,Cc1ccc(N)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,4,3,Product,smiles,Cc1ccc(N)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,4,4,Yield (%),text,66,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,5,0,Entry,text,5,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,5,1,Substrate,smiles,O=[N+]([O-])c1ccccc1O,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,5,2,Product,smiles,Nc1ccccc1O,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,5,3,Product,smiles,Nc1ccccc1O,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,5,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,6,0,Entry,text,6,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,6,1,Substrate,smiles,O=[N+]([O-])c1cccc(O)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,6,2,Product,smiles,Nc1cccc(O)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,6,3,Product,smiles,Nc1cccc(O)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,6,4,Yield (%),text,66,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,7,0,Entry,text,7,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,7,1,Substrate,smiles,O=[N+]([O-])c1ccc(O)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,7,2,Product,smiles,Nc1ccc(O)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,7,3,Product,smiles,Nc1ccc(O)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,7,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,8,0,Entry,text,8,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,8,1,Substrate,smiles,COc1ccccc1[N+](=O)[O-],,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,8,2,Product,smiles,COc1ccccc1N,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,8,3,Product,smiles,COc1ccccc1N,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,8,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,9,0,Entry,text,6,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,9,1,Substrate,smiles,COc1ccc([N+](=O)[O-])cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,9,2,Product,smiles,COc1ccc(N)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,9,3,Product,smiles,COc1ccc(N)cc1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,9,4,Yield (%),text,99,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,10,0,Entry,text,10,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,10,1,Substrate,smiles,O=C(O)c1cccc([N+](=O)[O-])c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,10,2,Product,smiles,Nc1cccc(C(=O)O)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,10,3,Product,smiles,Nc1cccc(C(=O)O)c1,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T3,107,page_8_table_0,10,4,Yield (%),text,66,,,data/intermediate/107/tables/page_8_table_0.png,硝基还原，最干净的 SMILES 表
+T4,d3cc00756a,page_2_table_0,1,4,Conv. (%) 2:3:4,text,:0:35,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,2,1,Pd],text,?à-PEPPSI-IPr,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,2,4,Conv. (%) 2:3:4,text,75:0:14,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,3,1,Pd],text,Pd-PEPPSI-IPent,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,3,4,Conv. (%) 2:3:4,text,73:0:27,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,4,1,Pd],text,XPhOs P G4,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,4,4,Conv. (%) 2:3:4,text,23:3:40,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,5,1,Pd],smiles,Pd µ-I)P[tBu),,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,5,2,[Pd] (mol%,text,.5,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,5,4,Conv. (%) 2:3:4,text,37 :2:22,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,6,1,Pd],smiles,P(tBu)3],,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,6,4,Conv. (%) 2:3:4,text,97:0:3,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,7,2,[Pd] (mol%,text,5,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,7,4,Conv. (%) 2:3:4,text,97:0:3,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,8,4,Conv. (%) 2:3:4,text,34:6:5,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,9,1,Pd],smiles,Pd{P(tBu)3]2/O2,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,9,3,Time,text,7,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,9,4,Conv. (%) 2:3:4,text,96:4:0,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,10,0,Entry,text,Z,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,10,2,[Pd] (mol%,text,L.25,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T4,d3cc00756a,page_2_table_0,10,4,Conv. (%) 2:3:4,text,96 : 1:3,,,data/intermediate/d3cc00756a/tables/page_2_table_0.png,Pd 催化剂筛选，纯文字，OCR 噪声重
+T5,d0ra06101h,page_4_table_0,1,0,Alkene,text,Dk,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,1,1,UK,text,OCHPh,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,1,2,T (,text,-78,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,1,3,RLi,text,t-BuLi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,1,4,Product,text,12k,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,1,5,Yield,text,95,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,0,Alkene,text,X,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,1,UK,text,RHP,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,3,RLi,text,t-BuLi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,4,Product,text,13k,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,2,5,Yield,text,72,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,0,Alkene,text,3,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,1,UK,text,sse,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,3,RLi,text,t-BuLi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,4,Product,text,12b,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,3,5,Yield,text,83,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,0,Alkene,text,Dl,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,1,UK,smiles,*=[UH2],,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,3,RLi,text,n-BuLi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,4,Product,text,131,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,4,5,Yield,text,73,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,0,Alkene,text,[O,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,1,UK,smiles,*.*=*,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,3,RLi,smiles,n-C10H21,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,4,Product,text,13l,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,5,5,Yield,text,70,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,0,Alkene,text,~,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,1,UK,text,*=*,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,3,RLi,text,MeLi-TMEDA,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,4,Product,text,13l,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,6,5,Yield,text,80,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,0,Alkene,text,~,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,1,UK,smiles,*.[CH2]CC,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,3,RLi,text,PhLi-TMEDA,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,4,Product,text,13l,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,7,5,Yield,text,70,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,0,Alkene,text,~,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,1,UK,text,*=*,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,3,RLi,text,Cyclohexenvi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,4,Product,text,13l,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,8,5,Yield,text,74,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,0,Alkene,text,0m,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,1,UK,smiles,N{CH3)CH2CH=CH2,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,3,RLi,text,t-BuLi,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,4,Product,text,12m,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,9,5,Yield,text,06,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,0,Alkene,text,On,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,1,UK,smiles,N(CH2Ph)CH2CH=CH2,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,2,T (,text,−78 → rt,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,3,RLi,text,-BULlI,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,4,Product,text,12n,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T5,d0ra06101h,page_4_table_0,10,5,Yield,text,I6,,,data/intermediate/d0ra06101h/tables/page_4_table_0.png,混合 SMILES/文字，底物 + 产率
+T6,d0ra06101h,page_6_table_0,1,0,e,text,ompound,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,1,1,,text,R^{$,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,1,2,Organolíthíum,text,Compound,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,1,3,,text,R,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,2,1,,text,DD,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,2,2,Organolíthíum,text,25a,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,2,3,,text,Et,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,2,4,Product,text,27a,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,2,5,Yield (%) (E/Z)a or (trans/cis,smiles,61 (93 : 3),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,3,1,,text,P5,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,3,2,Organolíthíum,text,25b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,3,3,,text,Ph,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,3,4,Product,text,27b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,3,5,Yield (%) (E/Z)a or (trans/cis,smiles,53 (70 :30},,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,4,1,,text,P5,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,4,2,Organolíthíum,text,25c,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,4,3,,text,SiMe,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,4,4,Product,text,3L,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,4,5,Yield (%) (E/Z)a or (trans/cis,smiles,82 (76 : 24},,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,5,2,Organolíthíum,text,25b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,5,3,,text,Ph,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,5,4,Product,text,27d,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,5,5,Yield (%) (E/Z)a or (trans/cis,text,62 /56 : 44),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,6,1,,smiles,C6H4(0-OMe),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,6,2,Organolíthíum,text,25b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,6,3,,text,Ph,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,6,4,Product,text,27e,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,6,5,Yield (%) (E/Z)a or (trans/cis,smiles,60 (100 : 0},,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,7,1,,text,SPh,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,7,2,Organolíthíum,text,25b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,7,3,,text,Ph,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,7,4,Product,text,JLZ,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,7,5,Yield (%) (E/Z)a or (trans/cis,text,62 /100 : 03,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,8,1,,text,C6Ho-CH2NMe2),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,8,2,Organolíthíum,text,25c,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,8,3,,text,SiMe3,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,8,4,Product,text,SLZ,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,8,5,Yield (%) (E/Z)a or (trans/cis,smiles,56 (85 : 15),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,9,1,,text,Pb,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,9,2,Organolíthíum,text,26d,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,9,3,,text,Ph,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,9,4,Product,text,28a,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,9,5,Yield (%) (E/Z)a or (trans/cis,smiles,52 (50 : 50},,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,10,1,,text,Pb,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,10,2,Organolíthíum,smiles,(E)-26e,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,10,3,,text,SiMe3,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,10,4,Product,text,28b,,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T6,d0ra06101h,page_6_table_0,10,5,Yield (%) (E/Z)a or (trans/cis,smiles,52 (100 : 0),,,data/intermediate/d0ra06101h/tables/page_6_table_0.png,有机锂 + 产物，文字为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,0,,text,1,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,1,alkyl,text,MMA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,2,bath tem-,text,24,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,6,residence,text,0.736,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,8,convn,text,81,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,9,Mnc,text,3200,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,1,10,Mw/M1,text,1.35,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,0,,text,2,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,1,alkyl,text,MMA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,2,bath tem-,text,24,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,6,residence,text,2.95,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,8,convn,text,95,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,9,Mnc,text,3700,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,2,10,Mw/M1,text,1.41,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,0,,text,3,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,2,bath tem-,text,24,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,6,residence,text,11.8,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,8,convn,text,66,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,9,Mnc,text,4000,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,3,10,Mw/M1,text,1.44,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,0,,text,4,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,2,bath tem-,text,0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,6,residence,text,0.736,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,8,convn,text,76,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,9,Mnc,text,3000,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,4,10,Mw/M1,text,1.25,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,0,,text,5,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,2,bath tem-,text,0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,6,residence,text,2.95,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,8,convn,text,98,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,9,Mnc,text,3600,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,5,10,Mw/M1,text,1.25,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,0,,text,6,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,2,bath tem-,text,0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,6,residence,text,11.8,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,8,convn,text,66,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,9,Mnc,text,3600,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,6,10,Mw/M1,text,1.27,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,0,,text,7,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,2,bath tem-,text,-28,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,6,residence,text,0.736,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,8,convn,text,39,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,9,Mnc,text,1600,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,7,10,Mw/M1,text,1.22,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,0,,text,8,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,2,bath tem-,text,-28,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,6,residence,text,2.95,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,8,convn,text,89,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,9,Mnc,text,3000,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,8,10,Mw/M1,text,1.17,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,0,,text,6,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,1,alkyl,text,CA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,2,bath tem-,text,-28,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,6,residence,text,11.8,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,8,convn,text,66,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,9,Mnc,text,3400,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,9,10,Mw/M1,text,1.16,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,0,,text,10,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,1,alkyl,text,MMA,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,2,bath tem-,text,-48,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,3,inner diamet,text,250,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,4,flow rate of,text,6.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,5,"flow rate of 1,",text,2.0,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,6,residence,text,2.95,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,7,[1]/[w],text,30,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,8,convn,text,96,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,9,Mnc,text,3400,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T7,microflow-alkyl-methacrylates,page_2_table_1,10,10,Mw/M1,text,1.20,,,data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png,聚合条件，Mn/Mw/Mn 数值为主
+T8,d0cc03768k,page_4_table_0,1,1,R1,smiles,H (3a),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,1,2,R2-M,text,n-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,1,3,Product,text,5a,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,1,4,Yieldb,text,76,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,2,1,R1,smiles,H (3a),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,2,2,R2-M,text,sec-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,2,3,Product,text,5c,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,2,4,Yieldb,text,8,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,3,1,R1,smiles,p-C1 [3α),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,3,2,R2-M,text,n-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,3,3,Product,text,5e,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,3,4,Yieldb,text,82,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,4,1,R1,smiles,p-C1 [3h),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,4,2,R2-M,text,sec-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,4,3,Product,text,5f,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,4,4,Yieldb,text,54,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,5,1,R1,smiles,p-Br [3c),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,5,2,R2-M,text,n-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,5,3,Product,text,5g,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,5,4,Yieldb,text,95,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,6,1,R1,smiles,p-Br [3c),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,6,2,R2-M,text,sec-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,6,3,Product,text,5h,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,6,4,Yieldb,text,R,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,7,1,R1,smiles,p-Me (3d),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,7,2,R2-M,text,n-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,7,3,Product,text,5i,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,7,4,Yieldb,text,90,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,8,1,R1,smiles,p-Me (3d),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,8,2,R2-M,text,sec-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,8,4,Yieldb,text,66,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,9,1,R1,smiles,p-MeO (3e),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,9,2,R2-M,text,n-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,9,3,Product,text,5k,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,9,4,Yieldb,text,40,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,10,1,R1,smiles,p-MeO (3e),,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,10,2,R2-M,text,sec-BuLi,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,10,3,Product,text,51,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T8,d0cc03768k,page_4_table_0,10,4,Yieldb,text,74,,,data/intermediate/d0cc03768k/tables/page_4_table_0.png,有机锂加成，Entry + 产率
+T9,photoredox,page_2_table_0,1,0,entry,text,1,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,1,1,Deviation from above,text,IR,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,1,2,Yield,smiles,73 (64,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,2,0,entry,text,2,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,2,1,Deviation from above,text,E2,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,2,2,Yield,text,6871,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,3,0,entry,text,8,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,3,1,Deviation from above,text,SCC or MeCN as solvent,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,3,2,Yield,text,11-45,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,4,0,entry,text,4,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,4,1,Deviation from above,text,"CF)3, FelOTf)2 or Cu) OTf2 as Lewis a",,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,4,2,Yield,text,27-58,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,5,0,entry,text,5,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,5,1,Deviation from above,text,eguiy,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,5,2,Yield,text,6S,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,6,0,entry,text,5,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,6,1,Deviation from above,text,equiv PhCH2CH2CHO,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,6,2,Yield,text,57,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,7,0,entry,text,7,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,7,1,Deviation from above,text,light,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,7,2,Yield,text,<5,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,8,0,entry,text,8,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,8,1,Deviation from above,text,Lewis acid,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,8,2,Yield,text,41,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,9,0,entry,text,9,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,9,1,Deviation from above,text,SAMS,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,9,2,Yield,text,38,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,10,0,entry,text,10,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,10,1,Deviation from above,text,Lewis acid,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T9,photoredox,page_2_table_0,10,2,Yield,text,<5,,,data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png,光氧化还原条件优化
+T10,c2cc16855c,page_2_table_0,1,1,L,text,L1,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,1,3,T|C,text,-80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,1,4,Solvent,text,CHCI,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,1,7,(%),text,nd,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,0,Entry,text,5,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,3,T|C,text,−30,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,4,Solvent,text,C2H4Cl,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,5,Conversic,text,50,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,6,Anti : syr,text,3 :97,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,2,7,(%),text,nd,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,3,T|C,text,0,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,4,Solvent,text,C2H4CI,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,5,Conversic,text,45,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,6,Anti : syr,text,16 : 84,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,3,7,(%),text,nd,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,0,Entry,text,P,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,3,T|C,text,0,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,4,Solvent,text,MTBE,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,5,Conversic,text,Fulle,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,6,Anti : syr,text,3 : 97,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,4,7,(%),text,nd,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,2,BF3·OEt2,text,les,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,3,T|C,text,-40,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,4,Solvent,text,C2H4Cl,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,5,Conversic,text,FulY,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,5,7,(%),text,nd,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,2,BF3·OEt2,text,es,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,3,T|C,text,−80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,4,Solvent,text,CH2Cl2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,5,Conversic,text,Full,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,6,Anti : syr,text,> 99 :,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,6,7,(%),text,97,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,7,1,L,text,L3,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,7,2,BF3·OEt2,text,I es,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,7,3,T|C,text,−80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,7,4,Solvent,smiles,CH2C12,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,7,6,Anti : syr,text,98 : 2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,8,2,BF3·OEt2,text,I es,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,8,3,T|C,text,−80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,8,4,Solvent,smiles,CH2C12,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,8,6,Anti : syr,text,93 : 7,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,8,7,(%),text,-7,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,1,L,text,L5,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,2,BF3·OEt2,text,I es,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,3,T|C,text,−80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,4,Solvent,smiles,CH2C12,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,6,Anti : syr,text,> 99 : 1,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,9,7,(%),text,-7,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,0,Entry,text,0g,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,1,L,text,L2,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,2,BF3·OEt2,text,I es,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,3,T|C,text,-80,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,4,Solvent,smiles,CHC1,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,5,Conversic,text,Full,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,6,Anti : syr,text,> 99 : 1,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表
+T10,c2cc16855c,page_2_table_0,10,7,(%),text,L6,,,data/intermediate/c2cc16855c/tables/page_2_table_0.png,配体/溶剂筛选表

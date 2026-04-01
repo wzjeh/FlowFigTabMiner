@@ -1,0 +1,189 @@
+{
+  "x_axis_title": "t^R1 / s",
+  "y_axis_title": "T / °C",
+  "y_right_axis_title": null,
+  "title": "LiCH2F lifetime 13 ms @ -60 °C",
+  "data_type": "yield_heatmap",
+  "colorscale": {
+    ">80%": "darkest",
+    "60~80%": "dark",
+    "40~60%": "medium",
+    "20~40%": "light",
+    "<20%": "lightest"
+  },
+  "series": [
+    {
+      "name": "yield (%) at given t^R1 and T",
+      "points": [
+        {
+          "X": 0.003,
+          "Y_Left": -20,
+          "yield": 60,
+          "Y_Right": null
+        },
+        {
+          "X": 0.01,
+          "Y_Left": -20,
+          "yield": 13,
+          "Y_Right": null
+        },
+        {
+          "X": 0.032,
+          "Y_Left": -20,
+          "yield": 5,
+          "Y_Right": null
+        },
+        {
+          "X": 0.1,
+          "Y_Left": -20,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 0.316,
+          "Y_Left": -20,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -20,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 3.16,
+          "Y_Left": -20,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 0.003,
+          "Y_Left": -40,
+          "yield": 71,
+          "Y_Right": null
+        },
+        {
+          "X": 0.01,
+          "Y_Left": -40,
+          "yield": 57,
+          "Y_Right": null
+        },
+        {
+          "X": 0.032,
+          "Y_Left": -40,
+          "yield": 40,
+          "Y_Right": null
+        },
+        {
+          "X": 0.1,
+          "Y_Left": -40,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 0.316,
+          "Y_Left": -40,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -40,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 3.16,
+          "Y_Left": -40,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 0.003,
+          "Y_Left": -60,
+          "yield": 80,
+          "Y_Right": null
+        },
+        {
+          "X": 0.01,
+          "Y_Left": -60,
+          "yield": 84,
+          "Y_Right": null
+        },
+        {
+          "X": 0.032,
+          "Y_Left": -60,
+          "yield": 74,
+          "Y_Right": null
+        },
+        {
+          "X": 0.1,
+          "Y_Left": -60,
+          "yield": 55,
+          "Y_Right": null
+        },
+        {
+          "X": 0.316,
+          "Y_Left": -60,
+          "yield": 14,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -60,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 3.16,
+          "Y_Left": -60,
+          "yield": 0,
+          "Y_Right": null
+        },
+        {
+          "X": 0.003,
+          "Y_Left": -78,
+          "yield": 87,
+          "Y_Right": null
+        },
+        {
+          "X": 0.01,
+          "Y_Left": -78,
+          "yield": 80,
+          "Y_Right": null
+        },
+        {
+          "X": 0.032,
+          "Y_Left": -78,
+          "yield": 80,
+          "Y_Right": null
+        },
+        {
+          "X": 0.1,
+          "Y_Left": -78,
+          "yield": 76,
+          "Y_Right": null
+        },
+        {
+          "X": 0.316,
+          "Y_Left": -78,
+          "yield": 70,
+          "Y_Right": null
+        },
+        {
+          "X": 1.0,
+          "Y_Left": -78,
+          "yield": 65,
+          "Y_Right": null
+        },
+        {
+          "X": 3.16,
+          "Y_Left": -78,
+          "yield": 59,
+          "Y_Right": null
+        }
+      ]
+    }
+  ]
+}

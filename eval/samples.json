@@ -1,0 +1,173 @@
+{
+  "_comment": "评测样本配置。修改此文件即可换样本，无需改脚本。",
+
+  "figures": [
+    {
+      "label": "F1",
+      "paper_id": "102",
+      "evidence_json": "data/intermediate/102/macro_cleaned/page_6_figure_1_t0_evidence.json",
+      "crop_image":    "data/intermediate/102/figures/page_6_figure_1.png",
+      "description":   "4 系列 phenol 氯化物，t/min vs Yield&Conv/%"
+    },
+    {
+      "label": "F2",
+      "paper_id": "100",
+      "evidence_json": "data/intermediate/100/macro_cleaned/page_5_figure_1_t0_evidence.json",
+      "crop_image":    "data/intermediate/100/figures/page_5_figure_1.png",
+      "description":   "4 系列 25/50/75/100%，Residence time vs Temperature"
+    },
+    {
+      "label": "F3",
+      "paper_id": "three-component-coupling",
+      "evidence_json": "data/intermediate/three-component-coupling-based-on-flash-chemistry-carbolithiation-of-benzyne-with-functionalized-aryllithiums-followed/macro_cleaned/page_2_figure_1_t1_evidence.json",
+      "crop_image":    "data/intermediate/three-component-coupling-based-on-flash-chemistry-carbolithiation-of-benzyne-with-functionalized-aryllithiums-followed/figures/page_2_figure_1.png",
+      "description":   "多系列居时扫描，tR1(s)"
+    },
+    {
+      "label": "F4",
+      "paper_id": "example1",
+      "evidence_json": "data/intermediate/example1/macro_cleaned/page_2_figure_2_t0_evidence.json",
+      "crop_image":    "data/intermediate/example1/figures/page_2_figure_2.png",
+      "description":   "居时扫描，R1/s"
+    },
+    {
+      "label": "F5",
+      "paper_id": "design-of-numbering-up",
+      "evidence_json": "data/intermediate/design-of-a-numbering-up-system-of-monolithic-microreactors-and-its-application-to-synthesis-of-a-key-intermediate-of/macro_cleaned/page_3_figure_4_t0_evidence.json",
+      "crop_image":    "data/intermediate/design-of-a-numbering-up-system-of-monolithic-microreactors-and-its-application-to-synthesis-of-a-key-intermediate-of/figures/page_3_figure_4.png",
+      "description":   "操作稳定性，operation time (min)"
+    },
+    {
+      "label": "F6",
+      "paper_id": "carbolithiation",
+      "evidence_json": "data/intermediate/carbolithiation-of-conjugated-enynes-with-aryllithiums-in-microflow-system-and-applications-to-synthesis-of/macro_cleaned/page_3_figure_0_t1_evidence.json",
+      "crop_image":    "data/intermediate/carbolithiation-of-conjugated-enynes-with-aryllithiums-in-microflow-system-and-applications-to-synthesis-of/figures/page_3_figure_0.png",
+      "description":   "单系列，residence time R2(s)"
+    },
+    {
+      "label": "F7",
+      "paper_id": "example",
+      "evidence_json": "data/intermediate/example/macro_cleaned/page_6_figure_0_t0_evidence.json",
+      "crop_image":    "data/intermediate/example/figures/page_6_figure_0.png",
+      "description":   "3 系列 + 双 Y 轴，Temperature vs Selectivity%"
+    },
+    {
+      "label": "F8",
+      "paper_id": "80",
+      "evidence_json": "data/intermediate/80/macro_cleaned/page_5_figure_0_t0_evidence.json",
+      "crop_image":    "data/intermediate/80/figures/page_5_figure_0.png",
+      "description":   "单系列，(min) vs (°C)"
+    },
+    {
+      "label": "F9",
+      "paper_id": "105",
+      "evidence_json": "data/intermediate/105/macro_cleaned/page_2_figure_3_t0_evidence.json",
+      "crop_image":    "data/intermediate/105/figures/page_2_figure_3.png",
+      "description":   "小样本点，Residence time/s"
+    },
+    {
+      "label": "F10",
+      "paper_id": "1",
+      "evidence_json": "data/intermediate/1/macro_cleaned/page_3_figure_0_t1_evidence.json",
+      "crop_image":    "data/intermediate/1/figures/page_3_figure_0.png",
+      "description":   "转化率 vs 时间，t(min) vs X(%)"
+    }
+  ],
+
+  "tables": [
+    {
+      "label": "T1",
+      "paper_id": "example1",
+      "extracted_csv": "data/intermediate/example1/tables/page_3_table_0_extracted.csv",
+      "table_image":   "data/intermediate/example1/tables/page_3_table_0.png",
+      "description":   "亲电试剂 + 产物 SMILES + 产率，含 MolNexTR"
+    },
+    {
+      "label": "T2",
+      "paper_id": "80",
+      "extracted_csv": "data/intermediate/80/tables/page_6_table_0_extracted.csv",
+      "table_image":   "data/intermediate/80/tables/page_6_table_0.png",
+      "description":   "Suzuki coupling，底物 + 产物 SMILES"
+    },
+    {
+      "label": "T3",
+      "paper_id": "107",
+      "extracted_csv": "data/intermediate/107/tables/page_8_table_0_extracted.csv",
+      "table_image":   "data/intermediate/107/tables/page_8_table_0.png",
+      "description":   "硝基还原，最干净的 SMILES 表"
+    },
+    {
+      "label": "T4",
+      "paper_id": "d3cc00756a",
+      "extracted_csv": "data/intermediate/d3cc00756a/tables/page_2_table_0_extracted.csv",
+      "table_image":   "data/intermediate/d3cc00756a/tables/page_2_table_0.png",
+      "description":   "Pd 催化剂筛选，纯文字，OCR 噪声重"
+    },
+    {
+      "label": "T5",
+      "paper_id": "d0ra06101h",
+      "extracted_csv": "data/intermediate/d0ra06101h/tables/page_4_table_0_extracted.csv",
+      "table_image":   "data/intermediate/d0ra06101h/tables/page_4_table_0.png",
+      "description":   "混合 SMILES/文字，底物 + 产率"
+    },
+    {
+      "label": "T6",
+      "paper_id": "d0ra06101h",
+      "extracted_csv": "data/intermediate/d0ra06101h/tables/page_6_table_0_extracted.csv",
+      "table_image":   "data/intermediate/d0ra06101h/tables/page_6_table_0.png",
+      "description":   "有机锂 + 产物，文字为主"
+    },
+    {
+      "label": "T7",
+      "paper_id": "microflow-alkyl-methacrylates",
+      "extracted_csv": "data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1_extracted.csv",
+      "table_image":   "data/intermediate/microflow-system-controlled-anionic-polymerization-of-alkyl-methacrylates/tables/page_2_table_1.png",
+      "description":   "聚合条件，Mn/Mw/Mn 数值为主"
+    },
+    {
+      "label": "T8",
+      "paper_id": "d0cc03768k",
+      "extracted_csv": "data/intermediate/d0cc03768k/tables/page_4_table_0_extracted.csv",
+      "table_image":   "data/intermediate/d0cc03768k/tables/page_4_table_0.png",
+      "description":   "有机锂加成，Entry + 产率"
+    },
+    {
+      "label": "T9",
+      "paper_id": "photoredox",
+      "extracted_csv": "data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0_extracted.csv",
+      "table_image":   "data/intermediate/photoredox-lewis-acid-catalyst-enabled-decarboxylative-coupling-of-carboxylic-acids-with-aldehydes-and-amines/tables/page_2_table_0.png",
+      "description":   "光氧化还原条件优化"
+    },
+    {
+      "label": "T10",
+      "paper_id": "c2cc16855c",
+      "extracted_csv": "data/intermediate/c2cc16855c/tables/page_2_table_0_extracted.csv",
+      "table_image":   "data/intermediate/c2cc16855c/tables/page_2_table_0.png",
+      "description":   "配体/溶剂筛选表"
+    }
+  ],
+
+  "final_output": [
+    {"paper_id": "example1",     "normalized_json": "data/final_output/example1_normalized.json",     "max_records": 8},
+    {"paper_id": "80",           "normalized_json": "data/final_output/80_normalized.json",           "max_records": 8},
+    {"paper_id": "100",          "normalized_json": "data/final_output/100_normalized.json",          "max_records": 8},
+    {"paper_id": "102",          "normalized_json": "data/final_output/102_normalized.json",          "max_records": 8},
+    {"paper_id": "d0ra06101h",   "normalized_json": "data/final_output/d0ra06101h_normalized.json",   "max_records": 8},
+    {"paper_id": "d3cc00756a",   "normalized_json": "data/final_output/d3cc00756a_normalized.json",   "max_records": 8},
+    {"paper_id": "d0cc03768k",   "normalized_json": "data/final_output/d0cc03768k_normalized.json",   "max_records": 8},
+    {"paper_id": "c2cc16855c",   "normalized_json": "data/final_output/c2cc16855c_normalized.json",   "max_records": 8},
+    {"paper_id": "107",          "normalized_json": "data/final_output/107_normalized.json",          "max_records": 8},
+    {"paper_id": "example",      "normalized_json": "data/final_output/example_normalized.json",      "max_records": 8}
+  ],
+
+  "_fields_to_evaluate": [
+    "yield_pct",
+    "conversion_pct",
+    "reactant1_smiles",
+    "product_smiles",
+    "temperature_C",
+    "residence_time_s",
+    "solvent",
+    "catalyst"
+  ]
+}

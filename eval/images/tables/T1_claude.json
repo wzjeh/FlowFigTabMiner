@@ -1,0 +1,148 @@
+{
+  "columns": [
+    "Electrophile",
+    "Lithiating agent",
+    "Product",
+    "Product ID",
+    "Yield [%] Internal in batch",
+    "Yield [%] External in flow [a]",
+    "Productivity [g h-1] [d]"
+  ],
+  "rows": [
+    [
+      "O=C(CCc1ccccc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)CCc1ccccc1",
+      "4a",
+      "34[b]",
+      "70 (82)[c]",
+      "2.8"
+    ],
+    [
+      "O=C(/C=C/c1ccccc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)/C=C/c1ccccc1",
+      "4b",
+      "41[b]",
+      "80 (88)[c]",
+      "3.2"
+    ],
+    [
+      "O=C(c1ccccc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1ccccc1",
+      "4c",
+      "58[b]",
+      "66 (79)[c]",
+      "2.2"
+    ],
+    [
+      "O=C(c1cccs1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1cccs1",
+      "4d",
+      "45[b]",
+      "68 (80)[c]",
+      "2.4"
+    ],
+    [
+      "O=C(c1ccc(-c2ccccc2)cc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1ccc(-c2ccccc2)cc1",
+      "4e",
+      "53[b]",
+      "60 (72)[c]",
+      "3.1"
+    ],
+    [
+      "O=C(C(CC)c1ccccc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)C(CC)c1ccccc1",
+      "4f",
+      "30[b]",
+      "60 (65)[c]",
+      "2.6"
+    ],
+    [
+      "O=C(c1cccc(F)c1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1cccc(F)c1",
+      "4g",
+      "47[b]",
+      "80 (93)[c]",
+      "3.0"
+    ],
+    [
+      "O=C(c1ccc(C(F)(F)F)cc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1ccc(C(F)(F)F)cc1",
+      "4h",
+      "41[b]",
+      "75 (84)[c]",
+      "3.7"
+    ],
+    [
+      "O=C(c1ccc(F)cc1)N(OC)C",
+      "MeLi",
+      "O=C(CF)c1ccc(F)cc1",
+      "4i",
+      "55[b]",
+      "77 (87)[c]",
+      "2.9"
+    ],
+    [
+      "Bu3SnCl",
+      "LDA",
+      "I/C(F)([SnBu3])F",
+      "5a",
+      "21[c]",
+      "84 (99)[c]",
+      "9.1"
+    ],
+    [
+      "Ph3SnCl",
+      "LDA",
+      "I/C(F)([SnPh3])F",
+      "5b",
+      "41[c]",
+      "80 (95)[c]",
+      "9.8"
+    ],
+    [
+      "Bu2PhSnCl",
+      "LDA",
+      "I/C(F)([SnBu2Ph])F",
+      "5c",
+      "–",
+      "60 (65)[c]",
+      "6.8"
+    ],
+    [
+      "O=C(c1ccccc1)c1ccccc1",
+      "LDA",
+      "C1(c2ccccc2)(c2ccccc2)CO1",
+      "6a",
+      "49[c]",
+      "76 (99)[c]",
+      "3.9"
+    ],
+    [
+      "O=C(c1ccc(F)cc1)c1ccc(F)cc1",
+      "LDA",
+      "C1(c2ccc(F)cc2)(c2ccc(F)cc2)CO1",
+      "6b",
+      "42[c]",
+      "56 (99)[c]",
+      "3.4"
+    ],
+    [
+      "O=C(C(C)C)c1ccccc1",
+      "LDA",
+      "C1(C(C)C)(c2ccccc2)CO1",
+      "6c",
+      "80[c]",
+      "85 (95)[c]",
+      "3.7"
+    ]
+  ]
+}

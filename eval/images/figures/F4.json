@@ -1,0 +1,180 @@
+{
+  "x_axis_title": "tR1 / s",
+  "y_axis_title": "T / °C",
+  "y_right_axis_title": null,
+  "series": [
+    {
+      "name": "Yield Map of Li-F Intermediate",
+      "points": [
+        {
+          "X": 0.005,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 60
+        },
+        {
+          "X": 0.012,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 13
+        },
+        {
+          "X": 0.04,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 5
+        },
+        {
+          "X": 0.18,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 0.8,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 3.0,
+          "Y_Left": -20,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 0.005,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 71
+        },
+        {
+          "X": 0.012,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 57
+        },
+        {
+          "X": 0.04,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 40
+        },
+        {
+          "X": 0.18,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 0.8,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 3.0,
+          "Y_Left": -40,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 0.005,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 80
+        },
+        {
+          "X": 0.012,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 84
+        },
+        {
+          "X": 0.04,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 74
+        },
+        {
+          "X": 0.18,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 55
+        },
+        {
+          "X": 0.8,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 14
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 3.0,
+          "Y_Left": -60,
+          "Y_Right": null,
+          "Yield": 0
+        },
+        {
+          "X": 0.005,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 87
+        },
+        {
+          "X": 0.012,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 80
+        },
+        {
+          "X": 0.04,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 80
+        },
+        {
+          "X": 0.18,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 76
+        },
+        {
+          "X": 0.8,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 70
+        },
+        {
+          "X": 1.5,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 65
+        },
+        {
+          "X": 3.0,
+          "Y_Left": -78,
+          "Y_Right": null,
+          "Yield": 59
+        }
+      ]
+    }
+  ]
+}

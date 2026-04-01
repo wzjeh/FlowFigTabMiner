@@ -14,6 +14,8 @@ import os
 import re
 import json
 import glob
+import unicodedata
+from collections import Counter
 import requests
 
 
@@ -395,6 +397,204 @@ def _normalize_reaction_class(value: str | None) -> str | None:
     return value  # unrecognised but not a metric — keep original
 
 
+_PAPER_LEVEL_REACTION_RULES: list[tuple[str, list[str]]] = [
+    ("polymerization", [r"\bpolymeri[sz]ation\b", r"\bpolymer(s|ic)?\b", r"\btelechelic\b"]),
+    ("amidation", [r"\bamidation\b", r"\bamide\b"]),
+    ("C-N coupling", [r"\bamination\b", r"\bc-n coupling\b"]),
+    ("C-O coupling", [r"\bc-o coupling\b", r"\betherification\b"]),
+    ("photocatalysis", [r"\bphotocatal", r"\bphotoredox\b"]),
+    ("oxidation", [r"\boxidation\b", r"\boxidative\b"]),
+    ("reduction", [r"\breduction\b", r"\breductive\b", r"\bdibal\b"]),
+    ("hydrogenation", [r"\bhydrogenation\b"]),
+    ("halogenation", [r"\bhalogenation\b", r"\biodination\b", r"\bbromination\b", r"\bchlorination\b", r"\bfluorination\b"]),
+    ("acylation", [r"\bacylation\b"]),
+    ("alkylation", [r"\balkylation\b", r"\bnucleophilic substitution\b"]),
+    ("hydrolysis", [r"\bhydrolysis\b"]),
+    ("anionic cyclization", [r"\bcycli[sz]ation\b", r"\bring closure\b", r"\banionic cyclization\b"]),
+    (
+        "halogen-metal exchange",
+        [
+            r"\bhalogen[\s-]metal exchange\b",
+            r"\bhalogen[\s-]lithium exchange\b",
+            r"\blithium[\s-]halogen exchange\b",
+            r"\biodine[\s-]lithium exchange\b",
+            r"\bbromine[\s-]lithium exchange\b",
+            r"\bbr\s*[-/]\s*li exchange\b",
+            r"\bi\s*[-/]\s*li exchange\b",
+            r"\bhalogen dance\b",
+        ],
+    ),
+    (
+        "C-C coupling",
+        [
+            r"\bc-c coupling\b",
+            r"\bcross-coupling\b",
+            r"\bcoupling\b",
+            r"\bhomocoupling\b",
+            r"\bmurahashi\b",
+            r"\bsuzuki\b",
+            r"\bcyanation\b",
+            r"\barylation\b",
+            r"\bcarbolithiation\b",
+            r"\bglycosylation\b",
+        ],
+    ),
+    (
+        "directed metalation",
+        [
+            r"\bdirected metalation\b",
+            r"\bdirected lithiation\b",
+            r"\bdeprotolithiation\b",
+            r"\bdeprotonation\b",
+            r"\bmetalation\b",
+            r"\bmetalation-substitution\b",
+            r"\bortho[- ]?lithiation\b",
+            r"\blateral metalation\b",
+            r"\blaterally lithiated\b",
+            r"\blithiation\b",
+        ],
+    ),
+    (
+        "nucleophilic addition",
+        [
+            r"\bnucleophilic addition\b",
+            r"\baddition to\b",
+            r"\bpropargylation\b",
+            r"\bketone(s)?\b",
+            r"\baldehyde(s)?\b",
+            r"\bimine(s)?\b",
+            r"\bacid chloride(s)?\b",
+            r"\bketo ester(s)?\b",
+            r"\bketoamide(s)?\b",
+        ],
+    ),
+]
+
+
+def _norm_text_key(text: str | None) -> str:
+    text = str(text or "").strip()
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    text = " ".join(text.split())
+    return text.lower()
+
+
+def _collect_intermediate_reaction_context(intermediate_dir: str | None) -> str:
+    if not intermediate_dir or not os.path.isdir(intermediate_dir):
+        return ""
+    snippets: list[str] = []
+    for path in glob.glob(os.path.join(intermediate_dir, "**", "*local_vars.json"), recursive=True)[:20]:
+        try:
+            with open(path, encoding="utf-8", errors="ignore") as fh:
+                obj = json.load(fh)
+        except Exception:
+            continue
+        for key in ("reaction_context", "data_interpretation_notes"):
+            val = obj.get(key)
+            if isinstance(val, str) and val.strip():
+                snippets.append(val.strip())
+        fixed = obj.get("fixed_conditions") or {}
+        if isinstance(fixed, dict):
+            note = fixed.get("notes")
+            if isinstance(note, str) and note.strip():
+                snippets.append(note.strip())
+    scheme_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+    if os.path.exists(scheme_path):
+        try:
+            with open(scheme_path, encoding="utf-8", errors="ignore") as fh:
+                txt = fh.read().strip()
+        except Exception:
+            txt = ""
+        if txt:
+            snippets.append(txt)
+    return " | ".join(snippets[:12])
+
+
+def _infer_paper_level_class_from_text(text: str | None) -> tuple[str | None, str | None]:
+    haystack = _norm_text_key(text)
+    if not haystack:
+        return None, None
+    for label, patterns in _PAPER_LEVEL_REACTION_RULES:
+        for pattern in patterns:
+            if re.search(pattern, haystack):
+                return label, pattern
+    return None, None
+
+
+def _normalize_record_level_class_for_vote(value: str | None) -> str | None:
+    normalized = _normalize_reaction_class(value)
+    low = _norm_text_key(normalized)
+    if low in {"", "nan", "unspecified"}:
+        return None
+    if low == "carbolithiation":
+        return "C-C coupling"
+    if low == "nucleophilic substitution":
+        return "alkylation"
+    return normalized
+
+
+def _apply_paper_level_reaction_class(records: list[dict], basename: str, intermediate_dir: str | None) -> list[dict]:
+    title_class, title_pattern = _infer_paper_level_class_from_text(basename)
+    context = _collect_intermediate_reaction_context(intermediate_dir)
+    context_class, context_pattern = _infer_paper_level_class_from_text(context)
+
+    votes = Counter()
+    for rec in records:
+        vote = _normalize_record_level_class_for_vote(rec.get("reaction_class"))
+        if vote:
+            votes[vote] += 1
+
+    total_votes = sum(votes.values())
+    top_class = None
+    top_share = 0.0
+    if votes:
+        top_class, top_n = votes.most_common(1)[0]
+        top_share = top_n / total_votes if total_votes else 0.0
+
+    final_class = None
+    assignment = None
+    evidence = None
+    needs_review = False
+    if title_class:
+        final_class = title_class
+        assignment = "title_keyword"
+        evidence = title_pattern
+        if top_class and top_class != final_class and top_share >= 0.35:
+            assignment = "title_keyword_over_majority"
+            needs_review = True
+    elif context_class:
+        final_class = context_class
+        assignment = "intermediate_context_keyword"
+        evidence = context_pattern
+        if top_class and top_class != final_class and top_share >= 0.35:
+            assignment = "intermediate_context_over_majority"
+            needs_review = True
+    elif top_class:
+        final_class = top_class
+        if top_share >= 0.75:
+            assignment = "majority_vote_high_conf"
+        elif top_share >= 0.5:
+            assignment = "majority_vote_low_conf"
+            needs_review = True
+        else:
+            assignment = "plurality_vote"
+            needs_review = True
+        evidence = f"top_share={top_share:.3f}"
+    else:
+        final_class = "other"
+        assignment = "fallback_other"
+        needs_review = True
+
+    for rec in records:
+        rec["reaction_class_record_level"] = rec.get("reaction_class")
+        rec["reaction_class_paper_level"] = final_class
+        rec["reaction_class_assignment"] = assignment
+        rec["reaction_class_evidence"] = evidence
+        rec["reaction_class_needs_review"] = needs_review
+        rec["reaction_class"] = final_class
+    return records
+
+
 # ---------------------------------------------------------------------------
 # Unit parsing utilities (for future ORD export and condition normalisation)
 # ---------------------------------------------------------------------------
@@ -498,7 +698,12 @@ PREFERRED_COLUMNS = [
     "reactant2_name", "reactant2_smiles",
     "product_name", "product_smiles", "product_label",
     "reaction_smiles",
+    "reaction_class_record_level",
+    "reaction_class_paper_level",
     "reaction_class",
+    "reaction_class_assignment",
+    "reaction_class_evidence",
+    "reaction_class_needs_review",
     "yield_pct", "yield_type", "batch_yield_pct",
     "conversion_pct", "selectivity_pct",
     "diastereomeric_ratio", "ee_pct",
@@ -642,6 +847,8 @@ class PostProcessor:
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
 
             normalised.append(nr)
+
+        normalised = _apply_paper_level_reaction_class(normalised, basename, intermediate_dir)
 
         # Save _normalized.json
         norm_json = os.path.join(self.output_dir, f"{basename}_normalized.json")

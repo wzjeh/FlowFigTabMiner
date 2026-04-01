@@ -1,0 +1,92 @@
+{
+  "columns": [
+    "Alkene",
+    "XR1",
+    "T (°C)",
+    "RLi",
+    "Product",
+    "Yield (%)"
+  ],
+  "rows": [
+    [
+      "10k",
+      "OCH2Ph",
+      "-78",
+      "t-BuLi",
+      "12k",
+      "95"
+    ],
+    [
+      "10k",
+      "OCH2Ph",
+      "-78 → rt",
+      "t-BuLi",
+      "13k",
+      "72"
+    ],
+    [
+      "10b",
+      "OMe",
+      "-78 → rt",
+      "t-BuLi",
+      "12b",
+      "83"
+    ],
+    [
+      "10l",
+      "OCH2CH=CH2",
+      "-78 → rt",
+      "n-BuLi",
+      "13l",
+      "73"
+    ],
+    [
+      "10l",
+      "OCH2CH=CH2",
+      "-78 → rt",
+      "n-C10H21",
+      "13l",
+      "70"
+    ],
+    [
+      "10l",
+      "OCH2CH=CH2",
+      "-78 → rt",
+      "MeLi-TMEDA",
+      "13l",
+      "80"
+    ],
+    [
+      "10l",
+      "OCH2CH=CH2",
+      "-78 → rt",
+      "PhLi-TMEDA",
+      "13l",
+      "70"
+    ],
+    [
+      "10l",
+      "OCH2CH=CH2",
+      "-78 → rt",
+      "CyclohexenylLi-TMEDA",
+      "13l",
+      "74"
+    ],
+    [
+      "10m",
+      "N(CH3)CH2CH=CH2",
+      "-78 → rt",
+      "t-BuLi",
+      "12m",
+      "90"
+    ],
+    [
+      "10n",
+      "N(CH2Ph)CH2CH=CH2",
+      "-78 → rt",
+      "t-BuLi",
+      "12n",
+      "91"
+    ]
+  ]
+}

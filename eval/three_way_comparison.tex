@@ -1,0 +1,36 @@
+% three_way_comparison.tex
+% 三方对比: FlowFigTabMiner vs Gemini 3.1 Pro vs Claude Sonnet 4.6
+% 评测范围: 5 figures (F1-F5) + 5 tables (T1-T5)
+%
+% 需要的宏包: \usepackage{booktabs, multirow}
+
+\begin{table}[htbp]
+\centering
+\caption{Three-way comparison: FlowFigTabMiner vs.\ VLMs on 5 figures and 5 tables.}
+\label{tab:three-way-comparison}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Task} & \textbf{Metric} & \textbf{FlowFigTabMiner} & \textbf{Gemini 3.1 Pro} & \textbf{Claude Sonnet 4.6} \\
+\midrule
+\multirow{3}{*}{Figure (F1--F5)}
+  & Precision & \textbf{0.876} & 0.531 & 0.513 \\
+  & Recall    & \textbf{0.932} & 0.659 & 0.651 \\
+  & F1        & \textbf{0.892} & 0.575 & 0.561 \\
+\midrule
+\multirow{3}{*}{Table (T1--T5)}
+  & Precision & 0.843 & 0.98  & \textbf{0.99} \\
+  & Recall    & 0.814 & 0.98  & \textbf{0.99} \\
+  & F1        & 0.827 & 0.98  & \textbf{0.99} \\
+\midrule
+\multirow{3}{*}{SMILES (T1--T5)}
+  & Precision & 0.925 & \textbf{0.944} & 0.893 \\
+  & Recall    & 0.697 & \textbf{0.944} & 0.843 \\
+  & F1        & 0.795 & \textbf{0.944} & 0.867 \\
+\midrule
+\multirow{3}{*}{\textbf{Overall}}
+  & Precision & \textbf{0.881} & 0.818 & 0.799 \\
+  & Recall    & 0.814 & \textbf{0.861} & 0.828 \\
+  & F1        & \textbf{0.838} & 0.833 & 0.806 \\
+\bottomrule
+\end{tabular}
+\end{table}

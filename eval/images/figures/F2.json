@@ -1,0 +1,287 @@
+{
+  "x_axis_title": "Residence time / s",
+  "y_axis_title": "Temperature / °C",
+  "y_right_axis_title": null,
+  "series": [
+    {
+      "name": "100%",
+      "points": [
+        {
+          "X": 0,
+          "Y_Left": 27.5,
+          "Y_Right": null
+        },
+        {
+          "X": 1.05,
+          "Y_Left": 90,
+          "Y_Right": null
+        },
+        {
+          "X": 1.6,
+          "Y_Left": 155,
+          "Y_Right": null
+        },
+        {
+          "X": 2.15,
+          "Y_Left": 182,
+          "Y_Right": null
+        },
+        {
+          "X": 2.65,
+          "Y_Left": 206,
+          "Y_Right": null
+        },
+        {
+          "X": 3.15,
+          "Y_Left": 216,
+          "Y_Right": null
+        },
+        {
+          "X": 3.7,
+          "Y_Left": 225,
+          "Y_Right": null
+        },
+        {
+          "X": 4.25,
+          "Y_Left": 226,
+          "Y_Right": null
+        },
+        {
+          "X": 4.8,
+          "Y_Left": 227,
+          "Y_Right": null
+        },
+        {
+          "X": 5.3,
+          "Y_Left": 223,
+          "Y_Right": null
+        },
+        {
+          "X": 5.85,
+          "Y_Left": 221,
+          "Y_Right": null
+        },
+        {
+          "X": 6.35,
+          "Y_Left": 220,
+          "Y_Right": null
+        },
+        {
+          "X": 6.9,
+          "Y_Left": 220,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "75%",
+      "points": [
+        {
+          "X": 0,
+          "Y_Left": 27.5,
+          "Y_Right": null
+        },
+        {
+          "X": 1.1,
+          "Y_Left": 45,
+          "Y_Right": null
+        },
+        {
+          "X": 1.65,
+          "Y_Left": 63,
+          "Y_Right": null
+        },
+        {
+          "X": 2.2,
+          "Y_Left": 94,
+          "Y_Right": null
+        },
+        {
+          "X": 2.75,
+          "Y_Left": 116,
+          "Y_Right": null
+        },
+        {
+          "X": 3.3,
+          "Y_Left": 120,
+          "Y_Right": null
+        },
+        {
+          "X": 3.85,
+          "Y_Left": 125,
+          "Y_Right": null
+        },
+        {
+          "X": 4.4,
+          "Y_Left": 127,
+          "Y_Right": null
+        },
+        {
+          "X": 4.95,
+          "Y_Left": 129,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 130,
+          "Y_Right": null
+        },
+        {
+          "X": 6.05,
+          "Y_Left": 131,
+          "Y_Right": null
+        },
+        {
+          "X": 6.6,
+          "Y_Left": 131,
+          "Y_Right": null
+        },
+        {
+          "X": 7.15,
+          "Y_Left": 132,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "50%",
+      "points": [
+        {
+          "X": 0,
+          "Y_Left": 27.5,
+          "Y_Right": null
+        },
+        {
+          "X": 1.25,
+          "Y_Left": 36,
+          "Y_Right": null
+        },
+        {
+          "X": 1.75,
+          "Y_Left": 42,
+          "Y_Right": null
+        },
+        {
+          "X": 2.3,
+          "Y_Left": 53,
+          "Y_Right": null
+        },
+        {
+          "X": 2.9,
+          "Y_Left": 74,
+          "Y_Right": null
+        },
+        {
+          "X": 3.45,
+          "Y_Left": 79,
+          "Y_Right": null
+        },
+        {
+          "X": 4.0,
+          "Y_Left": 82,
+          "Y_Right": null
+        },
+        {
+          "X": 4.55,
+          "Y_Left": 85,
+          "Y_Right": null
+        },
+        {
+          "X": 5.1,
+          "Y_Left": 92,
+          "Y_Right": null
+        },
+        {
+          "X": 5.65,
+          "Y_Left": 94,
+          "Y_Right": null
+        },
+        {
+          "X": 6.2,
+          "Y_Left": 95,
+          "Y_Right": null
+        },
+        {
+          "X": 6.75,
+          "Y_Left": 98,
+          "Y_Right": null
+        },
+        {
+          "X": 7.3,
+          "Y_Left": 100,
+          "Y_Right": null
+        }
+      ]
+    },
+    {
+      "name": "25%",
+      "points": [
+        {
+          "X": 0,
+          "Y_Left": 27.5,
+          "Y_Right": null
+        },
+        {
+          "X": 1.25,
+          "Y_Left": 35,
+          "Y_Right": null
+        },
+        {
+          "X": 1.85,
+          "Y_Left": 42,
+          "Y_Right": null
+        },
+        {
+          "X": 2.5,
+          "Y_Left": 48,
+          "Y_Right": null
+        },
+        {
+          "X": 3.1,
+          "Y_Left": 55,
+          "Y_Right": null
+        },
+        {
+          "X": 3.7,
+          "Y_Left": 57,
+          "Y_Right": null
+        },
+        {
+          "X": 4.3,
+          "Y_Left": 59,
+          "Y_Right": null
+        },
+        {
+          "X": 4.9,
+          "Y_Left": 61,
+          "Y_Right": null
+        },
+        {
+          "X": 5.5,
+          "Y_Left": 64,
+          "Y_Right": null
+        },
+        {
+          "X": 6.1,
+          "Y_Left": 66,
+          "Y_Right": null
+        },
+        {
+          "X": 6.7,
+          "Y_Left": 66,
+          "Y_Right": null
+        },
+        {
+          "X": 7.3,
+          "Y_Left": 67,
+          "Y_Right": null
+        },
+        {
+          "X": 7.9,
+          "Y_Left": 69,
+          "Y_Right": null
+        }
+      ]
+    }
+  ]
+}
