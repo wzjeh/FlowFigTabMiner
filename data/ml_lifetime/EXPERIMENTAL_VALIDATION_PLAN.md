@@ -65,15 +65,13 @@ ln(A) = 0.628·Ea - 5.11
 σ → Ea → ln(A) → k_d(T) = exp(ln(A) - Ea/(R·T)) → t₁/₂(T) = ln(2)/k_d
 ```
 
-### 1.4 等动力学温度
+### 1.4 焓熵补偿效应的注意事项
 
-Ea-ln(A) compensation 的斜率 0.628 对应等动力学温度：
+Ea-ln(A) 的高相关性（r = 0.99）需要谨慎解读：
 
-```
-T_iso = 1 / (R × 0.628) = 192 K = -82°C
-```
+**统计伪影风险**：当 Ea 和 ln(A) 都从同一组 Arrhenius 线性回归中提取时，它们的误差天然相关（Krug, Hunter & Grieger, J. Phys. Chem., 1976）。尤其是本文中部分中间体仅有 2 个温度点做 Arrhenius 拟合，此时 Ea-ln(A) 的相关性会被人为放大。因此，**r = 0.99 不应作为核心发现**，而是作为 supporting observation 报告。
 
-在 -82°C 以下，所有 ArLi 中间体的分解速率趋同（EWG 效应消失）。在 -82°C 以上，σ 越大（EWG 越强），分解越慢。这解释了为什么 -78°C 是有机锂化学的"魔法温度"——它恰好在等动力学温度附近。
+等动力学温度 T_iso = 1/(R × 0.628) = -82°C。但 -78°C（干冰/丙酮冷浴）之所以成为有机锂化学的标准温度，**纯粹因为实验便利性**（干冰廉价、温度恒定），与 T_iso 的接近是巧合，不应赋予因果关系。
 
 ---
 
@@ -203,19 +201,35 @@ ArLi + MeOH (excess) ──[M2]──→ ArH + LiOMe
 3. **实用层面**：化学家只需查取代基的 σ 值，即可决定该反应需要 batch、flow 还是 flash chemistry
 4. **数据挖掘层面**：证明文献中的图表数据蕴含可提取的定量化学规律
 
-### 4.2 发表角度
+### 4.2 各结论的新颖性与科学贡献的诚实评估
+
+| 结论 | 新颖性 | 科学贡献 | 建议定位 |
+|------|--------|---------|---------|
+| **数据挖掘方法** (VLM + 热图 → 动力学) | **高** — 首次 | 证明文献图表可自动提取定量动力学参数 | **论文核心卖点** |
+| **5 个数量级的 t₁/₂ 跨度** | **高** — 首次系统量化 | 纯数据事实，无争议 | **核心发现** |
+| **分解机制分类 (3 类)** | **中** — 系统化已知定性知识 | 将定性规律定量化 | **有价值的讨论** |
+| **Hammett σ vs Ea (r=-0.91)** | **中** — 首次定量，但 n=5 | 定量化了已知的 EWG 稳定化效应 | **核心发现之一，坦承 n=5 局限** |
+| **焓熵补偿 (r=0.99)** | **低** — 已知现象 + 可能统计伪影 | Krug (1976) 指出 Arrhenius 拟合的 Ea-ln(A) 误差天然相关 | **SI 中 observation，不做亮点** |
+| **等动力学温度 ≈ -78°C** | **无** — 巧合 | -78°C 是干冰冷浴温度，选择出于实验便利而非动力学 | **删除或仅做脚注** |
+| **反应器推荐规则** | **中高** — 实用创新 | 给化学家直接工具：σ → t₁/₂ → 反应器类型 | **实用价值亮点** |
+| **湿实验验证** | **高** — 闭环证据 | 证明数据挖掘的预测可被实验验证 | **论文必要组成** |
+
+### 4.3 发表角度
+
+**论文的真正卖点不是 Hammett 或补偿效应（这些是衍生结论），而是方法**——证明 VLM + 流动化学热图 → 可提取定量动力学 → 可做外推预测 → 可用湿实验验证。
 
 **Title 候选**：
-- "Quantitative Prediction of Organolithium Intermediate Lifetime from Hammett Constants via Flow Chemistry Data Mining"
-- "From Heatmaps to Half-lives: Automated Extraction and Prediction of Organolithium Thermal Stability"
+- "From Heatmaps to Half-lives: Automated Extraction of Organolithium Intermediate Kinetics from Flow Chemistry Literature"
+- "Data Mining Flow Chemistry: Quantitative Prediction of Organolithium Thermal Stability from Literature Figures"
 
 **Story**：
 1. 问题：有机锂中间体的寿命决定了反应器选择（batch vs flow vs flash），但系统的定量数据稀缺
 2. 方法：用 VLM 从 21 篇文献的热图中自动提取 1,650 个 (tR, T, yield) 数据点
-3. 发现：11 个中间体的 Ea 与 Hammett σ 强相关 (r=-0.91)；存在焓熵补偿效应 (r=0.99)
-4. 预测：用 Hammett 回归预测 3 个新中间体的 t₁/₂
-5. 验证：flow microreactor 实验确认预测正确
-6. 工具：输入 σ → 输出反应器推荐
+3. 结果：提取了 11 个中间体的 Ea，跨越 5 个数量级的稳定性差异
+4. 发现：Ea 与 Hammett σ 负相关 (r=-0.91, n=5)，可区分 3 种分解机制
+5. 预测：用 Hammett 回归外推 3 个新中间体的 t₁/₂
+6. 验证：flow microreactor 实验确认预测
+7. 工具：输入取代基 σ → 输出反应器推荐
 
 ---
 
