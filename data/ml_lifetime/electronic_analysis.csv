@@ -1,0 +1,12 @@
+intermediate,short_name,Ea_kJ_mol,ln_A,t_half_m40C_s,sigma_hammett,category,ewg,mechanism,hybridization,reactor_recommendation
+tert-butyl 4-(lithio)benzoate (aryllithium),p-ester-ArLi,20.96,7.1883,26.01,0.45,ArLi-EWG,COOtBu (para),conjugation-stabilized,sp2,standard_flow
+oxiranyllithium,oxiranyl-Li,43.4,18.4617,35.17,,Epoxy-Li,epoxide,ring-opening,sp3,standard_flow
+"(Br, Li substituents on benzene ring)",o-Br-ArLi,82.19,44.7351,0.06701,0.39,ArLi-halo,Br (ortho),benzyne elimination,sp2,flash_chemistry
+"(I, Li substituents on benzene ring)",o-I-ArLi,79.51,47.4782,0.001082,0.35,ArLi-halo,I (ortho),benzyne elimination,sp2,flash_chemistry
+"CHLi(I)(F) (iodofluoromethyllithium), lifetime 82 ms at -40 °C",CHLi(I)(F),19.95,10.1552,0.7934,,Carbenoid,I + F,alpha-elimination,sp3,flash_chemistry
+"Li-CH2-F (fluoromethyllithium), lifetime 13 ms at -60 °C",LiCH₂F,51.02,29.7553,0.02237,,Carbenoid,F,alpha-elimination,sp3,flash_chemistry
+tert-butyl o-(lithio)benzoate (aryllithium),o-ester-ArLi,6.46,0.1061,17.46,0.45,ArLi-EWG,COOtBu (ortho),conjugation-stabilized,sp2,standard_flow
+chloroiodomethyllithium (CHLi(I)(Cl)),CHLi(I)(Cl),25.0,10.383,8.555,,Carbenoid,I + Cl,alpha-elimination,sp3,standard_flow
+p-lithiobenzonitrile (from 1c),p-CN-ArLi,6.42,-1.5471,89.33,0.66,ArLi-EWG,CN (para),conjugation-stabilized,sp2,batch_compatible
+m-lithiobenzonitrile (from 1b),m-CN-ArLi,4.71,-2.1397,66.93,0.56,ArLi-EWG,CN (meta),conjugation-stabilized,sp2,batch_compatible
+aryllithium (then borylated to arylboronate),PhLi (plain),36.54,15.376,22.36,0.0,ArLi-plain,none,protonation/polymerization,sp2,standard_flow

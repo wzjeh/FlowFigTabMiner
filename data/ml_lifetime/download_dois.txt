@@ -1,0 +1,61 @@
+# ============================================================
+# Organolithium Lifetime Project — Paper Download List
+# Total: 45 DOIs (22 from shortlist + 23 from WoS full scan)
+# ============================================================
+
+# ── Tier 1: Must download (likely have tR-yield heatmap/table) ──
+
+# From shortlist (12)
+10.1002/anie.201814088
+10.1039/c5ob00958h
+10.1002/ceat.201900057
+10.1039/c6qo00257a
+10.1002/ejoc.201901729
+10.1021/acscentsci.1c00972
+10.1002/chem.202103183
+10.1021/jacs.0c06370
+10.1002/chem.201402520
+10.1039/c7cc08460a
+10.1039/d3re00539a
+10.1039/c2cc36197c
+
+# From WoS full scan — high score (11)
+10.1002/adsc.201400747
+10.1515/chem-2016-0041
+10.1021/acsomega.5c07458
+10.1002/asia.70525
+10.1021/acs.oprd.3c00385
+10.1002/anie.201410062
+10.1021/acs.oprd.1c00024
+10.1002/chem.202202286
+10.1021/acs.oprd.3c00395
+10.1016/j.cej.2023.147033
+10.1021/acs.orglett.0c01085
+
+# ── Tier 2: Worth downloading ──
+
+# From shortlist (10)
+10.1039/d2re00439a
+10.1021/acs.oprd.7b00142
+10.1021/acs.oprd.0c00037
+10.1002/ceat.201900074
+10.1021/acs.oprd.9b00265
+10.1021/acs.oprd.9b00180
+10.1055/a-2170-2976
+10.1021/acs.oprd.0c00203
+10.1007/s41981-024-00335-y
+10.1039/c5cy02098k
+
+# From WoS full scan — new intermediate types (12)
+10.1007/s41981-018-0022-5
+10.1071/CH12440
+10.1039/c0gc00852d
+10.1021/ma101663x
+10.1002/anie.201704006
+10.1556/JFC-D-12-00004
+10.1002/chem.201902867
+10.1246/cl.140980
+10.1021/acs.orglett.0c02155
+10.1021/acs.oprd.4c00292
+10.1007/s41981-021-00205-x
+10.1021/acs.oprd.4c00078

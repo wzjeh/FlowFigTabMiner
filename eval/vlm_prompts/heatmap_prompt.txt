@@ -1,0 +1,62 @@
+You are extracting data from a flow chemistry heatmap figure. The figure shows the effect of residence time (tR) and temperature (T) on reaction yield (%).
+
+## What to extract
+
+1. **Axes**:
+   - X-axis: title and tick values (usually tR in seconds, often log scale like 10^-2, 10^-1, 10^0)
+   - Y-axis: title and tick values (usually Temperature in °C)
+   - Identify if each axis is "log" or "linear" scale
+
+2. **Data grid**: For every labeled data point (yield percentage printed on the heatmap), record:
+   - The tR value (X-axis, in seconds — convert from scientific notation if needed, e.g. 10^-1 = 0.1)
+   - The temperature value (Y-axis, in °C)
+   - The yield value (the number printed at that grid point, in %)
+
+3. **Caption**: The full text of the figure caption (usually below the figure, starting with "Figure N." or "Fig. N.")
+
+4. **Context** (from caption, sub-figure labels, or molecule structures shown):
+   - Sub-figure label if present (e.g., "a", "b", "c", "d")
+   - Reaction description (e.g., "Trapping reaction of 2 with N-methoxy-N-methyl-3-phenylpropanamide")
+   - Any compound IDs mentioned (e.g., "1a", "2", "3b")
+   - Any molecule structure descriptions visible in the figure
+
+## Output format
+
+Return a single JSON object:
+
+```json
+{
+  "x_axis": {
+    "title": "tR1/s",
+    "scale": "log",
+    "tick_values": [0.01, 0.03, 0.1, 0.3, 1.0]
+  },
+  "y_axis": {
+    "title": "T/°C",
+    "scale": "linear",
+    "tick_values": [-78, -60, -40, -20]
+  },
+  "data_points": [
+    {"tR_s": 0.01, "T_C": -78, "yield_pct": 24},
+    {"tR_s": 0.01, "T_C": -60, "yield_pct": 34},
+    {"tR_s": 0.03, "T_C": -78, "yield_pct": 35}
+  ],
+  "caption": "Figure 3. Effects of the temperature (T) and the residence time (tR1) on the yield. a) Trapping reaction of 2 with N-methoxy-N-methyl-3-phenylpropanamide.",
+  "context": {
+    "sub_figure_label": "a",
+    "reaction_description": "Trapping reaction of 2 with N-methoxy-N-methyl-3-phenylpropanamide",
+    "compound_ids": ["2"],
+    "electrophile_or_substrate": "N-methoxy-N-methyl-3-phenylpropanamide",
+    "molecule_in_figure": "lithiated intermediate with Li, I, F atoms"
+  }
+}
+```
+
+## Important rules
+
+- For log-scale X-axis: convert tick labels to actual seconds (10^-2 = 0.01, 10^-1.5 ≈ 0.032, 10^-1 = 0.1, 10^-0.5 ≈ 0.316, 10^0 = 1.0, 10^0.5 ≈ 3.16, 10^1 = 10.0, 10^1.0 = 10.0)
+- Read every yield number visible on the heatmap grid — do not skip any
+- If a data point has no visible yield number, omit it (do not guess)
+- If the caption mentions multiple sub-figures (a, b, c...), only extract data for the sub-figure shown in THIS image
+- If temperature tick labels use negative values (e.g., -78, -60), preserve the negative sign
+- Return ONLY the JSON object, no other text

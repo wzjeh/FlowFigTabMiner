@@ -29,6 +29,8 @@ data/tab-for-annotation/*
 !data/tab-for-annotation/.gitkeep
 !data/tab_for_annotation/.gitkeep
 data/*
+!data/ml_lifetime/
+!data/ml_lifetime/**
 
 # IDE
 .idea/
