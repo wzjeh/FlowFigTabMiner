@@ -28,11 +28,11 @@ ELECTRONIC_CSV = os.path.join(PROJECT_ROOT, "data/ml_lifetime/electronic_analysi
 HALFLIFE_CSV = os.path.join(PROJECT_ROOT, "data/ml_lifetime/phase_a_halflives.csv")
 PLOT_DIR = os.path.join(PROJECT_ROOT, "data/ml_lifetime/analysis_figures")
 
-# Validation predictions (from Hammett regression)
+# Validation predictions (from Hammett regression: Ea = -48.5σ + 36.1)
 VALIDATION = [
-    {"name": "p-CF₃-PhLi", "sigma": 0.54, "Ea_pred": -49.4*0.54+36.0, "marker": "D"},
-    {"name": "p-F-PhLi", "sigma": 0.06, "Ea_pred": -49.4*0.06+36.0, "marker": "D"},
-    {"name": "p-CH₃-PhLi", "sigma": -0.17, "Ea_pred": -49.4*(-0.17)+36.0, "marker": "D"},
+    {"name": "p-CF₃-PhLi", "sigma": 0.54, "Ea_pred": -48.5*0.54+36.1, "marker": "D"},
+    {"name": "p-F-PhLi", "sigma": 0.06, "Ea_pred": -48.5*0.06+36.1, "marker": "D"},
+    {"name": "p-CH₃-PhLi", "sigma": -0.17, "Ea_pred": -48.5*(-0.17)+36.1, "marker": "D"},
 ]
 
 R = 8.314e-3  # kJ/(mol·K)
@@ -82,11 +82,15 @@ def main():
             sigma = float(e["sigma_hammett"])
             ea = float(e["Ea_kJ_mol"])
             color = mech_colors.get(e["mechanism"], "#999")
-            ax_a.scatter(sigma, ea, s=120, c=color, edgecolors="black", zorder=5)
+            is_ortho = "ortho" in e.get("ewg", "")
+            marker = "s" if is_ortho else "o"
+            ax_a.scatter(sigma, ea, s=120, c=color, edgecolors="black",
+                         zorder=5, marker=marker)
             ax_a.annotate(e["short_name"], (sigma, ea), xytext=(6, 6),
-                         textcoords="offset points", fontsize=7.5, fontweight="bold")
+                         textcoords="offset points", fontsize=6.5, fontweight="bold")
             arli_points.append((sigma, ea))
-            if e["mechanism"] != "benzyne elimination":
+            if (e["mechanism"] != "benzyne elimination"
+                    and not is_ortho):
                 non_benzyne.append((sigma, ea))
 
     # Hammett fit line (excl benzyne)
@@ -106,9 +110,9 @@ def main():
                      xytext=(-8, -18), textcoords="offset points",
                      fontsize=7.5, color="red", fontweight="bold")
 
-    # Benzyne zone
-    ax_a.axhspan(70, 90, alpha=0.08, color="red")
-    ax_a.text(0.02, 85, "benzyne elimination", fontsize=8, color="red", style="italic")
+    # Benzyne zone (Ea = 59.7–65.4 after tR correction)
+    ax_a.axhspan(55, 72, alpha=0.08, color="red")
+    ax_a.text(0.02, 68, "benzyne\nelimination", fontsize=8, color="red", style="italic")
 
     ax_a.scatter([], [], s=150, c="gold", edgecolors="red", marker="D",
                  label="Validation targets\n(to be measured)")
@@ -132,9 +136,20 @@ def main():
     inter_to_mech = {e["intermediate"]: e["mechanism"] for e in electronic}
     inter_to_short = {e["intermediate"]: e["short_name"] for e in electronic}
 
-    cmap = plt.cm.tab10(np.linspace(0, 1, len(by_inter)))
-    for idx, (inter, pts) in enumerate(sorted(by_inter.items(), key=lambda x: -len(x[1]))):
-        T_K = [float(p["T_K"]) for p in pts]
+    # Unique color per intermediate (not per mechanism)
+    arrh_palette = [
+        "#E6194B", "#3CB44B", "#4363D8", "#F58231", "#911EB4",
+        "#42D4F4", "#F032E6", "#BFEF45", "#FABED4", "#469990",
+        "#DCBEFF", "#9A6324", "#800000", "#AAFFC3", "#808000",
+    ]
+    arrh_intermediates = sorted(by_inter.keys(),
+                                key=lambda x: -len([p for p in by_inter[x]
+                                                    if float(p["k_d"]) > 0]))
+    inter_color_map = {inter: arrh_palette[i % len(arrh_palette)]
+                       for i, inter in enumerate(arrh_intermediates)}
+
+    for inter in arrh_intermediates:
+        pts = by_inter[inter]
         k_d = [float(p["k_d"]) for p in pts if float(p["k_d"]) > 0]
         T_K_valid = [float(p["T_K"]) for p in pts if float(p["k_d"]) > 0]
 
@@ -145,8 +160,7 @@ def main():
         ln_k = np.log(np.array(k_d))
 
         short = inter_to_short.get(inter, inter[:20])
-        mech = inter_to_mech.get(inter, "")
-        color = mech_colors.get(mech, cmap[idx])
+        color = inter_color_map[inter]
 
         ax_b.scatter(inv_T, ln_k, s=40, c=[color], zorder=5, alpha=0.8)
 
@@ -156,10 +170,10 @@ def main():
         ax_b.plot(x_fit, sl * x_fit + ic, color=color, linewidth=1.5, alpha=0.7,
                   label=f"{short}")
 
-    ax_b.set_xlabel("1000 / T  (K⁻¹)", fontsize=12)
-    ax_b.set_ylabel("ln(k_d)  (s⁻¹)", fontsize=12)
+    ax_b.set_xlabel("1000 / T  (K\u207b\u00b9)", fontsize=12)
+    ax_b.set_ylabel("ln(k_d)  (s\u207b\u00b9)", fontsize=12)
     ax_b.set_title("(b) Arrhenius Plot: Decomposition Rate Constants", fontsize=13, fontweight="bold")
-    ax_b.legend(fontsize=6.5, loc="upper left", ncol=2)
+    ax_b.legend(fontsize=5.5, loc="upper left", ncol=2)
     ax_b.grid(alpha=0.3)
 
     # Top axis: temperature in °C
@@ -243,14 +257,12 @@ def main():
     ax_d.set_xlabel("log₁₀(t½ at -40°C)  [s]", fontsize=12)
     ax_d.set_title("(d) Stability Ranking + Experimental Predictions", fontsize=13, fontweight="bold")
 
-    # Reactor zones
-    ax_d.axvspan(np.log10(60), 4, alpha=0.08, color="green")
-    ax_d.axvspan(np.log10(1), np.log10(60), alpha=0.08, color="blue")
+    # Reactor zones (Yoshida classification)
+    ax_d.axvspan(np.log10(1), 4, alpha=0.08, color="blue")
     ax_d.axvspan(-4, np.log10(1), alpha=0.08, color="red")
 
     y_top = len(names_d) - 0.3
-    ax_d.text(np.log10(200), y_top, "Batch", fontsize=8, color="green", fontweight="bold", ha="center")
-    ax_d.text(np.log10(8), y_top, "Flow", fontsize=8, color="blue", fontweight="bold", ha="center")
+    ax_d.text(np.log10(10), y_top, "Flow", fontsize=8, color="blue", fontweight="bold", ha="center")
     ax_d.text(np.log10(0.03), y_top, "Flash", fontsize=8, color="red", fontweight="bold", ha="center")
 
     # Add t½ labels

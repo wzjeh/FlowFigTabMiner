@@ -1,12 +1,15 @@
 intermediate,intermediate_smiles,Ea_decomp_kJ_mol,ln_A,arrhenius_r2,n_temperatures,T_range_C,t_half_m78C_s,t_half_m40C_s,t_half_0C_s,t_half_25C_s,paper
-tert-butyl 4-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccc([Li])cc1,20.96,7.1883,0.9464,5,-60 to 20,213.6,26.01,5.339,2.463,Nagaki et al. 2010 - A flow microreactor system en
-oxiranyllithium,[Li]C1CO1,43.40,18.4617,0.9863,5,-60 to 20,2751,35.17,1.325,0.2669,Nagaki et al. 2010 - Generation and reactions of o
-"(Br, Li substituents on benzene ring)",Brc1ccccc1[Li],82.19,44.7351,0.9639,4,-78 to -50,258,0.06701,0.0001348,6.483e-06,three-component-coupling-based-on-flash-chemistry-
-"(I, Li substituents on benzene ring)",Ic1ccccc1[Li],79.51,47.4782,0.9442,4,-78 to -50,3.183,0.001082,2.665e-06,1.415e-07,three-component-coupling-based-on-flash-chemistry-
-"CHLi(I)(F) (iodofluoromethyllithium), lifetime 82 ms at -40 °C",[Li]C(F)I,19.95,10.1552,0.9755,4,-78 to -20,5.884,0.7934,0.1758,0.08418,example1
-"Li-CH2-F (fluoromethyllithium), lifetime 13 ms at -60 °C",[Li]CF,51.02,29.7553,0.9737,4,-78 to -20,3.763,0.02237,0.0004738,7.202e-05,example1
-tert-butyl o-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccccc1[Li],6.46,0.1061,0.0494,3,-30 to 20,33.41,17.46,10.72,8.444,Nagaki et al. 2008 - Aryllithium compounds bearing
+oxiranyllithium,[Li]C1CO1,35.57,15.9003,0.9103,6,-70 to 20,285.3,8.01,0.5455,0.1467,Nagaki et al. 2010 - Generation and reactions of o
+tert-butyl 4-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccc([Li])cc1,14.97,5.7831,0.8248,5,-60 to 20,21.66,4.817,1.555,0.8947,Nagaki et al. 2010 - A flow microreactor system en
+methyl o-(lithio)benzoate,COC(=O)c1ccccc1[Li],36.53,18.9868,0.9832,5,-78 to 0,23.63,0.6021,0.03812,0.009893,Nagaki et al. 2008 - Aryllithium compounds bearing
+"(Br, Li substituents on benzene ring)",Brc1ccccc1[Li],65.42,36.1740,0.9706,4,-78 to -50,43.83,0.06133,0.0004378,3.911e-05,three-component-coupling-based-on-flash-chemistry-
+isopropyl o-(lithio)benzoate,CC(C)OC(=O)c1ccccc1[Li],38.05,17.5376,0.9923,4,-60 to 0,257.3,5.627,0.3175,0.0779,Nagaki et al. 2008 - Aryllithium compounds bearing
+ethyl o-(lithio)benzoate,CCOC(=O)c1ccccc1[Li],41.26,20.3066,0.9985,4,-60 to 0,116.5,1.846,0.08173,0.01781,Nagaki et al. 2008 - Aryllithium compounds bearing
+"(I, Li substituents on benzene ring)",Ic1ccccc1[Li],59.73,36.1561,0.9876,4,-78 to -50,1.341,0.003323,3.645e-05,4.017e-06,three-component-coupling-based-on-flash-chemistry-
+"CHLi(I)(F) (iodofluoromethyllithium), lifetime 82 ms at -40 °C",[Li]C(F)I,16.21,7.7579,0.9750,4,-78 to -20,6.47,1.27,0.3731,0.205,example1
+"Li-CH2-F (fluoromethyllithium), lifetime 13 ms at -60 °C",[Li]CF,49.17,28.2835,0.9895,4,-78 to -20,5.233,0.03747,0.0009129,0.0001486,example1
+tert-butyl o-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccccc1[Li],26.80,9.5109,0.9470,3,-30 to 20,766.5,51.91,6.853,2.547,Nagaki et al. 2008 - Aryllithium compounds bearing
 chloroiodomethyllithium (CHLi(I)(Cl)),[Li]C(Cl)I,25.00,10.3830,0.9914,3,-40 to 0,105.4,8.555,1.294,0.5143,Musci et al. 2020 - Flow microreactor technology f
-p-lithiobenzonitrile (from 1c),N#Cc1ccc([Li])cc1,6.42,-1.5471,1.0000,2,0 to 20,170.2,89.33,55,43.4,Nagaki et al. 2010 - Generation and reaction of cy
-m-lithiobenzonitrile (from 1b),N#Cc1cccc([Li])c1,4.71,-2.1397,1.0000,2,0 to 20,107.4,66.93,46.89,39.4,Nagaki et al. 2010 - Generation and reaction of cy
+p-lithiobenzonitrile (from 1c),N#Cc1ccc([Li])cc1,7.06,0.4727,1.0000,2,0 to 20,33.58,16.52,9.687,7.464,Nagaki et al. 2010 - Generation and reaction of cy
+m-lithiobenzonitrile (from 1b),N#Cc1cccc([Li])c1,4.83,-0.3511,1.0000,2,0 to 20,19.33,11.9,8.26,6.911,Nagaki et al. 2010 - Generation and reaction of cy
 aryllithium (then borylated to arylboronate),[Li]c1ccccc1,36.54,15.3760,1.0000,2,0 to 24,878.3,22.36,1.415,0.3671,80

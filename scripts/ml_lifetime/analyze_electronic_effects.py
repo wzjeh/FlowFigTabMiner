@@ -47,19 +47,34 @@ INTERMEDIATE_PROPERTIES = {
         "short": "m-CN-ArLi",
     },
     "tert-butyl 4-(lithio)benzoate (aryllithium)": {
-        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "COOtBu (para)",
+        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "CO\u2082\u1d57Bu (para)",
         "mechanism": "conjugation-stabilized", "hybridization": "sp2",
-        "short": "p-ester-ArLi",
+        "short": "p-CO\u2082\u1d57Bu-ArLi",
     },
     "tert-butyl o-(lithio)benzoate (aryllithium)": {
-        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "COOtBu (ortho)",
+        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "CO\u2082\u1d57Bu (ortho)",
         "mechanism": "conjugation-stabilized", "hybridization": "sp2",
-        "short": "o-ester-ArLi",
+        "short": "o-CO\u2082\u1d57Bu-ArLi",
+    },
+    "methyl o-(lithio)benzoate": {
+        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "CO\u2082Me (ortho)",
+        "mechanism": "conjugation-stabilized", "hybridization": "sp2",
+        "short": "o-CO\u2082Me-ArLi",
+    },
+    "ethyl o-(lithio)benzoate": {
+        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "CO\u2082Et (ortho)",
+        "mechanism": "conjugation-stabilized", "hybridization": "sp2",
+        "short": "o-CO\u2082Et-ArLi",
+    },
+    "isopropyl o-(lithio)benzoate": {
+        "sigma": 0.45, "category": "ArLi-EWG", "ewg": "CO\u2082\u2071Pr (ortho)",
+        "mechanism": "conjugation-stabilized", "hybridization": "sp2",
+        "short": "o-CO\u2082\u2071Pr-ArLi",
     },
     "aryllithium (then borylated to arylboronate)": {
         "sigma": 0.0, "category": "ArLi-plain", "ewg": "none",
         "mechanism": "protonation/polymerization", "hybridization": "sp2",
-        "short": "PhLi (plain)",
+        "short": "PhLi",
     },
     "(Br, Li substituents on benzene ring)": {
         "sigma": 0.39, "category": "ArLi-halo", "ewg": "Br (ortho)",
@@ -141,16 +156,23 @@ def plot_hammett(data):
     }
     colors = [cat_colors.get(c, "#999") for c in cats]
 
-    ax1.scatter(sigmas, eas, s=120, c=colors, edgecolors="black", zorder=5)
+    # Use different markers for ortho vs para/meta
+    for i in range(len(arli)):
+        is_ortho = "ortho" in arli[i]["props"]["ewg"]
+        marker = "s" if is_ortho else "o"
+        ax1.scatter(sigmas[i], eas[i], s=120, c=colors[i], edgecolors="black",
+                    zorder=5, marker=marker)
 
     for i, name in enumerate(names):
         offset = (8, 8) if "Br" not in name else (8, -12)
         ax1.annotate(name, (sigmas[i], eas[i]), xytext=offset,
-                     textcoords="offset points", fontsize=8, fontweight="bold")
+                     textcoords="offset points", fontsize=7, fontweight="bold")
 
-    # Fit line excluding benzyne outliers
+    # Fit line excluding benzyne outliers and ortho substituents
+    # (Hammett σ is only valid for meta/para positions)
     non_benzyne = [(s, e) for d, s, e in zip(arli, sigmas, eas)
-                   if d["props"]["mechanism"] != "benzyne elimination"]
+                   if d["props"]["mechanism"] != "benzyne elimination"
+                   and "ortho" not in d["props"]["ewg"]]
     if len(non_benzyne) >= 3:
         s_fit, e_fit = zip(*non_benzyne)
         slope, intercept, r, p, se = linregress(s_fit, e_fit)
@@ -159,9 +181,9 @@ def plot_hammett(data):
         ax1.plot(x_line, y_line, "b--", alpha=0.5, linewidth=1.5,
                  label=f"EWG trend: Ea = {slope:.1f}\u03c3 + {intercept:.1f}\n(r={r:.2f}, excl. benzyne)")
 
-    # Mark benzyne zone
-    ax1.axhspan(70, 90, alpha=0.1, color="red")
-    ax1.text(0.05, 84, "benzyne\nelimination\nzone", fontsize=8, color="red", style="italic")
+    # Mark benzyne zone (Ea = 59.7–65.4 after tR correction)
+    ax1.axhspan(55, 72, alpha=0.1, color="red")
+    ax1.text(0.05, 68, "benzyne\nelimination\nzone", fontsize=8, color="red", style="italic")
 
     ax1.set_xlabel("Hammett \u03c3", fontsize=12)
     ax1.set_ylabel("Ea (kJ/mol)", fontsize=12)
@@ -232,14 +254,11 @@ def plot_stability_reactor_zones(data):
     ax.set_title("Organolithium Intermediate Stability Ranking\nwith Reactor Type Zones & Decomposition Mechanism",
                   fontsize=13, fontweight="bold")
 
-    # Reactor zones
-    ax.axvspan(np.log10(60), 4, alpha=0.08, color="green")
-    ax.axvspan(np.log10(1), np.log10(60), alpha=0.08, color="blue")
+    # Reactor zones (Yoshida classification)
+    ax.axvspan(np.log10(1), 4, alpha=0.08, color="blue")
     ax.axvspan(-4, np.log10(1), alpha=0.08, color="red")
 
-    ax.text(np.log10(200), len(names) - 0.3, "Batch\ncompatible",
-            fontsize=9, color="green", fontweight="bold", ha="center")
-    ax.text(np.log10(8), len(names) - 0.3, "Standard\nflow",
+    ax.text(np.log10(10), len(names) - 0.3, "Flow\nmicroreactor",
             fontsize=9, color="blue", fontweight="bold", ha="center")
     ax.text(np.log10(0.03), len(names) - 0.3, "Flash chemistry\nrequired",
             fontsize=9, color="red", fontweight="bold", ha="center")
@@ -396,11 +415,9 @@ def main():
             "mechanism": d["props"]["mechanism"],
             "hybridization": d["props"]["hybridization"],
         }
-        # Reactor recommendation
-        if d["t_half_m40"] > 60:
-            row["reactor_recommendation"] = "batch_compatible"
-        elif d["t_half_m40"] > 1:
-            row["reactor_recommendation"] = "standard_flow"
+        # Reactor recommendation (Yoshida classification)
+        if d["t_half_m40"] > 1:
+            row["reactor_recommendation"] = "flow_microreactor"
         else:
             row["reactor_recommendation"] = "flash_chemistry"
         csv_rows.append(row)
@@ -433,12 +450,14 @@ def main():
 
     # Correlations
     arli = [d for d in data if d["props"]["sigma"] is not None]
-    non_benzyne = [d for d in arli if d["props"]["mechanism"] != "benzyne elimination"]
-    if len(non_benzyne) >= 3:
-        s = [d["props"]["sigma"] for d in non_benzyne]
-        e = [d["Ea"] for d in non_benzyne]
+    hammett_valid = [d for d in arli
+                     if d["props"]["mechanism"] != "benzyne elimination"
+                     and "ortho" not in d["props"]["ewg"]]
+    if len(hammett_valid) >= 3:
+        s = [d["props"]["sigma"] for d in hammett_valid]
+        e = [d["Ea"] for d in hammett_valid]
         r, p = pearsonr(s, e)
-        print(f"\nHammett correlation (excl. benzyne): r={r:.3f}, p={p:.3f}")
+        print(f"\nHammett correlation (meta/para only, excl. benzyne): r={r:.3f}, p={p:.3f}")
 
     # Ea-lnA compensation
     all_eas = [d["Ea"] for d in data]

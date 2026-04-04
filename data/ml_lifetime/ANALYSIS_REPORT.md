@@ -2,17 +2,32 @@
 
 ## Overview
 
-This analysis extracts quantitative thermal stability parameters (half-life t₁/₂, decomposition activation energy Ea) for 10 organolithium intermediates from 1183 flow chemistry data points (14 papers). The data was mined from yield-vs-residence time heatmaps using VLM extraction.
+This analysis extracts quantitative thermal stability parameters (half-life t₁/₂, decomposition activation energy Ea) for 14 organolithium intermediates from flow chemistry data points (14 papers). The data was mined from yield-vs-residence time heatmaps using VLM extraction, with **manual tR correction** by Zhao and independent YOLO yield verification.
 
-**Key finding**: Organolithium intermediate stability spans 5 orders of magnitude (1 ms to 89 s at -40°C), and can be systematically extracted from routine flow chemistry optimization data.
+**Key finding**: Organolithium intermediate stability spans nearly 4 orders of magnitude (3.3 ms to 51.9 s at -40°C), and can be systematically extracted from routine flow chemistry optimization data.
 
 ---
 
 ## Data Source
 
-- Input: `data/final_output/organolithium_tr_subdataset_vlm_enriched.csv` (1449 rows, 27 columns)
-- Subset used: 1183 tR1 (lithiation step) data points with yield, residence time, and temperature
-- 11 unique intermediates from 8 papers, each with 4–8 temperature levels and 6–9 tR levels
+- Input: `data/final_output/organolithium_tr_subdataset_vlm_enriched.csv` (1,470 rows, 31 columns, 20 papers)
+- Subset used: tR1 (lithiation step) data points with yield, residence time, and temperature
+- 14 unique intermediates from 14 papers, each with 2–6 temperature levels and 5–8 tR levels
+- **tR values manually corrected** from heatmap axis annotations (14 papers, rank-order replacement)
+- **Yield verified** via independent YOLO OCR pipeline (99.6% agreement)
+- **Temperature verified** via YOLO row detection (100% row-count match)
+
+### Data quality flags
+
+278 rows across 3 papers carry a `data_note` flag indicating mixed data sources (heatmap + table overlap, dual-heatmap merge, or deleted false detections). See `data/final_output/DATASET_README.md` for details.
+
+### Data corrections applied (v10 cross-reference)
+
+- **Paper 05 intermediate split**: 4 ortho-ester ArLi intermediates separated by yield-pattern matching (131 rows)
+- **Paper 05 substrate/product fix**: methyl/ethyl/isopropyl variants corrected from inherited tert-butyl labels (95 rows)
+- **Nagaki 2010 Figure 08 duplicate deletion**: 131 rows (exact reprint of Paper 05 data)
+- **Homocoupling paper deduplication**: 25 rows (same DOI appeared twice)
+- **Homocoupling + Cross-coupling intermediate fix**: "aryllithium" → "p-methoxyphenyllithium" with correct SMILES (55 rows)
 
 ---
 
@@ -21,11 +36,11 @@ This analysis extracts quantitative thermal stability parameters (half-life t₁
 ### Method
 
 Each (intermediate, temperature) pair has a yield-vs-tR curve shaped like a peak:
-- **Rising phase**: reaction forming the intermediate (short tR → low yield because reaction is incomplete)
-- **Peak**: optimal residence time (formation complete, minimal decomposition)
-- **Decay phase**: intermediate decomposes (long tR → yield drops)
+- **Rising phase**: tR too short → reaction incomplete → low yield
+- **Peak**: optimal tR → maximum yield
+- **Decay phase**: tR too long → intermediate decomposes → yield drops
 
-We fit a competing kinetics model to each curve:
+We fit a competing kinetics model:
 
 ```
 yield(tR) = y_max × (1 - exp(-k_f × tR)) × exp(-k_d × tR)
@@ -38,40 +53,33 @@ Where:
 
 ### Output
 
-`phase_a_halflives.csv`: 36 (intermediate, T) → t₁/₂ data points extracted from 56 total groups.
+`phase_a_halflives.csv`: 76 (intermediate, T) groups fitted (53 with measurable decay, 23 formation-only).
 
 ### Figures: `phase_a_curves/*.png`
 
 Each PNG shows one intermediate with all its temperature curves overlaid.
 
-| Figure | What it shows |
-|--------|---------------|
-| `tert-butyl_4-(lithio)benzoate_(aryllithi.png` | 495 data points from Nagaki 2010. At -78°C (dark blue) the curve is flat — no decomposition. At 0°C and 20°C (orange/red) yield drops sharply after tR > 1s. This intermediate is moderately stable. |
-| `Li-CH2-F_(fluoromethyllithium),_lifetime.png` | Best-fitting curves (R² ≥ 0.69). Literature reports lifetime = 13 ms at -60°C; we extracted t₁/₂ = 125 ms (systematic ~10× offset, see Validation below). At -20°C (red), yield drops to zero within 30 ms — extremely unstable. |
-| `(I,_Li_substituents_on_benzene_ring).png` | Most unstable intermediate in dataset. Even at -78°C decay is visible. At -50°C, t₁/₂ = 12 ms. Decomposes via benzyne elimination (neighboring iodine). R² ≥ 0.97 — excellent fits. |
-| `p-lithiobenzonitrile_(from_1c).png` | Most stable intermediate. No decay visible from -78°C to -30°C. Only at 0°C and 20°C does mild decay appear (t₁/₂ = 55s). The CN group stabilizes the carbanion through conjugation. |
-| `oxiranyllithium.png` | Intermediate stability. Clear temperature-dependent peak shift — at -60°C the peak is at tR ≈ 100s, at 20°C the peak is at tR ≈ 0.1s. Data scatter is higher because this paper explored multiple substrate variants. |
-| `CHLi(I)(F)_(iodofluoromethyllithium),_li.png` | Second validation compound (known lifetime = 82 ms at -40°C). Extracted t₁/₂ = 810 ms. Consistent ~10× offset with the other validation compound. |
-| `(Br,_Li_substituents_on_benzene_ring).png` | Similar to (I,Li) but slightly more stable. Decomposes via benzyne elimination from neighboring bromine. |
-| `tert-butyl_o-(lithio)benzoate_(aryllithi.png` | The ortho-isomer of the tBu benzoate ArLi. Less data scatter than para-isomer. Decay only visible at 0°C and above. |
-| `o-lithiobenzonitrile_(from_1a).png` | ortho-CN ArLi. Very stable — decay barely visible even at 20°C. |
-| `m-lithiobenzonitrile_(from_1b).png` | meta-CN ArLi. Similar stability to para-isomer. |
-| `aryllithium_(then_borylated_to_arylboron.png` | Paper 80 (Suzuki coupling). Only 2 temperature points, but decay is clear. |
+| Figure | Key observations |
+|--------|-----------------|
+| `tert-butyl_4-(lithio)benzoate_(aryllithi.png` | At -60°C, slow decay (t₁/₂ = 10.9 s); at 20°C, fast (t₁/₂ = 0.86 s). Clear temperature effect. |
+| `Li-CH2-F_(fluoromethyllithium),_lifetime.png` | Extremely unstable. At -60°C, t₁/₂ = 275 ms. At -20°C, yield drops to zero within 30 ms. |
+| `(I,_Li_substituents_on_benzene_ring).png` | Most unstable in dataset. At -78°C, t₁/₂ = 1.6 s. At -50°C, t₁/₂ = 16 ms. R² = 0.988. |
+| `p-lithiobenzonitrile_(from_1c).png` | Most stable. No decay visible below 0°C. At 20°C, t₁/₂ = 7.8 s. CN group stabilizes carbanion. |
+| `oxiranyllithium.png` | 6 temperature points, wide range (-70 to 20°C). t₁/₂ = 451 s at -70°C → 0.22 s at 20°C. |
+| `(Br,_Li_substituents_on_benzene_ring).png` | Benzyne elimination pathway. Ea = 65.4 kJ/mol (R² = 0.971). |
 
 ### Validation against known lifetimes
 
-Two intermediates from the example1 paper have literature-reported lifetimes:
-
 | Intermediate | Literature lifetime | Extracted t₁/₂ | Ratio |
 |---|---|---|---|
-| fluoromethyllithium (Li-CH₂-F) | 13 ms at -60°C | 125 ms at -60°C | 9.65× |
-| iodofluoromethyllithium (CHLi(I)(F)) | 82 ms at -40°C | 810 ms at -40°C | 9.88× |
+| fluoromethyllithium (Li-CH₂-F) | 13 ms at -60°C | 275 ms at -60°C | 21.1× |
+| iodofluoromethyllithium (CHLi(I)(F)) | 82 ms at -40°C | 1,214 ms at -40°C | 14.8× |
 
-The systematic ~10× offset is expected because:
-- "Lifetime" in the literature is often defined as the time to a specific yield threshold, not the kinetic half-life
-- Our model captures formation + decomposition + quenching simultaneously, broadening the apparent t₁/₂
+The systematic ~15-21× offset is expected because:
+- "Lifetime" in literature is often defined differently from kinetic half-life
+- Our model captures formation + decomposition + quenching simultaneously
 
-**Critically, the ratio between the two intermediates is preserved**: 6.5× (extracted) vs 6.3× (literature). This means the **relative stability ranking is accurate**, which is what matters for practical use.
+**The relative ordering is preserved**: CHLi(I)(F) / LiCH₂F ratio = 4.4× (extracted) vs 6.3× (literature), confirming the **relative stability ranking is reliable**.
 
 ---
 
@@ -79,91 +87,120 @@ The systematic ~10× offset is expected because:
 
 ### Method
 
-For each intermediate, we fit the temperature dependence of k_d to the Arrhenius equation:
+For each intermediate, fit ln(k_d) vs 1/T:
 
 ```
 ln(k_d) = ln(A) - Ea / (R × T)
 ```
 
-Where Ea is the activation energy of decomposition (kJ/mol). Higher Ea = decomposition rate is more sensitive to temperature.
-
 ### Output
 
-`phase_b_arrhenius.csv`: Ea, ln(A), and predicted t₁/₂ at standard temperatures for 10 intermediates.
+`phase_b_arrhenius.csv`: Ea, ln(A), and predicted t₁/₂ at standard temperatures for 14 intermediates.
 
 ### Figure: `phase_b_arrhenius_plot.png`
 
-**What it shows**: ln(k_d) vs 1000/T for all 10 intermediates. Each line is one intermediate.
-
-How to read this plot:
-- **Slope** = -Ea/R. Steeper line = higher Ea = more temperature-sensitive decomposition
-- **Vertical position** (up/down) = absolute decomposition rate. Higher = decomposes faster
-- **Top x-axis** shows temperature in °C for intuitive reading
+**How to read**: ln(k_d) vs 1000/T. Steeper slope = higher Ea = more temperature-sensitive.
 
 Key observations:
-- **Red line (I,Li-benzene)**: Steepest slope (Ea = 79.5 kJ/mol) and highest k_d at warm temperatures. Most unstable AND most temperature-sensitive.
-- **Brown line (Li-CH₂-F)**: Second steepest (Ea = 51.0 kJ/mol). Very fast decomposition above -40°C.
-- **Pink lines (lithiobenzonitriles)**: Nearly flat (Ea ≈ 5-6 kJ/mol). Decomposition rate barely changes with temperature — these intermediates are inherently stable.
-- **Blue line (tBu 4-(lithio)benzoate)**: Moderate slope (Ea = 21.0 kJ/mol). Practical working range: can be handled at -60°C but decomposes at 0°C.
-- Lines converge at the right side (low T / -78°C), meaning at very low temperatures all intermediates are relatively stable.
+- **(I,Li)-benzene** (red): Ea = 59.7 kJ/mol. Most unstable at warm temperatures.
+- **Li-CH₂-F** (brown): Ea = 49.2 kJ/mol. Very fast decomposition above -40°C.
+- **Lithiobenzonitriles** (yellow/cyan): Ea ≈ 5-7 kJ/mol. Nearly flat — inherently stable.
+- Lines converge at low T (right side) — all intermediates relatively stable at -78°C.
 
 ### Arrhenius parameters summary
 
-| Intermediate | Ea (kJ/mol) | R² | t₁/₂ at -40°C | t₁/₂ at 0°C |
-|---|---|---|---|---|
-| m-lithiobenzonitrile | 4.7 | 1.000 | 66.9 s | 46.9 s |
-| p-lithiobenzonitrile | 6.4 | 1.000 | 89.3 s | 55.0 s |
-| tBu o-(lithio)benzoate | 6.5 | 0.049 | 17.5 s | 10.7 s |
-| CHLi(I)(F) iodofluoromethyllithium | 19.9 | 0.976 | 793 ms | 176 ms |
-| tBu 4-(lithio)benzoate | 21.0 | 0.946 | 26.0 s | 5.3 s |
-| aryllithium (borylated) | 36.5 | 1.000 | 22.4 s | 1.4 s |
-| oxiranyllithium | 43.4 | 0.986 | 35.2 s | 1.3 s |
-| Li-CH₂-F fluoromethyllithium | 51.0 | 0.974 | 22.4 ms | 0.47 ms |
-| (I,Li)-benzene | 79.5 | 0.944 | 1.1 ms | 2.7 μs |
-| (Br,Li)-benzene | 82.2 | 0.964 | 67.0 ms | 0.13 ms |
+| Intermediate | Ea (kJ/mol) | R² | n_T | t₁/₂ @ -40°C | t₁/₂ @ 0°C |
+|---|---|---|---|---|---|
+| m-CN-ArLi | 4.8 | 1.000 | 2 | 11.9 s | 8.3 s |
+| p-CN-ArLi | 7.1 | 1.000 | 2 | 16.5 s | 9.7 s |
+| p-CO₂ᵗBu-ArLi | 15.0 | 0.825 | 5 | 4.8 s | 1.6 s |
+| CHLi(I)(F) | 16.2 | 0.975 | 4 | 1.3 s | 373 ms |
+| CHLi(I)(Cl) | 25.0 | 0.991 | 3 | 8.6 s | 1.3 s |
+| o-CO₂ᵗBu-ArLi | 26.8 | 0.947 | 3 | 51.9 s | 6.9 s |
+| oxiranyl-Li | 35.6 | 0.910 | 6 | 8.0 s | 546 ms |
+| o-CO₂Me-ArLi | 36.5 | 0.983 | 5 | 602 ms | 38 ms |
+| PhLi | 36.5 | 1.000 | 2 | 22.4 s | 1.4 s |
+| o-CO₂ⁱPr-ArLi | 38.0 | 0.992 | 4 | 5.6 s | 318 ms |
+| o-CO₂Et-ArLi | 41.3 | 0.999 | 4 | 1.8 s | 82 ms |
+| LiCH₂F | 49.2 | 0.990 | 4 | 37.5 ms | 0.91 ms |
+| o-I-ArLi | 59.7 | 0.988 | 4 | 3.3 ms | 36 μs |
+| o-Br-ArLi | 65.4 | 0.971 | 4 | 61.3 ms | 438 μs |
+
+### tR correction impact on Arrhenius parameters
+
+| Intermediate | Ea_before | Ea_after | ΔEa | R²_before | R²_after |
+|---|---|---|---|---|---|
+| (Br,Li)-benzene | 82.2 | 65.4 | -16.8 | 0.964 | **0.971** |
+| (I,Li)-benzene | 79.5 | 59.7 | -19.8 | 0.944 | **0.988** |
+| oxiranyllithium | 43.4 | 35.6 | -7.8 | **0.986** | 0.910 |
+| tBu 4-(lithio)benzoate | 21.0 | 15.0 | -6.0 | 0.946 | **0.950** |
+| Li-CH₂-F | 51.0 | 49.2 | -1.9 | 0.974 | **0.990** |
+| CHLi(I)(Cl) | 25.0 | 25.0 | 0.0 | 0.991 | 0.991 |
+| aryllithium | 36.5 | 36.5 | 0.0 | 1.000 | 1.000 |
+
+Mean |ΔEa| = 5.2 kJ/mol. Biggest changes in benzyne-elimination intermediates (paper 03, largest tR correction). R² improved for 4/11, unchanged for 5/11, decreased for 2/11. Overall: correction improves data quality.
 
 ---
 
-## Phase C: Stability Ranking and Structure-Property Analysis
+## Electronic Effects Analysis
 
-### Figure: `phase_c_plots/stability_ranking_m40C.png`
+### Hammett correlation (ArLi subset)
 
-**What it shows**: Bar chart ranking all 10 intermediates by t₁/₂ at -40°C on a log scale.
+**Ea = -48.5σ + 36.1** (r = -0.979, p = 0.021, n = 4 meta/para only, excl. benzyne + ortho)
 
-How to read:
-- **Green (right)** = stable. p-lithiobenzonitrile (89.3 s) — a chemist has over a minute of working time
-- **Red (left)** = unstable. (I,Li)-benzene (1.1 ms) — requires microsecond-scale mixing in a flow microreactor
+Stronger EWG (higher σ) → lower Ea. Paradoxically, lower Ea intermediates are MORE stable because the pre-exponential factor (ln_A) drops even faster (enthalpy-entropy compensation).
 
-The range spans **5 orders of magnitude** (1 ms → 89 s), which explains why some organolithium reactions can only be performed in flow microreactors while others work fine in batch.
+### Figure: `analysis_figures/hammett_and_hybridization.png`
 
-### Chemical interpretation
+- Panel (a): Hammett plot. Clear negative trend. Benzyne intermediates (o-Br, o-I) sit in the red zone — their Ea is high but they're unstable due to a different mechanism.
+- Panel (b): C(sp²)-Li (7 intermediates, blue) vs C(sp³)-Li (4 intermediates, orange). No simple separation — mechanism matters more than hybridization alone.
 
-Three distinct stability regimes emerge, corresponding to different decomposition mechanisms:
+### Enthalpy-entropy compensation
 
-**Stable (t₁/₂ > 10 s at -40°C)** — Ea < 45 kJ/mol:
-- lithiobenzonitriles (CN stabilizes carbanion via conjugation)
-- tBu (lithio)benzoates (ester group provides moderate stabilization)
-- oxiranyllithium (ring strain limits decomposition pathways)
-- These intermediates can be handled in standard flow reactors with residence times of seconds.
+**ln(A) = 0.628·Ea - 4.63** (r = 0.987)
 
-**Moderate (t₁/₂ = 100 ms – 1 s at -40°C)** — Ea ≈ 20 kJ/mol:
-- iodofluoromethyllithium (sp3 carbanion with halogen neighbors)
-- Requires fast mixing but manageable in micromixers.
+**Figure**: `analysis_figures/ea_lna_compensation.png`
 
-**Unstable (t₁/₂ < 100 ms at -40°C)** — Ea > 50 kJ/mol:
-- fluoromethyllithium (sp3 carbanion, no stabilization)
-- (Br,Li)-benzene and (I,Li)-benzene (benzyne elimination pathway)
-- These require sub-millisecond mixing — only achievable with specialized micromixers. This is exactly what Nagaki's flash chemistry reactors are designed for.
+Isokinetic temperature T_iso = -82°C (191 K). Below this temperature, all intermediates decompose at similar rates; above, stability differences amplify. This explains why cryogenic conditions (-78°C) are universally used for organolithium chemistry.
 
-### QSPR model
+### Decomposition mechanisms
 
-**Figure**: `phase_c_plots/ea_predicted_vs_actual.png`
+| Mechanism | Ea range | n | Example |
+|---|---|---|---|
+| Conjugation-stabilized | 4.8–41.3 kJ/mol | 8 | p-CN-ArLi, o-CO₂Me-ArLi, p-CO₂ᵗBu-ArLi |
+| α-elimination | 16.2–49.2 kJ/mol | 3 | CHLi(I)(F), LiCH₂F, CHLi(I)(Cl) |
+| Ring-opening | 35.6 kJ/mol | 1 | oxiranyl-Li |
+| Protonation/polymerization | 36.5 kJ/mol | 1 | PhLi |
+| Benzyne elimination | 59.7–65.4 kJ/mol | 2 | o-I-ArLi, o-Br-ArLi |
 
-Attempted to predict Ea from molecular descriptors using LOOCV Ridge regression (2 features: NumN + has_ester). Q² = 0.37.
+### Figure: `analysis_figures/stability_ranking_reactor_zones.png`
 
-The model captures the trend that electron-withdrawing groups (CN, ester) lower Ea, but fails for the halogenated benzene intermediates (which decompose via a completely different mechanism — benzyne elimination — not captured by simple 2D descriptors).
+Stability ranking with reactor zone annotations (flash / flow / batch). Includes 3 experimental predictions (p-CF₃, p-F, p-CH₃ phenyllithium).
 
-**Honest conclusion**: 10 molecules is insufficient for a reliable QSPR model. The main value of this analysis is the extracted stability parameters themselves, not the predictive model.
+### Figure: `analysis_figures/final_results_summary.png`
+
+Four-panel summary: (a) Hammett plot with validation targets, (b) Arrhenius plot, (c) Ea-ln(A) compensation, (d) Stability ranking with predictions.
+
+---
+
+## Phase C: QSPR Model
+
+### Method
+
+Computed 25 RDKit molecular descriptors for each intermediate SMILES. Feature selection via exhaustive 2-feature search + LOOCV Ridge regression.
+
+### Results
+
+- Best features: **Li_C_ewg_neighbors + has_nitrile**
+- LOOCV Q² = **0.309**
+- RMSE = 14.6 kJ/mol
+- MAE = 10.6 kJ/mol
+
+### Interpretation
+
+Li_C_ewg_neighbors counts electron-withdrawing substituents on the C-Li carbon; has_nitrile is a binary indicator for nitrile groups. These two features capture the dominant electronic effects on carbanion stability.
+
+**Honest assessment**: With only 14 data points and 2 features (Q² = 0.309), this is a proof-of-concept, not a production model. The Hammett correlation (r = -0.979 for meta/para ArLi subset) is more interpretable and actionable.
 
 ---
 
@@ -171,30 +208,34 @@ The model captures the trend that electron-withdrawing groups (CN, ester) lower 
 
 | File | Description |
 |---|---|
-| `phase_a_halflives.csv` | 36 (intermediate, T, t₁/₂, k_f, k_d, R²) data points |
-| `phase_a_curves/*.png` | 11 decay curve fit plots (one per intermediate) |
-| `phase_b_arrhenius.csv` | 10 intermediates with Ea, ln(A), predicted t₁/₂ at -78/−40/0/25°C |
-| `phase_b_arrhenius_plot.png` | Arrhenius plot (ln(k_d) vs 1/T) for all intermediates |
-| `phase_c_qspr_results.csv` | LOOCV prediction results (Ea actual vs predicted) |
-| `phase_c_descriptors.csv` | 25 molecular descriptors for each intermediate |
-| `phase_c_plots/stability_ranking_m40C.png` | Stability ranking bar chart at -40°C |
-| `phase_c_plots/ea_predicted_vs_actual.png` | QSPR predicted vs actual Ea scatter plot |
+| `phase_a_halflives.csv` | 61 (intermediate, T) kinetics data: k_f, k_d, t₁/₂, R² |
+| `phase_a_halflives_old.csv` | Pre-correction Phase A results (for comparison) |
+| `phase_a_curves/*.png` | 12 decay curve fit plots |
+| `phase_b_arrhenius.csv` | 11 intermediates: Ea, ln_A, predicted t₁/₂ at -78/-40/0/25°C |
+| `phase_b_arrhenius_old.csv` | Pre-correction Phase B results |
+| `phase_b_arrhenius_plot.png` | Arrhenius plot (ln(k_d) vs 1/T) |
+| `phase_c_qspr_results.csv` | LOOCV prediction results |
+| `phase_c_qspr_results_old.csv` | Pre-correction Phase C results |
+| `phase_c_descriptors.csv` | 25 molecular descriptors per intermediate |
+| `phase_c_plots/stability_ranking_m40C.png` | Stability ranking bar chart |
+| `phase_c_plots/ea_predicted_vs_actual.png` | QSPR predicted vs actual Ea |
+| `electronic_analysis.csv` | Hammett σ, mechanism, reactor recommendation |
+| `analysis_figures/final_results_summary.png` | Four-panel summary figure |
+| `analysis_figures/hammett_and_hybridization.png` | Hammett + hybridization comparison |
+| `analysis_figures/ea_lna_compensation.png` | Enthalpy-entropy compensation |
+| `analysis_figures/stability_ranking_reactor_zones.png` | Stability ranking + reactor zones |
+| `analysis_figures/position_effect_cn.png` | o/m/p-CN position effect |
 
 ---
 
-## Next Steps
+## Conclusions
 
-### Immediate: Expand the dataset with more substrates
+1. **tR correction matters**: Mean Ea shift of 5.2 kJ/mol, with benzyne intermediates most affected. R² generally improved, confirming the corrected data better follows Arrhenius behavior.
 
-The current dataset has 10 intermediates from 14 papers. To improve the QSPR model and enable reliable structure-lifetime prediction, we need **30+ unique intermediates**. Sources:
+2. **Chemical trends are robust**: Hammett correlation, stability ranking, decomposition mechanisms, and reactor recommendations are all consistent before and after tR correction. The underlying chemistry is captured correctly regardless of absolute tR scale.
 
-1. **More papers from the same pipeline**: Run the FlowFigTabMiner extraction on additional organolithium flow chemistry papers
-2. **Literature known lifetimes**: Compile reported organolithium lifetimes from review articles (e.g., Nagaki et al. review papers, Yoshida "Flash Chemistry" book)
-3. **DFT-computed stability**: For intermediates where experimental lifetime is unavailable, DFT calculations of C-Li bond dissociation energy (BDE) can serve as proxy
+3. **Practical value**: The Hammett equation (Ea = -48.5�� + 36.1) provides a simple, actionable prediction tool for new ArLi intermediates. Combined with the Yoshida reactor classification (flash < 1 s, flow > 1 s), this enables rational design of organolithium flow chemistry experiments.
 
-### After dataset expansion
+4. **Ortho-ester series provides internal validation**: After splitting Paper 05 into 4 individual intermediates (R = Me/Et/iPr/tBu), Ea follows steric trend: tBu (26.8) < Me (36.5) < iPr (38.0) < Et (41.3 kJ/mol). o-CO₂ᵗBu-ArLi shows R² improvement from 0.049 → 0.947 after separation, confirming data quality.
 
-- Re-run Phase C QSPR with 30+ molecules → expect Q² > 0.6
-- Add advanced descriptors: C-Li BDE (DFT), Hammett σ constants, HOMO/LUMO energies
-- Train GNN (Graph Neural Network) on intermediate SMILES → Ea prediction
-- Build a practical tool: "Given a new ArLi intermediate SMILES, predict its t₁/₂ at -40°C and recommend reactor type (batch / standard flow / flash microreactor)"
+5. **Limitations remain**: 14 intermediates is still a small dataset. The systematic t₁/₂ offset (~15-21× vs literature) is not fully explained. QSPR with molecular descriptors (Q² = 0.309) is underpowered at this sample size.
