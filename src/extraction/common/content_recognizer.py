@@ -12,40 +12,17 @@ try:
     paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
 except Exception:
     pass
-from paddleocr import PaddleOCR
+from src.extraction.common.ocr_backend import get_rec_instance
 
 class ContentRecognizer:
     def __init__(self):
         """
-        Initialize PaddleOCR and MolNexTR models.
+        Initialize rec-only OCR and MolNexTR models.
         Note: MolScribe has been fully replaced by MolNexTR.
         """
-        # PaddleOCR
-        # use_angle_cls=True loads the direction classifier
-        # lang='en' for English tables
-        print("Loading PaddleOCR...")
-        # Force single thread for torch interaction (MolScribe uses torch)
-        try:
-            import torch
-            if torch.get_num_threads() > 1:
-                torch.set_num_threads(1)
-        except:
-            pass
-            
-        # Check if gpu is available
-        use_gpu = False # Set to False by default to avoid issues if paddle-gpu not installed
-        try:
-            import paddle
-            if paddle.device.is_compiled_with_cuda():
-                use_gpu = True
-        except:
-            pass
-
-        self.ocr = PaddleOCR(
-            use_angle_cls=True,
-            lang='en',
-            enable_mkldnn=False,
-        )
+        print("Loading rec-only OCR...")
+        # Rec-only for table cell text (skips detection on pre-cropped cells)
+        self.rec = get_rec_instance()
 
         # MolNexTR for chemical structure recognition
         self.molnextr = None
@@ -74,38 +51,9 @@ class ContentRecognizer:
 
     def _recognize_text(self, image_input):
         try:
-            # Use parameter-less call (default full pipeline)
-            # This is robust across PaddleOCR / PaddleX versions
-            # PaddleOCR supports path or ndarray
-            result = self.ocr.ocr(image_input)
-            # print(f"DEBUG: OCR Result Type: {type(result)}", flush=True)
-
-            text = ""
-            # Handle PaddleX Dict vs List
-            if result:
-                 # Case 1: List format (Standard PaddleOCR)
-                 if isinstance(result, list) and len(result) > 0:
-                      first_item = result[0]
-                      
-                      # Case 1.1: New PaddleX format returns dict
-                      if isinstance(first_item, dict): 
-                          if 'rec_texts' in first_item and first_item['rec_texts']:
-                              text = first_item['rec_texts'][0]
-
-                      # Case 1.2: Standard list of lines
-                      elif isinstance(first_item, list):
-                           # Concatenate all detected lines
-                           texts = []
-                           for line in first_item:
-                               if isinstance(line, list) and len(line) >= 2:
-                                    # line: [box, (text, conf)]
-                                    txt_obj = line[1]
-                                    if isinstance(txt_obj, (list, tuple)) and len(txt_obj) > 0:
-                                        texts.append(txt_obj[0])
-                           text = " ".join(texts)
-            
+            # Use rec-only for pre-cropped cell images (no detection step)
+            text, _conf = self.rec.recognize(image_input)
             return text
-
         except Exception as e:
             print(f"OCR Error on {image_input if isinstance(image_input, str) else 'Image Array'}: {e}")
             return ""

@@ -10,15 +10,15 @@ if os.environ.get('USE_EASYOCR', '0') != '1':
         paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
     except Exception:
         pass
-from src.extraction.common.ocr_backend import get_ocr_instance
+from src.extraction.common.ocr_backend import get_rec_instance
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pandas as pd
 import re
 
 class CoordinateMapper:
     def __init__(self):
-        # Initialize OCR - suppress logs
-        self.ocr = get_ocr_instance(use_angle_cls=False)
+        # Rec-only OCR for pre-cropped tick labels / data values
+        self.rec = get_rec_instance()
 
     def map_coordinates(self, detections, plot_img_path, force_log_x=False, extract_point_labels=False):
         """
@@ -175,66 +175,165 @@ class CoordinateMapper:
 
             # 1. Gather candidates based on Class
             def parse_val(txt):
-                # Handle scientific notation like '10^-2', '10-2', '10^2'
-                # Replace '10^' or '10' followed by '-' as '1e'
-                if '10' in txt:
-                    # Try to clean up common OCR issues for scientific
-                    # 10^-2 -> 1e-2
-                    # 10-2 -> 1e-2
-                    sub = txt.replace('10^', '1e').replace('10', '1e')
-                    # Ensure structure is 1e...
-                    if '1e' in sub:
-                         # Check if it looks valid
-                         try: return float(sub)
-                         except: pass
-                
-                clean = re.sub(r'[^\d\.\-eE]', '', txt)
+                """Parse OCR text into numeric value.
+
+                Handles rec-only output patterns:
+                  '10 -2' or '10-2.0' → 10^(-2) or 10^(-2.0)
+                  '100.5' → 10^(0.5)
+                  '101' or '101.0' → 10^(1) or 10^(1.0)
+                  '-40', '0.5' → plain numbers
+                """
+                txt = txt.strip()
+                if not txt:
+                    return None
+
+                # Reject strings with letters mixed in (YOLO false positives)
+                # Allow: pure numbers ("-40"), scientific ("10-2.0", "10^0.5")
+                # Reject: "flow", "map 1", "3-bromopro", "n tributyls", "(s)", "R1 ("
+                digits_in = sum(1 for c in txt if c.isdigit())
+                alpha_in = sum(1 for c in txt if c.isalpha())
+                if alpha_in > 0 and not txt.lstrip('-').startswith('10'):
+                    # Has letters but doesn't start with "10" → not a tick label
+                    return None
+                if alpha_in > digits_in:
+                    # More letters than digits → likely body text
+                    return None
+
+                # Pattern: "10 -2" or "10 -1.5" (rec-only with space)
+                m = re.match(r'^10\s+([+\-]?\d+\.?\d*)$', txt)
+                if m:
+                    try: return float(m.group(1))  # Return exponent directly
+                    except: pass
+
+                # Pattern: "10-2.0" or "10-1.5" or "100.5" or "101.0" (fused)
+                if txt.startswith('10') and len(txt) > 2:
+                    rest = txt[2:]
+                    # Strip trailing non-numeric (e.g., "10°" → rest="°")
+                    rest_clean = re.sub(r'[^\d\.\-+]', '', rest)
+                    if rest_clean:
+                        try:
+                            exp = float(rest_clean)
+                            if -10 <= exp <= 10:
+                                return exp  # Return as exponent
+                        except ValueError:
+                            pass
+
+                # Pattern: "10^-2" or "10^0.5" (explicit caret)
+                m = re.match(r'^10\^([+\-]?\d+\.?\d*)$', txt)
+                if m:
+                    try: return float(m.group(1))
+                    except: pass
+
+                # "10" alone or "10" + noise: ambiguous (could be 10^? with lost exponent)
+                # Return None to avoid wrong exponent assignment
+                if txt.startswith('10') and not any(c.isdigit() for c in txt[2:]):
+                    return None
+
+                # Plain number: "-40", "0.5", "-90", etc.
+                clean = re.sub(r'[^\d\.\-eE+]', '', txt)
                 try: return float(clean)
                 except: return None
 
             x_candidates = []      # (center_x, val, raw_text, cx, cy)
-            y_left_candidates = [] 
+            y_left_candidates = []
             y_right_candidates = []
-            
-            # Filter specifically for tick labels
-            # If model is trusted, we just use the label.
-            # But we still run OCR to get value.
-            
-            # Helper to process a list of dets
+
+            # --- Geometric pre-filter for x_tick_label false positives ---
+            def _cluster_1d(values_with_idx, eps):
+                """Simple 1D clustering: group sorted (idx, val) by proximity."""
+                if not values_with_idx:
+                    return []
+                sorted_v = sorted(values_with_idx, key=lambda t: t[1])
+                clusters = [[sorted_v[0]]]
+                for k in range(1, len(sorted_v)):
+                    if sorted_v[k][1] - clusters[-1][-1][1] < eps:
+                        clusters[-1].append(sorted_v[k])
+                    else:
+                        clusters.append([sorted_v[k]])
+                return clusters
+
+            def filter_tick_dets_geometric(dets, axis_type='x'):
+                """Remove YOLO false positives using spatial consistency."""
+                if len(dets) <= 3:
+                    return dets
+                if axis_type == 'x':
+                    # Real x-ticks form a horizontal row near the bottom
+                    ys = [(i, d['center'][1]) for i, d in enumerate(dets)]
+                    heights = [d['box'][3] - d['box'][1] for d in dets]
+                    med_h = float(np.median(heights))
+
+                    clusters = _cluster_1d(ys, eps=20)
+
+                    # Pick best cluster: largest count wins; if tied, prefer
+                    # the one closest to plot_y_max (the axis line)
+                    best_cluster = max(clusters, key=lambda c: (
+                        len(c),  # primary: most members
+                        -abs(np.mean([t[1] for t in c]) - plot_y_max)  # secondary: near axis
+                    ))
+                    keep_indices = set(t[0] for t in best_cluster)
+
+                    # Also filter by box height consistency
+                    filtered = []
+                    for i in keep_indices:
+                        h = heights[i]
+                        if 0.3 * med_h < h < 3.0 * med_h:
+                            filtered.append(dets[i])
+
+                    if len(filtered) >= 2:
+                        return filtered
+                    return dets
+                else:
+                    # y_tick_labels: cluster on X, pick leftmost major cluster
+                    xs = [(i, d['center'][0]) for i, d in enumerate(dets)]
+                    widths = [d['box'][2] - d['box'][0] for d in dets]
+                    med_w = float(np.median(widths))
+
+                    clusters = _cluster_1d(xs, eps=25)
+
+                    # Pick leftmost cluster with enough members
+                    best_cluster = min(
+                        [c for c in clusters if len(c) >= 2] or clusters,
+                        key=lambda c: np.mean([t[1] for t in c])
+                    )
+                    keep_indices = set(t[0] for t in best_cluster)
+
+                    filtered = []
+                    for i in keep_indices:
+                        w = widths[i]
+                        if 0.3 * med_w < w < 3.0 * med_w:
+                            filtered.append(dets[i])
+
+                    if len(filtered) >= 2:
+                        return filtered
+                    return dets
+
+            x_label_dets_geo = filter_tick_dets_geometric(x_label_dets, 'x')
+            if len(x_label_dets_geo) < len(x_label_dets):
+                log(f"Geometric Filter (X): {len(x_label_dets)} -> {len(x_label_dets_geo)}")
+
+            # Helper to process a list of dets using rec-only OCR
             def process_candidates(dets, cand_list):
                  for i, d in enumerate(dets):
                     bbox = d['box']
                     cx, cy = d['center']
-                    
+
                     x1, y1, x2, y2 = map(int, bbox)
-                    # FIX: Padding increased to handle tight Y-labels
-                    pad = 15 
+                    pad = 15
                     x1, y1 = max(0, x1-pad), max(0, y1-pad)
                     x2, y2 = min(img_w, x2+pad), min(img_h, y2+pad)
                     crop = img[y1:y2, x1:x2]
-                    
+
                     if crop.size == 0 or crop.shape[0] < 5 or crop.shape[1] < 5: continue
-                    
-                    # Upscale small
+
+                    # Upscale small crops
                     if crop.shape[0] < 50:
                         scale = 3
                         crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
 
-                    res = self.ocr.ocr(crop)
-                    text = ""
-                    if res and isinstance(res, list) and len(res) > 0:
-                        first_item = res[0]
-                        if isinstance(first_item, dict):
-                            if 'rec_texts' in first_item and first_item['rec_texts']:
-                                text = first_item['rec_texts'][0]
-                        elif isinstance(first_item, list):
-                             for line in first_item:
-                                 if isinstance(line, list) and len(line) >= 2:
-                                     # line: [box, (text, conf)]
-                                     txt_obj = line[1]
-                                     if isinstance(txt_obj, (list, tuple)): text = txt_obj[0]; break
+                    # Use rec-only OCR (no detection step on already-cropped region)
+                    text, conf = self.rec.recognize(crop)
 
-                    if i < 5: log(f"OCR [{d['label']}]: '{text}'")
+                    if i < 5: log(f"OCR [{d['label']}]: '{text}' ({conf:.3f})")
                     val = parse_val(text)
                     if val is not None:
                         # [cx, val, text, cx, cy]
@@ -298,8 +397,14 @@ class CoordinateMapper:
                 keep_indices.reverse()
                 return [cands_sorted[i] for i in keep_indices]
 
-            # Process X Labels
-            process_candidates(x_label_dets, x_candidates)
+            # Process X Labels — try geometric-filtered set first
+            process_candidates(x_label_dets_geo, x_candidates)
+            # Fallback: if geometric filter was too aggressive (< 2 numeric results),
+            # re-run on ALL x_label_dets
+            if len(x_candidates) < 2 and len(x_label_dets) > len(x_label_dets_geo):
+                log(f"Geometric filter too aggressive ({len(x_candidates)} candidates). Falling back to all {len(x_label_dets)} detections.")
+                x_candidates = []
+                process_candidates(x_label_dets, x_candidates)
             
             # Process Y Labels
             # ... (Split code unchanged) ...
@@ -395,19 +500,23 @@ class CoordinateMapper:
             if y_left_candidates: log(f"Sample YL: {[c[2] for c in y_left_candidates[:3]]}")
 
             # 2. Detect Scale Type & Fit Models
+            def _is_scientific_text(txt):
+                """Check if raw OCR text represents 10^x notation."""
+                txt = txt.strip()
+                # "10-2.0", "10 -1.5", "100.5", "101", "10^-2"
+                return bool(re.match(r'^10[\s\^]?[+\-]?\d', txt))
+
             def check_log_scale(candidates):
                 if len(candidates) < 2: return False
                 matches = 0
                 for item in candidates:
                     raw_txt = item[2].strip()
-                    # support 10^ or 1e
-                    if raw_txt.startswith("10") or "e" in raw_txt: matches += 1
-                if len(candidates) > 0 and (matches / len(candidates)) > 0.5:
-                     return True
-                return False
+                    if _is_scientific_text(raw_txt) or "e" in raw_txt:
+                        matches += 1
+                return len(candidates) > 0 and (matches / len(candidates)) > 0.5
 
             is_x_log = force_log_x or check_log_scale(x_candidates)
-            
+
             # User says: "Only heatmap X is log, others are normal".
             # So trigger Linear Y if heatmap mode.
             if extract_point_labels:
@@ -416,7 +525,7 @@ class CoordinateMapper:
             else:
                  is_yl_log = check_log_scale(y_left_candidates)
                  is_yr_log = check_log_scale(y_right_candidates)
-            
+
             log(f"Log Scale Detect: X={is_x_log}, YL={is_yl_log}")
 
             def prepare_pairs_and_fit(candidates, is_log, axis_type):
@@ -424,25 +533,27 @@ class CoordinateMapper:
                  # idx 3 is cx, idx 4 is cy
                  pairs = []
                  for p in candidates:
-                     # FIX: Select correct pixel coord based on axis
                      pixel = p[3] if axis_type == 'x' else p[4]
                      val = p[1]
+                     raw_text = p[2]
                      target = val
                      if is_log:
-                         # Heuristic for Exponent vs Value
-                         if abs(val) < 15 and float(val).is_integer():
-                             target = val # Exponent
+                         if _is_scientific_text(raw_text):
+                             # parse_val already extracted exponent (e.g., -2.0, 0.5)
+                             target = val
+                         elif abs(val) < 15 and float(val).is_integer():
+                             # Small integer could be an exponent (e.g., "-2" → 10^-2)
+                             target = val
                          elif val > 0:
                              target = np.log10(val)
-                         else: continue
+                         else:
+                             continue
                      pairs.append([pixel, target])
-                 
+
                  if not pairs: return None
-                 if len(pairs) > 0:
-                      # Debug Log for pairs
-                      subset = pairs[:5]
-                      log(f"Fitting Model ({axis_type}) with {len(pairs)} pairs. Sample: {subset}")
-                       
+                 subset = pairs[:5]
+                 log(f"Fitting Model ({axis_type}) with {len(pairs)} pairs. Sample: {subset}")
+
                  return self._fit_ransac(pairs)
 
             model_x = prepare_pairs_and_fit(x_candidates, is_x_log, 'x')
@@ -567,7 +678,6 @@ class CoordinateMapper:
                                 best_det = v
                         
                         if best_det:
-                            # ... OCR crop logic ...
                             bx1, by1, bx2, by2 = map(int, best_det['box'])
                             pad = 14
                             bx1, by1 = max(0, bx1-pad), max(0, by1-pad)
@@ -577,22 +687,8 @@ class CoordinateMapper:
                                 scale = 4
                                 crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
                             try:
-                                res = self.ocr.ocr(crop)
-                                val = None
-                                txt = ""
-                                if res and isinstance(res, list) and len(res) > 0:
-                                    first_item = res[0]
-                                    if isinstance(first_item, dict): 
-                                        if 'rec_texts' in first_item: txt = first_item['rec_texts'][0]
-                                    elif isinstance(first_item, list):
-                                        line_list = first_item
-                                        if line_list and isinstance(line_list, list) and len(line_list) > 0:
-                                             first_line = line_list[0]
-                                             if len(first_line) >= 2:
-                                                 txt_obj = first_line[1]
-                                                 if isinstance(txt_obj, (list, tuple)) and len(txt_obj) > 0:
-                                                     txt = txt_obj[0]
-                                    val = parse_val(txt)
+                                txt, _conf = self.rec.recognize(crop)
+                                val = parse_val(txt)
                             except Exception: pass
                             if val is not None:
                                 point_labels[idx] = val
