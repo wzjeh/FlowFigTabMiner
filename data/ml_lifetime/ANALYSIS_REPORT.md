@@ -173,9 +173,43 @@ Isokinetic temperature T_iso = -82°C (191 K). Below this temperature, all inter
 | Protonation/polymerization | 36.5 kJ/mol | 1 | PhLi |
 | Benzyne elimination | 59.7–65.4 kJ/mol | 2 | o-I-ArLi, o-Br-ArLi |
 
+### Ortho-ester Taft steric correlation
+
+The four ortho-ester ArLi intermediates (R = Me, Et, iPr, tBu) share identical Hammett σ (0.45) but differ in steric bulk. Their stability correlates with the Taft steric parameter Es:
+
+| Intermediate | R group | Taft Es | Ea (kJ/mol) | t₁/₂ @ -40°C |
+|---|---|---|---|---|
+| o-CO₂Me-ArLi | Me | 0.00 | 36.5 | 602 ms |
+| o-CO₂Et-ArLi | Et | -0.07 | 41.3 | 1.8 s |
+| o-CO₂ⁱPr-ArLi | iPr | -0.47 | 38.0 | 5.6 s |
+| o-CO₂ᵗBu-ArLi | tBu | -1.54 | 26.8 | 51.9 s |
+
+| Correlation | Equation | r | p |
+|---|---|---|---|
+| **log(t₁/₂) vs Es** | **log(t₁/₂) = -1.13·Es + 0.04** | **-0.969** | **0.031** |
+| ln(A) vs Es | ln(A) = 6.72·Es + 20.08 | 0.985 | 0.015 |
+| Ea vs Es | Ea = 8.00·Es + 39.82 | 0.913 | 0.087 |
+
+**Chemical interpretation**: Larger R groups (more negative Es) provide steric shielding of the ortho C-Li bond, slowing decomposition. tBu is 86× more stable than Me at -40°C. The strongest effect is on ln(A) (r = 0.985), meaning steric bulk primarily reduces the frequency of productive collisions (entropy effect) rather than raising the energy barrier.
+
+### Ortho vs para position effect
+
+The same CO₂ᵗBu group behaves very differently at ortho vs para positions:
+
+| Position | Ea (kJ/mol) | t₁/₂ @ -40°C | Dominant effect |
+|---|---|---|---|
+| **para** (p-CO₂ᵗBu-ArLi) | 15.0 | 4.8 s | Electronic: EWG stabilizes carbanion via conjugation |
+| **ortho** (o-CO₂ᵗBu-ArLi) | 26.8 | 51.9 s | Steric: tBu shields C-Li bond from attack |
+
+The ortho intermediate is **10.8× more stable** despite having the same electronic group. This demonstrates that ortho-substituted ArLi require a separate steric model (Taft Es) rather than Hammett σ. The practical implication: for maximum intermediate stability, **use bulky ester groups at the ortho position**.
+
+**Key conclusion**: ArLi intermediate stability is governed by a two-parameter framework:
+1. **Meta/para positions**: Hammett σ (Ea = -48.5σ + 36.1, r = -0.979)
+2. **Ortho positions**: Taft Es (log t₁/₂ = -1.13·Es + 0.04, r = -0.969)
+
 ### Figure: `analysis_figures/stability_ranking_reactor_zones.png`
 
-Stability ranking with reactor zone annotations (flash / flow / batch). Includes 3 experimental predictions (p-CF₃, p-F, p-CH₃ phenyllithium).
+Stability ranking with reactor zone annotations (flash / flow). Includes 3 experimental predictions (p-CF₃, p-F, p-CH₃ phenyllithium).
 
 ### Figure: `analysis_figures/final_results_summary.png`
 
@@ -208,10 +242,10 @@ Li_C_ewg_neighbors counts electron-withdrawing substituents on the C-Li carbon; 
 
 | File | Description |
 |---|---|
-| `phase_a_halflives.csv` | 61 (intermediate, T) kinetics data: k_f, k_d, t₁/₂, R² |
+| `phase_a_halflives.csv` | 76 (intermediate, T) kinetics data: k_f, k_d, t₁/₂, R² |
 | `phase_a_halflives_old.csv` | Pre-correction Phase A results (for comparison) |
-| `phase_a_curves/*.png` | 12 decay curve fit plots |
-| `phase_b_arrhenius.csv` | 11 intermediates: Ea, ln_A, predicted t₁/₂ at -78/-40/0/25°C |
+| `phase_a_curves/*.png` | 15 decay curve fit plots |
+| `phase_b_arrhenius.csv` | 14 intermediates: Ea, ln_A, predicted t₁/₂ at -78/-40/0/25°C |
 | `phase_b_arrhenius_old.csv` | Pre-correction Phase B results |
 | `phase_b_arrhenius_plot.png` | Arrhenius plot (ln(k_d) vs 1/T) |
 | `phase_c_qspr_results.csv` | LOOCV prediction results |
@@ -234,8 +268,13 @@ Li_C_ewg_neighbors counts electron-withdrawing substituents on the C-Li carbon; 
 
 2. **Chemical trends are robust**: Hammett correlation, stability ranking, decomposition mechanisms, and reactor recommendations are all consistent before and after tR correction. The underlying chemistry is captured correctly regardless of absolute tR scale.
 
-3. **Practical value**: The Hammett equation (Ea = -48.5�� + 36.1) provides a simple, actionable prediction tool for new ArLi intermediates. Combined with the Yoshida reactor classification (flash < 1 s, flow > 1 s), this enables rational design of organolithium flow chemistry experiments.
+3. **Two-parameter stability framework**: ArLi intermediate stability is governed by position-dependent effects:
+   - **Meta/para**: Hammett σ controls electronic stabilization (Ea = -48.5σ + 36.1, r = -0.979)
+   - **Ortho**: Taft Es controls steric shielding (log t₁/₂ = -1.13·Es + 0.04, r = -0.969)
+   - Same CO₂ᵗBu group: ortho is 10.8× more stable than para at -40°C (steric protection > electronic effect)
 
-4. **Ortho-ester series provides internal validation**: After splitting Paper 05 into 4 individual intermediates (R = Me/Et/iPr/tBu), Ea follows steric trend: tBu (26.8) < Me (36.5) < iPr (38.0) < Et (41.3 kJ/mol). o-CO₂ᵗBu-ArLi shows R² improvement from 0.049 → 0.947 after separation, confirming data quality.
+4. **Ortho-ester series provides internal validation**: After splitting Paper 05 into 4 individual intermediates (R = Me/Et/iPr/tBu), stability follows steric trend: Me (602 ms) < Et (1.8 s) < iPr (5.6 s) < tBu (51.9 s) at -40°C. The ln(A) vs Es correlation (r = 0.985) indicates steric bulk primarily reduces decomposition frequency (entropy effect), not activation barrier.
 
-5. **Limitations remain**: 14 intermediates is still a small dataset. The systematic t₁/₂ offset (~15-21× vs literature) is not fully explained. QSPR with molecular descriptors (Q² = 0.309) is underpowered at this sample size.
+5. **Practical value**: The combined Hammett + Taft framework provides actionable prediction for new ArLi intermediates. Combined with the Yoshida reactor classification (flash < 1 s, flow > 1 s), this enables rational design of organolithium flow chemistry experiments.
+
+6. **Limitations remain**: 14 intermediates is still a small dataset. The systematic t₁/₂ offset (~15-21× vs literature) is not fully explained. QSPR with molecular descriptors (Q² = 0.309) is underpowered at this sample size. The Taft correlation has only 4 points (p = 0.031) and would benefit from additional ortho-ester intermediates for validation.
