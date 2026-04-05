@@ -31,6 +31,12 @@ data/tab-for-annotation/*
 data/*
 !data/ml_lifetime/
 !data/ml_lifetime/**
+!data/final_output/
+data/final_output/*
+!data/final_output/organolithium_tr_subdataset_vlm_enriched*.csv
+!data/final_output/organolithium_scope_table_dataset.csv
+!data/final_output/DATASET_README.md
+!data/final_output/SCOPE_TABLE_README.md
 
 # IDE
 .idea/

@@ -4,15 +4,23 @@
 
 ### 1.1 核心发现
 
-从 21 篇流动化学文献的 1,650 个 yield-vs-tR 热图数据点中，我们提取了 11 个有机锂中间体的分解动力学参数。关键发现：
+从 20 篇流动化学文献的 1,470 个 yield-vs-tR 热图数据点中，我们提取了 14 个有机锂中间体的分解动力学参数。关键发现：
 
 **ArLi 中间体的分解活化能 (Ea) 与取代基的 Hammett σ 常数呈强负相关：**
 
 ```
-Ea = -49.4σ + 36.0 kJ/mol    (r = -0.91, p = 0.031, n = 5)
+Ea = -48.5σ + 36.1 kJ/mol    (r = -0.979, p = 0.021, n = 4, meta/para only)
 ```
 
 化学意义：吸电子基团 (EWG) 通过共轭效应稳定碳负离子，降低分解能垒，但同时也降低了 pre-exponential factor，**净效果是分解速率降低、中间体更稳定**。
+
+**邻位酯 ArLi 的 Taft 位阻相关性：**
+
+```
+log(t₁/₂) = -1.13·Es + 0.04    (r = -0.969, p = 0.031, n = 4)
+```
+
+邻位取代基受空间效应控制，需用 Taft Es 而非 Hammett σ 描述。
 
 ### 1.2 Hammett σ 的来源与赋值
 
@@ -22,20 +30,18 @@ Hammett σ 常数是有机化学中量化取代基电子效应的标准参数。
 |--------|--------|------|------|------|
 | p-lithiobenzonitrile | CN | para | +0.66 | σ_p(CN) |
 | m-lithiobenzonitrile | CN | meta | +0.56 | σ_m(CN) |
-| tBu 4-(lithio)benzoate | COOtBu | para | +0.45 | σ_p(COOR) |
-| tBu o-(lithio)benzoate | COOtBu | ortho | +0.45 | σ_p(COOR)* |
+| p-CO₂ᵗBu-ArLi | COOtBu | para | +0.45 | σ_p(COOR) |
 | phenyllithium (plain) | H | — | 0.00 | 参考基准 |
 
-*注：ortho 位取代基严格来说不适用 Hammett σ_p，但 COOtBu 体积较大时空间效应较小，近似使用 σ_p。
+**注**：Hammett 回归仅使用间位/对位的 4 个数据点（n=4, r=-0.979）。邻位酯基（4 个 o-CO₂R-ArLi）因空间效应不符合 Hammett 关系，改用 Taft Es 描述（见上文）。
 
-**Benzyne 消除的 outlier（不参与 Hammett 回归）：**
+**不参与 Hammett 回归的中间体：**
 
-| 中间体 | 取代基 | 位置 | σ 值 | Ea (kJ/mol) | 偏离原因 |
-|--------|--------|------|------|-------------|---------|
-| (Br,Li)-benzene | Br | ortho | +0.39 | 82.2 | benzyne 消除机制，非简单分解 |
-| (I,Li)-benzene | I | ortho | +0.35 | 79.5 | benzyne 消除机制，非简单分解 |
-
-这两个中间体的 Ea 远高于 Hammett 趋势线预测值（~18 kJ/mol），因为它们通过协同的 1,2-消除（loss of LiX → benzyne）分解，而非简单的均裂或质子化分解。
+| 中间体 | 原因 |
+|--------|------|
+| 4 个邻位酯 ArLi (Me/Et/iPr/tBu) | 空间效应主导，用 Taft Es |
+| o-Br-ArLi, o-I-ArLi | benzyne 消除机制，非简单分解 |
+| 3 个 carbenoid + oxiranyl-Li | sp³ 碳，不同机制 |
 
 ### 1.3 Hammett 回归的物理意义
 
@@ -51,12 +57,12 @@ log(k/k₀) = ρ·σ
 Ea = ρ'·σ + Ea₀
 ```
 
-其中 ρ' = -49.4 kJ/mol（负值 → EWG 降低 Ea），Ea₀ = 36.0 kJ/mol（无取代 PhLi 的基准 Ea）。
+其中 ρ' = -48.5 kJ/mol（负值 → EWG 降低 Ea），Ea₀ = 36.1 kJ/mol（无取代 PhLi 的基准 Ea）。
 
-结合 Ea-ln(A) 焓熵补偿效应（r = 0.99）：
+结合 Ea-ln(A) 焓熵补偿效应（r = 0.987）：
 
 ```
-ln(A) = 0.628·Ea - 5.11
+ln(A) = 0.628·Ea - 4.63
 ```
 
 可以将 Hammett σ 转化为任意温度下的半衰期：
@@ -85,9 +91,9 @@ Ea-ln(A) 的高相关性（r = 0.99）需要谨慎解读：
 
 | # | 底物 | CAS | 中间体 | σ | 预测 Ea | 预测 t₁/₂@-40°C | 类型 |
 |---|------|-----|--------|---|---------|-----------------|------|
-| 1 | 4-bromobenzotrifluoride | 402-43-7 | p-CF₃-PhLi | +0.54 | 9.3 kJ/mol | ~75 s | 插值 |
-| 2 | 1-bromo-4-fluorobenzene | 460-00-4 | p-F-PhLi | +0.06 | 33.0 kJ/mol | ~25 s | 近基准 |
-| 3 | 4-bromotoluene | 106-38-7 | p-CH₃-PhLi | -0.17 | 44.4 kJ/mol | ~10 s | **外推 (EDG)** |
+| 1 | 4-bromobenzotrifluoride | 402-43-7 | p-CF₃-PhLi | +0.54 | 9.9 kJ/mol | ~75 s | 插值 |
+| 2 | 1-bromo-4-fluorobenzene | 460-00-4 | p-F-PhLi | +0.06 | 33.2 kJ/mol | ~25 s | 近基准 |
+| 3 | 4-bromotoluene | 106-38-7 | p-CH₃-PhLi | -0.17 | 44.3 kJ/mol | ~10 s | **外推 (EDG)** |
 
 选择理由：
 - **全部用 n-BuLi**：最简单的试剂，三个底物均通过 Br/Li 交换生成 ArLi
@@ -134,10 +140,11 @@ ArLi + MeOH (excess) ──[M2]──→ ArH + LiOMe
 ### 2.4 Batch 对照实验
 
 对每个底物，同时在 round-bottom flask 中重复：
-- 条件：-78°C, THF, n-BuLi (1.1 equiv), 搅拌 30 min, MeOH 猝灭
-- 目的：验证模型的反应器推荐
+- 条件：-78°C, THF, n-BuLi (1.1 equiv), 搅拌 10 min (600 s), MeOH 猝灭
+- 目的：验证模型的反应器推荐，同时与 Stage 2 的 Arrhenius 外推方法对比
   - p-CF₃-PhLi 预测 batch compatible → 预期 batch yield > 80%
   - p-CH₃-PhLi 预测 standard flow → 预期 batch yield 可能 < 80%（取决于 t₁/₂ 是否 > 30 min）
+- **Stage 2 参照**：Nagaki 2010 的间歇数据（-78°C, 600s）已验证 Arrhenius 外推可定量预测 batch yield（tBu: 58% vs 61%）。本实验的 batch 对照可进一步验证该外推方法对新底物的适用性。
 
 ### 2.5 数据处理
 
@@ -206,9 +213,11 @@ ArLi + MeOH (excess) ──[M2]──→ ArH + LiOMe
 | 结论 | 新颖性 | 科学贡献 | 建议定位 |
 |------|--------|---------|---------|
 | **数据挖掘方法** (VLM + 热图 → 动力学) | **高** — 首次 | 证明文献图表可自动提取定量动力学参数 | **论文核心卖点** |
-| **5 个数量级的 t₁/₂ 跨度** | **高** — 首次系统量化 | 纯数据事实，无争议 | **核心发现** |
+| **近 4 个数量级的 t₁/₂ 跨度** | **高** — 首次系统量化 | 纯数据事实，无争议 | **核心发现** |
 | **分解机制分类 (3 类)** | **中** — 系统化已知定性知识 | 将定性规律定量化 | **有价值的讨论** |
-| **Hammett σ vs Ea (r=-0.91)** | **中** — 首次定量，但 n=5 | 定量化了已知的 EWG 稳定化效应 | **核心发现之一，坦承 n=5 局限** |
+| **Hammett σ vs Ea (r=-0.979, n=4)** | **中** — 首次定量，但 n=4 | 定量化了已知的 EWG 稳定化效应 | **核心发现之一，坦承 n=4 局限** |
+| **Taft Es vs log(t½) (r=-0.969, n=4)** | **中高** — 邻位酯的定量位阻效应 | 首次将 Taft 参数与 ArLi 寿命关联 | **核心发现之一** |
+| **条件外推验证 (tBu 58% vs 61%)** | **高** — 定量可预测性证据 | 证明热图动力学参数可外推到 batch 条件 | **关键验证，Stage 2** |
 | **焓熵补偿 (r=0.99)** | **低** — 已知现象 + 可能统计伪影 | Krug (1976) 指出 Arrhenius 拟合的 Ea-ln(A) 误差天然相关 | **SI 中 observation，不做亮点** |
 | **等动力学温度 ≈ -78°C** | **无** — 巧合 | -78°C 是干冰冷浴温度，选择出于实验便利而非动力学 | **删除或仅做脚注** |
 | **反应器推荐规则** | **中高** — 实用创新 | 给化学家直接工具：σ → t₁/₂ → 反应器类型 | **实用价值亮点** |
@@ -224,12 +233,13 @@ ArLi + MeOH (excess) ──[M2]──→ ArH + LiOMe
 
 **Story**：
 1. 问题：有机锂中间体的寿命决定了反应器选择（batch vs flow vs flash），但系统的定量数据稀缺
-2. 方法：用 VLM 从 21 篇文献的热图中自动提取 1,650 个 (tR, T, yield) 数据点
-3. 结果：提取了 11 个中间体的 Ea，跨越 5 个数量级的稳定性差异
-4. 发现：Ea 与 Hammett σ 负相关 (r=-0.91, n=5)，可区分 3 种分解机制
-5. 预测：用 Hammett 回归外推 3 个新中间体的 t₁/₂
-6. 验证：flow microreactor 实验确认预测
-7. 工具：输入取代基 σ → 输出反应器推荐
+2. 方法：用 VLM 从 20 篇文献的热图中自动提取 1,470 个 (tR, T, yield) 数据点
+3. 结果：提取了 14 个中间体的 Ea，跨越近 4 个数量级的稳定性差异
+4. 发现：Ea 与 Hammett σ 负相关 (r=-0.979, n=4)；邻位酯遵循 Taft Es (r=-0.969, n=4)
+5. 条件外推验证：Arrhenius 参数从 flow 外推到 batch(-78°C, 600s)，tBu 预测 58% vs 实际 61%
+6. 预测：用 Hammett 回归外推 3 个新中间体的 t₁/₂
+7. 验证：flow microreactor 实验确认预测（待执行）
+8. 工具：输入取代基 σ/Es → 输出反应器推荐
 
 ---
 
