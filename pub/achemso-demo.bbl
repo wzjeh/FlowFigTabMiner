@@ -7,7 +7,7 @@
 \makeatother
 \providecommand*\mcitethebibliography{\thebibliography}
 \csname @ifundefined\endcsname{endmcitethebibliography}  {\let\endmcitethebibliography\endthebibliography}{}
-\begin{mcitethebibliography}{60}
+\begin{mcitethebibliography}{44}
 \providecommand*\natexlab[1]{#1}
 \providecommand*\mciteSetBstSublistMode[1]{}
 \providecommand*\mciteSetBstMaxWidthForm[2]{}
@@ -157,30 +157,6 @@ Adamo,~A.; Beingessner,~R.~L.; Behnam,~M.; Chen,~J.; Jamison,~T.~F.; Jensen,~K.~
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Patel and Webb(2024)Patel, and Webb]{acsabm}
-Patel,~R.~A.; Webb,~M.~A. Data-Driven Design of Polymer-Based Biomaterials: High-throughput Simulation, Experimentation, and Machine Learning. \emph{ACS Applied Bio Materials} \textbf{2024}, \emph{7}, 510--527, PMID: 36701125\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Vangala \latin{et~al.}(2024)Vangala, Krishnan, Bung, Nandagopal, Ramasamy, Kumar, Sankaran, Srinivasan, and Roy]{vangala2024suitability}
-Vangala,~S.~R.; Krishnan,~S.~R.; Bung,~N.; Nandagopal,~D.; Ramasamy,~G.; Kumar,~S.; Sankaran,~S.; Srinivasan,~R.; Roy,~A. Suitability of large language models for extraction of high-quality chemical reaction dataset from patent literature. \emph{Journal of Cheminformatics} \textbf{2024}, \emph{16}, 131\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Guo \latin{et~al.}(2022)Guo, Ibanez-Lopez, Gao, Quach, Coley, Jensen, and Barzilay]{doi:10.1021/acs.jcim.1c00284}
-Guo,~J.; Ibanez-Lopez,~A.~S.; Gao,~H.; Quach,~V.; Coley,~C.~W.; Jensen,~K.~F.; Barzilay,~R. Automated Chemical Reaction Extraction from Scientific Literature. \emph{Journal of Chemical Information and Modeling} \textbf{2022}, \emph{62}, 2035--2045, PMID: 34115937\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Wu \latin{et~al.}()Wu, Shi, Zhou, Zhang, Chen, Yu, and Wu]{angewhuman}
-Wu,~J.-H.; Shi,~R.; Zhou,~X.; Zhang,~L.; Chen,~K.; Yu,~H.-Q.; Wu,~Y. Empowering Chemistry Experts with Large Language Models for Literature Interpretation in Single-Atom Catalysis Toward Advanced Oxidation. \emph{Angewandte Chemie International Edition} \emph{n/a}, e202520525\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
 \bibitem[Deadman(2025)]{Deadman_2025}
 Deadman,~B.~J. WANTED: Flow Chemistry Reaction Data. \emph{CHIMIA} \textbf{2025}, \emph{79}, 390--395\relax
 \mciteBstWouldAddEndPuncttrue
@@ -265,68 +241,8 @@ OpenAI \latin{et~al.}  GPT-4 Technical Report. 2024; \url{https://arxiv.org/abs/
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Dagdelen \latin{et~al.}(2024)Dagdelen, Dunn, Lee, Walker, Rosen, Ceder, Persson, and Jain]{dagdelen2024structured}
-Dagdelen,~J.; Dunn,~A.; Lee,~S.; Walker,~N.; Rosen,~A.~S.; Ceder,~G.; Persson,~K.~A.; Jain,~A. Structured information extraction from scientific text with large language models. \emph{Nature communications} \textbf{2024}, \emph{15}, 1418\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Touvron \latin{et~al.}(2023)Touvron, Lavril, Izacard, Martinet, Lachaux, Lacroix, Rozi{\`e}re, Goyal, Hambro, Azhar, \latin{et~al.} others]{touvron2023llama}
-Touvron,~H.; Lavril,~T.; Izacard,~G.; Martinet,~X.; Lachaux,~M.-A.; Lacroix,~T.; Rozi{\`e}re,~B.; Goyal,~N.; Hambro,~E.; Azhar,~F.; others Llama: Open and efficient foundation language models. \emph{arXiv preprint arXiv:2302.13971} \textbf{2023}, \relax
-\mciteBstWouldAddEndPunctfalse
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Zhong \latin{et~al.}(2023)Zhong, Ouyang, Jiao, Kargupta, Luo, Shen, Zhou, Zhong, Liu, Li, \latin{et~al.} others]{zhong2023reaction}
-Zhong,~M.; Ouyang,~S.; Jiao,~Y.; Kargupta,~P.; Luo,~L.; Shen,~Y.; Zhou,~B.; Zhong,~X.; Liu,~X.; Li,~H.; others Reaction miner: An integrated system for chemical reaction extraction from textual data. Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: System Demonstrations. 2023; pp 389--402\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Schilling-Wilhelmi \latin{et~al.}(2025)Schilling-Wilhelmi, R{\'\i}os-Garc{\'\i}a, Shabih, Gil, Miret, Koch, M{\'a}rquez, and Jablonka]{D4CS00913D}
-Schilling-Wilhelmi,~M.; R{\'\i}os-Garc{\'\i}a,~M.; Shabih,~S.; Gil,~M.~V.; Miret,~S.; Koch,~C.~T.; M{\'a}rquez,~J.~A.; Jablonka,~K.~M. From text to insight: large language models for chemical data extraction. \emph{Chem. Soc. Rev.} \textbf{2025}, \emph{54}, 1125--1150\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[OpenAI \latin{et~al.}(2024)OpenAI, :, Hurst, Lerer, Goucher, Perelman, Ramesh, Clark, Ostrow, Welihinda, Hayes, Radford, Mądry, Baker-Whitcomb, Beutel, Borzunov, Carney, Chow, Kirillov, Nichol, Paino, Renzin, Passos, Kirillov, Christakis, Conneau, Kamali, Jabri, Moyer, Tam, Crookes, Tootoochian, Tootoonchian, Kumar, Vallone, Karpathy, Braunstein, Cann, Codispoti, Galu, Kondrich, Tulloch, Mishchenko, Baek, Jiang, Pelisse, Woodford, Gosalia, Dhar, Pantuliano, Nayak, Oliver, Zoph, Ghorbani, Leimberger, Rossen, Sokolowsky, Wang, Zweig, Hoover, Samic, McGrew, Spero, Giertler, Cheng, Lightcap, Walkin, Quinn, Guarraci, Hsu, Kellogg, Eastman, Lugaresi, Wainwright, Bassin, Hudson, Chu, Nelson, Li, Shern, Conger, Barette, Voss, Ding, Lu, Zhang, Beaumont, Hallacy, Koch, Gibson, Kim, Choi, McLeavey, Hesse, Fischer, Winter, Czarnecki, Jarvis, Wei, Koumouzelis, Sherburn, Kappler, Levin, Levy, Carr, Farhi, Mely, Robinson, Sasaki, Jin, Valladares, Tsipras, Li, Nguyen, Findlay, Oiwoh, Wong, Asdar, Proehl, Yang, Antonow, Kramer, Peterson, Sigler, Wallace, Brevdo, Mays, Khorasani, Such, Raso, Zhang, von Lohmann, Sulit, Goh, Oden, Salmon, Starace, Brockman, Salman, Bao, Hu, Wong, Wang, Schmidt, Whitney, Jun, Kirchner, de~Oliveira~Pinto, Ren, Chang, Chung, Kivlichan, O'Connell, O'Connell, Osband, Silber, Sohl, Okuyucu, Lan, Kostrikov, Sutskever, Kanitscheider, Gulrajani, Coxon, Menick, Pachocki, Aung, Betker, Crooks, Lennon, Kiros, Leike, Park, Kwon, Phang, Teplitz, Wei, Wolfe, Chen, Harris, Varavva, Lee, Shieh, Lin, Yu, Weng, Tang, Yu, Jang, Candela, Beutler, Landers, Parish, Heidecke, Schulman, Lachman, McKay, Uesato, Ward, Kim, Huizinga, Sitkin, Kraaijeveld, Gross, Kaplan, Snyder, Achiam, Jiao, Lee, Zhuang, Harriman, Fricke, Hayashi, Singhal, Shi, Karthik, Wood, Rimbach, Hsu, Nguyen, Gu-Lemberg, Button, Liu, Howe, Muthukumar, Luther, Ahmad, Kai, Itow, Workman, Pathak, Chen, Jing, Guy, Fedus, Zhou, Mamitsuka, Weng, McCallum, Held, Ouyang, Feuvrier, Zhang, Kondraciuk, Kaiser, Hewitt, Metz, Doshi, Aflak, Simens, Boyd, Thompson, Dukhan, Chen, Gray, Hudnall, Zhang, Aljubeh, Litwin, Zeng, Johnson, Shetty, Gupta, Shah, Yatbaz, Yang, Zhong, Glaese, Chen, Janner, Lampe, Petrov, Wu, Wang, Fradin, Pokrass, Castro, de~Castro, Pavlov, Brundage, Wang, Khan, Murati, Bavarian, Lin, Yesildal, Soto, Gimelshein, Cone, Staudacher, Summers, LaFontaine, Chowdhury, Ryder, Stathas, Turley, Tezak, Felix, Kudige, Keskar, Deutsch, Bundick, Puckett, Nachum, Okelola, Boiko, Murk, Jaffe, Watkins, Godement, Campbell-Moore, Chao, McMillan, Belov, Su, Bak, Bakkum, Deng, Dolan, Hoeschele, Welinder, Tillet, Pronin, Tillet, Dhariwal, Yuan, Dias, Lim, Arora, Troll, Lin, Lopes, Puri, Miyara, Leike, Gaubert, Zamani, Wang, Donnelly, Honsby, Smith, Sahai, Ramchandani, Huet, Carmichael, Zellers, Chen, Chen, Nigmatullin, Cheu, Jain, Altman, Schoenholz, Toizer, Miserendino, Agarwal, Culver, Ethersmith, Gray, Grove, Metzger, Hermani, Jain, Zhao, Wu, Jomoto, Wu, Shuaiqi, Xia, Phene, Papay, Narayanan, Coffey, Lee, Hall, Balaji, Broda, Stramer, Xu, Gogineni, Christianson, Sanders, Patwardhan, Cunninghman, Degry, Dimson, Raoux, Shadwell, Zheng, Underwood, Markov, Sherbakov, Rubin, Stasi, Kaftan, Heywood, Peterson, Walters, Eloundou, Qi, Moeller, Monaco, Kuo, Fomenko, Chang, Zheng, Zhou, Manassra, Sheu, Zaremba, Patil, Qian, Kim, Cheng, Zhang, He, Zhang, Jin, Dai, and Malkov]{openai2024gpt4ocard}
-OpenAI \latin{et~al.}  GPT-4o System Card. 2024; \url{https://arxiv.org/abs/2410.21276}\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
 \bibitem[{Google DeepMind}(2025)]{google2025gemini25flashlite}
 {Google DeepMind} \emph{Gemini 2.5 Flash Lite Model Card}; 2025; Accessed: 2025-02-28\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Hu \latin{et~al.}(2021)Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, and Chen]{hu2021lora}
-Hu,~E.~J.; Shen,~Y.; Wallis,~P.; Allen-Zhu,~Z.; Li,~Y.; Wang,~S.; Wang,~L.; Chen,~W. LoRA: Low-Rank Adaptation of Large Language Models. 2021; \url{https://arxiv.org/abs/2106.09685}\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Artifex~Software and Ruecker(2025)Artifex~Software, and Ruecker]{PyMuPDF}
-Artifex~Software,~I.; Ruecker,~G. {PyMuPDF}: A Python Binding for MuPDF. GitHub repository, 2025; \url{https://github.com/pymupdf/PyMuPDF}, Version [1.23.0], Accessed: [2025-06-02]\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Luo \latin{et~al.}(2025)Luo, Zhang, Wang, and Yang]{Luo2025-se}
-Luo,~F.; Zhang,~J.; Wang,~Q.; Yang,~C. Leveraging prompt engineering in large language models for accelerating chemical research. \emph{ACS Cent. Sci.} \textbf{2025}, \emph{11}, 511--519\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Huang \latin{et~al.}(2024)Huang, Surve, Liu, Luo, Wiest, Zhang, and Chawla]{appllmchemreactiondataextraction2024}
-Huang,~X.; Surve,~M.; Liu,~Y.; Luo,~T.; Wiest,~O.; Zhang,~X.; Chawla,~N.~V. Application of Large Language Models in Chemistry Reaction Data Extraction and Cleaning. Proceedings of the 33rd ACM International Conference on Information and Knowledge Management. New York, NY, USA, 2024; p 3797–3801\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Luo \latin{et~al.}(2025)Luo, Yang, Meng, Li, Zhou, and Zhang]{luo2025empiricalstudycatastrophicforgetting}
-Luo,~Y.; Yang,~Z.; Meng,~F.; Li,~Y.; Zhou,~J.; Zhang,~Y. An Empirical Study of Catastrophic Forgetting in Large Language Models During Continual Fine-tuning. 2025; \url{https://arxiv.org/abs/2308.08747}\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
@@ -337,44 +253,32 @@ Röttger,~P.; Kirk,~H.~R.; Vidgen,~B.; Attanasio,~G.; Bianchi,~F.; Hovy,~D. XSTe
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Zhao \latin{et~al.}(2025)Zhao, Wang, Zhao, wei, and Yan]{Nitrationthermol}
-Zhao,~W.; Wang,~S.; Zhao,~W.; wei,~W.; Yan,~D. Continuous-Flow Microreactor System for Enhanced Selectivity and Safety in Nitrobenzene Nitration. \emph{ACS Omega} \textbf{2025}, \emph{10}, 15503--15510\relax
+\bibitem[Jocher and Qiu(2024)Jocher, and Qiu]{ultralytics2024yolo11}
+Jocher,~G.; Qiu,~J. Ultralytics {YOLO11}. 2024; \url{https://github.com/ultralytics/ultralytics}\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Barkan-{\"O}zt{\"u}rk \latin{et~al.}(2021)Barkan-{\"O}zt{\"u}rk, Menner, and Bismarck]{monolithmic_micromixers}
-Barkan-{\"O}zt{\"u}rk,~H.; Menner,~A.; Bismarck,~A. Emulsion-Templated Macroporous Polymer Micromixers. \emph{Industrial \& Engineering Chemistry Research} \textbf{2021}, \emph{60}, 14013--14025\relax
+\bibitem[Yoshida \latin{et~al.}(2008)Yoshida, Nagaki, and Yamada]{Yoshida2008flash}
+Yoshida,~J.-i.; Nagaki,~A.; Yamada,~T. Flash Chemistry: Fast Chemical Synthesis by Using Microreactors. \emph{Chemistry -- A European Journal} \textbf{2008}, \emph{14}, 7450--7459\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Gu \latin{et~al.}(2024)Gu, Dong, Wei, and Huang]{gu2024minillmknowledgedistillationlarge}
-Gu,~Y.; Dong,~L.; Wei,~F.; Huang,~M. MiniLLM: Knowledge Distillation of Large Language Models. 2024; \url{https://arxiv.org/abs/2306.08543}\relax
+\bibitem[Xiao \latin{et~al.}(2024)Xiao, Wu, Xu, Dai, Hu, Lu, Zeng, Liu, and Yuan]{Xiao2024florence2}
+Xiao,~B.; Wu,~H.; Xu,~W.; Dai,~X.; Hu,~H.; Lu,~Y.; Zeng,~M.; Liu,~C.; Yuan,~L. Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). 2024; pp 4818--4829\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Zhu \latin{et~al.}(2024)Zhu, Li, Liu, Ma, and Wang]{zhu2024surveymodelcompressionlarge}
-Zhu,~X.; Li,~J.; Liu,~Y.; Ma,~C.; Wang,~W. A Survey on Model Compression for Large Language Models. 2024; \url{https://arxiv.org/abs/2308.07633}\relax
+\bibitem[Smock \latin{et~al.}(2022)Smock, Pesala, and Abraham]{smock2022tatr}
+Smock,~B.; Pesala,~R.; Abraham,~R. {PubTables-1M}: Towards Comprehensive Table Extraction from Unstructured Documents. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). 2022; pp 4634--4642\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
 \EndOfBibitem
-\bibitem[Grattafiori \latin{et~al.}(2024)Grattafiori, Dubey, Jauhri, Pandey, Kadian, Al-Dahle, Letman, Mathur, Schelten, Vaughan, Yang, Fan, Goyal, Hartshorn, Yang, Mitra, Sravankumar, Korenev, Hinsvark, Rao, Zhang, Rodriguez, Gregerson, Spataru, Roziere, Biron, Tang, Chern, Caucheteux, Nayak, Bi, Marra, McConnell, Keller, Touret, Wu, Wong, Ferrer, Nikolaidis, Allonsius, Song, Pintz, Livshits, Wyatt, Esiobu, Choudhary, Mahajan, Garcia-Olano, Perino, Hupkes, Lakomkin, AlBadawy, Lobanova, Dinan, Smith, Radenovic, Guzmán, Zhang, Synnaeve, Lee, Anderson, Thattai, Nail, Mialon, Pang, Cucurell, Nguyen, Korevaar, Xu, Touvron, Zarov, Ibarra, Kloumann, Misra, Evtimov, Zhang, Copet, Lee, Geffert, Vranes, Park, Mahadeokar, Shah, van~der Linde, Billock, Hong, Lee, Fu, Chi, Huang, Liu, Wang, Yu, Bitton, Spisak, Park, Rocca, Johnstun, Saxe, Jia, Alwala, Prasad, Upasani, Plawiak, Li, Heafield, Stone, El-Arini, Iyer, Malik, Chiu, Bhalla, Lakhotia, Rantala-Yeary, van~der Maaten, Chen, Tan, Jenkins, Martin, Madaan, Malo, Blecher, Landzaat, de~Oliveira, Muzzi, Pasupuleti, Singh, Paluri, Kardas, Tsimpoukelli, Oldham, Rita, Pavlova, Kambadur, Lewis, Si, Singh, Hassan, Goyal, Torabi, Bashlykov, Bogoychev, Chatterji, Zhang, Duchenne, Çelebi, Alrassy, Zhang, Li, Vasic, Weng, Bhargava, Dubal, Krishnan, Koura, Xu, He, Dong, Srinivasan, Ganapathy, Calderer, Cabral, Stojnic, Raileanu, Maheswari, Girdhar, Patel, Sauvestre, Polidoro, Sumbaly, Taylor, Silva, Hou, Wang, Hosseini, Chennabasappa, Singh, Bell, Kim, Edunov, Nie, Narang, Raparthy, Shen, Wan, Bhosale, Zhang, Vandenhende, Batra, Whitman, Sootla, Collot, Gururangan, Borodinsky, Herman, Fowler, Sheasha, Georgiou, Scialom, Speckbacher, Mihaylov, Xiao, Karn, Goswami, Gupta, Ramanathan, Kerkez, Gonguet, Do, Vogeti, Albiero, Petrovic, Chu, Xiong, Fu, Meers, Martinet, Wang, Wang, Tan, Xia, Xie, Jia, Wang, Goldschlag, Gaur, Babaei, Wen, Song, Zhang, Li, Mao, Coudert, Yan, Chen, Papakipos, Singh, Srivastava, Jain, Kelsey, Shajnfeld, Gangidi, Victoria, Goldstand, Menon, Sharma, Boesenberg, Baevski, Feinstein, Kallet, Sangani, Teo, Yunus, Lupu, Alvarado, Caples, Gu, Ho, Poulton, Ryan, Ramchandani, Dong, Franco, Goyal, Saraf, Chowdhury, Gabriel, Bharambe, Eisenman, Yazdan, James, Maurer, Leonhardi, Huang, Loyd, Paola, Paranjape, Liu, Wu, Ni, Hancock, Wasti, Spence, Stojkovic, Gamido, Montalvo, Parker, Burton, Mejia, Liu, Wang, Kim, Zhou, Hu, Chu, Cai, Tindal, Feichtenhofer, Gao, Civin, Beaty, Kreymer, Li, Adkins, Xu, Testuggine, David, Parikh, Liskovich, Foss, Wang, Le, Holland, Dowling, Jamil, Montgomery, Presani, Hahn, Wood, Le, Brinkman, Arcaute, Dunbar, Smothers, Sun, Kreuk, Tian, Kokkinos, Ozgenel, Caggioni, Kanayet, Seide, Florez, Schwarz, Badeer, Swee, Halpern, Herman, Sizov, Guangyi, Zhang, Lakshminarayanan, Inan, Shojanazeri, Zou, Wang, Zha, Habeeb, Rudolph, Suk, Aspegren, Goldman, Zhan, Damlaj, Molybog, Tufanov, Leontiadis, Veliche, Gat, Weissman, Geboski, Kohli, Lam, Asher, Gaya, Marcus, Tang, Chan, Zhen, Reizenstein, Teboul, Zhong, Jin, Yang, Cummings, Carvill, Shepard, McPhie, Torres, Ginsburg, Wang, Wu, U, Saxena, Khandelwal, Zand, Matosich, Veeraraghavan, Michelena, Li, Jagadeesh, Huang, Chawla, Huang, Chen, Garg, A, Silva, Bell, Zhang, Guo, Yu, Moshkovich, Wehrstedt, Khabsa, Avalani, Bhatt, Mankus, Hasson, Lennie, Reso, Groshev, Naumov, Lathi, Keneally, Liu, Seltzer, Valko, Restrepo, Patel, Vyatskov, Samvelyan, Clark, Macey, Wang, Hermoso, Metanat, Rastegari, Bansal, Santhanam, Parks, White, Bawa, Singhal, Egebo, Usunier, Mehta, Laptev, Dong, Cheng, Chernoguz, Hart, Salpekar, Kalinli, Kent, Parekh, Saab, Balaji, Rittner, Bontrager, Roux, Dollar, Zvyagina, Ratanchandani, Yuvraj, Liang, Alao, Rodriguez, Ayub, Murthy, Nayani, Mitra, Parthasarathy, Li, Hogan, Battey, Wang, Howes, Rinott, Mehta, Siby, Bondu, Datta, Chugh, Hunt, Dhillon, Sidorov, Pan, Mahajan, Verma, Yamamoto, Ramaswamy, Lindsay, Lindsay, Feng, Lin, Zha, Patil, Shankar, Zhang, Zhang, Wang, Agarwal, Sajuyigbe, Chintala, Max, Chen, Kehoe, Satterfield, Govindaprasad, Gupta, Deng, Cho, Virk, Subramanian, Choudhury, Goldman, Remez, Glaser, Best, Koehler, Robinson, Li, Zhang, Matthews, Chou, Shaked, Vontimitta, Ajayi, Montanez, Mohan, Kumar, Mangla, Ionescu, Poenaru, Mihailescu, Ivanov, Li, Wang, Jiang, Bouaziz, Constable, Tang, Wu, Wang, Wu, Gao, Kleinman, Chen, Hu, Jia, Qi, Li, Zhang, Zhang, Adi, Nam, Yu, Wang, Zhao, Hao, Qian, Li, He, Rait, DeVito, Rosnbrick, Wen, Yang, Zhao, and Ma]{grattafiori2024llama3herdmodels}
-Grattafiori,~A. \latin{et~al.}  The Llama 3 Herd of Models. 2024; \url{https://arxiv.org/abs/2407.21783}\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Anand \latin{et~al.}(2023)Anand, Nussbaum, Duderstadt, Schmidt, and Mulyar]{gpt4all}
-Anand,~Y.; Nussbaum,~Z.; Duderstadt,~B.; Schmidt,~B.; Mulyar,~A. GPT4All: Training an Assistant-style Chatbot with Large Scale Data Distillation from GPT-3.5-Turbo. \url{https://github.com/nomic-ai/gpt4all}, 2023\relax
-\mciteBstWouldAddEndPuncttrue
-\mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
-{\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax
-\EndOfBibitem
-\bibitem[Yahma(2023)]{alpaca_cleaned}
-Yahma {Alpaca Cleaned Dataset}. \url{https://huggingface.co/datasets/yahma/alpaca-cleaned}, 2023; Accessed: 2025-05-20\relax
+\bibitem[Chen \latin{et~al.}(2024)Chen, Leung, Huang, Sun, Chen, and Gao]{Xu2024molnextr}
+Chen,~Y.; Leung,~C.~T.; Huang,~Y.; Sun,~J.; Chen,~H.; Gao,~H. {MolNexTR}: a generalized deep learning model for molecular image recognition. \emph{Journal of Cheminformatics} \textbf{2024}, \emph{16}, 141\relax
 \mciteBstWouldAddEndPuncttrue
 \mciteSetBstMidEndSepPunct{\mcitedefaultmidpunct}
 {\mcitedefaultendpunct}{\mcitedefaultseppunct}\relax

@@ -19,6 +19,7 @@
 \usepackage{siunitx}  % 可选但推荐，用于处理单位和数字对齐
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{placeins}  % \FloatBarrier to prevent figures drifting across sections
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% If issues arise when submitting your manuscript, you may want to
 %% un-comment the next line.  This provides information on the
@@ -59,9 +60,10 @@
 \affiliation{Department of Chemistry, Faculty of Science, Hokkaido University, Sapporo 060-0810, Japan}
 
 \author{Xianzhu Zhong}
+\author{Yosuke ASHIKARI}
+\author{Hiromichi V. MIYAGISHI}
+\author{Mohmmad S. QENAWY}
 \author{Simeng Wang}
-\author{ashikeri}
-\author{mohanmode}
 \author{Jouffery Xiaer}
 \author{Yirui Peng}
 \author{Aiichiro Nagaki}
@@ -184,71 +186,94 @@ The pipeline, models, dataset, and a cloud-deployed web tool are open-sourced.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Pipeline Architecture}
 
-% --- P1: Overview of the 4-layer design (~150 words) --- TO BE FILLED
-% - Input Layer: PDF ingestion + TF-ID (Florence-2-base) detects figures and
-%   tables on each page, saving cropped images
-% - Processing Layer: three parallel tracks (figure, table, text)
-% - Algorithm Layer: LLM adjudication merging all evidence
-% - Output Layer: normalized JSON / CSV database
-
-% --- P2: Figure processing track (~200 words) --- TO BE FILLED
-% - Step 1: YOLO macro segmentation (v11m-fig-seg, 6 classes)
-% - Step 2: YOLO micro detection (v11m-fig-sca, 4 classes)
-% - Step 3: Coordinate mapping — OCR tick labels, build pixel-to-physical
-%   axis transforms, map each data_point to (X, Y_Left, Y_Right)
-% - Step 4: Legend matching — assign series labels by color/position proximity
-% - Handles: scatter plots, line charts, bar charts, heatmaps
-
-% --- P3: Table processing track (~200 words) --- TO BE FILLED
-% - Step B1: YOLO table segmentation (v11m-tab-seg, 4 classes)
-% - Step B2: YOLO molecule detection (v11s-tab-mol)
-% - Step B3: Molecule masking — white fill to prevent OCR interference
-% - Step B4: TATR structure recognition — rows, columns, headers -> cell grid
-% - Step B5: PaddleOCR for text cells; MolNexTR for molecule cells (image->SMILES)
-% - Step B6: CSV assembly with keyword-based relevance filtering
-
-% --- P4: LLM adjudication and cloud deployment (~150 words) --- TO BE FILLED
-% - LLM merges figure evidence (JSON), table evidence (CSV), text context
-% - Unit normalization, SMILES validation, cross-source deduplication
-% - Cloud deployment: 4 microservices on GCP Cloud Run
-% - GCS-mounted model weights; public web interface
+FlowFigTabMiner is an end-to-end pipeline that converts flow chemistry PDF publications into structured reaction databases (Figure~\ref{fig:pipeline-overview}).
+The system ingests a PDF document and processes it through three parallel extraction tracks---figure, table, and text---whose outputs are merged by an LLM adjudicator into normalized JSON records, followed by manual inspection before the final dataset is released for downstream machine learning and validation.
 
 \begin{figure*}[!ht]
     \centering
-    \includegraphics[width=\linewidth]{figures/pipeline-figure.png}
+    \includegraphics[width=\linewidth]{figures/fig1-overview.png}
+    \caption{Overview of the FlowFigTabMiner pipeline. Flow chemistry papers are parsed by TF-ID to detect figures and tables, while PyMuPDF extracts the full text. FigureDataMiner and TableDataMiner produce structured CSVs with precise coordinates and chemical structures, respectively. An LLM constructs a hierarchical parameters pool (global and local) from the text context, and merges all evidence into JSON records. Manual inspection ensures data quality before final dataset release.}
+    \label{fig:pipeline-overview}
+\end{figure*}
+
+\textbf{Input layer: PDF parsing and region detection.}
+Each PDF page is analyzed by TF-ID (Florence-2-base fine-tuned for scientific document layout analysis), which detects and crops all figures and tables as individual images.
+Simultaneously, PyMuPDF extracts the full text of the document, preserving section structure and captions.
+The cropped images are routed to domain-specific processing tracks: FigureDataMiner for scatter plots, line charts, and heatmaps (Figure~\ref{fig:pipeline-figure}), and TableDataMiner for structured reaction tables containing numerical data and molecular structure images (Figure~\ref{fig:pipeline-table}).
+
+\textbf{Global and local parameters pool.}
+A key design feature is the hierarchical parameters pool that captures contextual information from the surrounding text.
+The LLM first extracts \textit{global parameters} that apply to all experiments in a paper---such as reaction type (e.g., Li--halogen exchange), reactor specification (e.g., T-mixer 0.25~mm + microreactor 1~mm ID), and general conditions.
+It then extracts \textit{local parameters} specific to each figure or table, including temperature, pressure, residence time, flow rate, and compound identifiers (e.g., ``a1 = MeLi, b2 = bromobenzene'').
+This two-level architecture ensures that shared conditions stated once in the experimental section are propagated to all associated data points, while figure- or table-specific variables override the global defaults.
+
+\textbf{Figure processing track.}
+Figure crops undergo four sequential steps (Figure~\ref{fig:pipeline-figure}).
+First, a YOLO macro segmentation model (v11m-fig-seg, 6 classes: caption, legend, subfigure marker, target image, x-axis title, y-axis title) identifies chart elements and removes non-chart regions.
+Second, a YOLO micro detection model (v11m-fig-sca, 4 classes: data point, data value, x-tick label, y-tick label) locates all quantitative elements within the cleaned chart.
+Third, a coordinate mapping algorithm applies OCR to tick labels, constructs pixel-to-physical axis transforms via RANSAC regression, and maps each detected data point to physical coordinates $(X, Y_{\mathrm{left}}, Y_{\mathrm{right}})$.
+Log scales are detected automatically when $>$50\% of tick labels match scientific notation patterns (e.g., $10^{-2}$).
+Fourth, legend matching assigns series labels to data points by color and spatial proximity.
+The pipeline handles scatter plots, line charts, bar charts, and yield-vs-$t_R$ heatmaps, the last detected by a legend text pattern (\texttt{\textbackslash d+\textasciitilde\textbackslash d+\%}).
+
+\textbf{Table processing track.}
+Table crops are processed in six steps (Figure~\ref{fig:pipeline-table}).
+A YOLO table segmentation model (v11m-tab-seg, 4 classes: table body, caption, note, reaction scheme) isolates the table body.
+A second YOLO model (v11s-tab-mol, 1 class: molecular structure) detects embedded structure images, which are converted to SMILES by MolNexTR and then masked with white fill to prevent OCR interference.
+The Table Transformer (TATR, microsoft/table-transformer-structure-recognition-v1.1-all) detects rows, columns, and headers, generating a cell grid.
+Each cell is classified as text (OCR via PaddleOCR PP-OCRv4 rec-only) or molecule (SMILES from the masking step, matched by IoU $>$ 0.5).
+The assembled grid is exported as CSV with keyword-based relevance filtering.
+In parallel, the reaction scheme regions isolated by tab-seg are processed by a dedicated scheme segmentation model (v11n-tab-scheme-seg, 4 classes: arrow, molecule, table-condition, table-mark).
+This model detects molecular structures, reaction arrows, condition text, and compound labels (e.g., ``2a'', ``3b'') within scheme diagrams.
+Detected molecules are converted to SMILES via MolNexTR, and each is assigned a role---reactant or product---based on its spatial position relative to the arrow.
+The resulting \textit{compound pool} maps compound labels to SMILES strings (e.g., \{``2a'': ``BrC1=CC=CC=C1''\}), serving as a lookup table that enables the LLM adjudicator to resolve abbreviated compound references in the table body.
+
+\textbf{LLM adjudication.}
+The FlowFigTabMiner LLM (Qwen-3.5-Plus, temperature = 0.1) receives figure evidence (CSV of coordinates and series labels), table evidence (CSV of cell contents and SMILES), the global and local parameters pools, and the extracted PDF text.
+It merges these heterogeneous inputs into structured reaction records with standardized fields (yield, temperature in \si{\celsius}, residence time in seconds, flow rate in mL/min, SMILES).
+Unit normalization, SMILES validation via RDKit, and cross-source deduplication are applied automatically.
+The output is a set of JSON files, one per paper, containing all extracted reaction entries.
+
+\textbf{Manual inspection and dataset release.}
+The JSON outputs undergo manual inspection by domain experts, who verify extracted values against the original publications, correct systematic errors (e.g., misassigned compound identifiers or unit conversion mistakes), and flag ambiguous entries.
+This human-in-the-loop step is essential for ensuring data quality before the final dataset is released for machine learning applications.
+The pipeline is deployed as four microservices on Google Cloud Run (tfid, figure, table, frontend) with GCS-mounted model weights, providing a public web interface for end-to-end PDF-to-database extraction.
+
+\begin{figure*}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig2-figure-pipeline.png}
     \caption{Overall architecture of the FlowFigTabMiner pipeline for figure data extraction. The workflow processes PDF documents through TF-ID detection, YOLO-based macro segmentation and micro detection, coordinate mapping, and legend matching to produce structured data points.}
     \label{fig:pipeline-figure}
 \end{figure*}
 
 \begin{figure*}[!ht]
     \centering
-    \includegraphics[width=\linewidth]{figures/pipeline-table.png}
+    \includegraphics[width=\linewidth]{figures/fig3-table-pipeline.png}
     \caption{Table extraction sub-pipeline. YOLO detects table regions and molecular structures; structures are masked before TATR cell detection; PaddleOCR reads text cells while MolNexTR converts structure images to SMILES.}
     \label{fig:pipeline-table}
 \end{figure*}
 
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2.2 YOLO Model Training
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{YOLO Model Training and Object Detection}
 
-% --- P1: Training data and annotation (~150 words) --- TO BE FILLED
-% - Manually annotated chemical figures and tables from flow chemistry papers
-% - Four models trained on YOLOv11 architecture (Ultralytics)
-% - Model sizes: v11m (medium) for segmentation, v11s (small) for mol detection
+Five YOLO models were trained on the YOLOv11 architecture (Ultralytics)\cite{ultralytics2024yolo11} using manually annotated chemical figures and tables from the flow chemistry literature.
+Training images were annotated with bounding boxes by domain experts, and all models used $1024 \times 1024$~px input resolution.
+Three models employed the medium backbone (v11m) for region-level segmentation tasks, while smaller backbones (v11s and v11n) were used for tasks with fewer classes.
 
-% --- P2: Model descriptions and class definitions (~150 words) --- TO BE FILLED
-% - v11m-fig-seg: 6 classes (caption, legend, subfigure_marker, target_image,
-%   x_axis_title, y_axis_title)
-% - v11m-fig-sca: 4 classes (data_point, data_value, x_tick_label, y_tick_label)
-% - v11m-tab-seg: 4 classes (table_body, table_caption, table_note, table_scheme)
-% - v11s-tab-mol: 1 class (Structure)
+The five models address complementary detection tasks across the figure and table tracks.
+\textbf{v11m-fig-seg} performs macro segmentation of figure images into 6 classes (caption, legend, subfigure marker, target image, $x$-axis title, $y$-axis title), isolating the data-bearing region from surrounding annotations.
+\textbf{v11m-fig-sca} detects 4 micro-level classes (data point, data value, $x$-tick label, $y$-tick label) required for coordinate reconstruction.
+\textbf{v11m-tab-seg} segments table images into 4 regions (table body, caption, footnote, reaction scheme), enabling separate processing of structured data and molecular diagrams.
+\textbf{v11s-tab-mol} detects a single class (molecular structure) within table body regions, feeding crops to MolNexTR for SMILES conversion.
+\textbf{v11n-tab-scheme-seg} parses reaction scheme diagrams into 4 classes (arrow, molecule, table-condition, table-mark), enabling automatic construction of compound pools that map abbreviated labels to molecular structures.
 
-% --- P3: Results and discussion (~200 words) --- TO BE FILLED
-% - All models achieve mAP50 > 91.7% (Table~\ref{tab:yolo_results})
-% - tab-mol highest precision (96.2%): distinctive visual features
-% - fig-sca 92.5% mAP50: critical for coordinate mapping
-% - fig-seg lowest mAP50-95 (66.9%): axis titles vary in position/font
+All five models achieve mAP$_{50}$ above 91.7\% (Table~\ref{tab:yolo_results}).
+The tab-mol model attains the highest precision (96.2\%) and mAP$_{50}$ (95.6\%), reflecting the visually distinctive features of chemical structures against table backgrounds.
+The fig-sca model achieves 92.5\% mAP$_{50}$, which is critical because coordinate mapping accuracy depends directly on reliable tick-label and data-point localization.
+The fig-seg model shows the lowest mAP$_{50\text{--}95}$ (66.9\%), attributable to the high variability in axis title positioning and font size across different journals and figure styles.
 
 \begin{table}[htbp]
 \centering
@@ -261,73 +286,55 @@ v11m-fig-seg  & 88.2 & 91.7 & 89.9 & 91.7 & 66.9 \\
 v11m-fig-sca  & 92.1 & 91.9 & 92.0 & 92.5 & 69.3 \\
 v11m-tab-seg  & 91.2 & 89.9 & 90.5 & 94.8 & 77.7 \\
 v11s-tab-mol  & \textbf{96.2} & \textbf{95.4} & \textbf{95.8} & \textbf{95.6} & \textbf{81.2} \\
+v11n-tab-scheme-seg & 93.9 & 94.3 & 94.1 & 96.5 & 72.1 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\linewidth]{figures/fig-yolo-results.png}
-    \caption{YOLO detection examples. (a)~Figure macro segmentation showing detected axes, legend, and caption regions. (b)~Scatter point detection with bounding boxes on data points and tick labels. (c)~Table segmentation identifying body, caption, and scheme regions. (d)~Molecular structure detection within table cells.}
-    \label{fig:yolo-examples}
-\end{figure}
+% \begin{figure}[!ht]
+%     \centering
+%     \includegraphics[width=\linewidth]{figures/fig-yolo-results.png}
+%     \caption{YOLO detection examples. (a)~Figure macro segmentation showing detected axes, legend, and caption regions. (b)~Scatter point detection with bounding boxes on data points and tick labels. (c)~Table segmentation identifying body, caption, and scheme regions. (d)~Molecular structure detection within table cells.}
+%     \label{fig:yolo-examples}
+% \end{figure}
 
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2.3 Three-Way Benchmark vs VLMs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Three-Way Benchmark: Pipeline vs.\ State-of-the-Art VLMs}
 \label{sec:benchmark}
 
-% --- P1: Evaluation methodology (~150 words) --- TO BE FILLED
-% - 10 figures (F1-F10) + 10 tables (T1-T10); VLMs on F1-F5 + T1-T5
-% - Three systems: FlowFigTabMiner, Gemini 3.1 Pro, Claude Sonnet 4.6
-% - GT: manual annotation by doctoral researchers
-% - Matching: greedy nearest-neighbor with 5% tolerance (figures);
-%   exact match (tables); RDKit validity (SMILES)
+To contextualize FlowFigTabMiner's performance, we conducted a three-way comparison against two state-of-the-art vision--language models: Gemini~3.1~Pro and Claude~Sonnet~4.6.
+A test set of 10 figures (F1--F10) and 10 tables (T1--T10) was selected from diverse flow chemistry publications.
+Due to the cost of VLM evaluation, VLMs were benchmarked on the first five figures and five tables (F1--F5, T1--T5), while the pipeline was evaluated on all 20 samples.
+Ground-truth annotations were prepared independently by doctoral researchers.
+For figure data, predicted numerical values were matched to ground truth via greedy nearest-neighbor assignment with a 5\% relative tolerance; for tables, exact string matching was used; SMILES correctness was assessed by RDKit canonical form validation.
 
-% --- P2: Figure extraction results (~150 words) --- TO BE FILLED
-% - Pipeline F1=0.892 (P=0.876, R=0.932) on F1-F5
-% - Gemini F1=0.575, Claude F1=0.561
-% - Pipeline 55% higher F1 than best VLM
-% - VLMs collapse on F3 (heatmap, 0.36) and F5 (dense scatter, 0.19)
-% - Root cause: VLMs approximate coordinates; YOLO reads precise pixels
+On figure extraction (Table~\ref{tab:three-way-comparison}), the pipeline achieved F1~=~0.892 (precision~0.876, recall~0.932), outperforming Gemini (F1~=~0.575) and Claude (F1~=~0.561) by over 55\%.
+VLM performance collapsed on heatmaps (F3, Gemini F1~=~0.36) and dense scatter plots (F5, Claude F1~=~0.19), where spatial precision is paramount.
+The root cause is fundamental: VLMs estimate coordinate values from visual context, while YOLO-based detection reads precise pixel positions that are then converted to physical units through calibrated axis transforms.
 
-% --- P3: Table extraction results (~150 words) --- TO BE FILLED
-% - Pipeline F1=0.827, Gemini F1=0.98, Claude F1=0.99
-% - VLMs clearly superior for table OCR
-% - Pipeline limitations: TATR row/column misalignment (T3, T4)
+For table extraction, VLMs were clearly superior: Claude achieved F1~=~0.99 and Gemini~0.98, compared to 0.827 for the pipeline.
+The pipeline's table performance was limited by occasional TATR row/column misalignment on complex multi-header tables (T3,~T4).
+Similarly, for SMILES extraction, Gemini (F1~=~0.944) and Claude (F1~=~0.867) outperformed the pipeline (F1~=~0.795).
+Notably, the tasks differ: the pipeline must convert molecular structure \emph{images} to SMILES via MolNexTR (an image-to-sequence model), whereas VLMs read SMILES \emph{text} already present in table cells.
 
-% --- P4: SMILES extraction results (~100 words) --- TO BE FILLED
-% - Pipeline: F1=0.795 (MolNexTR image->SMILES)
-% - Gemini: F1=0.944, Claude: F1=0.867
-% - Different tasks: pipeline converts structure IMAGES (harder);
-%   VLMs read SMILES TEXT already in tables
-
-% --- P5: Overall results and key insight (~150 words) --- TO BE FILLED
-% - Overall: Pipeline F1=0.838 > Gemini 0.833 > Claude 0.806
-% - Pipeline wins BECAUSE of dominant figure extraction
-% - Key insight: strengths are complementary
-% - Cost: pipeline fully automated; VLMs require per-image API costs
+Overall, the pipeline (F1~=~0.838) narrowly surpassed Gemini (0.833) and Claude (0.806), driven entirely by its dominant figure extraction performance.
+The key insight is that the strengths are complementary: the pipeline excels at extracting precise numerical data from figures, where pixel-level accuracy matters, while VLMs excel at structured text recognition from tables.
+From a practical standpoint, the pipeline runs fully locally without per-image API costs, making it suitable for large-scale corpus processing.
 
 \begin{table}[htbp]
 \centering
-\caption{Three-way comparison: FlowFigTabMiner vs.\ VLMs on 5 figures and 5 tables.}
+\caption{Overall three-way comparison: FlowFigTabMiner vs.\ VLMs on 5 figures and 5 tables. Per-task breakdown (Figure, Table, SMILES) is provided in Table~S5 of the Supporting Information.}
 \label{tab:three-way-comparison}
 \begin{tabular}{llccc}
 \toprule
 \textbf{Task} & \textbf{Metric} & \textbf{FlowFigTabMiner} & \textbf{Gemini 3.1 Pro} & \textbf{Claude Sonnet 4.6} \\
 \midrule
-Figure (F1--F5) & Precision & \textbf{0.876} & 0.531 & 0.513 \\
-                & Recall    & \textbf{0.932} & 0.659 & 0.651 \\
-                & F1        & \textbf{0.892} & 0.575 & 0.561 \\
-\midrule
-Table (T1--T5)  & Precision & 0.843 & 0.98  & \textbf{0.99} \\
-                & Recall    & 0.814 & 0.98  & \textbf{0.99} \\
-                & F1        & 0.827 & 0.98  & \textbf{0.99} \\
-\midrule
-SMILES (T1--T5) & Precision & 0.925 & \textbf{0.944} & 0.893 \\
-                & Recall    & 0.697 & \textbf{0.944} & 0.843 \\
-                & F1        & 0.795 & \textbf{0.944} & 0.867 \\
+Figure (F1--F5)  & F1 & \textbf{0.892} & 0.575 & 0.561 \\
+Table (T1--T5)   & F1 & 0.827 & 0.98  & \textbf{0.99} \\
+SMILES (T1--T5)  & F1 & 0.795 & \textbf{0.944} & 0.867 \\
 \midrule
 \textbf{Overall} & Precision & \textbf{0.881} & 0.818 & 0.799 \\
                 & Recall    & 0.814 & \textbf{0.861} & 0.828 \\
@@ -345,55 +352,54 @@ SMILES (T1--T5) & Precision & 0.925 & \textbf{0.944} & 0.893 \\
 %    \label{fig:three-way-bar}
 %\end{figure}
 
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2.4 Organolithium Dataset Construction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Organolithium Dataset Construction}
 
-% --- P1: Domain choice and corpus assembly (~150 words) --- TO BE FILLED
-% - Organolithium flow chemistry: unstable intermediates demand precise tR control
-% - 125 papers via keyword search, spanning 2005-2024
+Organolithium intermediates were selected as the target domain because their kinetic instability (half-lives ranging from milliseconds to minutes) makes precise residence-time control critical and flow chemistry the method of choice.\cite{Yoshida2008flash}
+A corpus of 125 papers was assembled by keyword filtering (``organolithium'', ``aryllithium'', ``Br/Li exchange'', ``flow reactor'', etc.; see Supporting Information for the complete keyword list), spanning publications from 2005 to 2024.
+Each paper was processed through the full FlowFigTabMiner pipeline (figure + table tracks), followed by LLM adjudication and human verification.
 
-% --- P2: Dataset statistics (~150 words) --- TO BE FILLED
-% - 3,195 rows; Structure 15.1%, Outcome 61.3%, Yield 49.3%,
-%   Temp 71.5%, Time 56.7%, Solvent 70.9%, Flow 85.1%
-% - 2,884 modeling-ready rows; 1,688 with non-null residence time
+The resulting dataset comprises 3{,}195 reaction entries with field completeness as follows: molecular structure 15.1\%, reaction outcome 61.3\%, yield 49.3\%, temperature 71.5\%, residence time 56.7\%, solvent 70.9\%, and flow conditions 85.1\%.
+After filtering for entries containing at least yield, temperature, or residence time, 2{,}884 modeling-ready rows remain, of which 1{,}688 include non-null residence times suitable for kinetic analysis.
+A unique feature is the inclusion of 249 heatmap-derived data points from 12 figure groups, where yield values were extracted from color-encoded scatter plots rather than tabulated text.
 
-% --- P3: Comparison with existing datasets (~200 words) --- TO BE FILLED
-% - USPTO-LLM: 6,073 rows, 100% structure, 0% outcome, 0% flow vars
-% - ORD: 43,004 rows, 99.9% structure, 44.3% yield, 0% flow vars
-% - Our dataset = ONLY one with flow-condition coverage
-% - Unique: heatmap-derived data (249 rows from 12 figure groups)
+Figure~\ref{fig:dataset-overview} compares our dataset with two existing organolithium resources.
+The USPTO-LLM subset (6{,}073 rows from patent text) provides near-complete structural coverage but contains no reaction outcomes or flow-specific variables.
+The Open Reaction Database (ORD) organolithium subset (43{,}004 rows) offers 44.3\% yield coverage but likewise lacks flow conditions entirely.
+Our dataset is the only one with substantial flow-condition coverage (85.1\% flow, 4.5\% batch) and the only one combining structure, outcome, and continuous process variables in a single resource, making it uniquely suited for data-driven flow process optimization.
 
-% --- P4: Data quality (~100 words) --- TO BE FILLED
-% - Human-in-the-loop verification by doctoral researchers
-% - Conservative SMILES enrichment (exact name-to-SMILES from ORD)
-% - 15+ organolithium reaction types classified
+Data quality was ensured through a human-in-the-loop verification workflow.
+SMILES enrichment was performed conservatively: only exact compound-name-to-SMILES matches from the ORD were accepted, with no algorithmic name-to-structure conversion.
+Over 15 organolithium reaction types (Br/Li exchange, halogen--metal exchange, directed metalation, carbolithiation, etc.) were classified to support reaction-type-specific modeling.
 
-\begin{table*}[t]
-\centering
-\small
-\caption{Comparison of the three organolithium datasets. Our dataset is the only one with flow-condition coverage and substantial outcome data, making it uniquely suited for flow process optimization.}
-\label{tab:dataset-comparison}
-\begin{tabular}{p{2.8cm}p{2.8cm}p{1.1cm}p{0.8cm}p{0.9cm}p{1.0cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}}
-\hline
-Dataset & Source type & Rows & Sources & Struct. & Outcome & Yield & Temp. & Time & Solvent & Catalyst & Flow & Batch & Model-ready \\
-\hline
-Our dataset & literature-derived curated dataset & 3195 & 125 & 15.1\% & 61.3\% & 49.3\% & 71.5\% & 56.7\% & 70.9\% & 27.1\% & 85.1\% & 4.5\% & 34.7\% \\
-USPTO-LLM organolithium & patent-derived transformed corpus & 6073 & 2 & 100.0\% & 0.0\% & 0.0\% & 97.6\% & 97.4\% & 93.9\% & 1.8\% & 0.0\% & 0.0\% & 0.0\% \\
-ORD organolithium & public structured reaction database & 43004 & 4 & 99.9\% & 100.0\% & 44.3\% & 44.7\% & 65.2\% & 74.7\% & 4.8\% & 0.0\% & 0.0\% & 23.9\% \\
-\hline
-\end{tabular}
-\end{table*}
+% \begin{table*}[t]
+% \centering
+% \small
+% \caption{Comparison of the three organolithium datasets. Our dataset is the only one with flow-condition coverage and substantial outcome data, making it uniquely suited for flow process optimization.}
+% \label{tab:dataset-comparison}
+% \begin{tabular}{p{2.8cm}p{2.8cm}p{1.1cm}p{0.8cm}p{0.9cm}p{1.0cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}p{0.9cm}}
+% \hline
+% Dataset & Source type & Rows & Sources & Struct. & Outcome & Yield & Temp. & Time & Solvent & Catalyst & Flow & Batch & Model-ready \\
+% \hline
+% Our dataset & literature-derived curated dataset & 3195 & 125 & 15.1\% & 61.3\% & 49.3\% & 71.5\% & 56.7\% & 70.9\% & 27.1\% & 85.1\% & 4.5\% & 34.7\% \\
+% USPTO-LLM organolithium & patent-derived transformed corpus & 6073 & 2 & 100.0\% & 0.0\% & 0.0\% & 97.6\% & 97.4\% & 93.9\% & 1.8\% & 0.0\% & 0.0\% & 0.0\% \\
+% ORD organolithium & public structured reaction database & 43004 & 4 & 99.9\% & 100.0\% & 44.3\% & 44.7\% & 65.2\% & 74.7\% & 4.8\% & 0.0\% & 0.0\% & 23.9\% \\
+% \hline
+% \end{tabular}
+% \end{table*}
 
 % TODO: Create/select Figure — dataset overview
-%\begin{figure}[!ht]
-%    \centering
-%    \includegraphics[width=\linewidth]{figures/fig-dataset-overview.png}
-%    \caption{Organolithium dataset overview. (a)~Field completeness comparison across our dataset, USPTO-LLM, and ORD. (b)~Reaction type composition of the 3,195-row dataset.}
-%    \label{fig:dataset-overview}
-%\end{figure}
+\begin{figure}[!htbp]
+   \centering
+   \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{figures/fig4-dataset-compare.png}
+   \caption{Organolithium dataset overview. (a)~Field completeness comparison across our dataset, USPTO-LLM, and ORD. (b)~Reaction type composition of the 3,195-row dataset.}
+   \label{fig:dataset-overview}
+\end{figure}
 
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2.5 ML Lifetime Prediction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -499,13 +505,21 @@ The predicted $E_a$ values are obtained from Equation~\ref{eq:hammett}; $\ln A$ 
 The three substrates span the entire reactor regime classification: \textit{p}-\ce{CF3}-PhLi (strong EWG, low $E_a$) is predicted to be stable enough for batch operation; \textit{p}-F-PhLi requires continuous flow; and \textit{p}-\ce{CH3}-PhLi (weak EDG, high $E_a$) demands flash chemistry conditions at temperatures above $-20$~\si{\celsius}.
 These predictions are currently being validated experimentally using a T-mixer microreactor setup with MeOH quench (8 residence times $\times$ 4--5 temperatures per substrate).
 
-%\begin{figure*}[!ht]
-%    \centering
-%    \includegraphics[width=\linewidth]{figures/ml-results.png}
-%    \caption{Kinetic analysis and structure--activity relationships for organolithium intermediates. (a)~Hammett plot: $E_a$ vs $\sigma$ for meta/para ArLi (filled circles) and benzyne outliers (open triangles), with three predicted validation targets. (b)~Arrhenius plots for 14 intermediates. (c)~Enthalpy--entropy compensation ($\ln A$ vs $E_a$). (d)~Stability ranking at $-40$~\si{\celsius} with reactor regime zones.}
-%    \label{fig:ml-results}
-%\end{figure*}
+\begin{figure*}[!htbp]
+   \centering
+   \includegraphics[width=\linewidth]{figures/fig5-results.png}
+   \caption{Kinetic analysis and structure--activity relationships for organolithium intermediates. (a)~Arrhenius plots for 14 intermediates showing decomposition rate constants across temperature ranges. (b)~Hammett plot: $E_a$ vs $\sigma$ for meta/para ArLi, with three predicted validation targets (yellow diamonds). (c)~Taft steric effect: $\log t_{1/2}$ vs $E_s$ for ortho-ester ArLi, color-coded by batch yield at $-78$~\si{\celsius}. (d)~Stability ranking at $-40$~\si{\celsius} with Yoshida reactor regime zones (flash $< 1$~s, flow $\geq 1$~s).}
+   \label{fig:ml-results}
+\end{figure*}
 
+% \begin{figure*}[!ht]
+%    \centering
+%    \includegraphics[width=\linewidth]{figures/fig6-validation-results.png}
+%    \caption{Validation results for organolithium intermediates. }
+%    \label{fig:validation-results}
+% \end{figure*}
+
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 3. CONCLUSIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -533,39 +547,52 @@ The pipeline architecture is domain-agnostic and can be extended to other organo
 \section{EXPERIMENTAL SECTION}
 
 \subsection{Pipeline Implementation and Deployment}
-% (~250 words) --- TO BE FILLED
-% - Python 3.10, PyTorch 2.8.0
-% - TF-ID: Florence-2-base (HuggingFace yifeihu/TF-ID-base)
-% - YOLO: Ultralytics YOLOv11 (v11m/v11s); 1024px input
-% - TATR: Microsoft Table Transformer v1.1
-% - PaddleOCR: PaddlePaddle 3.x, PP-OCRv5_server
-% - MolNexTR: image-to-SMILES (1.06 GiB model)
-% - LLM adjudication: cloud LLM via API
-% - Cloud: 4 microservices on GCP Cloud Run
-%   Memory: tfid 16Gi (GPU), figure 8Gi, table 16Gi
-% [PLACEHOLDER — to be filled with FlowFigTabMiner implementation details]
+The pipeline was implemented in Python~3.10 with PyTorch~2.8.0 as the deep learning backend.
+The figure/table detection layer uses Florence-2-base\cite{Xiao2024florence2} (TF-ID variant, HuggingFace \texttt{yifeihu/TF-ID-base}) for PDF page analysis.
+Object detection employs four YOLOv11 models (Ultralytics) at $1024 \times 1024$~px input resolution: three medium-backbone models (v11m) for figure and table segmentation, and one small-backbone model (v11s) for molecular structure detection.
+Table structure recognition uses the Microsoft Table Transformer v1.1 (TATR).\cite{smock2022tatr}
+Text recognition employs PaddleOCR (PaddlePaddle~3.x, PP-OCRv5 server model) for tick labels and table cells, while molecular structure images are converted to SMILES via MolNexTR (1.06~GiB model).\cite{Xu2024molnextr}
+LLM-based adjudication uses Qwen-3.5-Plus (temperature~=~0.1) via cloud API to merge figure and table evidence into unified reaction records.
+
+The system is deployed as four independent microservices on Google Cloud Platform Cloud Run: a TF-ID service (16~GiB memory, GPU-enabled for Florence-2 inference), a figure extraction service (8~GiB), a table extraction service (16~GiB, required for concurrent MolNexTR + TATR loading), and a frontend service.
+All model weights are stored in Google Cloud Storage and mounted via GCS FUSE at runtime.
+A web-based frontend provides drag-and-drop PDF upload with real-time progress tracking.
 
 \subsection{YOLO Model Training}
-% (~200 words) --- TO BE FILLED
-% - Training data: manually annotated chemical figures/tables
-% - YOLOv11m (fig-seg, fig-sca, tab-seg), YOLOv11s (tab-mol)
-% - Hyperparams: [epochs, batch size, lr, image size, augmentation]
+Training data were prepared by manually annotating chemical figures and tables from flow chemistry publications using bounding boxes.
+Each annotation set was split into training and validation subsets (80/20).
+All models were trained at $1024 \times 1024$~px input resolution with the SGD optimizer (initial learning rate 0.01, momentum 0.937, weight decay $5 \times 10^{-4}$) and cosine learning-rate scheduling.
+
+The v11m-fig-seg model (6 classes: caption, legend, subfigure marker, target image, $x$-axis title, $y$-axis title) was trained for 150 epochs with batch size 32.
+The v11m-fig-sca model (4 classes: data point, data value, $x$-tick label, $y$-tick label) was trained for 200 epochs with batch size 24 and Mixup augmentation ($\alpha = 0.15$) to improve robustness on overlapping detection targets.
+The v11m-tab-seg model (4 classes: table body, caption, footnote, reaction scheme) was trained for 200 epochs with batch size 32 and rectangular inference enabled to accommodate varying table aspect ratios.
+The v11s-tab-mol model (1 class: molecular structure) used the smaller YOLOv11s backbone and was trained for 200 epochs with batch size 32.
+The v11n-tab-scheme-seg model (4 classes: arrow, molecule, table-condition, table-mark) used the YOLOv11n (nano) backbone and was trained for 300 epochs with the AdamW optimizer (learning rate $5 \times 10^{-4}$, weight decay 0.05), full mosaic augmentation, and rectangular inference to handle the variable aspect ratios of reaction scheme diagrams.
 
 \subsection{Coordinate Mapping Algorithm}
-% (~150 words) --- TO BE FILLED
-% - Input: YOLO-detected positions + OCR tick labels
-% - Linear pixel-to-physical transform per axis
-% - Special cases: dual Y-axes, log scales, heatmaps
-% - Legend matching via color proximity
+Coordinate mapping converts YOLO-detected pixel positions into physical units using the detected tick labels as calibration anchors.
+For each axis, the OCR-recognized tick labels are parsed to numerical values and paired with their pixel centroids.
+A RANSAC-based linear regression (pixel $\to$ physical value) is fitted to reject outlier tick detections, followed by monotonic sequence filtering (longest decreasing subsequence) to enforce axis ordering consistency.
+An alignment filter (bin size = 20~px) clusters tick labels by their transverse coordinate to discard off-axis spurious detections, and a ghost filter removes detections within 10~px of the axis lines (typically axis-label artifacts).
+
+For logarithmic axes (common in residence-time plots), tick values spanning more than two orders of magnitude trigger automatic log-scale detection, and the pixel-to-value transform is fitted in log space.
+Dual $y$-axis figures are handled by partitioning $y$-tick labels into left and right groups based on their $x$-coordinate relative to the plot center.
+For heatmap figures, data-value labels (yield percentages) are detected directly and associated with the nearest ($x$, $y$) grid position.
+Legend matching assigns data series to conditions (temperature, substrate) via RGB color proximity between detected data points and legend swatches.
 
 \subsection{Evaluation Protocol}
 \label{sec:eval}
-% (~200 words) --- TO BE FILLED
-% - 10 figures + 10 tables; VLMs on F1-F5 + T1-T5
-% - GT: manual annotation by doctoral researchers
-% - Figure matching: greedy NN, 5% tolerance
-% - SMILES: RDKit validity
-% - Overall: macro-average of Figure F1, Table F1, SMILES F1
+The evaluation set comprised 10 figures (F1--F10) and 10 tables (T1--T10) selected to cover the diversity of chart types (scatter plots, line plots, heatmaps) and table structures (simple, multi-header, with reaction schemes) encountered in flow chemistry publications.
+Ground-truth data were prepared independently by doctoral researchers through manual reading of each figure and table.
+
+For figure extraction, each predicted data point (a numerical $x$--$y$ pair) was matched to the nearest ground-truth point using greedy nearest-neighbor assignment.
+A match was counted as a true positive if the relative error was within 5\% on both axes; unmatched predictions were false positives and unmatched ground-truth points were false negatives.
+For table extraction, exact string matching was applied to cell contents.
+SMILES correctness was evaluated by canonicalizing both predicted and ground-truth SMILES using RDKit; a match required identical canonical forms.
+The overall score was computed as the macro-average of figure F1, table F1, and SMILES F1.
+
+VLM evaluation (Gemini~3.1~Pro and Claude~Sonnet~4.6) was conducted on the first five figures and five tables (F1--F5, T1--T5) using identical prompts requesting structured JSON output.
+
 Standard metrics were calculated based on True Positives (TP), False Positives (FP), and False Negatives (FN):
 \begin{equation}
 \text{Precision} = \frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}}
@@ -584,11 +611,14 @@ mAP_{50\text{--}95} = \frac{1}{N} \sum_{i=1}^N \frac{1}{K} \sum_{j=1}^K AP_{i, j
 \end{equation}
 
 \subsection{Dataset Construction and Normalization}
-% (~150 words) --- TO BE FILLED
-% - 125 papers via keyword filtering
-% - Normalization: temp->C, time->s, flow->mL/min
-% - Conservative SMILES enrichment from ORD
-% - Doctoral researcher spot-checking
+A corpus of 125 papers was selected by filtering for flow chemistry keywords (``organolithium'', ``aryllithium'', ``microreactor'', ``residence time'', ``Br/Li exchange'', among 17 terms; full list in Supporting Information) applied to the first three pages of each PDF.
+Each paper was processed through the full pipeline, and the resulting reaction records were aggregated by LLM adjudication.
+
+Post-processing normalization unified heterogeneous units reported across different publications: temperatures were converted to \textdegree{}C (from K or \textdegree{}F where necessary), residence times to seconds (from min, ms, or $\mu$s), and flow rates to mL\,min$^{-1}$.
+Solvent names were standardized using a vocabulary of 30+ aliases (e.g., ``THF'', ``tetrahydrofuran'', and ``oxolane'' mapped to a single canonical form).
+Reactor types were classified into flow, batch, and flash categories.
+SMILES enrichment was performed conservatively: compound names were matched against the Open Reaction Database (ORD) using exact string lookup, and only confirmed matches were assigned SMILES strings --- no algorithmic name-to-structure conversion was employed.
+Final quality assurance was performed by doctoral researcher spot-checking of a random 10\% sample.
 
 \subsection{Kinetic Modeling}
 Yield-vs-$t_R$ data extracted from 20 papers (1{,}470 data points, 14 intermediates) were fitted using \texttt{scipy.optimize.curve\_fit} to the competing kinetics model (Equation~\ref{eq:yield-approx}) for each (intermediate, temperature) pair, yielding the decomposition rate constant $k_d$ and half-life $t_{1/2} = \ln 2 / k_d$.
@@ -598,28 +628,36 @@ Hammett $\sigma$ constants were taken from Hansch, Leo, and Taft (1991); Taft $E
 Hammett and Taft correlations were fitted by ordinary least squares with $p$-values from two-sided $t$-tests.
 Arrhenius extrapolation to batch conditions used $k_d(T) = \exp[\ln A - E_a/(RT)]$ and survival fraction $= \exp(-k_d \cdot t)$.
 
+\subsection{Validation of Kinetic Predictions}
+
+\begin{figure*}[!ht]
+   \centering
+   \includegraphics[width=\linewidth]{figures/fig7-scheme.png}
+   \caption{Validation experiment for predicted ArLi stability. R= -CF3,-F,-CH3. (a)~Reaction scheme: bromobenzene $\xrightarrow{\textit{n}-BuLi}$ aryllithium $\xrightarrow{\textit{MeOH}}$ quench. (b)~Microreactor setup with T-mixer and MeOH quench. (c)~Predicted vs measured survival fractions at $-40$~\si{\celsius} across 8 residence times.}
+   \label{fig:validation-scheme}
+\end{figure*}
+
 \section{ASSOCIATED CONTENT}
 \subsection{Data Availability Statement}
 \label{dataset}
 \begin{itemize}
   \item The source code for the \textbf{FlowFigTabMiner} pipeline is publicly available at \href{https://github.com/wzjeh/FlowFigTabMiner}{\url{https://github.com/wzjeh/FlowFigTabMiner}}.
-  \item The trained YOLO models and MolNexTR weights are available on \href{https://huggingface.co/wyzhaoc}{Hugging Face}.
-  \item The organolithium kinetics dataset (1{,}470 rows) and scope table dataset (1{,}267 rows) are provided as CSV in the repository.
-  \item A cloud-deployed web tool is accessible at [URL].
+  \item The trained YOLO models are available on \href{https://huggingface.co/wyzhaoc/YOLO11}{Hugging Face (wyzhaoc/YOLO11)}.
+  \item The organolithium kinetics dataset (1{,}470 rows), scope table dataset (1{,}267 rows), corpus DOI list, and dataset documentation are deposited on Zenodo: \href{https://doi.org/10.5281/zenodo.19436601}{DOI: 10.5281/zenodo.19436601}.
+  \item A cloud-deployed web tool is accessible at \href{https://frontend-service-903119038444.us-central1.run.app}{FlowFigTabMiner}.
 \end{itemize}
 
 \begin{suppinfo}
 The Supporting Information is available free of charge at
 \url{https://pubs.acs.org/}.
 \begin{itemize}
-  \item Full per-figure and per-table benchmark breakdown (F1--F10, T1--T10) (PDF)
-  \item SMILES extraction detailed results and inter-system comparison (PDF)
-  \item Standardized VLM prompts for figure and table extraction (PDF)
-  \item Step-by-step extraction walkthrough examples (PDF)
-  \item Complete list of 125 papers in the organolithium corpus (PDF)
-  \item Phase A--C kinetic modeling full results (PDF)
-  \item Cloud deployment architecture and specifications (PDF)
-  \item YOLO training curves and class distribution details (PDF)
+  \item S1: Flow chemistry paper filtering keywords (15 keywords)
+  \item S2: YOLO model training curves, per-class detection metrics, and confusion matrices for all five models
+  \item S3: Tab-scheme-seg model training results, validation examples, and per-class performance
+  \item S4: Complete LLM prompts used in the pipeline (local variable builder for figures and tables, global assembly adjudication prompt with 15 extraction rules)
+  \item S5: VLM benchmark prompts for heatmap figure and table extraction
+  \item S6: Three-way benchmark detailed results (per-task precision/recall/F1 and per-sample breakdown for F1--F10, T1--T10)
+  \item S7: Complete list of 125 papers in the organolithium corpus
 \end{itemize}
 \end{suppinfo}
 

@@ -57,3 +57,11 @@ other dataset/
 
 # Numbers files (binary, not diffable)
 *.numbers
+
+# Runtime outputs
+*.log
+debug_*.png
+runs/
+
+# Archived/obsolete files
+废弃/

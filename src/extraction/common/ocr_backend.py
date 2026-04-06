@@ -1,16 +1,110 @@
 """
 OCR backend factory.
-USE_EASYOCR=1 → EasyOCR (Cloud Run, avoids PaddlePaddle PIR crash)
-otherwise      → PaddleOCR (local, default)
+
+Two modes:
+  get_ocr_instance()  → full det+rec pipeline (for multi-line text: captions, legends)
+  get_rec_instance()  → rec-only model (for pre-cropped single-text regions: tick labels, cells)
+
+USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
 """
 import os
 
 
 def get_ocr_instance(use_angle_cls=True, lang='en', enable_mkldnn=False):
+    """Full det+rec pipeline. Use for multi-line text (captions, legends)."""
     if os.environ.get('USE_EASYOCR', '0') == '1':
         return _EasyOCRWrapper()
     from paddleocr import PaddleOCR
     return PaddleOCR(use_angle_cls=use_angle_cls, lang=lang, enable_mkldnn=enable_mkldnn)
+
+
+# Singleton rec-only instance (lazy)
+_rec_instance = None
+
+
+def get_rec_instance(model_name=None):
+    """Rec-only model for pre-cropped single-text regions.
+
+    Skips detection — treats entire crop as one text line.
+    Default: PP-OCRv4_server_rec (higher accuracy).
+    Fallback: en_PP-OCRv5_mobile_rec (lighter, faster).
+    """
+    global _rec_instance
+    if _rec_instance is not None:
+        return _rec_instance
+    if os.environ.get('USE_EASYOCR', '0') == '1':
+        _rec_instance = _EasyOCRRecWrapper()
+        return _rec_instance
+    _rec_instance = _PaddleRecOnly(model_name=model_name)
+    return _rec_instance
+
+
+class _PaddleRecOnly:
+    """Wraps PaddleX rec-only model for single-text-line recognition."""
+
+    def __init__(self, model_name=None):
+        from paddlex import create_model
+        if model_name is None:
+            # Try server (more accurate), fall back to mobile
+            for name in ['PP-OCRv4_server_rec', 'en_PP-OCRv5_mobile_rec']:
+                try:
+                    self._model = create_model(name)
+                    self._model_name = name
+                    print(f"[RecOnlyOCR] Loaded: {name}")
+                    return
+                except Exception:
+                    continue
+            raise RuntimeError("No PaddleX rec model available")
+        else:
+            self._model = create_model(model_name)
+            self._model_name = model_name
+            print(f"[RecOnlyOCR] Loaded: {model_name}")
+
+    def recognize(self, crop_image):
+        """Recognize text from a single crop image.
+
+        Args:
+            crop_image: numpy array (BGR) or file path
+        Returns:
+            (text: str, confidence: float)
+        """
+        try:
+            result = list(self._model.predict(crop_image))[0]
+            return result.get('rec_text', ''), result.get('rec_score', 0.0)
+        except Exception:
+            return '', 0.0
+
+    def ocr(self, crop_image, **kwargs):
+        """Compatibility wrapper matching PaddleOCR .ocr() return format.
+
+        Returns PaddleX dict format: [{'rec_texts': [...], 'rec_scores': [...]}]
+        """
+        text, score = self.recognize(crop_image)
+        return [{'rec_texts': [text], 'rec_scores': [score]}]
+
+
+class _EasyOCRRecWrapper:
+    """EasyOCR fallback for rec-only mode."""
+
+    def __init__(self):
+        import easyocr
+        self._reader = easyocr.Reader(['en'], gpu=False, verbose=False)
+
+    def recognize(self, crop_image):
+        try:
+            results = self._reader.readtext(crop_image)
+            if not results:
+                return '', 0.0
+            # Concatenate all detected text, use min confidence
+            text = ' '.join(t for _, t, c in results if c > 0.3)
+            conf = min(c for _, _, c in results) if results else 0.0
+            return text, conf
+        except Exception:
+            return '', 0.0
+
+    def ocr(self, crop_image, **kwargs):
+        text, score = self.recognize(crop_image)
+        return [{'rec_texts': [text], 'rec_scores': [score]}]
 
 
 class _EasyOCRWrapper:

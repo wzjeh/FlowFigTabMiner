@@ -19,7 +19,8 @@ figures:
     model_path: "models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt"
     crop_padding: 10
     ocr_engine: "paddle"
-    confidence_threshold: 0.5 # Example if needed
+    ocr_rec_model: "PP-OCRv4_server_rec"  # rec-only model for tick labels/data values
+    confidence_threshold: 0.5
 
   step4_assembly:
     clustering_threshold: 0.5
@@ -45,6 +46,7 @@ tables:
     # MolNexTR is auto-loaded from src/extraction/common/molnextr/
     # No molscribe_path needed - MolScribe has been replaced by MolNexTR
     ocr_engine: "paddle"
+    ocr_rec_model: "PP-OCRv4_server_rec"  # rec-only model for table cell text
 
   scheme_parsing:
     model_path: "models/tab-scheme-seg/best.pt"   # 训练完成后替换

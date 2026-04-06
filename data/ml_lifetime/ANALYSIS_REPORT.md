@@ -213,28 +213,7 @@ Stability ranking with reactor zone annotations (flash / flow). Includes 3 exper
 
 ### Figure: `analysis_figures/final_results_summary.png`
 
-Four-panel summary: (a) Hammett plot with validation targets, (b) Arrhenius plot, (c) Ea-ln(A) compensation, (d) Stability ranking with predictions.
-
----
-
-## Phase C: QSPR Model
-
-### Method
-
-Computed 25 RDKit molecular descriptors for each intermediate SMILES. Feature selection via exhaustive 2-feature search + LOOCV Ridge regression.
-
-### Results
-
-- Best features: **Li_C_ewg_neighbors + has_nitrile**
-- LOOCV Q² = **0.309**
-- RMSE = 14.6 kJ/mol
-- MAE = 10.6 kJ/mol
-
-### Interpretation
-
-Li_C_ewg_neighbors counts electron-withdrawing substituents on the C-Li carbon; has_nitrile is a binary indicator for nitrile groups. These two features capture the dominant electronic effects on carbanion stability.
-
-**Honest assessment**: With only 14 data points and 2 features (Q² = 0.309), this is a proof-of-concept, not a production model. The Hammett correlation (r = -0.979 for meta/para ArLi subset) is more interpretable and actionable.
+Four-panel summary: (a) Hammett plot with validation targets, (b) Arrhenius plot, (c) Taft steric effect on ortho-ester ArLi, (d) Stability ranking with predictions.
 
 ---
 
@@ -320,20 +299,12 @@ Consistent with our kinetics data: all CN-ArLi intermediates are relatively stab
 | File | Description |
 |---|---|
 | `phase_a_halflives.csv` | 76 (intermediate, T) kinetics data: k_f, k_d, t₁/₂, R² |
-| `phase_a_halflives_old.csv` | Pre-correction Phase A results (for comparison) |
 | `phase_a_curves/*.png` | 15 decay curve fit plots |
 | `phase_b_arrhenius.csv` | 14 intermediates: Ea, ln_A, predicted t₁/₂ at -78/-40/0/25°C |
-| `phase_b_arrhenius_old.csv` | Pre-correction Phase B results |
 | `phase_b_arrhenius_plot.png` | Arrhenius plot (ln(k_d) vs 1/T) |
-| `phase_c_qspr_results.csv` | LOOCV prediction results |
-| `phase_c_qspr_results_old.csv` | Pre-correction Phase C results |
-| `phase_c_descriptors.csv` | 25 molecular descriptors per intermediate |
-| `phase_c_plots/stability_ranking_m40C.png` | Stability ranking bar chart |
-| `phase_c_plots/ea_predicted_vs_actual.png` | QSPR predicted vs actual Ea |
-| `electronic_analysis.csv` | Hammett σ, mechanism, reactor recommendation |
-| `analysis_figures/final_results_summary.png` | Four-panel summary figure |
+| `electronic_analysis.csv` | Hammett σ, Taft Es, mechanism, reactor recommendation |
+| `analysis_figures/final_results_summary.png` | Four-panel summary: Hammett + Arrhenius + Taft Es + Stability ranking |
 | `analysis_figures/hammett_and_hybridization.png` | Hammett + hybridization comparison |
-| `analysis_figures/ea_lna_compensation.png` | Enthalpy-entropy compensation |
 | `analysis_figures/stability_ranking_reactor_zones.png` | Stability ranking + reactor zones |
 | `analysis_figures/position_effect_cn.png` | o/m/p-CN position effect |
 | `analysis_figures/scope_validation.png` | Arrhenius extrapolation validation + Taft batch yield |
@@ -359,4 +330,4 @@ Consistent with our kinetics data: all CN-ArLi intermediates are relatively stab
 
 6. **Scope table cross-reference validates predictions quantitatively**: Arrhenius extrapolation to batch conditions (-78°C, 600 s) predicts tBu survival at 58.1% vs actual batch yield of 61%. Et/Me correctly predicted to fail (0%), iPr correctly predicted as marginal. This confirms our heatmap-derived kinetics are not only directionally correct but quantitatively useful for process design.
 
-7. **Limitations remain**: 14 intermediates is still a small dataset. The systematic t₁/₂ offset (~15-21× vs literature) is not fully explained. QSPR with molecular descriptors (Q² = 0.309) is underpowered at this sample size. The Taft correlation has only 4 points (p = 0.031) and would benefit from additional ortho-ester intermediates for validation.
+7. **Limitations remain**: 14 intermediates is still a small dataset. The systematic t₁/₂ offset (~15-21× vs literature) is not fully explained. The Hammett (n = 4) and Taft (n = 4) correlations have limited sample sizes (p = 0.021 and 0.031 respectively) and would benefit from additional intermediates for validation.

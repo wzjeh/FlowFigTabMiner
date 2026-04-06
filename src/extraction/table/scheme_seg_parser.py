@@ -43,14 +43,14 @@ class SchemeSegParser:
         self.content_recognizer = ContentRecognizer()  # MolNexTR
         self._ocr = None
 
-    def _get_ocr(self):
+    def _get_rec(self):
         if self._ocr is None:
-            from paddleocr import PaddleOCR
-            self._ocr = PaddleOCR(use_angle_cls=False, lang='en', enable_mkldnn=False)
+            from src.extraction.common.ocr_backend import get_rec_instance
+            self._ocr = get_rec_instance()
         return self._ocr
 
     def _ocr_crop(self, img, box):
-        """对给定 bbox 区域做 OCR，返回合并文本"""
+        """对给定 bbox 区域做 OCR (rec-only)，返回合并文本"""
         x1, y1, x2, y2 = [int(v) for v in box]
         crop = img[max(0, y1):y2, max(0, x1):x2]
         if crop.size == 0:
@@ -61,23 +61,9 @@ class SchemeSegParser:
         if min(h, w) < min_side:
             scale = max(min_side / h, min_side / w)
             crop = cv2.resize(crop, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
-        ocr = self._get_ocr()
-        result = ocr.ocr(crop)
-        texts = []
-        if not result:
-            return ""
-        first = result[0]
-        # 新版 PaddleOCR (3.x): 返回 dict，rec_texts 是文本列表
-        if isinstance(first, dict):
-            texts = first.get("rec_texts", []) or []
-        else:
-            # 旧版 PaddleOCR: 返回 [[box, [text, conf]], ...]
-            for line in (first or []):
-                try:
-                    texts.append(line[1][0])
-                except (IndexError, TypeError):
-                    pass
-        return " ".join(str(t) for t in texts).strip()
+        rec = self._get_rec()
+        text, _conf = rec.recognize(crop)
+        return text.strip()
 
     def _letterbox_pad(self, img, size=1024):
         """

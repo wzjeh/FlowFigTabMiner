@@ -4,7 +4,8 @@
 \providecommand{\mciteSetMaxWidth}[3]{\relax}
 \providecommand{\mciteSetMaxCount}[3]{\relax}
 \providecommand\hyper@newdestlabel[2]{}
-\providecommand*\HyPL@Entry[1]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{schweidtmann2024generative}
 \citation{D5CS00146C}
 \citation{D4SC03921A}
@@ -32,7 +33,6 @@
 \citation{jacs_mof}
 \citation{jacs_mof}
 \citation{jacs_mof}
-\HyPL@Entry{0<</S/D>>}
 \citation{lu2024roboticized}
 \citation{li2023deep}
 \citation{lu2024roboticized,li2023deep}
@@ -40,13 +40,7 @@
 \citation{ashikari2025real}
 \citation{adamo2016demand}
 \citation{D5DD00129C,ashikari2025real,adamo2016demand}
-\citation{acsabm}
-\citation{acsabm}
-\citation{vangala2024suitability}
-\citation{vangala2024suitability}
-\citation{doi:10.1021/acs.jcim.1c00284}
-\citation{angewhuman}
-\citation{doi:10.1021/acs.jcim.1c00284,angewhuman}
+\citation{doi:10.1021/jacs.1c09820}
 \citation{Deadman_2025}
 \citation{Deadman_2025}
 \citation{KURGAN_MUSILEK_2006}
@@ -74,69 +68,49 @@
 \citation{Pan2025-sj}
 \citation{Pan2025-sj}
 \citation{openai2024gpt4technicalreport}
-\citation{dagdelen2024structured}
-\citation{openai2024gpt4technicalreport,dagdelen2024structured}
-\citation{touvron2023llama}
-\citation{zhong2023reaction}
-\citation{touvron2023llama,zhong2023reaction}
-\citation{D4CS00913D}
-\citation{D4CS00913D}
-\citation{openai2024gpt4ocard}
 \citation{google2025gemini25flashlite}
-\citation{openai2024gpt4ocard,google2025gemini25flashlite}
-\citation{hu2021lora}
-\citation{hu2021lora}
-\citation{doi:10.1021/jacs.1c09820}
-\citation{PyMuPDF}
-\citation{PyMuPDF}
-\citation{Luo2025-se}
-\citation{appllmchemreactiondataextraction2024}
-\citation{Luo2025-se,appllmchemreactiondataextraction2024}
-\newlabel{equ:cos_similarity}{{1}{5}{Framework Architecture and Optimization Strategy}{equation.1}{}}
-\citation{luo2025empiricalstudycatastrophicforgetting}
-\citation{luo2025empiricalstudycatastrophicforgetting}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \centering  Transformation of original text descriptions into structured JSON formats: optimal reaction results (top) and influence factor summary (bottom).}}{6}{figure.caption.4}\protected@file@percent }
+\citation{openai2024gpt4technicalreport,google2025gemini25flashlite}
+\citation{röttger2024xstesttestsuiteidentifying}
+\citation{röttger2024xstesttestsuiteidentifying}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of the FlowFigTabMiner pipeline. Flow chemistry papers are parsed by TF-ID to detect figures and tables, while PyMuPDF extracts the full text. FigureDataMiner and TableDataMiner produce structured CSVs with precise coordinates and chemical structures, respectively. An LLM constructs a hierarchical parameters pool (global and local) from the text context, and merges all evidence into JSON records. Manual inspection ensures data quality before final dataset release.}}{6}{figure.caption.4}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:overview}{{1}{6}{\centering Transformation of original text descriptions into structured JSON formats: optimal reaction results (top) and influence factor summary (bottom)}{figure.caption.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Overall framework of the FlowDevMiner system. The workflow incorporates a modular prompt engineering pipeline (light green) and a human-in-the-loop fine-tuning process to transform raw PDFs into structured chemical data.}}{7}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:pipeline-figure}{{2}{7}{Overall framework of the FlowDevMiner system. The workflow incorporates a modular prompt engineering pipeline (light green) and a human-in-the-loop fine-tuning process to transform raw PDFs into structured chemical data}{figure.caption.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Workflow for fine-tuning the local LLM.}}{8}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:pipeline-table}{{3}{8}{Workflow for fine-tuning the local LLM}{figure.caption.6}{}}
-\citation{röttger2024xstesttestsuiteidentifying}
-\citation{röttger2024xstesttestsuiteidentifying}
-\citation{Nitrationthermol}
-\citation{Nitrationthermol}
-\citation{monolithmic_micromixers}
-\citation{monolithmic_micromixers}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparative evaluation of extraction performance. (a) Overall Precision, Recall, and F1 scores. (b–d) Detailed performance heatmaps across different data fields for (b) Qwen3-Max, (c) Fine-tuned Local LLM, and (d) Un-finetuned Local LLM.}}{10}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:compare}{{4}{10}{Comparative evaluation of extraction performance. (a) Overall Precision, Recall, and F1 scores. (b–d) Detailed performance heatmaps across different data fields for (b) Qwen3-Max, (c) Fine-tuned Local LLM, and (d) Un-finetuned Local LLM}{figure.caption.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Data-Driven Hierarchical Reactor Selection. }}{11}{figure.caption.10}\protected@file@percent }
-\newlabel{fig:sankey1}{{5}{11}{Data-Driven Hierarchical Reactor Selection}{figure.caption.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Process Window Analysis. The red square marks the validation point selected for this study.}}{12}{figure.caption.11}\protected@file@percent }
-\newlabel{fig:window}{{6}{12}{Process Window Analysis. The red square marks the validation point selected for this study}{figure.caption.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Data-driven mapping of catalyst usage and temperature ranges for flow hydrogenation.}}{13}{figure.caption.13}\protected@file@percent }
-\newlabel{fig:flow_hydrogenation}{{7}{13}{Data-driven mapping of catalyst usage and temperature ranges for flow hydrogenation}{figure.caption.13}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Experimental validation of reaction conditions based on mined literature data. All reactions utilized Pd@Monolith catalyst at 0.35 MPa.}}{13}{table.1}\protected@file@percent }
-\newlabel{tab:reaction_results}{{1}{13}{Experimental validation of reaction conditions based on mined literature data. All reactions utilized Pd@Monolith catalyst at 0.35 MPa}{table.1}{}}
-\citation{gu2024minillmknowledgedistillationlarge}
-\citation{gu2024minillmknowledgedistillationlarge}
-\citation{zhu2024surveymodelcompressionlarge}
-\citation{zhu2024surveymodelcompressionlarge}
-\citation{grattafiori2024llama3herdmodels}
-\citation{grattafiori2024llama3herdmodels}
-\citation{gpt4all}
-\citation{gpt4all}
-\citation{alpaca_cleaned}
-\citation{alpaca_cleaned}
-\citation{alpaca_cleaned}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Composition of the LoRA Fine-tuning Dataset.}}{16}{table.2}\protected@file@percent }
-\newlabel{tab:dataset_composition}{{2}{16}{Composition of the LoRA Fine-tuning Dataset}{table.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Comparative experimental results of different YOLO models for FlowFigTabMiner. The best performance is indicated in bold.}}{16}{table.3}\protected@file@percent }
-\newlabel{tab:yolo_results}{{3}{16}{Comparative experimental results of different YOLO models for FlowFigTabMiner. The best performance is indicated in bold}{table.3}{}}
-\newlabel{sec:eval}{{}{16}{Evaluation Methodology}{section*.19}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \centering  Schematic of the experimental setup.}}{18}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:flow_setup}{{8}{18}{\centering Schematic of the experimental setup}{figure.caption.21}{}}
-\newlabel{dataset}{{}{18}{Data Availability Statement}{section*.23}{}}
+\newlabel{fig:pipeline-overview}{{1}{6}{Overview of the FlowFigTabMiner pipeline. Flow chemistry papers are parsed by TF-ID to detect figures and tables, while PyMuPDF extracts the full text. FigureDataMiner and TableDataMiner produce structured CSVs with precise coordinates and chemical structures, respectively. An LLM constructs a hierarchical parameters pool (global and local) from the text context, and merges all evidence into JSON records. Manual inspection ensures data quality before final dataset release}{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Overall architecture of the FlowFigTabMiner pipeline for figure data extraction. The workflow processes PDF documents through TF-ID detection, YOLO-based macro segmentation and micro detection, coordinate mapping, and legend matching to produce structured data points.}}{9}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:pipeline-figure}{{2}{9}{Overall architecture of the FlowFigTabMiner pipeline for figure data extraction. The workflow processes PDF documents through TF-ID detection, YOLO-based macro segmentation and micro detection, coordinate mapping, and legend matching to produce structured data points}{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Table extraction sub-pipeline. YOLO detects table regions and molecular structures; structures are masked before TATR cell detection; PaddleOCR reads text cells while MolNexTR converts structure images to SMILES.}}{10}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:pipeline-table}{{3}{10}{Table extraction sub-pipeline. YOLO detects table regions and molecular structures; structures are masked before TATR cell detection; PaddleOCR reads text cells while MolNexTR converts structure images to SMILES}{figure.caption.6}{}}
+\citation{ultralytics2024yolo11}
+\citation{ultralytics2024yolo11}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Comparative experimental results of different YOLO models for FlowFigTabMiner. The best performance is indicated in bold.}}{12}{table.1}\protected@file@percent }
+\newlabel{tab:yolo_results}{{1}{12}{Comparative experimental results of different YOLO models for FlowFigTabMiner. The best performance is indicated in bold}{table.1}{}}
+\newlabel{sec:benchmark}{{}{12}{Three-Way Benchmark: Pipeline vs.\ State-of-the-Art VLMs}{section*.8}{}}
+\citation{Yoshida2008flash}
+\citation{Yoshida2008flash}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Overall three-way comparison: FlowFigTabMiner vs.\ VLMs on 5 figures and 5 tables. Per-task breakdown (Figure, Table, SMILES) is provided in Table~S5 of the Supporting Information.}}{13}{table.2}\protected@file@percent }
+\newlabel{tab:three-way-comparison}{{2}{13}{Overall three-way comparison: FlowFigTabMiner vs.\ VLMs on 5 figures and 5 tables. Per-task breakdown (Figure, Table, SMILES) is provided in Table~S5 of the Supporting Information}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Organolithium dataset overview. (a)~Field completeness comparison across our dataset, USPTO-LLM, and ORD. (b)~Reaction type composition of the 3,195-row dataset.}}{15}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:dataset-overview}{{4}{15}{Organolithium dataset overview. (a)~Field completeness comparison across our dataset, USPTO-LLM, and ORD. (b)~Reaction type composition of the 3,195-row dataset}{figure.caption.10}{}}
+\citation{Yoshida2008flash}
+\newlabel{eq:yield-approx}{{1}{16}{Half-life extraction from yield decay curves}{equation.1}{}}
+\newlabel{eq:arrhenius}{{2}{16}{Arrhenius analysis}{equation.2}{}}
+\newlabel{eq:hammett}{{3}{17}{Hammett correlation for meta/para-substituted ArLi}{equation.3}{}}
+\newlabel{eq:taft}{{4}{18}{Taft steric correlation for ortho-substituted ArLi}{equation.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Arrhenius extrapolation validation: predicted intermediate survival at $-78$~\si {\celsius }, 600~s versus measured batch yields.}}{18}{table.3}\protected@file@percent }
+\newlabel{tab:batch-validation}{{3}{18}{Arrhenius extrapolation validation: predicted intermediate survival at $-78$~\si {\celsius }, 600~s versus measured batch yields}{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Hammett-predicted kinetic parameters for three untested ArLi intermediates.}}{19}{table.4}\protected@file@percent }
+\newlabel{tab:predictions}{{4}{19}{Hammett-predicted kinetic parameters for three untested ArLi intermediates}{table.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Kinetic analysis and structure--activity relationships for organolithium intermediates. (a)~Arrhenius plots for 14 intermediates showing decomposition rate constants across temperature ranges. (b)~Hammett plot: $E_a$ vs $\sigma $ for meta/para ArLi, with three predicted validation targets (yellow diamonds). (c)~Taft steric effect: $\log t_{1/2}$ vs $E_s$ for ortho-ester ArLi, color-coded by batch yield at $-78$~\si {\celsius }. (d)~Stability ranking at $-40$~\si {\celsius } with Yoshida reactor regime zones (flash $< 1$~s, flow $\geq 1$~s).}}{20}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:ml-results}{{5}{20}{Kinetic analysis and structure--activity relationships for organolithium intermediates. (a)~Arrhenius plots for 14 intermediates showing decomposition rate constants across temperature ranges. (b)~Hammett plot: $E_a$ vs $\sigma $ for meta/para ArLi, with three predicted validation targets (yellow diamonds). (c)~Taft steric effect: $\log t_{1/2}$ vs $E_s$ for ortho-ester ArLi, color-coded by batch yield at $-78$~\si {\celsius }. (d)~Stability ranking at $-40$~\si {\celsius } with Yoshida reactor regime zones (flash $< 1$~s, flow $\geq 1$~s)}{figure.caption.18}{}}
+\citation{Xiao2024florence2}
+\citation{Xiao2024florence2}
+\citation{smock2022tatr}
+\citation{smock2022tatr}
+\citation{Xu2024molnextr}
+\citation{Xu2024molnextr}
+\newlabel{sec:eval}{{}{24}{Evaluation Protocol}{section*.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Validation experiment for predicted ArLi stability. R= -CF3,-F,-CH3. (a)~Reaction scheme: bromobenzene $\xrightarrow  {\textit  {n}-BuLi}$ aryllithium $\xrightarrow  {\textit  {MeOH}}$ quench. (b)~Microreactor setup with T-mixer and MeOH quench. (c)~Predicted vs measured survival fractions at $-40$~\si {\celsius } across 8 residence times.}}{26}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:validation-scheme}{{6}{26}{Validation experiment for predicted ArLi stability. R= -CF3,-F,-CH3. (a)~Reaction scheme: bromobenzene $\xrightarrow {\textit {n}-BuLi}$ aryllithium $\xrightarrow {\textit {MeOH}}$ quench. (b)~Microreactor setup with T-mixer and MeOH quench. (c)~Predicted vs measured survival fractions at $-40$~\si {\celsius } across 8 residence times}{figure.caption.28}{}}
+\newlabel{dataset}{{}{27}{Data Availability Statement}{section*.30}{}}
 \bibdata{acs-achemso-demo,achemso-demo}
 \bibcite{schweidtmann2024generative}{{1}{2024}{{Schweidtmann}}{{}}}
 \bibcite{D5CS00146C}{{2}{2025}{{Mroz et~al.}}{{Mroz, Basford, Hastedt, Jayasekera, Mosquera-Lois, Sedgwick, Ballester, Bocarsly, Antonio~del Río~Chanona, Evans, Frost, Ganose, Greenaway, Kuok (Mimi)~Hii, Li, Misener, Walsh, Zhang, and Jelfs}}}
@@ -160,45 +134,29 @@
 \bibcite{D5DD00129C}{{20}{2025}{{Lyall-Brookes et~al.}}{{Lyall-Brookes, Padgham, and Slater}}}
 \bibcite{ashikari2025real}{{21}{2025}{{Ashikari et~al.}}{{Ashikari, Tamaki, Tomite, Yonekura, and Nagaki}}}
 \bibcite{adamo2016demand}{{22}{2016}{{Adamo et~al.}}{{Adamo, Beingessner, Behnam, Chen, Jamison, Jensen, Monbaliu, Myerson, Revalor, Snead, et~al. others}}}
-\bibcite{acsabm}{{23}{2024}{{Patel and Webb}}{{Patel, and Webb}}}
-\bibcite{vangala2024suitability}{{24}{2024}{{Vangala et~al.}}{{Vangala, Krishnan, Bung, Nandagopal, Ramasamy, Kumar, Sankaran, Srinivasan, and Roy}}}
-\bibcite{doi:10.1021/acs.jcim.1c00284}{{25}{2022}{{Guo et~al.}}{{Guo, Ibanez-Lopez, Gao, Quach, Coley, Jensen, and Barzilay}}}
-\bibcite{angewhuman}{{26}{}{{Wu et~al.}}{{Wu, Shi, Zhou, Zhang, Chen, Yu, and Wu}}}
-\bibcite{Deadman_2025}{{27}{2025}{{Deadman}}{{}}}
-\bibcite{KURGAN_MUSILEK_2006}{{28}{2006}{{KURGAN and MUSILEK}}{{KURGAN, and MUSILEK}}}
-\bibcite{BERT}{{29}{2019}{{Devlin et~al.}}{{Devlin, Chang, Lee, and Toutanova}}}
-\bibcite{SciBERT}{{30}{2019}{{Beltagy et~al.}}{{Beltagy, Lo, and Cohan}}}
-\bibcite{ChemBERTa}{{31}{2020}{{Chithrananda et~al.}}{{Chithrananda, Grand, and Ramsundar}}}
-\bibcite{BioBERT}{{32}{2019}{{Lee et~al.}}{{Lee, Yoon, Kim, Kim, Kim, So, and Kang}}}
-\bibcite{MatSciBERT}{{33}{2022}{{Gupta et~al.}}{{Gupta, Zaki, Krishnan, and Mausam}}}
-\bibcite{lowe_2012}{{34}{2012}{{Lowe}}{{}}}
-\bibcite{ChemDataExtractor}{{35}{2016}{{Swain and Cole}}{{Swain, and Cole}}}
-\bibcite{Guo2022-tk}{{36}{2022}{{Guo et~al.}}{{Guo, Ibanez-Lopez, Gao, Quach, Coley, Jensen, and Barzilay}}}
-\bibcite{doi:10.1021/acs.jcim.4c00572}{{37}{2024}{{Fan et~al.}}{{Fan, Qian, Wang, Wang, Coley, and Barzilay}}}
-\bibcite{Xiang2025-dp}{{38}{2025}{{Xiang et~al.}}{{Xiang, Li, Zhang, He, and Sun}}}
-\bibcite{Pan2025-sj}{{39}{2025}{{Pan et~al.}}{{Pan, Xiao, Zhao, Li, Liu, Ullah, Lim, Huang, Yu, Li, Zhang, Xue, Chen, Kawi, Wang, and Luo}}}
-\bibcite{openai2024gpt4technicalreport}{{40}{2024}{{OpenAI et~al.}}{{OpenAI, Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman, Almeida, Altenschmidt, Altman, Anadkat, Avila, Babuschkin, Balaji, Balcom, Baltescu, Bao, Bavarian, Belgum, Bello, Berdine, Bernadett-Shapiro, Berner, Bogdonoff, Boiko, Boyd, Brakman, Brockman, Brooks, Brundage, Button, Cai, Campbell, Cann, Carey, Carlson, Carmichael, Chan, Chang, Chantzis, Chen, Chen, Chen, Chen, Chen, Chess, Cho, Chu, Chung, Cummings, Currier, Dai, Decareaux, Degry, Deutsch, Deville, Dhar, Dohan, Dowling, Dunning, Ecoffet, Eleti, Eloundou, Farhi, Fedus, Felix, Fishman, Forte, Fulford, Gao, Georges, Gibson, Goel, Gogineni, Goh, Gontijo-Lopes, Gordon, Grafstein, Gray, Greene, Gross, Gu, Guo, Hallacy, Han, Harris, He, Heaton, Heidecke, Hesse, Hickey, Hickey, Hoeschele, Houghton, Hsu, Hu, Hu, Huizinga, Jain, Jain, Jang, Jiang, Jiang, Jin, Jin, Jomoto, Jonn, Jun, Kaftan, Łukasz Kaiser, Kamali, Kanitscheider, Keskar, Khan, Kilpatrick, Kim, Kim, Kim, Kirchner, Kiros, Knight, Kokotajlo, Łukasz Kondraciuk, Kondrich, Konstantinidis, Kosic, Krueger, Kuo, Lampe, Lan, Lee, Leike, Leung, Levy, Li, Lim, Lin, Lin, Litwin, Lopez, Lowe, Lue, Makanju, Malfacini, Manning, Markov, Markovski, Martin, Mayer, Mayne, McGrew, McKinney, McLeavey, McMillan, McNeil, Medina, Mehta, Menick, Metz, Mishchenko, Mishkin, Monaco, Morikawa, Mossing, Mu, Murati, Murk, Mély, Nair, Nakano, Nayak, Neelakantan, Ngo, Noh, Ouyang, O'Keefe, Pachocki, Paino, Palermo, Pantuliano, Parascandolo, Parish, Parparita, Passos, Pavlov, Peng, Perelman, de~Avila Belbute~Peres, Petrov, de~Oliveira~Pinto, Michael, Pokorny, Pokrass, Pong, Powell, Power, Power, Proehl, Puri, Radford, Rae, Ramesh, Raymond, Real, Rimbach, Ross, Rotsted, Roussez, Ryder, Saltarelli, Sanders, Santurkar, Sastry, Schmidt, Schnurr, Schulman, Selsam, Sheppard, Sherbakov, Shieh, Shoker, Shyam, Sidor, Sigler, Simens, Sitkin, Slama, Sohl, Sokolowsky, Song, Staudacher, Such, Summers, Sutskever, Tang, Tezak, Thompson, Tillet, Tootoonchian, Tseng, Tuggle, Turley, Tworek, Uribe, Vallone, Vijayvergiya, Voss, Wainwright, Wang, Wang, Wang, Ward, Wei, Weinmann, Welihinda, Welinder, Weng, Weng, Wiethoff, Willner, Winter, Wolrich, Wong, Workman, Wu, Wu, Wu, Xiao, Xu, Yoo, Yu, Yuan, Zaremba, Zellers, Zhang, Zhang, Zhao, Zheng, Zhuang, Zhuk, and Zoph}}}
-\bibcite{dagdelen2024structured}{{41}{2024}{{Dagdelen et~al.}}{{Dagdelen, Dunn, Lee, Walker, Rosen, Ceder, Persson, and Jain}}}
-\bibcite{touvron2023llama}{{42}{2023}{{Touvron et~al.}}{{Touvron, Lavril, Izacard, Martinet, Lachaux, Lacroix, Rozi{\`e}re, Goyal, Hambro, Azhar, et~al. others}}}
-\bibcite{zhong2023reaction}{{43}{2023}{{Zhong et~al.}}{{Zhong, Ouyang, Jiao, Kargupta, Luo, Shen, Zhou, Zhong, Liu, Li, et~al. others}}}
-\bibcite{D4CS00913D}{{44}{2025}{{Schilling-Wilhelmi et~al.}}{{Schilling-Wilhelmi, R{\'\i }os-Garc{\'\i }a, Shabih, Gil, Miret, Koch, M{\'a}rquez, and Jablonka}}}
-\bibcite{openai2024gpt4ocard}{{45}{2024}{{OpenAI et~al.}}{{OpenAI, :, Hurst, Lerer, Goucher, Perelman, Ramesh, Clark, Ostrow, Welihinda, Hayes, Radford, Mądry, Baker-Whitcomb, Beutel, Borzunov, Carney, Chow, Kirillov, Nichol, Paino, Renzin, Passos, Kirillov, Christakis, Conneau, Kamali, Jabri, Moyer, Tam, Crookes, Tootoochian, Tootoonchian, Kumar, Vallone, Karpathy, Braunstein, Cann, Codispoti, Galu, Kondrich, Tulloch, Mishchenko, Baek, Jiang, Pelisse, Woodford, Gosalia, Dhar, Pantuliano, Nayak, Oliver, Zoph, Ghorbani, Leimberger, Rossen, Sokolowsky, Wang, Zweig, Hoover, Samic, McGrew, Spero, Giertler, Cheng, Lightcap, Walkin, Quinn, Guarraci, Hsu, Kellogg, Eastman, Lugaresi, Wainwright, Bassin, Hudson, Chu, Nelson, Li, Shern, Conger, Barette, Voss, Ding, Lu, Zhang, Beaumont, Hallacy, Koch, Gibson, Kim, Choi, McLeavey, Hesse, Fischer, Winter, Czarnecki, Jarvis, Wei, Koumouzelis, Sherburn, Kappler, Levin, Levy, Carr, Farhi, Mely, Robinson, Sasaki, Jin, Valladares, Tsipras, Li, Nguyen, Findlay, Oiwoh, Wong, Asdar, Proehl, Yang, Antonow, Kramer, Peterson, Sigler, Wallace, Brevdo, Mays, Khorasani, Such, Raso, Zhang, von Lohmann, Sulit, Goh, Oden, Salmon, Starace, Brockman, Salman, Bao, Hu, Wong, Wang, Schmidt, Whitney, Jun, Kirchner, de~Oliveira~Pinto, Ren, Chang, Chung, Kivlichan, O'Connell, O'Connell, Osband, Silber, Sohl, Okuyucu, Lan, Kostrikov, Sutskever, Kanitscheider, Gulrajani, Coxon, Menick, Pachocki, Aung, Betker, Crooks, Lennon, Kiros, Leike, Park, Kwon, Phang, Teplitz, Wei, Wolfe, Chen, Harris, Varavva, Lee, Shieh, Lin, Yu, Weng, Tang, Yu, Jang, Candela, Beutler, Landers, Parish, Heidecke, Schulman, Lachman, McKay, Uesato, Ward, Kim, Huizinga, Sitkin, Kraaijeveld, Gross, Kaplan, Snyder, Achiam, Jiao, Lee, Zhuang, Harriman, Fricke, Hayashi, Singhal, Shi, Karthik, Wood, Rimbach, Hsu, Nguyen, Gu-Lemberg, Button, Liu, Howe, Muthukumar, Luther, Ahmad, Kai, Itow, Workman, Pathak, Chen, Jing, Guy, Fedus, Zhou, Mamitsuka, Weng, McCallum, Held, Ouyang, Feuvrier, Zhang, Kondraciuk, Kaiser, Hewitt, Metz, Doshi, Aflak, Simens, Boyd, Thompson, Dukhan, Chen, Gray, Hudnall, Zhang, Aljubeh, Litwin, Zeng, Johnson, Shetty, Gupta, Shah, Yatbaz, Yang, Zhong, Glaese, Chen, Janner, Lampe, Petrov, Wu, Wang, Fradin, Pokrass, Castro, de~Castro, Pavlov, Brundage, Wang, Khan, Murati, Bavarian, Lin, Yesildal, Soto, Gimelshein, Cone, Staudacher, Summers, LaFontaine, Chowdhury, Ryder, Stathas, Turley, Tezak, Felix, Kudige, Keskar, Deutsch, Bundick, Puckett, Nachum, Okelola, Boiko, Murk, Jaffe, Watkins, Godement, Campbell-Moore, Chao, McMillan, Belov, Su, Bak, Bakkum, Deng, Dolan, Hoeschele, Welinder, Tillet, Pronin, Tillet, Dhariwal, Yuan, Dias, Lim, Arora, Troll, Lin, Lopes, Puri, Miyara, Leike, Gaubert, Zamani, Wang, Donnelly, Honsby, Smith, Sahai, Ramchandani, Huet, Carmichael, Zellers, Chen, Chen, Nigmatullin, Cheu, Jain, Altman, Schoenholz, Toizer, Miserendino, Agarwal, Culver, Ethersmith, Gray, Grove, Metzger, Hermani, Jain, Zhao, Wu, Jomoto, Wu, Shuaiqi, Xia, Phene, Papay, Narayanan, Coffey, Lee, Hall, Balaji, Broda, Stramer, Xu, Gogineni, Christianson, Sanders, Patwardhan, Cunninghman, Degry, Dimson, Raoux, Shadwell, Zheng, Underwood, Markov, Sherbakov, Rubin, Stasi, Kaftan, Heywood, Peterson, Walters, Eloundou, Qi, Moeller, Monaco, Kuo, Fomenko, Chang, Zheng, Zhou, Manassra, Sheu, Zaremba, Patil, Qian, Kim, Cheng, Zhang, He, Zhang, Jin, Dai, and Malkov}}}
-\bibcite{google2025gemini25flashlite}{{46}{2025}{{Google DeepMind}}{{}}}
-\bibcite{hu2021lora}{{47}{2021}{{Hu et~al.}}{{Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, and Chen}}}
-\bibcite{PyMuPDF}{{48}{2025}{{Artifex~Software and Ruecker}}{{Artifex~Software, and Ruecker}}}
-\bibcite{Luo2025-se}{{49}{2025}{{Luo et~al.}}{{Luo, Zhang, Wang, and Yang}}}
-\bibcite{appllmchemreactiondataextraction2024}{{50}{2024}{{Huang et~al.}}{{Huang, Surve, Liu, Luo, Wiest, Zhang, and Chawla}}}
-\bibcite{luo2025empiricalstudycatastrophicforgetting}{{51}{2025}{{Luo et~al.}}{{Luo, Yang, Meng, Li, Zhou, and Zhang}}}
-\bibcite{röttger2024xstesttestsuiteidentifying}{{52}{2024}{{Röttger et~al.}}{{Röttger, Kirk, Vidgen, Attanasio, Bianchi, and Hovy}}}
-\bibcite{Nitrationthermol}{{53}{2025}{{Zhao et~al.}}{{Zhao, Wang, Zhao, wei, and Yan}}}
-\bibcite{monolithmic_micromixers}{{54}{2021}{{Barkan-{\"O}zt{\"u}rk et~al.}}{{Barkan-{\"O}zt{\"u}rk, Menner, and Bismarck}}}
-\bibcite{gu2024minillmknowledgedistillationlarge}{{55}{2024}{{Gu et~al.}}{{Gu, Dong, Wei, and Huang}}}
-\bibcite{zhu2024surveymodelcompressionlarge}{{56}{2024}{{Zhu et~al.}}{{Zhu, Li, Liu, Ma, and Wang}}}
-\bibcite{grattafiori2024llama3herdmodels}{{57}{2024}{{Grattafiori et~al.}}{{Grattafiori, Dubey, Jauhri, Pandey, Kadian, Al-Dahle, Letman, Mathur, Schelten, Vaughan, Yang, Fan, Goyal, Hartshorn, Yang, Mitra, Sravankumar, Korenev, Hinsvark, Rao, Zhang, Rodriguez, Gregerson, Spataru, Roziere, Biron, Tang, Chern, Caucheteux, Nayak, Bi, Marra, McConnell, Keller, Touret, Wu, Wong, Ferrer, Nikolaidis, Allonsius, Song, Pintz, Livshits, Wyatt, Esiobu, Choudhary, Mahajan, Garcia-Olano, Perino, Hupkes, Lakomkin, AlBadawy, Lobanova, Dinan, Smith, Radenovic, Guzmán, Zhang, Synnaeve, Lee, Anderson, Thattai, Nail, Mialon, Pang, Cucurell, Nguyen, Korevaar, Xu, Touvron, Zarov, Ibarra, Kloumann, Misra, Evtimov, Zhang, Copet, Lee, Geffert, Vranes, Park, Mahadeokar, Shah, van~der Linde, Billock, Hong, Lee, Fu, Chi, Huang, Liu, Wang, Yu, Bitton, Spisak, Park, Rocca, Johnstun, Saxe, Jia, Alwala, Prasad, Upasani, Plawiak, Li, Heafield, Stone, El-Arini, Iyer, Malik, Chiu, Bhalla, Lakhotia, Rantala-Yeary, van~der Maaten, Chen, Tan, Jenkins, Martin, Madaan, Malo, Blecher, Landzaat, de~Oliveira, Muzzi, Pasupuleti, Singh, Paluri, Kardas, Tsimpoukelli, Oldham, Rita, Pavlova, Kambadur, Lewis, Si, Singh, Hassan, Goyal, Torabi, Bashlykov, Bogoychev, Chatterji, Zhang, Duchenne, Çelebi, Alrassy, Zhang, Li, Vasic, Weng, Bhargava, Dubal, Krishnan, Koura, Xu, He, Dong, Srinivasan, Ganapathy, Calderer, Cabral, Stojnic, Raileanu, Maheswari, Girdhar, Patel, Sauvestre, Polidoro, Sumbaly, Taylor, Silva, Hou, Wang, Hosseini, Chennabasappa, Singh, Bell, Kim, Edunov, Nie, Narang, Raparthy, Shen, Wan, Bhosale, Zhang, Vandenhende, Batra, Whitman, Sootla, Collot, Gururangan, Borodinsky, Herman, Fowler, Sheasha, Georgiou, Scialom, Speckbacher, Mihaylov, Xiao, Karn, Goswami, Gupta, Ramanathan, Kerkez, Gonguet, Do, Vogeti, Albiero, Petrovic, Chu, Xiong, Fu, Meers, Martinet, Wang, Wang, Tan, Xia, Xie, Jia, Wang, Goldschlag, Gaur, Babaei, Wen, Song, Zhang, Li, Mao, Coudert, Yan, Chen, Papakipos, Singh, Srivastava, Jain, Kelsey, Shajnfeld, Gangidi, Victoria, Goldstand, Menon, Sharma, Boesenberg, Baevski, Feinstein, Kallet, Sangani, Teo, Yunus, Lupu, Alvarado, Caples, Gu, Ho, Poulton, Ryan, Ramchandani, Dong, Franco, Goyal, Saraf, Chowdhury, Gabriel, Bharambe, Eisenman, Yazdan, James, Maurer, Leonhardi, Huang, Loyd, Paola, Paranjape, Liu, Wu, Ni, Hancock, Wasti, Spence, Stojkovic, Gamido, Montalvo, Parker, Burton, Mejia, Liu, Wang, Kim, Zhou, Hu, Chu, Cai, Tindal, Feichtenhofer, Gao, Civin, Beaty, Kreymer, Li, Adkins, Xu, Testuggine, David, Parikh, Liskovich, Foss, Wang, Le, Holland, Dowling, Jamil, Montgomery, Presani, Hahn, Wood, Le, Brinkman, Arcaute, Dunbar, Smothers, Sun, Kreuk, Tian, Kokkinos, Ozgenel, Caggioni, Kanayet, Seide, Florez, Schwarz, Badeer, Swee, Halpern, Herman, Sizov, Guangyi, Zhang, Lakshminarayanan, Inan, Shojanazeri, Zou, Wang, Zha, Habeeb, Rudolph, Suk, Aspegren, Goldman, Zhan, Damlaj, Molybog, Tufanov, Leontiadis, Veliche, Gat, Weissman, Geboski, Kohli, Lam, Asher, Gaya, Marcus, Tang, Chan, Zhen, Reizenstein, Teboul, Zhong, Jin, Yang, Cummings, Carvill, Shepard, McPhie, Torres, Ginsburg, Wang, Wu, U, Saxena, Khandelwal, Zand, Matosich, Veeraraghavan, Michelena, Li, Jagadeesh, Huang, Chawla, Huang, Chen, Garg, A, Silva, Bell, Zhang, Guo, Yu, Moshkovich, Wehrstedt, Khabsa, Avalani, Bhatt, Mankus, Hasson, Lennie, Reso, Groshev, Naumov, Lathi, Keneally, Liu, Seltzer, Valko, Restrepo, Patel, Vyatskov, Samvelyan, Clark, Macey, Wang, Hermoso, Metanat, Rastegari, Bansal, Santhanam, Parks, White, Bawa, Singhal, Egebo, Usunier, Mehta, Laptev, Dong, Cheng, Chernoguz, Hart, Salpekar, Kalinli, Kent, Parekh, Saab, Balaji, Rittner, Bontrager, Roux, Dollar, Zvyagina, Ratanchandani, Yuvraj, Liang, Alao, Rodriguez, Ayub, Murthy, Nayani, Mitra, Parthasarathy, Li, Hogan, Battey, Wang, Howes, Rinott, Mehta, Siby, Bondu, Datta, Chugh, Hunt, Dhillon, Sidorov, Pan, Mahajan, Verma, Yamamoto, Ramaswamy, Lindsay, Lindsay, Feng, Lin, Zha, Patil, Shankar, Zhang, Zhang, Wang, Agarwal, Sajuyigbe, Chintala, Max, Chen, Kehoe, Satterfield, Govindaprasad, Gupta, Deng, Cho, Virk, Subramanian, Choudhury, Goldman, Remez, Glaser, Best, Koehler, Robinson, Li, Zhang, Matthews, Chou, Shaked, Vontimitta, Ajayi, Montanez, Mohan, Kumar, Mangla, Ionescu, Poenaru, Mihailescu, Ivanov, Li, Wang, Jiang, Bouaziz, Constable, Tang, Wu, Wang, Wu, Gao, Kleinman, Chen, Hu, Jia, Qi, Li, Zhang, Zhang, Adi, Nam, Yu, Wang, Zhao, Hao, Qian, Li, He, Rait, DeVito, Rosnbrick, Wen, Yang, Zhao, and Ma}}}
-\bibcite{gpt4all}{{58}{2023}{{Anand et~al.}}{{Anand, Nussbaum, Duderstadt, Schmidt, and Mulyar}}}
-\bibcite{alpaca_cleaned}{{59}{2023}{{Yahma}}{{}}}
-\mciteSetMaxCount{main}{bibitem}{59}
+\bibcite{Deadman_2025}{{23}{2025}{{Deadman}}{{}}}
+\bibcite{KURGAN_MUSILEK_2006}{{24}{2006}{{KURGAN and MUSILEK}}{{KURGAN, and MUSILEK}}}
+\bibcite{BERT}{{25}{2019}{{Devlin et~al.}}{{Devlin, Chang, Lee, and Toutanova}}}
+\bibcite{SciBERT}{{26}{2019}{{Beltagy et~al.}}{{Beltagy, Lo, and Cohan}}}
+\bibcite{ChemBERTa}{{27}{2020}{{Chithrananda et~al.}}{{Chithrananda, Grand, and Ramsundar}}}
+\bibcite{BioBERT}{{28}{2019}{{Lee et~al.}}{{Lee, Yoon, Kim, Kim, Kim, So, and Kang}}}
+\bibcite{MatSciBERT}{{29}{2022}{{Gupta et~al.}}{{Gupta, Zaki, Krishnan, and Mausam}}}
+\bibcite{lowe_2012}{{30}{2012}{{Lowe}}{{}}}
+\bibcite{ChemDataExtractor}{{31}{2016}{{Swain and Cole}}{{Swain, and Cole}}}
+\bibcite{Guo2022-tk}{{32}{2022}{{Guo et~al.}}{{Guo, Ibanez-Lopez, Gao, Quach, Coley, Jensen, and Barzilay}}}
+\bibcite{doi:10.1021/acs.jcim.4c00572}{{33}{2024}{{Fan et~al.}}{{Fan, Qian, Wang, Wang, Coley, and Barzilay}}}
+\bibcite{Xiang2025-dp}{{34}{2025}{{Xiang et~al.}}{{Xiang, Li, Zhang, He, and Sun}}}
+\bibcite{Pan2025-sj}{{35}{2025}{{Pan et~al.}}{{Pan, Xiao, Zhao, Li, Liu, Ullah, Lim, Huang, Yu, Li, Zhang, Xue, Chen, Kawi, Wang, and Luo}}}
+\bibcite{openai2024gpt4technicalreport}{{36}{2024}{{OpenAI et~al.}}{{OpenAI, Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman, Almeida, Altenschmidt, Altman, Anadkat, Avila, Babuschkin, Balaji, Balcom, Baltescu, Bao, Bavarian, Belgum, Bello, Berdine, Bernadett-Shapiro, Berner, Bogdonoff, Boiko, Boyd, Brakman, Brockman, Brooks, Brundage, Button, Cai, Campbell, Cann, Carey, Carlson, Carmichael, Chan, Chang, Chantzis, Chen, Chen, Chen, Chen, Chen, Chess, Cho, Chu, Chung, Cummings, Currier, Dai, Decareaux, Degry, Deutsch, Deville, Dhar, Dohan, Dowling, Dunning, Ecoffet, Eleti, Eloundou, Farhi, Fedus, Felix, Fishman, Forte, Fulford, Gao, Georges, Gibson, Goel, Gogineni, Goh, Gontijo-Lopes, Gordon, Grafstein, Gray, Greene, Gross, Gu, Guo, Hallacy, Han, Harris, He, Heaton, Heidecke, Hesse, Hickey, Hickey, Hoeschele, Houghton, Hsu, Hu, Hu, Huizinga, Jain, Jain, Jang, Jiang, Jiang, Jin, Jin, Jomoto, Jonn, Jun, Kaftan, Łukasz Kaiser, Kamali, Kanitscheider, Keskar, Khan, Kilpatrick, Kim, Kim, Kim, Kirchner, Kiros, Knight, Kokotajlo, Łukasz Kondraciuk, Kondrich, Konstantinidis, Kosic, Krueger, Kuo, Lampe, Lan, Lee, Leike, Leung, Levy, Li, Lim, Lin, Lin, Litwin, Lopez, Lowe, Lue, Makanju, Malfacini, Manning, Markov, Markovski, Martin, Mayer, Mayne, McGrew, McKinney, McLeavey, McMillan, McNeil, Medina, Mehta, Menick, Metz, Mishchenko, Mishkin, Monaco, Morikawa, Mossing, Mu, Murati, Murk, Mély, Nair, Nakano, Nayak, Neelakantan, Ngo, Noh, Ouyang, O'Keefe, Pachocki, Paino, Palermo, Pantuliano, Parascandolo, Parish, Parparita, Passos, Pavlov, Peng, Perelman, de~Avila Belbute~Peres, Petrov, de~Oliveira~Pinto, Michael, Pokorny, Pokrass, Pong, Powell, Power, Power, Proehl, Puri, Radford, Rae, Ramesh, Raymond, Real, Rimbach, Ross, Rotsted, Roussez, Ryder, Saltarelli, Sanders, Santurkar, Sastry, Schmidt, Schnurr, Schulman, Selsam, Sheppard, Sherbakov, Shieh, Shoker, Shyam, Sidor, Sigler, Simens, Sitkin, Slama, Sohl, Sokolowsky, Song, Staudacher, Such, Summers, Sutskever, Tang, Tezak, Thompson, Tillet, Tootoonchian, Tseng, Tuggle, Turley, Tworek, Uribe, Vallone, Vijayvergiya, Voss, Wainwright, Wang, Wang, Wang, Ward, Wei, Weinmann, Welihinda, Welinder, Weng, Weng, Wiethoff, Willner, Winter, Wolrich, Wong, Workman, Wu, Wu, Wu, Xiao, Xu, Yoo, Yu, Yuan, Zaremba, Zellers, Zhang, Zhang, Zhao, Zheng, Zhuang, Zhuk, and Zoph}}}
+\bibcite{google2025gemini25flashlite}{{37}{2025}{{Google DeepMind}}{{}}}
+\bibcite{röttger2024xstesttestsuiteidentifying}{{38}{2024}{{Röttger et~al.}}{{Röttger, Kirk, Vidgen, Attanasio, Bianchi, and Hovy}}}
+\bibcite{ultralytics2024yolo11}{{39}{2024}{{Jocher and Qiu}}{{Jocher, and Qiu}}}
+\bibcite{Yoshida2008flash}{{40}{2008}{{Yoshida et~al.}}{{Yoshida, Nagaki, and Yamada}}}
+\bibcite{Xiao2024florence2}{{41}{2024}{{Xiao et~al.}}{{Xiao, Wu, Xu, Dai, Hu, Lu, Zeng, Liu, and Yuan}}}
+\bibcite{smock2022tatr}{{42}{2022}{{Smock et~al.}}{{Smock, Pesala, and Abraham}}}
+\bibcite{Xu2024molnextr}{{43}{2024}{{Chen et~al.}}{{Chen, Leung, Huang, Sun, Chen, and Gao}}}
+\mciteSetMaxCount{main}{bibitem}{43}
 \mciteSetMaxCount{main}{subitem}{1}
-\mciteSetMaxWidth{main}{bibitem}{770046}
+\mciteSetMaxWidth{main}{bibitem}{769860}
 \mciteSetMaxWidth{main}{subitem}{0}
-\gdef \@abspage@last{27}
+\gdef \@abspage@last{34}

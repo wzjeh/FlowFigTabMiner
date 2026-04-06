@@ -1,28 +1,49 @@
-# Core AI & Computation
-torch>=2.0.0
-torchvision
-torchaudio
-transformers
-onmt
-paddlepaddle-gpu ; sys_platform == 'linux'
-paddlepaddle ; sys_platform == 'darwin'
-paddleocr>=2.6.0
-ultralytics  # YOLOv11 Support
+# FlowFigTabMiner — Local Pipeline Requirements
+# Python 3.9+ required
+# Install: pip install -r requirements.txt
 
-# Data Processing
-pandas
-numpy
-opencv-python
-pillow
-scipy
-pyyaml
+# ── Deep Learning Framework ──
+torch==2.8.0
+torchvision==0.23.0
 
-# UI & Web
-streamlit
-requests
+# ── Object Detection (YOLO) ──
+ultralytics==8.4.2
 
-# Layout & PDF
-pdf2image
-albumentations
-imutils
-fitz  # PyMuPDF
+# ── OCR (PaddlePaddle) ──
+# Use paddlepaddle-gpu on Linux with CUDA for faster inference
+paddlepaddle==3.3.0            # macOS / CPU
+# paddlepaddle-gpu==3.3.0     # Linux + CUDA (uncomment for GPU)
+paddleocr==3.3.2
+paddlex==3.3.13
+
+# ── Transformers (TF-ID Florence-2, TATR) ──
+transformers==4.57.3
+tokenizers==0.22.2
+timm==0.4.12
+einops==0.8.1
+
+# ── MolNexTR (Molecule Image → SMILES) ──
+OpenNMT-py==2.2.0
+SmilesPE==0.0.3
+albumentations==1.1.0
+rdkit-pypi==2022.9.5
+
+# ── Scientific Computing ──
+scipy==1.13.1
+scikit-learn==1.6.1
+pandas>=2.0.0
+numpy>=1.24.0
+matplotlib>=3.8.0
+
+# ── Image Processing ──
+opencv-python-headless>=4.8.0
+Pillow>=10.0.0
+
+# ── PDF Parsing ──
+pypdfium2>=4.20.0
+
+# ── LLM API (Step 5 adjudication — requires API key in .env) ──
+dashscope>=1.20.0
+
+# ── Config ──
+PyYAML>=6.0
