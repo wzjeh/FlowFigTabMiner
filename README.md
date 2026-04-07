@@ -80,6 +80,7 @@ cp models/hf_yolo11/tab-scheme-seg/best.pt models/tab-scheme-seg/best.pt
 |-------|--------|---------|---------------|
 | TF-ID (Florence-2) | [yifeihu/TF-ID-base](https://huggingface.co/yifeihu/TF-ID-base) | PDF figure/table detection | Yes (HuggingFace) |
 | TATR | [microsoft/table-transformer-structure-recognition-v1.1-all](https://huggingface.co/microsoft/table-transformer-structure-recognition-v1.1-all) | Table structure recognition | Yes (HuggingFace) |
+| MolNexTR | [CYF200127/MolNexTR](https://huggingface.co/datasets/CYF200127/MolNexTR) | Molecular image → SMILES | See above |
 | PaddleOCR | [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) | Text recognition (PP-OCRv4) | Yes (PaddleX) |
 
 **MolNexTR** (molecular structure → SMILES, 1.06 GB):
