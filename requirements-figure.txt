@@ -1,0 +1,18 @@
+# figure-service: YOLO macro/micro + PaddleOCR + coordinate mapping
+torch==2.8.0
+torchvision==0.23.0
+ultralytics==8.4.2
+paddlepaddle==3.3.0
+paddleocr==3.3.2
+paddlex==3.3.13
+scipy==1.13.1
+scikit-learn==1.6.1
+pandas==2.3.3
+numpy==1.26.4
+opencv-python-headless
+Pillow
+google-cloud-storage
+fastapi
+uvicorn[standard]
+pyyaml
+easyocr
