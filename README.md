@@ -82,14 +82,16 @@ cp models/hf_yolo11/tab-scheme-seg/best.pt models/tab-scheme-seg/best.pt
 | TATR | [microsoft/table-transformer-structure-recognition-v1.1-all](https://huggingface.co/microsoft/table-transformer-structure-recognition-v1.1-all) | Table structure recognition | Yes (HuggingFace) |
 | PaddleOCR | [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) | Text recognition (PP-OCRv4) | Yes (PaddleX) |
 
-**MolNexTR** (manual download required):
-
-Download `molnextr_model_best.pth` (1.06 GB) from [CYF2000127/MolNexTR](https://github.com/CYF2000127/MolNexTR) and place in `models/`.
+**MolNexTR** (molecular structure → SMILES, 1.06 GB):
 
 ```bash
-# Also download the Swin backbone:
-# swin_base_char_aux_1m680k.pth → models/
+# Download from the official HuggingFace dataset
+pip install huggingface_hub
+huggingface-cli download CYF200127/MolNexTR molnextr_best.pth --local-dir models/ --repo-type dataset
+mv models/molnextr_best.pth models/molnextr_model_best.pth
 ```
+
+Source: [Chen et al., J. Cheminf. 2024](https://doi.org/10.1186/s13321-024-00926-w) | [HuggingFace](https://huggingface.co/datasets/CYF200127/MolNexTR)
 
 ### 3. Set Up API Key
 
