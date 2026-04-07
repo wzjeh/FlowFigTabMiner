@@ -35,7 +35,7 @@ class SchemeSegParser:
         self.model = None
         if model_path and os.path.exists(model_path):
             self.model = YOLO(model_path)
-            _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+            _torch_device = 'cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
             self.model.to(_torch_device)
             print(f"[SchemeSegParser] Loaded model: {model_path} (device: {_torch_device.upper()})")
         else:

@@ -24,7 +24,7 @@ class MoleculeProcessor:
                 if torch.get_num_threads() > 1:
                     torch.set_num_threads(1)
                 self.model = YOLO(model_path)
-                _torch_device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+                _torch_device = 'cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
                 self.model.to(_torch_device)
                 print(f"   MoleculeProcessor: YOLO model loaded successfully from {model_path} (device: {_torch_device.upper()})")
             except Exception as e:
