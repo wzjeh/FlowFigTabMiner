@@ -229,8 +229,17 @@ class TablePipeline:
             h, w = original_img.shape[:2]
             x1, y1 = max(0, x1), max(0, y1)
             x2, y2 = min(w, x2), min(h, y2)
-            
-            crop = original_img[y1:y2, x1:x2]
+
+            crop_raw = original_img[y1:y2, x1:x2]
+            # Pad small cells with white border so full-pipeline OCR's text detector
+            # can find the text region. Without padding, cells < ~80px tall return empty.
+            ch, cw = crop_raw.shape[:2]
+            pad = max(0, (80 - min(ch, cw)) // 2 + 5)  # ensure min ~80px, plus 5px margin
+            if pad > 0:
+                crop = cv2.copyMakeBorder(crop_raw, pad, pad, pad, pad,
+                                          cv2.BORDER_CONSTANT, value=(255, 255, 255))
+            else:
+                crop = crop_raw
             
             if output_dir:
                 cells_dir = os.path.join(output_dir, "cells")

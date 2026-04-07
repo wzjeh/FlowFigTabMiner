@@ -12,16 +12,17 @@ try:
     paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
 except Exception:
     pass
-from src.extraction.common.ocr_backend import get_rec_instance
+from src.extraction.common.ocr_backend import get_ocr_instance, get_rec_instance
 
 class ContentRecognizer:
     def __init__(self):
         """
-        Initialize rec-only OCR and MolNexTR models.
-        Note: MolScribe has been fully replaced by MolNexTR.
+        Initialize OCR for table cells: full-pipeline (det+rec) with rec-only fallback.
+        Full pipeline handles multi-line headers and complex cells well.
+        Rec-only fallback catches small cells where the detector returns empty.
         """
-        print("Loading rec-only OCR...")
-        # Rec-only for table cell text (skips detection on pre-cropped cells)
+        print("Loading OCR for table cells (full-pipeline + rec-only fallback)...")
+        self.ocr = get_ocr_instance(lang='en', enable_mkldnn=False)
         self.rec = get_rec_instance()
 
         # MolNexTR for chemical structure recognition
@@ -50,13 +51,34 @@ class ContentRecognizer:
             return self._recognize_text(image_input)
 
     def _recognize_text(self, image_input):
+        text = ""
+        # Try full det+rec pipeline first — better for headers and complex cells
         try:
-            # Use rec-only for pre-cropped cell images (no detection step)
-            text, _conf = self.rec.recognize(image_input)
-            return text
+            result = self.ocr.ocr(image_input)
+            if result and result[0]:
+                lines = result[0]
+                if isinstance(lines, dict):
+                    texts = lines.get('rec_texts', [])
+                    text = ' '.join(texts)
+                else:
+                    parts = []
+                    for line in lines:
+                        if isinstance(line, (list, tuple)) and len(line) >= 2:
+                            t = line[1]
+                            parts.append(str(t[0]) if isinstance(t, (list, tuple)) else str(t))
+                    text = ' '.join(parts)
         except Exception as e:
-            print(f"OCR Error on {image_input if isinstance(image_input, str) else 'Image Array'}: {e}")
-            return ""
+            pass  # fall through to rec-only
+
+        # Fallback: if full pipeline returned empty or failed, use rec-only
+        # (small cells where detector can't find text regions)
+        if not text.strip():
+            try:
+                text, _conf = self.rec.recognize(image_input)
+            except Exception as e:
+                print(f"OCR Error on {image_input if isinstance(image_input, str) else 'Image Array'}: {e}")
+
+        return text
 
     def _recognize_structure(self, image_input):
         if self.molnextr is None:

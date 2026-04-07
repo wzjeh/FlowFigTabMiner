@@ -10,12 +10,12 @@ USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
 import os
 
 
-def get_ocr_instance(use_angle_cls=True, lang='en', enable_mkldnn=False):
-    """Full det+rec pipeline. Use for multi-line text (captions, legends)."""
+def get_ocr_instance(lang='en', enable_mkldnn=False, **kwargs):
+    """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells)."""
     if os.environ.get('USE_EASYOCR', '0') == '1':
         return _EasyOCRWrapper()
     from paddleocr import PaddleOCR
-    return PaddleOCR(use_angle_cls=use_angle_cls, lang=lang, enable_mkldnn=enable_mkldnn)
+    return PaddleOCR(lang=lang, enable_mkldnn=enable_mkldnn)
 
 
 # Singleton rec-only instance (lazy)
