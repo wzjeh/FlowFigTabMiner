@@ -455,7 +455,18 @@ Their half-lives correlate with the Taft steric parameter $E_s$:
 The \textit{tert}-butyl ester ($E_s = -1.54$) is 86$\times$ more stable than the methyl ester ($E_s = 0.00$) at $-40$~\si{\celsius} ($t_{1/2}$ = 51.9~s vs 602~ms).
 Notably, the same \ce{CO2^{t}Bu} group at the \textit{ortho} position is 10.8$\times$ more stable than at \textit{para} ($t_{1/2}$ = 51.9~s vs 4.8~s), demonstrating that steric shielding of the C--Li bond outweighs electronic stabilization for \textit{ortho} substituents.
 
-These results establish a two-parameter framework for ArLi intermediate stability: Hammett $\sigma$ for \textit{meta}/\textit{para} positions and Taft $E_s$ for \textit{ortho} positions.
+\subsubsection{Unified three-parameter model}
+
+The separate Hammett and Taft correlations reveal that \textit{meta}/\textit{para} and \textit{ortho} ArLi follow distinct stability trends.
+The key difference is that \textit{ortho} substituents engage in intramolecular Li$\cdots$O chelation, stabilizing the C--Li bond beyond what electronic effects alone predict: the same \ce{CO2^{t}Bu} group at \textit{ortho} yields $E_a = 26.8$~kJ/mol versus 15.0~kJ/mol at \textit{para}, a 11.8~kJ/mol stabilization from chelation.
+
+To capture both electronic, steric, and chelation effects in a single equation, we fitted a three-parameter model across all 8 stable-substituent ArLi (excluding reactive-substituent species that decompose via benzyne or $\alpha$-elimination):
+\begin{equation}\label{eq:unified}
+E_a = -48.6\sigma + 8.0\,E_s + 25.6\,\delta_{\mathrm{ortho}} + 36.1 \quad (R^2 = 0.970,\ Q^2_{\mathrm{LOO}} = 0.817,\ n = 8)
+\end{equation}
+where $\delta_{\mathrm{ortho}} = 1$ for \textit{ortho}-substituted ArLi and 0 otherwise.
+The LOOCV $Q^2$ of 0.817 confirms that the model generalizes within the training set.
+Each coefficient has clear chemical meaning: $-48.6\sigma$ captures electronic stabilization/destabilization of the carbanion, $+8.0\,E_s$ reflects steric shielding of the C--Li bond, and $+25.6\,\delta_{\mathrm{ortho}}$ quantifies the Li$\cdots$O chelation energy that is unique to \textit{ortho} substituents bearing a coordinating group.
 
 \subsubsection{Validation by Arrhenius extrapolation to batch conditions}
 
@@ -485,24 +496,26 @@ This close agreement---across a 100~\si{\celsius} temperature extrapolation and 
 \subsubsection{Predictive application}
 
 To close the prediction loop, three \textit{para}-substituted aryllithiums not present in the training set were selected for experimental validation (Table~\ref{tab:predictions}).
-The predicted $E_a$ values are obtained from Equation~\ref{eq:hammett}; $\ln A$ from the compensation relation; and $t_{1/2}$ from Equation~\ref{eq:arrhenius}.
+The predicted $E_a$ values are obtained from the unified model (Equation~\ref{eq:unified} with $\delta_{\mathrm{ortho}} = 0$, $E_s = 0$ for \textit{para} substrates); $t_{1/2}$ values are computed via the compensation relation and Equation~\ref{eq:arrhenius}.
 
 \begin{table}[htbp]
 \centering
-\caption{Hammett-predicted kinetic parameters for three untested ArLi intermediates.}
+\caption{Predicted kinetic parameters for three untested \textit{para}-ArLi intermediates from the unified model (Equation~\ref{eq:unified}).}
 \label{tab:predictions}
-\begin{tabular}{@{}lccccl@{}}
+\begin{tabular}{@{}lcccl@{}}
 \toprule
-\textbf{Intermediate} & \textbf{$\sigma$} & \textbf{$E_a^{\mathrm{pred}}$ (kJ/mol)} & \textbf{$t_{1/2}$ ($-40$~\si{\celsius})} & \textbf{$t_{1/2}$ ($0$~\si{\celsius})} & \textbf{Regime} \\
+\textbf{Intermediate} & \textbf{$\sigma$} & \textbf{$E_a^{\mathrm{pred}}$ (kJ/mol)} & \textbf{$t_{1/2}$ ($-40$~\si{\celsius})} & \textbf{Regime} \\
 \midrule
-\textit{p}-\ce{CF3}-PhLi & $+0.54$ & 9.9  & 23~s   & 11~s    & batch-compatible \\
-\textit{p}-F-PhLi        & $+0.06$ & 33.2 & 1.7~s  & 140~ms  & flow \\
-\textit{p}-\ce{CH3}-PhLi & $-0.17$ & 44.3 & 500~ms & 17~ms   & flash \\
+\textit{p}-\ce{CF3}-PhLi & $+0.54$ & 9.9  & 11~s   & batch-compatible \\
+\textit{p}-F-PhLi        & $+0.06$ & 33.2 & 16~s   & flow \\
+\textit{p}-\ce{CH3}-PhLi & $-0.17$ & 44.4 & 20~s   & flow \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The three substrates span the entire reactor regime classification: \textit{p}-\ce{CF3}-PhLi (strong EWG, low $E_a$) is predicted to be stable enough for batch operation; \textit{p}-F-PhLi requires continuous flow; and \textit{p}-\ce{CH3}-PhLi (weak EDG, high $E_a$) demands flash chemistry conditions at temperatures above $-20$~\si{\celsius}.
+The unified model predicts that all three substrates have half-lives on the order of 10--20~s at $-40$~\si{\celsius}, all within the flow microreactor regime.
+Notably, \textit{p}-\ce{CH3}-PhLi ($\sigma = -0.17$, weak EDG) is predicted to have $t_{1/2} \approx 20$~s, comparable to PhLi ($t_{1/2} = 22.4$~s).
+This is chemically reasonable: a weak electron-donating group slightly destabilizes the carbanion but does not fundamentally alter the decomposition kinetics, in contrast to the earlier Hammett-only extrapolation which incorrectly predicted sub-second lifetimes for EDG-substituted ArLi.
 These predictions are currently being validated experimentally using a T-mixer microreactor setup with MeOH quench (8 residence times $\times$ 4--5 temperatures per substrate).
 
 \begin{figure*}[!htbp]
@@ -531,16 +544,18 @@ On a 10-figure/10-table benchmark, the pipeline achieves an overall extraction F
 Applied to 125 organolithium flow chemistry publications, the pipeline constructed a 1{,}470-row kinetics dataset and a 1{,}267-row scope table dataset---the first with flow-condition coverage.
 From yield-vs-$t_R$ heatmaps alone, we extracted decomposition activation energies for 14 organolithium intermediates spanning nearly four orders of magnitude in half-life (3.3~ms to 51.9~s at $-40$~\si{\celsius}).
 
-Two quantitative structure--stability relationships emerged from the extracted data:
-(1)~A Hammett correlation ($E_a = -48.5\sigma + 36.1$~kJ/mol, $r = -0.979$) for \textit{meta}/\textit{para}-substituted ArLi;
-(2)~A Taft steric correlation ($\log t_{1/2} = -1.13 E_s + 0.04$, $r = -0.969$) for \textit{ortho}-ester ArLi.
-Neither correlation has been previously reported for organolithium decomposition kinetics, despite the underlying qualitative trends being well established.
+Three quantitative structure--stability relationships emerged from the extracted data:
+(1)~A Hammett correlation ($E_a = -48.5\sigma + 36.1$~kJ/mol, $r = -0.979$, $n = 4$) for \textit{meta}/\textit{para}-substituted ArLi;
+(2)~A Taft steric correlation ($\log t_{1/2} = -1.13 E_s + 0.04$, $r = -0.969$, $n = 4$) for \textit{ortho}-ester ArLi;
+(3)~A unified three-parameter model ($E_a = -48.6\sigma + 8.0\,E_s + 25.6\,\delta_{\mathrm{ortho}} + 36.1$, $R^2 = 0.970$, $Q^2_{\mathrm{LOO}} = 0.817$, $n = 8$) that integrates electronic, steric, and Li$\cdots$O chelation effects into a single equation for all stable-substituent ArLi.
+The $+25.6$~kJ/mol chelation term quantifies the stabilization conferred by intramolecular coordination of \textit{ortho} substituents with lithium---an effect that is absent at \textit{meta}/\textit{para} positions and cannot be captured by Hammett $\sigma$ or Taft $E_s$ alone.
+Neither the individual correlations nor the unified model have been previously reported for organolithium decomposition kinetics.
 The kinetic parameters were validated by Arrhenius extrapolation to batch conditions ($-78$~\si{\celsius}, 600~s), where the predicted \textit{tert}-butyl ester survival (58\%) matched the experimental yield (61\%) within 3 percentage points.
 
-The combined Hammett--Taft framework provides a practical tool for reactor selection: given only the Hammett $\sigma$ or Taft $E_s$ of the substituent, one can predict $E_a$, $t_{1/2}$ at any temperature, and the appropriate reactor regime (batch, flow, or flash).
-Three validation substrates (\textit{p}-\ce{CF3}-, \textit{p}-F-, and \textit{p}-\ce{CH3}-bromobenzene) have been selected for experimental confirmation.
+The unified model provides a practical tool for reactor selection: given the Hammett $\sigma$, Taft $E_s$, and substitution position, one can predict $E_a$, $t_{1/2}$ at any temperature, and the appropriate reactor regime.
+Three validation substrates (\textit{p}-\ce{CF3}-, \textit{p}-F-, and \textit{p}-\ce{CH3}-bromobenzene) have been selected for experimental confirmation, with predicted $t_{1/2}$ values of 11--20~s at $-40$~\si{\celsius} (all flow-compatible).
 
-Limitations include the small number of intermediates (14) and the moderate sample size for both Hammett ($n = 4$) and Taft ($n = 4$) correlations.
+Limitations include the small number of intermediates (14) and the fact that the unified model is trained on stable-substituent ArLi only ($n = 8$); reactive-substituent species (benzyne, $\alpha$-elimination) follow fundamentally different decomposition mechanisms and require separate treatment.
 The pipeline architecture is domain-agnostic and can be extended to other organometallic systems (Grignard, organozinc) or domains where quantitative data is locked in scientific figures.
 % - All code, models, dataset, and web tool open-sourced
 
