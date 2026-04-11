@@ -1,0 +1,264 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-1",
+  "table_title": "Table S-1. The Br/Li exchange reaction of 1,2-dibromobenzene with n-BuLi followed by the reaction with benzaldehyde in the flow microreactor system.",
+  "reaction_context": {
+    "substrate": "1,2-dibromobenzene",
+    "substrate_smiles": "Brc1ccccc1Br",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "2-bromophenyllithium",
+    "intermediate_smiles": "[Li]c1ccccc1Br",
+    "electrophile": "benzaldehyde",
+    "electrophile_smiles": "O=Cc1ccccc1",
+    "product": "(2-bromophenyl)(phenyl)methanol",
+    "product_smiles": "OC(c1ccccc1)c1ccccc1Br",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "temperature",
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "yield"
+  ],
+  "column_units": [
+    "(°C)",
+    "(μm)",
+    "(cm)",
+    "(s)",
+    "(%)"
+  ],
+  "rows": [
+    [
+      "-78",
+      "250",
+      "3.5",
+      "0.010",
+      "19"
+    ],
+    [
+      "-78",
+      "500",
+      "3.5",
+      "0.041",
+      "14"
+    ],
+    [
+      "-78",
+      "1000",
+      "3.5",
+      "0.16",
+      "17"
+    ],
+    [
+      "-78",
+      "1000",
+      "6.5",
+      "0.31",
+      "27"
+    ],
+    [
+      "-78",
+      "1000",
+      "12.5",
+      "0.59",
+      "36"
+    ],
+    [
+      "-78",
+      "1000",
+      "25",
+      "1.2",
+      "52"
+    ],
+    [
+      "-78",
+      "1000",
+      "50",
+      "2.4",
+      "76"
+    ],
+    [
+      "-78",
+      "1000",
+      "100",
+      "4.7",
+      "81"
+    ],
+    [
+      "-70",
+      "250",
+      "3.5",
+      "0.010",
+      "26"
+    ],
+    [
+      "-70",
+      "500",
+      "3.5",
+      "0.041",
+      "29"
+    ],
+    [
+      "-70",
+      "1000",
+      "3.5",
+      "0.16",
+      "41"
+    ],
+    [
+      "-70",
+      "1000",
+      "6.5",
+      "0.31",
+      "49"
+    ],
+    [
+      "-70",
+      "1000",
+      "12.5",
+      "0.59",
+      "68"
+    ],
+    [
+      "-70",
+      "1000",
+      "25",
+      "1.2",
+      "80"
+    ],
+    [
+      "-70",
+      "1000",
+      "50",
+      "2.4",
+      "74"
+    ],
+    [
+      "-70",
+      "1000",
+      "100",
+      "4.7",
+      "60"
+    ],
+    [
+      "-60",
+      "250",
+      "3.5",
+      "0.010",
+      "31"
+    ],
+    [
+      "-60",
+      "500",
+      "3.5",
+      "0.041",
+      "38"
+    ],
+    [
+      "-60",
+      "1000",
+      "3.5",
+      "0.16",
+      "62"
+    ],
+    [
+      "-60",
+      "1000",
+      "6.5",
+      "0.31",
+      "74"
+    ],
+    [
+      "-60",
+      "1000",
+      "12.5",
+      "0.59",
+      "71"
+    ],
+    [
+      "-60",
+      "1000",
+      "25",
+      "1.2",
+      "46"
+    ],
+    [
+      "-60",
+      "1000",
+      "50",
+      "2.4",
+      "22"
+    ],
+    [
+      "-60",
+      "1000",
+      "100",
+      "4.7",
+      "9"
+    ],
+    [
+      "-50",
+      "250",
+      "3.5",
+      "0.010",
+      "30"
+    ],
+    [
+      "-50",
+      "500",
+      "3.5",
+      "0.041",
+      "51"
+    ],
+    [
+      "-50",
+      "1000",
+      "3.5",
+      "0.16",
+      "60"
+    ],
+    [
+      "-50",
+      "1000",
+      "6.5",
+      "0.31",
+      "37"
+    ],
+    [
+      "-50",
+      "1000",
+      "12.5",
+      "0.59",
+      "15"
+    ],
+    [
+      "-50",
+      "1000",
+      "25",
+      "1.2",
+      "3"
+    ],
+    [
+      "-50",
+      "1000",
+      "50",
+      "2.4",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "100",
+      "4.7",
+      "0"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table spans across a page break in the original document. The rows from the second page have been appended to the end of the table. The temperature '-50' applies to the rows from the second page as well, based on the pattern.",
+  "_source_paper": "Nagaki_2014_ThreeComponent",
+  "_source_image": "Tabe Sl. The ieL ecane teacooeo.png"
+}

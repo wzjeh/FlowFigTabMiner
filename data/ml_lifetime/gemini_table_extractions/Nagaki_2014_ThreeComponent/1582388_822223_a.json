@@ -1,0 +1,264 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-3",
+  "table_title": "The I/Li exchange reaction of 1,2-diiodobenzene with PhLi followed by the reaction with benzaldehyde in the flow microreactor system.",
+  "reaction_context": {
+    "substrate": "1,2-diiodobenzene",
+    "substrate_smiles": "Ic1ccccc1I",
+    "organolithium_reagent": "PhLi",
+    "intermediate": "2-iodophenyllithium",
+    "intermediate_smiles": "[Li]c1ccccc1I",
+    "electrophile": "benzaldehyde",
+    "electrophile_smiles": "O=Cc1ccccc1",
+    "product": "(2-iodophenyl)(phenyl)methanol",
+    "product_smiles": "OC(c1ccccc1)c1ccccc1I",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "temperature",
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "yield"
+  ],
+  "column_units": [
+    "(°C)",
+    "(μm)",
+    "(cm)",
+    "(s)",
+    "(%)"
+  ],
+  "rows": [
+    [
+      "-78",
+      "250",
+      "3.5",
+      "0.010",
+      "76"
+    ],
+    [
+      "-78",
+      "500",
+      "3.5",
+      "0.041",
+      "72"
+    ],
+    [
+      "-78",
+      "1000",
+      "3.5",
+      "0.16",
+      "68"
+    ],
+    [
+      "-78",
+      "1000",
+      "6.5",
+      "0.31",
+      "71"
+    ],
+    [
+      "-78",
+      "1000",
+      "12.5",
+      "0.59",
+      "65"
+    ],
+    [
+      "-78",
+      "1000",
+      "25",
+      "1.2",
+      "43"
+    ],
+    [
+      "-78",
+      "1000",
+      "50",
+      "2.4",
+      "23"
+    ],
+    [
+      "-78",
+      "1000",
+      "100",
+      "4.7",
+      "4"
+    ],
+    [
+      "-70",
+      "250",
+      "3.5",
+      "0.010",
+      "81"
+    ],
+    [
+      "-70",
+      "500",
+      "3.5",
+      "0.041",
+      "75"
+    ],
+    [
+      "-70",
+      "1000",
+      "3.5",
+      "0.16",
+      "55"
+    ],
+    [
+      "-70",
+      "1000",
+      "6.5",
+      "0.31",
+      "36"
+    ],
+    [
+      "-70",
+      "1000",
+      "12.5",
+      "0.59",
+      "14"
+    ],
+    [
+      "-70",
+      "1000",
+      "25",
+      "1.2",
+      "5"
+    ],
+    [
+      "-70",
+      "1000",
+      "50",
+      "2.4",
+      "9"
+    ],
+    [
+      "-70",
+      "1000",
+      "100",
+      "4.7",
+      "0"
+    ],
+    [
+      "-60",
+      "250",
+      "3.5",
+      "0.010",
+      "80"
+    ],
+    [
+      "-60",
+      "500",
+      "3.5",
+      "0.041",
+      "59"
+    ],
+    [
+      "-60",
+      "1000",
+      "3.5",
+      "0.16",
+      "10"
+    ],
+    [
+      "-60",
+      "1000",
+      "6.5",
+      "0.31",
+      "0"
+    ],
+    [
+      "-60",
+      "1000",
+      "12.5",
+      "0.59",
+      "0"
+    ],
+    [
+      "-60",
+      "1000",
+      "25",
+      "1.2",
+      "0"
+    ],
+    [
+      "-60",
+      "1000",
+      "50",
+      "2.4",
+      "0"
+    ],
+    [
+      "-60",
+      "1000",
+      "100",
+      "4.7",
+      "0"
+    ],
+    [
+      "-50",
+      "250",
+      "3.5",
+      "0.010",
+      "58"
+    ],
+    [
+      "-50",
+      "500",
+      "3.5",
+      "0.041",
+      "17"
+    ],
+    [
+      "-50",
+      "1000",
+      "3.5",
+      "0.16",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "6.5",
+      "0.31",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "12.5",
+      "0.59",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "25",
+      "1.2",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "50",
+      "2.4",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "100",
+      "4.7",
+      "0"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table spans across a page break in the original document. The rows have been combined into a single continuous list. The temperature column has merged cells, so the temperature value is repeated for each corresponding row.",
+  "_source_paper": "Nagaki_2014_ThreeComponent",
+  "_source_image": "1582388×822223 a.png"
+}

@@ -140,54 +140,81 @@ def load_halflives():
 # ── Plot 1: Hammett sigma vs Ea ──
 
 def plot_hammett(data):
+    from sklearn.linear_model import LinearRegression as LR
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    # Panel (a): sigma vs Ea for ArLi
+    # ── Build unified 4-parameter model ──
+    # Encoding B: benzyne δ_ortho=0, δ_benzyne=1
+    FEATURES = {
+        "m-CN-ArLi":       (0.56,  0.00, 0, 0),
+        "p-CN-ArLi":       (0.66,  0.00, 0, 0),
+        "p-CO₂ᵗBu-ArLi":  (0.45,  0.00, 0, 0),
+        "o-CO₂ᵗBu-ArLi":  (0.45, -1.54, 1, 0),
+        "PhLi":            (0.00,  0.00, 0, 0),
+        "o-CO₂Me-ArLi":    (0.45,  0.00, 1, 0),
+        "o-CO₂ⁱPr-ArLi":  (0.45, -0.47, 1, 0),
+        "o-CO₂Et-ArLi":    (0.45, -0.07, 1, 0),
+        "o-I-ArLi":        (0.35,  0.00, 0, 1),
+        "o-Br-ArLi":       (0.39,  0.00, 0, 1),
+    }
+
     arli = [d for d in data if d["props"]["sigma"] is not None]
+    arli_feat = [d for d in arli if d["props"]["short"] in FEATURES]
 
-    sigmas = [d["props"]["sigma"] for d in arli]
-    eas = [d["Ea"] for d in arli]
-    names = [d["props"]["short"] for d in arli]
-    cats = [d["props"]["category"] for d in arli]
+    X_all = np.array([FEATURES[d["props"]["short"]] for d in arli_feat])
+    Ea_all = np.array([d["Ea"] for d in arli_feat])
+    reg = LR().fit(X_all, Ea_all)
+    coef_Es, coef_ort, coef_bz = reg.coef_[1], reg.coef_[2], reg.coef_[3]
 
+    # Panel (a): sigma vs Ea — raw + corrected
     cat_colors = {
         "ArLi-EWG": "#2171B5", "ArLi-plain": "#969696",
         "ArLi-halo": "#E6550D",
     }
-    colors = [cat_colors.get(c, "#999") for c in cats]
 
-    # Use different markers for ortho vs para/meta
-    for i in range(len(arli)):
-        is_ortho = "ortho" in arli[i]["props"]["ewg"]
+    for d in arli:
+        short = d["props"]["short"]
+        sigma_i = d["props"]["sigma"]
+        ea_i = d["Ea"]
+        cat = d["props"]["category"]
+        c = cat_colors.get(cat, "#999")
+        is_ortho = "ortho" in d["props"]["ewg"]
         marker = "s" if is_ortho else "o"
-        ax1.scatter(sigmas[i], eas[i], s=120, c=colors[i], edgecolors="black",
-                    zorder=5, marker=marker)
 
-    for i, name in enumerate(names):
-        offset = (8, 8) if "Br" not in name else (8, -12)
-        ax1.annotate(name, (sigmas[i], eas[i]), xytext=offset,
+        # Raw point (faded)
+        ax1.scatter(sigma_i, ea_i, s=80, c=c, edgecolors="black",
+                    zorder=4, marker=marker, alpha=0.3, linewidths=0.5)
+
+        # Corrected point (remove Es, δ_ortho, δ_benzyne effects)
+        if short in FEATURES:
+            feat = FEATURES[short]
+            ea_corr = ea_i - coef_Es * feat[1] - coef_ort * feat[2] - coef_bz * feat[3]
+            ax1.scatter(sigma_i, ea_corr, s=120, c=c, edgecolors="black",
+                        zorder=6, marker=marker, linewidths=0.8)
+            # Arrow from raw to corrected
+            if abs(ea_i - ea_corr) > 1.5:
+                ax1.annotate("", xy=(sigma_i, ea_corr), xytext=(sigma_i, ea_i),
+                             arrowprops=dict(arrowstyle="->", color="gray", lw=0.8, alpha=0.5))
+            label_ea = ea_corr
+        else:
+            label_ea = ea_i
+
+        offset = (8, 8) if "Br" not in short else (8, -12)
+        ax1.annotate(short, (sigma_i, label_ea), xytext=offset,
                      textcoords="offset points", fontsize=7, fontweight="bold")
 
-    # Fit line excluding benzyne outliers and ortho substituents
-    # (Hammett σ is only valid for meta/para positions)
-    non_benzyne = [(s, e) for d, s, e in zip(arli, sigmas, eas)
-                   if d["props"]["mechanism"] != "benzyne elimination"
-                   and "ortho" not in d["props"]["ewg"]]
-    if len(non_benzyne) >= 3:
-        s_fit, e_fit = zip(*non_benzyne)
-        slope, intercept, r, p, se = linregress(s_fit, e_fit)
-        x_line = np.linspace(-0.1, 0.75, 50)
-        y_line = slope * x_line + intercept
-        ax1.plot(x_line, y_line, "b--", alpha=0.5, linewidth=1.5,
-                 label=f"EWG trend: Ea = {slope:.1f}\u03c3 + {intercept:.1f}\n(r={r:.2f}, excl. benzyne)")
-
-    # Mark benzyne zone (Ea = 59.7–65.4 after tR correction)
-    ax1.axhspan(55, 72, alpha=0.1, color="red")
-    ax1.text(0.05, 68, "benzyne\nelimination\nzone", fontsize=8, color="red", style="italic")
+    # Unified Hammett line
+    x_line = np.linspace(-0.1, 0.75, 50)
+    y_line = reg.coef_[0] * x_line + reg.intercept_
+    r2 = 1 - np.sum((Ea_all - reg.predict(X_all))**2) / np.sum((Ea_all - Ea_all.mean())**2)
+    ax1.plot(x_line, y_line, "b--", alpha=0.6, linewidth=1.8,
+             label=f"Unified: Ea = {reg.coef_[0]:.1f}\u03c3 + {reg.intercept_:.1f}\n"
+                   f"(4-param, R\u00b2={r2:.3f}, n=10)")
 
     ax1.set_xlabel("Hammett \u03c3", fontsize=12)
-    ax1.set_ylabel("Ea (kJ/mol)", fontsize=12)
-    ax1.set_title("(a) Hammett \u03c3 vs Decomposition Ea\n(ArLi intermediates only)", fontsize=12, fontweight="bold")
+    ax1.set_ylabel("Ea (kJ/mol)  [corrected for Es, \u03b4 effects]", fontsize=12)
+    ax1.set_title("(a) Unified Model: \u03c3 vs Ea\n(corrected for Es, \u03b4_ortho, \u03b4_benzyne)", fontsize=12, fontweight="bold")
     ax1.legend(fontsize=8)
     ax1.grid(alpha=0.3)
 
@@ -229,13 +256,57 @@ def plot_hammett(data):
 # ── Plot 2: Stability ranking with reactor zones ──
 
 def plot_stability_reactor_zones(data):
-    fig, ax = plt.subplots(figsize=(11, 7))
+    from sklearn.linear_model import LinearRegression as LR
+    from matplotlib.patches import Patch
 
-    sorted_data = sorted(data, key=lambda d: d["t_half_m40"])
-    names = [d["props"]["short"] for d in sorted_data]
-    log_t = [np.log10(d["t_half_m40"]) for d in sorted_data]
-    mechs = [d["props"]["mechanism"] for d in sorted_data]
-    eas = [d["Ea"] for d in sorted_data]
+    # ── Compute validation predictions from 4-parameter model ──
+    FEATURES = {
+        "m-CN-ArLi":       (0.56,  0.00, 0, 0),
+        "p-CN-ArLi":       (0.66,  0.00, 0, 0),
+        "p-CO₂ᵗBu-ArLi":  (0.45,  0.00, 0, 0),
+        "o-CO₂ᵗBu-ArLi":  (0.45, -1.54, 1, 0),
+        "PhLi":            (0.00,  0.00, 0, 0),
+        "o-CO₂Me-ArLi":    (0.45,  0.00, 1, 0),
+        "o-CO₂ⁱPr-ArLi":  (0.45, -0.47, 1, 0),
+        "o-CO₂Et-ArLi":    (0.45, -0.07, 1, 0),
+        "o-I-ArLi":        (0.35,  0.00, 0, 1),
+        "o-Br-ArLi":       (0.39,  0.00, 0, 1),
+    }
+    R_GAS = 8.314e-3
+    T_eval = -40 + 273.15
+
+    arli_feat = [d for d in data if d["props"]["short"] in FEATURES]
+    X_all = np.array([FEATURES[d["props"]["short"]] for d in arli_feat])
+    Ea_all = np.array([d["Ea"] for d in arli_feat])
+    lnA_all = np.array([d["ln_A"] for d in arli_feat])
+    reg_Ea = LR().fit(X_all, Ea_all)
+    reg_lnA = LR().fit(X_all, lnA_all)
+
+    val_substrates = [
+        ("p-CF₃-PhLi",  0.54, 0.0, 0, 0),
+        ("p-Cl-PhLi",   0.23, 0.0, 0, 0),
+        ("p-F-PhLi",    0.06, 0.0, 0, 0),
+        ("p-CH₃-PhLi", -0.17, 0.0, 0, 0),
+    ]
+    val_entries = []
+    for vn, *feat in val_substrates:
+        xv = np.array([feat])
+        ea_v = reg_Ea.predict(xv)[0]
+        lnA_v = reg_lnA.predict(xv)[0]
+        th_v = np.log(2) / np.exp(lnA_v - ea_v / (R_GAS * T_eval))
+        val_entries.append({"props": {"short": vn, "mechanism": "validation_prediction"},
+                            "Ea": ea_v, "ln_A": lnA_v, "t_half_m40": th_v})
+
+    # ── Combine and sort ──
+    combined = data + val_entries
+    combined = sorted(combined, key=lambda d: d["t_half_m40"])
+
+    fig, ax = plt.subplots(figsize=(11, 8))
+
+    names = [d["props"]["short"] for d in combined]
+    log_t = [np.log10(d["t_half_m40"]) for d in combined]
+    mechs = [d["props"]["mechanism"] for d in combined]
+    eas = [d["Ea"] for d in combined]
 
     mech_colors = {
         "conjugation-stabilized": "#2171B5",
@@ -243,6 +314,7 @@ def plot_stability_reactor_zones(data):
         "alpha-elimination": "#9E9AC8",
         "ring-opening": "#6A51A3",
         "protonation/polymerization": "#969696",
+        "validation_prediction": "#FFD700",
     }
     colors = [mech_colors.get(m, "#CCC") for m in mechs]
 
@@ -251,7 +323,7 @@ def plot_stability_reactor_zones(data):
     ax.set_yticks(range(len(names)))
     ax.set_yticklabels(names, fontsize=10, fontweight="bold")
     ax.set_xlabel("log\u2081\u2080(t\u00bd at -40\u00b0C)  [s]", fontsize=12)
-    ax.set_title("Organolithium Intermediate Stability Ranking\nwith Reactor Type Zones & Decomposition Mechanism",
+    ax.set_title("Organolithium Intermediate Stability Ranking\nwith Reactor Type Zones & Model Predictions",
                   fontsize=13, fontweight="bold")
 
     # Reactor zones (Yoshida classification)
@@ -264,7 +336,7 @@ def plot_stability_reactor_zones(data):
             fontsize=9, color="red", fontweight="bold", ha="center")
 
     # Add Ea and t_half labels
-    for i, (bar, ea, d) in enumerate(zip(bars, eas, sorted_data)):
+    for i, (bar, ea, d) in enumerate(zip(bars, eas, combined)):
         th = d["t_half_m40"]
         if th > 1:
             t_str = f"{th:.1f} s"
@@ -274,7 +346,6 @@ def plot_stability_reactor_zones(data):
                 va="center", fontsize=8, fontweight="bold")
 
     # Legend for mechanisms
-    from matplotlib.patches import Patch
     legend_elements = [Patch(facecolor=c, label=m) for m, c in mech_colors.items()]
     ax.legend(handles=legend_elements, fontsize=8, loc="lower right",
               title="Decomposition mechanism", title_fontsize=9)

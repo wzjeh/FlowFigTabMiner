@@ -1,0 +1,203 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 8",
+  "table_title": "Table 8. The Br/Li exchange reaction of alkyl o-bromobenzoates 8 followed by reaction with an electrophile.[a]",
+  "reaction_context": {
+    "substrate": "alkyl o-bromobenzoates 8",
+    "substrate_smiles": null,
+    "organolithium_reagent": "sBuLi",
+    "intermediate": "alkyl o-lithiobenzoates",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF/hexane/cyclohexane",
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Ester",
+    "E",
+    "Product",
+    "Yield [%]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "8a",
+      "tBuOH",
+      "3a",
+      "93"
+    ],
+    [
+      "8a",
+      "MeI",
+      "CC1=CC=CC=C1C(=O)OC(C)(C)C",
+      "88"
+    ],
+    [
+      "8a",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=CC=C1C(=O)OC(C)(C)C",
+      "96"
+    ],
+    [
+      "8a",
+      "PhCHO",
+      "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+      "82"
+    ],
+    [
+      "8b",
+      "iPrOH",
+      "3b",
+      "87"
+    ],
+    [
+      "8b",
+      "MeI",
+      "CC1=CC=CC=C1C(=O)OC(C)C",
+      "62"
+    ],
+    [
+      "8b",
+      "MeOTf",
+      "CC1=CC=CC=C1C(=O)OC(C)C",
+      "82"
+    ],
+    [
+      "8b",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=CC=C1C(=O)OC(C)C",
+      "93"
+    ],
+    [
+      "8b",
+      "PhCHO",
+      "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+      "66"
+    ],
+    [
+      "8c",
+      "EtOH",
+      "3c",
+      "90"
+    ],
+    [
+      "8c",
+      "MeI",
+      "CC1=CC=CC=C1C(=O)OCC",
+      "12"
+    ],
+    [
+      "8c",
+      "MeOTf",
+      "CC1=CC=CC=C1C(=O)OCC",
+      "62"
+    ],
+    [
+      "8c",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=CC=C1C(=O)OCC",
+      "61"
+    ],
+    [
+      "8c",
+      "Me3SiOTf",
+      "C[Si](C)(C)C1=CC=CC=C1C(=O)OCC",
+      "79"
+    ],
+    [
+      "8c",
+      "PhCHO",
+      "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+      "70"
+    ],
+    [
+      "8d",
+      "MeOH",
+      "3d",
+      "74"
+    ],
+    [
+      "8d",
+      "MeOTf",
+      "CC1=CC=CC=C1C(=O)OC",
+      "65"
+    ],
+    [
+      "8d",
+      "Me3SiOTf",
+      "C[Si](C)(C)C1=CC=CC=C1C(=O)OC",
+      "82"
+    ],
+    [
+      "8d",
+      "PhCHO",
+      "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+      "85"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "8a",
+      "name": "tert-butyl 2-bromobenzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3a",
+      "name": "tert-butyl benzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "8b",
+      "name": "isopropyl 2-bromobenzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=CC=C1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3b",
+      "name": "isopropyl benzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "8c",
+      "name": "ethyl 2-bromobenzoate",
+      "smiles": "CCOC(=O)C1=CC=CC=C1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3c",
+      "name": "ethyl benzoate",
+      "smiles": "CCOC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "8d",
+      "name": "methyl 2-bromobenzoate",
+      "smiles": "COC(=O)C1=CC=CC=C1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3d",
+      "name": "methyl benzoate",
+      "smiles": "COC(=O)C1=CC=CC=C1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] Alkyl o-bromobenzoates in THF (0.10 M), sBuLi in hexane/cyclohexane (0.42 M), and an electrophile (3.0 equiv, 0.60 M) were reacted in the flow microreactor system under the following optimized conditions: 8a: 0 °C (tR = 0.01 s), 8b: -28 °C (tR = 0.01 s), 8c: -48 °C (tR = 0.06 s), 8d: -48 °C (tR = 0.02 s). The yield of the product was determined by GC analysis."
+  ],
+  "notes": "The table contains molecular structures in the 'Ester' and 'Product' columns. I have extracted the structures into the 'structures' array and replaced the cell contents with the compound labels or SMILES strings where appropriate. For rows where multiple electrophiles are listed (e.g., MeI, MeOTf), I have split them into separate rows with the corresponding product and yield.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "nalo.png"
+}

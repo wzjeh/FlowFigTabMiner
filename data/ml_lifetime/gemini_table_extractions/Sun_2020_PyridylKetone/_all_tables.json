@@ -1,0 +1,163 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S1",
+    "table_title": "The effect of temperature and residence time on the yield of pyridine in continuous flow",
+    "reaction_context": {
+      "substrate": null,
+      "substrate_smiles": null,
+      "organolithium_reagent": null,
+      "intermediate": null,
+      "intermediate_smiles": null,
+      "electrophile": null,
+      "electrophile_smiles": null,
+      "product": "pyridine",
+      "product_smiles": "c1ccncc1",
+      "reaction_type": null,
+      "solvent": null,
+      "reactor_info": null
+    },
+    "columns": [
+      "Entry",
+      "T",
+      "R1",
+      "tR1",
+      "Yield"
+    ],
+    "column_units": [
+      null,
+      "°C",
+      "μL",
+      "s",
+      "%"
+    ],
+    "rows": [
+      [
+        "1",
+        "20",
+        "79",
+        "0.78",
+        "45"
+      ],
+      [
+        "2",
+        "20",
+        "158",
+        "1.58",
+        "41"
+      ],
+      [
+        "3",
+        "20",
+        "392",
+        "3.92",
+        "36"
+      ],
+      [
+        "4",
+        "0",
+        "79",
+        "0.78",
+        "61"
+      ],
+      [
+        "5",
+        "0",
+        "158",
+        "1.58",
+        "48"
+      ],
+      [
+        "6",
+        "0",
+        "392",
+        "3.92",
+        "40"
+      ],
+      [
+        "7",
+        "-20",
+        "79",
+        "0.78",
+        "71"
+      ],
+      [
+        "8",
+        "-20",
+        "158",
+        "1.58",
+        "65"
+      ],
+      [
+        "9",
+        "-20",
+        "392",
+        "3.92",
+        "46"
+      ],
+      [
+        "10",
+        "-40",
+        "79",
+        "0.78",
+        "73"
+      ],
+      [
+        "11",
+        "-40",
+        "118",
+        "1.18",
+        "76"
+      ],
+      [
+        "12",
+        "-40",
+        "158",
+        "1.58",
+        "81"
+      ],
+      [
+        "13",
+        "-40",
+        "236",
+        "2.36",
+        "75"
+      ],
+      [
+        "14",
+        "-40",
+        "392",
+        "3.92",
+        "64"
+      ],
+      [
+        "15",
+        "-78",
+        "79",
+        "0.78",
+        "35"
+      ],
+      [
+        "16",
+        "-78",
+        "158",
+        "1.58",
+        "63"
+      ],
+      [
+        "17",
+        "-78",
+        "392",
+        "3.92",
+        "79"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [
+      "a Monitored by GC."
+    ],
+    "notes": "Yield column header has a superscript 'a' referring to the footnote.",
+    "_source_paper": "Sun_2020_PyridylKetone",
+    "_source_image": "Table S1 The cfioct of temperature and residence time on the yicld ofpyridine in continous fow.png"
+  }
+]

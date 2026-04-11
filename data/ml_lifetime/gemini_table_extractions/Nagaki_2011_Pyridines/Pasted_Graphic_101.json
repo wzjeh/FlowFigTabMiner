@@ -1,0 +1,168 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 3",
+  "table_title": "Sequential introduction of two electrophiles into dibromopyridines using the integrated flow microreactor systema",
+  "reaction_context": {
+    "substrate": "dibromopyridines",
+    "substrate_smiles": null,
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "dilithiopyridine",
+    "intermediate_smiles": null,
+    "electrophile": "E1, E2",
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF/hexane",
+    "reactor_info": "R1: Ø = 500 μm, L = 3.5 cm, R2: Ø = 1000 μm, L = 310 cm, R3: Ø = 1000 μm, L = 25 cm, R4: Ø = 1000 μm, L = 200 cm"
+  },
+  "columns": [
+    "Dibromopyridine",
+    "E1",
+    "E2",
+    "Product",
+    "Yield (%)e",
+    "Productivity (g h–1)"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    null,
+    "%",
+    "g h–1"
+  ],
+  "rows": [
+    [
+      "Brc1cccnc1Br",
+      "MeIb",
+      "PhCHOb",
+      "Cc1cccnc1C(O)c2ccccc2",
+      "68f",
+      "4.85"
+    ],
+    [
+      "",
+      "MeIc",
+      "PhCNc",
+      "Cc1cccnc1C(=O)c2ccccc2",
+      "47",
+      "3.35"
+    ],
+    [
+      "Brc1ccc(Br)nc1",
+      "MeI",
+      "PhCHO",
+      "Cc1ccc(C(O)c2ccccc2)nc1",
+      "75g",
+      "5.39"
+    ],
+    [
+      "",
+      "Me3SiClb",
+      "PhCHOb",
+      "C[Si](C)(C)c1ccc(C(O)c2ccccc2)nc1",
+      "51h",
+      "4.75"
+    ],
+    [
+      "Brc1cccc(Br)n1",
+      "MeI",
+      "PhCHO",
+      "Cc1cccc(C(O)c2ccccc2)n1",
+      "67",
+      "4.80"
+    ],
+    [
+      "",
+      "MeId",
+      "PhCNd",
+      "Cc1cccc(C(=O)c2ccccc2)n1",
+      "56",
+      "3.95"
+    ],
+    [
+      "",
+      "Me3SiCl",
+      "PhC(O)Me",
+      "C[Si](C)(C)c1cccc(C(C)(O)c2ccccc2)n1",
+      "56",
+      "5.48"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "2,3-dibromopyridine",
+      "smiles": "Brc1cccnc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2,5-dibromopyridine",
+      "smiles": "Brc1ccc(Br)nc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2,6-dibromopyridine",
+      "smiles": "Brc1cccc(Br)n1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "phenyl(3-methylpyridin-2-yl)methanol",
+      "smiles": "Cc1cccnc1C(O)c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "phenyl(3-methylpyridin-2-yl)methanone",
+      "smiles": "Cc1cccnc1C(=O)c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "phenyl(5-methylpyridin-2-yl)methanol",
+      "smiles": "Cc1ccc(C(O)c2ccccc2)nc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "phenyl(5-(trimethylsilyl)pyridin-2-yl)methanol",
+      "smiles": "C[Si](C)(C)c1ccc(C(O)c2ccccc2)nc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "phenyl(6-methylpyridin-2-yl)methanol",
+      "smiles": "Cc1cccc(C(O)c2ccccc2)n1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "phenyl(6-methylpyridin-2-yl)methanone",
+      "smiles": "Cc1cccc(C(=O)c2ccccc2)n1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "1-phenyl-1-(6-(trimethylsilyl)pyridin-2-yl)ethanol",
+      "smiles": "C[Si](C)(C)c1cccc(C(C)(O)c2ccccc2)n1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a Reactions were carried out under the following conditions unless otherwise stated. Flow rate of dibromopyridine (0.10 M in THF): 6.00 mL min–1; flow rate of the first aliquot of n-BuLi (0.40 M in hexane): 1.50 mL min–1; flow rate of the solution of E1 (0.24 M in THF): 3.00 mL min–1; flow rate of the second aliquot of n-BuLi (0.40 M in hexane): 2.25 mL min–1; flow rate of the solution of E2 (0.24 M in THF): 4.00 mL min–1; R1: Ø = 500 μm, L = 3.5 cm, R2: Ø = 1000 μm, L = 310 cm, R3: Ø = 1000 μm, L = 25 cm, R4: Ø = 1000 μm, L = 200 cm.",
+    "b R3: Ø = 1000 μm, L = 12.5 cm.",
+    "c Flow rate of the solution of E2: 5.00 mL min–1.",
+    "d Flow rate of the solution of E2: 6.00 mL min–1.",
+    "e Isolated yields. Unless otherwise stated, the purity of product was >97% as judged by GC analysis.",
+    "f The purity was 88% (GC). 3-(α-Hydroxybenzyl)-2-methylpyridine was observed by GCMS as a major byproduct (9%, GC).",
+    "g The purity was 81% (GC). 5-(α-Hydroxybenzyl)-2-methylpyridine was observed by GCMS as a major byproduct (9%, GC); 2- and 3-hydroxybenzylpyridines were also observed by GCMS (total 10%, GC).",
+    "h The purity was 93% (GC). 5-(α-Hydroxybenzyl)-2-trimethylsilylpyridine was observed by GCMS as a major byproduct (7%, GC)."
+  ],
+  "notes": "Table contains structures for substrates and products. Substrate structures are repeated implicitly for empty cells in the first column.",
+  "_source_paper": "Nagaki_2011_Pyridines",
+  "_source_image": "Pasted Graphic 101.png"
+}

@@ -1,0 +1,187 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-2",
+  "table_title": "Table S-2. Effects on the residence time and bath temperature in the Br-Li exchange reaction of 2,2'-dibromobiphenyl followed by the reaction with methanol in the microflow system.",
+  "reaction_context": {
+    "substrate": "2,2'-dibromobiphenyl",
+    "substrate_smiles": "Brc1ccccc1-c2ccccc2Br",
+    "organolithium_reagent": null,
+    "intermediate": "2-bromo-2'-lithiobiphenyl",
+    "intermediate_smiles": "Brc1ccccc1-c2ccccc2[Li]",
+    "electrophile": "methanol",
+    "electrophile_smiles": "CO",
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "microflow system"
+  },
+  "columns": [
+    "residence time of R1",
+    "inner diameter of R1",
+    "length of R1",
+    "bath temperature",
+    "1",
+    "2",
+    "3"
+  ],
+  "column_units": [
+    "s",
+    "μm",
+    "cm",
+    "°C",
+    "conv. (%)",
+    "yield (%)",
+    "yield (%)"
+  ],
+  "rows": [
+    [
+      "0.057",
+      "500",
+      "3.5",
+      "-78",
+      "23",
+      "19",
+      "0"
+    ],
+    [
+      "0.057",
+      "500",
+      "3.5",
+      "-48",
+      "69",
+      "60",
+      "4"
+    ],
+    [
+      "0.057",
+      "500",
+      "3.5",
+      "0",
+      "97",
+      "88",
+      "3"
+    ],
+    [
+      "0.057",
+      "500",
+      "3.5",
+      "24",
+      "96",
+      "85",
+      "4"
+    ],
+    [
+      "0.23",
+      "1000",
+      "3.5",
+      "-78",
+      "40",
+      "36",
+      "0"
+    ],
+    [
+      "0.23",
+      "1000",
+      "3.5",
+      "-48",
+      "95",
+      "88",
+      "1"
+    ],
+    [
+      "0.23",
+      "1000",
+      "3.5",
+      "0",
+      "97",
+      "88",
+      "4"
+    ],
+    [
+      "0.23",
+      "1000",
+      "3.5",
+      "24",
+      "96",
+      "85",
+      "5"
+    ],
+    [
+      "0.82",
+      "",
+      "12.5",
+      "-78",
+      "92",
+      "86",
+      "1"
+    ],
+    [
+      "0.82",
+      "",
+      "12.5",
+      "-48",
+      "96",
+      "88",
+      "2"
+    ],
+    [
+      "0.82",
+      "",
+      "12.5",
+      "0",
+      "96",
+      "86",
+      "4"
+    ],
+    [
+      "0.82",
+      "",
+      "12.5",
+      "24",
+      "94",
+      "83",
+      "5"
+    ],
+    [
+      "13",
+      "",
+      "200",
+      "-78",
+      "89",
+      "82",
+      "1"
+    ],
+    [
+      "13",
+      "",
+      "200",
+      "-48",
+      "95",
+      "87",
+      "2"
+    ],
+    [
+      "13",
+      "",
+      "200",
+      "0",
+      "95",
+      "83",
+      "5"
+    ],
+    [
+      "13",
+      "",
+      "200",
+      "24",
+      "88",
+      "68",
+      "12"
+    ]
+  ],
+  "footnotes": [],
+  "notes": "Compound 1 is the substrate (2,2'-dibromobiphenyl), 2 is the mono-debrominated product (2-bromobiphenyl), and 3 is the di-debrominated product (biphenyl). Inner diameter for rows 9-16 is left blank in the original table but is mathematically consistent with 1000 μm based on flow rate.",
+  "_source_paper": "Nagaki_2009_Biaryls",
+  "_source_image": "Table S-2. Effects on tbe residence time and boch scmperature in the Br-Li cxchange reaction of.png"
+}

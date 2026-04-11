@@ -1,0 +1,264 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-2",
+  "table_title": "The I/Li exchange reaction of 1-bromo-2-iodobenzene with PhLi followed by the reaction with benzaldehyde in the flow microreactor system.",
+  "reaction_context": {
+    "substrate": "1-bromo-2-iodobenzene",
+    "substrate_smiles": "Brc1ccccc1I",
+    "organolithium_reagent": "PhLi",
+    "intermediate": "2-bromophenyllithium",
+    "intermediate_smiles": "Brc1ccccc1[Li]",
+    "electrophile": "benzaldehyde",
+    "electrophile_smiles": "O=Cc1ccccc1",
+    "product": "(2-bromophenyl)(phenyl)methanol",
+    "product_smiles": "OC(c1ccccc1)c1ccccc1Br",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "temperature",
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "yield"
+  ],
+  "column_units": [
+    "(°C)",
+    "(μm)",
+    "(cm)",
+    "(s)",
+    "(%)"
+  ],
+  "rows": [
+    [
+      "-78",
+      "250",
+      "3.5",
+      "0.010",
+      "70"
+    ],
+    [
+      "-78",
+      "500",
+      "3.5",
+      "0.041",
+      "79"
+    ],
+    [
+      "-78",
+      "1000",
+      "3.5",
+      "0.16",
+      "86"
+    ],
+    [
+      "-78",
+      "1000",
+      "6.5",
+      "0.31",
+      "80"
+    ],
+    [
+      "-78",
+      "1000",
+      "12.5",
+      "0.59",
+      "87"
+    ],
+    [
+      "-78",
+      "1000",
+      "25",
+      "1.2",
+      "81"
+    ],
+    [
+      "-78",
+      "1000",
+      "50",
+      "2.4",
+      "81"
+    ],
+    [
+      "-78",
+      "1000",
+      "100",
+      "4.7",
+      "76"
+    ],
+    [
+      "-70",
+      "250",
+      "3.5",
+      "0.010",
+      "76"
+    ],
+    [
+      "-70",
+      "500",
+      "3.5",
+      "0.041",
+      "83"
+    ],
+    [
+      "-70",
+      "1000",
+      "3.5",
+      "0.16",
+      "93"
+    ],
+    [
+      "-70",
+      "1000",
+      "6.5",
+      "0.31",
+      "90"
+    ],
+    [
+      "-70",
+      "1000",
+      "12.5",
+      "0.59",
+      "89"
+    ],
+    [
+      "-70",
+      "1000",
+      "25",
+      "1.2",
+      "83"
+    ],
+    [
+      "-70",
+      "1000",
+      "50",
+      "2.4",
+      "71"
+    ],
+    [
+      "-70",
+      "1000",
+      "100",
+      "4.7",
+      "60"
+    ],
+    [
+      "-60",
+      "250",
+      "3.5",
+      "0.010",
+      "74"
+    ],
+    [
+      "-60",
+      "500",
+      "3.5",
+      "0.041",
+      "88"
+    ],
+    [
+      "-60",
+      "1000",
+      "3.5",
+      "0.16",
+      "84"
+    ],
+    [
+      "-60",
+      "1000",
+      "6.5",
+      "0.31",
+      "81"
+    ],
+    [
+      "-60",
+      "1000",
+      "12.5",
+      "0.59",
+      "64"
+    ],
+    [
+      "-60",
+      "1000",
+      "25",
+      "1.2",
+      "18"
+    ],
+    [
+      "-60",
+      "1000",
+      "50",
+      "2.4",
+      "18"
+    ],
+    [
+      "-60",
+      "1000",
+      "100",
+      "4.7",
+      "8"
+    ],
+    [
+      "-50",
+      "250",
+      "3.5",
+      "0.010",
+      "75"
+    ],
+    [
+      "-50",
+      "500",
+      "3.5",
+      "0.041",
+      "85"
+    ],
+    [
+      "-50",
+      "1000",
+      "3.5",
+      "0.16",
+      "58"
+    ],
+    [
+      "-50",
+      "1000",
+      "6.5",
+      "0.31",
+      "37"
+    ],
+    [
+      "-50",
+      "1000",
+      "12.5",
+      "0.59",
+      "33"
+    ],
+    [
+      "-50",
+      "1000",
+      "25",
+      "1.2",
+      "14"
+    ],
+    [
+      "-50",
+      "1000",
+      "50",
+      "2.4",
+      "0"
+    ],
+    [
+      "-50",
+      "1000",
+      "100",
+      "4.7",
+      "0"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the JSON output.",
+  "_source_paper": "Nagaki_2014_ThreeComponent",
+  "_source_image": "Table.png"
+}

@@ -1,0 +1,286 @@
+{
+  "image_type": "table",
+  "table_id": "Table S8",
+  "table_title": "Table S8. Halogen-lithium exchange reaction of 4-bromo-5-methyl-2-phenylthiazole (1c) with n-BuLi followed by reaction with octafluorocyclopentene in integrated flow microreactor systems.",
+  "reaction_context": {
+    "substrate": "4-bromo-5-methyl-2-phenylthiazole (1c)",
+    "substrate_smiles": "Cc1c(Br)nc(-c2ccccc2)s1",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "4-lithio-5-methyl-2-phenylthiazole",
+    "intermediate_smiles": "Cc1c([Li])nc(-c2ccccc2)s1",
+    "electrophile": "octafluorocyclopentene",
+    "electrophile_smiles": "FC1(F)C(F)=C(F)C(F)(F)C1(F)F",
+    "product": "1,2-bis(5-methyl-2-phenyl-4-thiazolyl)perfluorocyclopentene (4cc)",
+    "product_smiles": "Cc1c(C2=C(c3nc(-c4ccccc4)sc3C)C(F)(F)C(F)(F)C2(F)F)nc(-c5ccccc5)s1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "integrated flow microreactor systems"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "tR1",
+    "inner diameter of R2",
+    "length of R2",
+    "tR2",
+    "T",
+    "1,2-bis(5-methyl-2-phenyl-4-thiazolyl)perfluorocyclopentene (4cc)"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%"
+  ],
+  "rows": [
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "250",
+      "3.5",
+      "0.011",
+      "24",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "500",
+      "3.5",
+      "0.043",
+      "24",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "3.5",
+      "0.17",
+      "24",
+      "2"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "12.5",
+      "0.62",
+      "24",
+      "21"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "50",
+      "2.5",
+      "24",
+      "59"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "200",
+      "9.9",
+      "24",
+      "67"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "250",
+      "3.5",
+      "0.011",
+      "0",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "500",
+      "3.5",
+      "0.043",
+      "0",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "3.5",
+      "0.17",
+      "0",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "12.5",
+      "0.62",
+      "0",
+      "1"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "50",
+      "2.5",
+      "0",
+      "12"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "200",
+      "9.9",
+      "0",
+      "21"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "250",
+      "3.5",
+      "0.011",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "500",
+      "3.5",
+      "0.043",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "3.5",
+      "0.17",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "12.5",
+      "0.62",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "50",
+      "2.5",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "200",
+      "9.9",
+      "-28",
+      "3"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "250",
+      "3.5",
+      "0.011",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "500",
+      "3.5",
+      "0.043",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "3.5",
+      "0.17",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "12.5",
+      "0.62",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "50",
+      "2.5",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "200",
+      "9.9",
+      "-48",
+      "0"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Merged cells for R1 parameters and Temperature were expanded to fill all corresponding rows.",
+  "_source_paper": "Asai_2012_Photochromic",
+  "_source_image": "Table S&. Halogen-finium exchange reaction of 4-bromo-5-methyt-2-phenylthiazole （1c） with n.BuLi.png"
+}

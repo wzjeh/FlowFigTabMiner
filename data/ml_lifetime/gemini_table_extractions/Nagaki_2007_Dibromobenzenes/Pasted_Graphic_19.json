@@ -1,0 +1,263 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-6",
+  "table_title": "The Br-Li exchange reaction of o-dibromobenzene with n-BuLi followed by the quenching with MeOH using the micro flow system.",
+  "reaction_context": {
+    "substrate": "o-dibromobenzene",
+    "substrate_smiles": "Brc1ccccc1Br",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "o-bromophenyllithium",
+    "intermediate_smiles": "[Li]c1ccccc1Br",
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "bromobenzene",
+    "product_smiles": "Brc1ccccc1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF/hexane",
+    "reactor_info": "micro flow system consisting of two T-shaped micromixers (M1: φ=250 μm, M2: φ=500 μm) and two microtube reactors (R1: φ=φ1 μm, L=Lx cm; R2: φ=1000 μm, L=50 cm)"
+  },
+  "columns": [
+    "T (°C)",
+    "φ1 (μm)",
+    "Lx (cm)",
+    "Rt (sec)",
+    "yield (%)"
+  ],
+  "column_units": [
+    "°C",
+    "μm",
+    "cm",
+    "sec",
+    "%"
+  ],
+  "rows": [
+    [
+      "-85",
+      "500",
+      "6",
+      "0.10",
+      "24"
+    ],
+    [
+      "-85",
+      "500",
+      "12.5",
+      "0.21",
+      "16"
+    ],
+    [
+      "-85",
+      "500",
+      "25",
+      "0.41",
+      "20"
+    ],
+    [
+      "-85",
+      "500",
+      "50",
+      "0.82",
+      "44"
+    ],
+    [
+      "-85",
+      "500",
+      "100",
+      "1.6",
+      "51"
+    ],
+    [
+      "-78",
+      "500",
+      "6",
+      "0.10",
+      "29"
+    ],
+    [
+      "-78",
+      "500",
+      "12.5",
+      "0.21",
+      "33"
+    ],
+    [
+      "-78",
+      "500",
+      "25",
+      "0.41",
+      "37"
+    ],
+    [
+      "-78",
+      "500",
+      "50",
+      "0.82",
+      "74"
+    ],
+    [
+      "-78",
+      "500",
+      "100",
+      "1.6",
+      "61"
+    ],
+    [
+      "-70",
+      "500",
+      "3",
+      "0.049",
+      "41"
+    ],
+    [
+      "-70",
+      "500",
+      "6",
+      "0.10",
+      "42"
+    ],
+    [
+      "-70",
+      "500",
+      "12.5",
+      "0.21",
+      "52"
+    ],
+    [
+      "-70",
+      "500",
+      "25",
+      "0.41",
+      "59"
+    ],
+    [
+      "-70",
+      "500",
+      "50",
+      "0.82",
+      "70"
+    ],
+    [
+      "-70",
+      "500",
+      "100",
+      "1.6",
+      "47"
+    ],
+    [
+      "-65",
+      "500",
+      "3",
+      "0.049",
+      "41"
+    ],
+    [
+      "-65",
+      "500",
+      "6",
+      "0.10",
+      "45"
+    ],
+    [
+      "-65",
+      "500",
+      "12.5",
+      "0.21",
+      "40"
+    ],
+    [
+      "-65",
+      "500",
+      "25",
+      "0.41",
+      "35"
+    ],
+    [
+      "-60",
+      "500",
+      "3",
+      "0.049",
+      "31"
+    ],
+    [
+      "-60",
+      "500",
+      "6",
+      "0.10",
+      "15"
+    ],
+    [
+      "-60",
+      "500",
+      "12.5",
+      "0.21",
+      "14"
+    ],
+    [
+      "-60",
+      "500",
+      "25",
+      "0.41",
+      "5"
+    ],
+    [
+      "-60",
+      "500",
+      "50",
+      "0.82",
+      "7"
+    ],
+    [
+      "-50",
+      "500",
+      "3",
+      "0.049",
+      "4"
+    ],
+    [
+      "-50",
+      "500",
+      "6",
+      "0.10",
+      "3"
+    ],
+    [
+      "-50",
+      "500",
+      "12.5",
+      "0.21",
+      "2"
+    ],
+    [
+      "-50",
+      "500",
+      "25",
+      "0.41",
+      "0"
+    ],
+    [
+      "-50",
+      "500",
+      "50",
+      "0.82",
+      "0"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "o-dibromobenzene",
+      "smiles": "Brc1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "bromobenzene",
+      "smiles": "Brc1ccccc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "Merged cells in T and φ1 columns were expanded to fill all rows.",
+  "_source_paper": "Nagaki_2007_Dibromobenzenes",
+  "_source_image": "Pasted Graphic 19.png"
+}

@@ -1,0 +1,966 @@
+[
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 1",
+    "table_title": "External trapping of 2 and 3 with electrophiles under continuous flow conditions.",
+    "reaction_context": {
+      "substrate": "fluoroiodomethane (1)",
+      "substrate_smiles": "FCI",
+      "organolithium_reagent": "MeLi or LDA",
+      "intermediate": "fluoromethyllithium (2) or fluoroiodomethyllithium (3)",
+      "intermediate_smiles": "FC[Li]",
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange or deprotonation",
+      "solvent": "THF/Et2O",
+      "reactor_info": "M1, R1, M2, R2"
+    },
+    "columns": [
+      "Electrophile",
+      "Lithiating agent",
+      "Product",
+      "Product Label",
+      "Yield [%] Internal in batch",
+      "Yield [%] External in flow[a]",
+      "Productivity [g h-1][d]"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      null,
+      "%",
+      "%",
+      "g h-1"
+    ],
+    "rows": [
+      [
+        "O=C(N(OC)C)CCC1=CC=CC=C1",
+        "MeLi",
+        "O=C(F)CCC1=CC=CC=C1",
+        "4a",
+        "34[b]",
+        "70 (82)[c]",
+        "2.8"
+      ],
+      [
+        "O=C(N(OC)C)/C=C/C1=CC=CC=C1",
+        "MeLi",
+        "O=C(F)/C=C/C1=CC=CC=C1",
+        "4b",
+        "41[b]",
+        "80 (88)[c]",
+        "3.2"
+      ],
+      [
+        "O=C(N(OC)C)CC1=CC=CC=C1",
+        "MeLi",
+        "O=C(F)CC1=CC=CC=C1",
+        "4c",
+        "58[b]",
+        "66 (79)[c]",
+        "2.2"
+      ],
+      [
+        "O=C(N(OC)C)CC1=CC=CS1",
+        "MeLi",
+        "O=C(F)CC1=CC=CS1",
+        "4d",
+        "45[b]",
+        "68 (80)[c]",
+        "2.4"
+      ],
+      [
+        "O=C(N(OC)C)C1=CC=C(C2=CC=CC=C2)C=C1",
+        "MeLi",
+        "O=C(F)C1=CC=C(C2=CC=CC=C2)C=C1",
+        "4e",
+        "53[b]",
+        "60 (72)[c]",
+        "3.1"
+      ],
+      [
+        "O=C(N(OC)C)C(CC)C1=CC=CC=C1",
+        "MeLi",
+        "O=C(F)C(CC)C1=CC=CC=C1",
+        "4f",
+        "30[b]",
+        "60 (65)[c]",
+        "2.6"
+      ],
+      [
+        "O=C(N(OC)C)C1=CC(F)=CC=C1",
+        "MeLi",
+        "O=C(F)C1=CC(F)=CC=C1",
+        "4g",
+        "47[b]",
+        "80 (93)[c]",
+        "3.0"
+      ],
+      [
+        "O=C(N(OC)C)C1=CC=C(C(F)(F)F)C=C1",
+        "MeLi",
+        "O=C(F)C1=CC=C(C(F)(F)F)C=C1",
+        "4h",
+        "41[b]",
+        "75 (84)[c]",
+        "3.7"
+      ],
+      [
+        "O=C(N(OC)C)C1=CC=C(F)C=C1",
+        "MeLi",
+        "O=C(F)C1=CC=C(F)C=C1",
+        "4i",
+        "55[b]",
+        "77 (87)[c]",
+        "2.9"
+      ],
+      [
+        "Bu3SnCl",
+        "LDA",
+        "CCCC[Sn](CCCC)(CCCC)C(F)I",
+        "5a",
+        "21[c]",
+        "84 (99)[c]",
+        "9.1"
+      ],
+      [
+        "Ph3SnCl",
+        "LDA",
+        "FC(I)[Sn](C1=CC=CC=C1)(C2=CC=CC=C2)C3=CC=CC=C3",
+        "5b",
+        "41[c]",
+        "80 (95)[c]",
+        "9.8"
+      ],
+      [
+        "Bu2PhSnCl",
+        "LDA",
+        "CCCC[Sn](CCCC)(C1=CC=CC=C1)C(F)I",
+        "5c",
+        "-",
+        "60 (65)[c]",
+        "6.8"
+      ],
+      [
+        "O=C(C1=CC=CC=C1)C2=CC=CC=C2",
+        "LDA",
+        "FC(I)C1(OC1)C2=CC=CC=C2C3=CC=CC=C3",
+        "6a",
+        "49[c]",
+        "76 (99)[c]",
+        "3.9"
+      ],
+      [
+        "O=C(C1=CC=C(F)C=C1)C2=CC=C(F)C=C2",
+        "LDA",
+        "FC(I)C1(OC1)C2=CC=C(F)C=C2C3=CC=C(F)C=C3",
+        "6b",
+        "42[c]",
+        "56 (99)[c]",
+        "3.4"
+      ],
+      [
+        "O=C(C(C)C)C1=CC=CC=C1",
+        "LDA",
+        "FC(I)C1(OC1)C(C)CC2=CC=CC=C2",
+        "6c",
+        "80[c]",
+        "85 (95)[c]",
+        "3.7"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "4a",
+        "name": null,
+        "smiles": "O=C(F)CCC1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4b",
+        "name": null,
+        "smiles": "O=C(F)/C=C/C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4c",
+        "name": null,
+        "smiles": "O=C(F)CC1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4d",
+        "name": null,
+        "smiles": "O=C(F)CC1=CC=CS1",
+        "role": "product"
+      },
+      {
+        "label": "4e",
+        "name": null,
+        "smiles": "O=C(F)C1=CC=C(C2=CC=CC=C2)C=C1",
+        "role": "product"
+      },
+      {
+        "label": "4f",
+        "name": null,
+        "smiles": "O=C(F)C(CC)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4g",
+        "name": null,
+        "smiles": "O=C(F)C1=CC(F)=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4h",
+        "name": null,
+        "smiles": "O=C(F)C1=CC=C(C(F)(F)F)C=C1",
+        "role": "product"
+      },
+      {
+        "label": "4i",
+        "name": null,
+        "smiles": "O=C(F)C1=CC=C(F)C=C1",
+        "role": "product"
+      },
+      {
+        "label": "5a",
+        "name": null,
+        "smiles": "CCCC[Sn](CCCC)(CCCC)C(F)I",
+        "role": "product"
+      },
+      {
+        "label": "5b",
+        "name": null,
+        "smiles": "FC(I)[Sn](C1=CC=CC=C1)(C2=CC=CC=C2)C3=CC=CC=C3",
+        "role": "product"
+      },
+      {
+        "label": "5c",
+        "name": null,
+        "smiles": "CCCC[Sn](CCCC)(C1=CC=CC=C1)C(F)I",
+        "role": "product"
+      },
+      {
+        "label": "6a",
+        "name": null,
+        "smiles": "FC(I)C1(OC1)C2=CC=CC=C2C3=CC=CC=C3",
+        "role": "product"
+      },
+      {
+        "label": "6b",
+        "name": null,
+        "smiles": "FC(I)C1(OC1)C2=CC=C(F)C=C2C3=CC=C(F)C=C3",
+        "role": "product"
+      },
+      {
+        "label": "6c",
+        "name": null,
+        "smiles": "FC(I)C1(OC1)C(C)CC2=CC=CC=C2",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] A solution of fluoroiodomethane (1) (0.10 M in THF; flow rate: 4.0 mL/min) and a solution of MeLi (Br free; 0.20 M in Et2O; flow rate: 4.0 mL/min) or LDA (0.42 M in THF; flow rate: 1.0 mL min-1) were introduced to M1 by syringe pumps. The resulting solution was passed through R1 (tR1 = 0.013 s, T = -60 °C (4a-i); tR1 = 0.082 s, T = -40 °C (5a-c, 6a-c)) and was mixed with a solution of electrophiles (0.30 M in THF) (flow rate: 4.0 mL min-1) in M2. The resulting solution was passed through R2 (tR2 = 7.85 s, T = -60 °C (4a-4i); tR2 = 10.47 s, T = -40 °C (5a-5c); tR2 = 20.94 s, T = -40 °C (6a-6c)).",
+      "[b] Previous research data (Ref. [3a]).",
+      "[c] Yields were determined by 1H NMR analysis using dibromomethane as an internal standard.",
+      "[d] The productivity was calculated based on the yield of the isolated product."
+    ],
+    "notes": "The table contains drawn structures for electrophiles and products. The product label column was added to separate the label from the structure. The yield column has two sub-columns: 'Internal in batch' and 'External in flow'. The external in flow yield has two values, the first is isolated yield and the second in parentheses is NMR yield.",
+    "_source_paper": "Nagaki_2020_CHLiIF",
+    "_source_image": "Pasted Graphic 88.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 3",
+    "table_title": "Table 3: External trapping of 2 and 3 with polyfunctional electrophiles under continuous flow conditions.[a]",
+    "reaction_context": {
+      "substrate": "fluoroiodomethane (1)",
+      "substrate_smiles": "FIC",
+      "organolithium_reagent": "MeLi or LDA",
+      "intermediate": "fluoromethyllithium (2) and fluoroiodomethyllithium (3)",
+      "intermediate_smiles": "[Li]CF",
+      "electrophile": "polyfunctional electrophiles (Weinreb amides, benzophenones)",
+      "electrophile_smiles": null,
+      "product": "alpha-fluoroketones, fluoroalcohols, and fluoroepoxides",
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange / deprotonation followed by nucleophilic addition / Darzens reaction",
+      "solvent": "THF, Et2O",
+      "reactor_info": "M1, M2; R1 (tR1 = 0.013-0.082 s), R2 (tR2 = 7.85-20.94 s)"
+    },
+    "columns": [
+      "Polyfunctional electrophile",
+      "Lithiating agent",
+      "Product",
+      "Label",
+      "Yield"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "COc1ccc(C(=O)N(C)OC)cc1",
+        "MeLi",
+        "COc1ccc(C(=O)CF)cc1",
+        "4j",
+        "69[b]"
+      ],
+      [
+        "N#Cc1ccc(C(=O)N(C)OC)cc1",
+        "MeLi",
+        "N#Cc1ccc(C(=O)CF)cc1",
+        "4k",
+        "58 (64)[c]"
+      ],
+      [
+        "N#Cc1cccc(C(=O)N(C)OC)c1",
+        "MeLi",
+        "N#Cc1cccc(C(=O)CF)c1",
+        "4l",
+        "51 (58)[c]"
+      ],
+      [
+        "Brc1ccc(C(=O)N(C)OC)cc1",
+        "MeLi",
+        "Brc1ccc(C(=O)CF)cc1",
+        "4m",
+        "69 (80)[c]"
+      ],
+      [
+        "Brc1cccc(C(=O)N(C)OC)c1",
+        "MeLi",
+        "Brc1cccc(C(=O)CF)c1",
+        "4n",
+        "70 (75)[c]"
+      ],
+      [
+        "CN(OC)C(=O)c1ccc(C(=O)c2ccccc2)cc1",
+        "MeLi",
+        "CN(OC)C(=O)c1ccc(C(O)(CF)c2ccccc2)cc1",
+        "4o",
+        "60 (65)[c]"
+      ],
+      [
+        "C=Cc1ccc(C(=O)c2ccccc2)cc1",
+        "LDA",
+        "FC1OC1(c2ccccc2)c3ccc(C=C)cc3",
+        "6d",
+        "90 (99)[c]"
+      ],
+      [
+        "Brc1ccc(C(=O)c2ccccc2)cc1",
+        "LDA",
+        "FC1OC1(c2ccccc2)c3ccc(Br)cc3",
+        "6e",
+        "66 (91)[c]"
+      ],
+      [
+        "N#Cc1ccc(C(=O)c2ccccc2)cc1",
+        "LDA",
+        "FC1OC1(c2ccccc2)c3ccc(C#N)cc3",
+        "6f",
+        "(49)[c]"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": "N-methoxy-N-methyl-4-methoxybenzamide",
+        "smiles": "COc1ccc(C(=O)N(C)OC)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4j",
+        "name": null,
+        "smiles": "COc1ccc(C(=O)CF)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-cyano-N-methoxy-N-methylbenzamide",
+        "smiles": "N#Cc1ccc(C(=O)N(C)OC)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4k",
+        "name": null,
+        "smiles": "N#Cc1ccc(C(=O)CF)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "3-cyano-N-methoxy-N-methylbenzamide",
+        "smiles": "N#Cc1cccc(C(=O)N(C)OC)c1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4l",
+        "name": null,
+        "smiles": "N#Cc1cccc(C(=O)CF)c1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-bromo-N-methoxy-N-methylbenzamide",
+        "smiles": "Brc1ccc(C(=O)N(C)OC)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4m",
+        "name": null,
+        "smiles": "Brc1ccc(C(=O)CF)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "3-bromo-N-methoxy-N-methylbenzamide",
+        "smiles": "Brc1cccc(C(=O)N(C)OC)c1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4n",
+        "name": null,
+        "smiles": "Brc1cccc(C(=O)CF)c1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-(phenylcarbonyl)-N-methoxy-N-methylbenzamide",
+        "smiles": "CN(OC)C(=O)c1ccc(C(=O)c2ccccc2)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "4o",
+        "name": null,
+        "smiles": "CN(OC)C(=O)c1ccc(C(O)(CF)c2ccccc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-vinylbenzophenone",
+        "smiles": "C=Cc1ccc(C(=O)c2ccccc2)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "6d",
+        "name": null,
+        "smiles": "FC1OC1(c2ccccc2)c3ccc(C=C)cc3",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-bromobenzophenone",
+        "smiles": "Brc1ccc(C(=O)c2ccccc2)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "6e",
+        "name": null,
+        "smiles": "FC1OC1(c2ccccc2)c3ccc(Br)cc3",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-cyanobenzophenone",
+        "smiles": "N#Cc1ccc(C(=O)c2ccccc2)cc1",
+        "role": "electrophile"
+      },
+      {
+        "label": "6f",
+        "name": null,
+        "smiles": "FC1OC1(c2ccccc2)c3ccc(C#N)cc3",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] A solution of fluoroiodomethane (1); 0.10 M in THF); flow rate: 4.0 mL min^-1) and a solution of MeLi (Br free; 0.20 M in Et2O; flow rate: 4.0 mL min^-1) or LDA (0.42 M in THF; flow rate: 1.0 mL min^-1) were introduced to M1 by syringe pumps. The resulting solution was passed through R1 (tR1 = 0.013 s, T = -60 °C (4j-o); tR1 = 0.082 s, T = -40 °C (6d and 6e), -60 °C (6f)) and was mixed with a solution of electrophiles (0.30 M in THF; flow rate: 4.0 mL min^-1) in M2. The resulting solution was passed through R2 (tR2 = 7.85 s, T = -60 °C (4j-o); tR2 = 20.94 s, T = -40 °C ((6d and 6e), -60 °C (6f)).",
+      "[b] Yield was determined by GC analysis using dodecane as an internal standard.",
+      "[c] Yields were determined by 1H NMR analysis using dibromomethane as an internal standard."
+    ],
+    "notes": "An unlabelled column for the product number designations (4j, 4k, etc.) was assigned the header 'Label'. Based on the reaction reagents, MeLi effects I-Li exchange of fluoroiodomethane to form fluoromethyllithium (2) which attacks Weinreb amides and ketones. LDA deprotonates fluoroiodomethane to form fluoroiodomethyllithium (3), which reacts with ketones followed by intramolecular cyclization (Darzens-type reaction) to yield fluoroepoxides."
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S1",
+    "table_title": "Lithiation of fluoroiodomethane (1) with MeLi followed by trapping with N-methoxy-N-methyl-3-phenylpropanamide (7a) using a flow microreactor system.",
+    "reaction_context": {
+      "substrate": "fluoroiodomethane (1)",
+      "substrate_smiles": "FCI",
+      "organolithium_reagent": "MeLi",
+      "intermediate": "fluoromethyllithium",
+      "intermediate_smiles": "FC[Li]",
+      "electrophile": "N-methoxy-N-methyl-3-phenylpropanamide (7a)",
+      "electrophile_smiles": "O=C(N(OC)C)CCc1ccccc1",
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "Temperature",
+      "L1",
+      "φ1",
+      "tR1",
+      "Yield"
+    ],
+    "column_units": [
+      "[°C]",
+      "[cm]",
+      "[μm]",
+      "[s]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "–20",
+        "1.0",
+        "250",
+        "0.0037",
+        "60"
+      ],
+      [
+        "–20",
+        "3.5",
+        "250",
+        "0.013",
+        "13"
+      ],
+      [
+        "–20",
+        "3.5",
+        "500",
+        "0.052",
+        "5"
+      ],
+      [
+        "–20",
+        "3.5",
+        "1000",
+        "0.21",
+        "0"
+      ],
+      [
+        "–20",
+        "12.5",
+        "1000",
+        "0.74",
+        "0"
+      ],
+      [
+        "–20",
+        "25",
+        "1000",
+        "1.5",
+        "0"
+      ],
+      [
+        "–20",
+        "50",
+        "1000",
+        "2.9",
+        "0"
+      ],
+      [
+        "–40",
+        "1.0",
+        "250",
+        "0.0037",
+        "71"
+      ],
+      [
+        "–40",
+        "3.5",
+        "250",
+        "0.013",
+        "57"
+      ],
+      [
+        "–40",
+        "3.5",
+        "500",
+        "0.052",
+        "40"
+      ],
+      [
+        "–40",
+        "3.5",
+        "1000",
+        "0.21",
+        "0"
+      ],
+      [
+        "–40",
+        "12.5",
+        "1000",
+        "0.74",
+        "0"
+      ],
+      [
+        "–40",
+        "25",
+        "1000",
+        "1.5",
+        "0"
+      ],
+      [
+        "–40",
+        "50",
+        "1000",
+        "2.9",
+        "0"
+      ],
+      [
+        "–60",
+        "1.0",
+        "250",
+        "0.0037",
+        "80"
+      ],
+      [
+        "–60",
+        "3.5",
+        "250",
+        "0.013",
+        "84"
+      ],
+      [
+        "–60",
+        "3.5",
+        "500",
+        "0.052",
+        "74"
+      ],
+      [
+        "–60",
+        "3.5",
+        "1000",
+        "0.21",
+        "55"
+      ],
+      [
+        "–60",
+        "12.5",
+        "1000",
+        "0.74",
+        "14"
+      ],
+      [
+        "–60",
+        "25",
+        "1000",
+        "1.5",
+        "0"
+      ],
+      [
+        "–60",
+        "50",
+        "1000",
+        "2.9",
+        "0"
+      ],
+      [
+        "–78",
+        "1.0",
+        "250",
+        "0.0037",
+        "87"
+      ],
+      [
+        "–78",
+        "3.5",
+        "250",
+        "0.013",
+        "80"
+      ],
+      [
+        "–78",
+        "3.5",
+        "500",
+        "0.052",
+        "80"
+      ],
+      [
+        "–78",
+        "3.5",
+        "1000",
+        "0.21",
+        "76"
+      ],
+      [
+        "–78",
+        "12.5",
+        "1000",
+        "0.74",
+        "70"
+      ],
+      [
+        "–78",
+        "25",
+        "1000",
+        "1.5",
+        "65"
+      ],
+      [
+        "–78",
+        "50",
+        "1000",
+        "2.9",
+        "59"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "SMILES for substrate and electrophile inferred from names in title.",
+    "_source_paper": "Nagaki_2020_CHLiIF",
+    "_source_image": "Table：.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S4",
+    "table_title": "Lithiation of fluoroiodomethane (1) with LDA followed by trapping with Bu3SnCl using a flow microreactor system.",
+    "reaction_context": {
+      "substrate": "fluoroiodomethane (1)",
+      "substrate_smiles": "FCI",
+      "organolithium_reagent": "LDA",
+      "intermediate": "fluoroiodomethyllithium",
+      "intermediate_smiles": "FC(I)[Li]",
+      "electrophile": "Bu3SnCl",
+      "electrophile_smiles": "CCCC[Sn](Cl)(CCCC)CCCC",
+      "product": null,
+      "product_smiles": "CCCC[Sn](CCCC)(CCCC)C(F)I",
+      "reaction_type": "deprotonation",
+      "solvent": null,
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "Temperature",
+      "L1",
+      "phi1",
+      "tR1",
+      "Yield"
+    ],
+    "column_units": [
+      "[°C]",
+      "[cm]",
+      "[µm]",
+      "[s]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "-20",
+        "1.0",
+        "250",
+        "0.0037 a)",
+        "59"
+      ],
+      [
+        "-20",
+        "1.0",
+        "250",
+        "0.0059",
+        "69"
+      ],
+      [
+        "-20",
+        "3.5",
+        "250",
+        "0.021",
+        "85"
+      ],
+      [
+        "-20",
+        "3.5",
+        "500",
+        "0.082",
+        "69"
+      ],
+      [
+        "-20",
+        "3.5",
+        "1000",
+        "0.33",
+        "47"
+      ],
+      [
+        "-20",
+        "12.5",
+        "1000",
+        "1.2",
+        "0"
+      ],
+      [
+        "-20",
+        "31.2",
+        "1000",
+        "2.9 b)",
+        "0"
+      ],
+      [
+        "-40",
+        "1.0",
+        "250",
+        "0.0037 a)",
+        "34"
+      ],
+      [
+        "-40",
+        "1.0",
+        "250",
+        "0.0059",
+        "60"
+      ],
+      [
+        "-40",
+        "3.5",
+        "250",
+        "0.021",
+        "99"
+      ],
+      [
+        "-40",
+        "3.5",
+        "500",
+        "0.082",
+        "99"
+      ],
+      [
+        "-40",
+        "3.5",
+        "1000",
+        "0.33",
+        "94"
+      ],
+      [
+        "-40",
+        "12.5",
+        "1000",
+        "1.2",
+        "48"
+      ],
+      [
+        "-40",
+        "31.2",
+        "1000",
+        "2.9 b)",
+        "0"
+      ],
+      [
+        "-60",
+        "1.0",
+        "250",
+        "0.0037 a)",
+        "34"
+      ],
+      [
+        "-60",
+        "1.0",
+        "250",
+        "0.0059",
+        "57"
+      ],
+      [
+        "-60",
+        "3.5",
+        "250",
+        "0.021",
+        "73"
+      ],
+      [
+        "-60",
+        "3.5",
+        "500",
+        "0.082",
+        "91"
+      ],
+      [
+        "-60",
+        "3.5",
+        "1000",
+        "0.33",
+        "86"
+      ],
+      [
+        "-60",
+        "12.5",
+        "1000",
+        "1.2",
+        "81"
+      ],
+      [
+        "-60",
+        "31.2",
+        "1000",
+        "2.9 b)",
+        "34"
+      ],
+      [
+        "-78",
+        "1.0",
+        "250",
+        "0.0037 a)",
+        "24"
+      ],
+      [
+        "-78",
+        "1.0",
+        "250",
+        "0.0059",
+        "35"
+      ],
+      [
+        "-78",
+        "3.5",
+        "250",
+        "0.021",
+        "80"
+      ],
+      [
+        "-78",
+        "3.5",
+        "500",
+        "0.082",
+        "91"
+      ],
+      [
+        "-78",
+        "3.5",
+        "1000",
+        "0.33",
+        "99"
+      ],
+      [
+        "-78",
+        "12.5",
+        "1000",
+        "1.2",
+        "90"
+      ],
+      [
+        "-78",
+        "31.2",
+        "1000",
+        "2.9 b)",
+        "62"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [
+      "a) Flow rate of fluoroiodomethane (1): 6.4 mL/min, flow rate of LDA: 1.6 mL/min.",
+      "b) Flow rate of fluoroiodomethane (1): 4.0 mL/min, flow rate of LDA: 1.0 mL/min."
+    ],
+    "notes": "The table is split across two pages in the original document, but presented as a single continuous table here.",
+    "_source_paper": "Nagaki_2020_CHLiIF",
+    "_source_image": "强绒比然阳9附6化比5比0邦加66四比004434.png"
+  }
+]

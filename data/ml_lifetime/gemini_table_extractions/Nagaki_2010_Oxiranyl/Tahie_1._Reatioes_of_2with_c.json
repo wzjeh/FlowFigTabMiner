@@ -1,0 +1,245 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 1",
+  "table_title": "Table 1. Reactions of 2 with electrophiles.[a]",
+  "reaction_context": {
+    "substrate": "styrene oxide (1)",
+    "substrate_smiles": "O1CC1c2ccccc2",
+    "organolithium_reagent": "sBuLi",
+    "intermediate": "2",
+    "intermediate_smiles": "[Li]C1(c2ccccc2)CO1",
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "deprotonation",
+    "solvent": "THF/hexane",
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Electrophile",
+    "Conditions[b]",
+    "Product",
+    "Yield",
+    "Productivity"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "[%]",
+    "[g h-1]"
+  ],
+  "rows": [
+    [
+      "MeI",
+      "A",
+      "CC1(c2ccccc2)CO1",
+      "88[c]",
+      "4.2"
+    ],
+    [
+      "MeI",
+      "B",
+      "CC1(c2ccccc2)CO1",
+      "83[c]",
+      "4.0"
+    ],
+    [
+      "Me3SiCl",
+      "A",
+      "C[Si](C)(C)C1(c2ccccc2)CO1",
+      "72[c]",
+      "5.0"
+    ],
+    [
+      "Me3SiCl",
+      "B",
+      "C[Si](C)(C)C1(c2ccccc2)CO1",
+      "73[c]",
+      "5.1"
+    ],
+    [
+      "Me2SiHCl",
+      "A",
+      "C[SiH](C)C1(c2ccccc2)CO1",
+      "50[c]",
+      "3.2"
+    ],
+    [
+      "Me2SiHCl",
+      "B",
+      "C[SiH](C)C1(c2ccccc2)CO1",
+      "49[c]",
+      "3.1"
+    ],
+    [
+      "BnBr",
+      "A",
+      "c1ccc(CC2(c3ccccc3)CO2)cc1",
+      "54[c]",
+      "4.1"
+    ],
+    [
+      "BnBr",
+      "B",
+      "c1ccc(CC2(c3ccccc3)CO2)cc1",
+      "51[c]",
+      "3.9"
+    ],
+    [
+      "C=CCBr",
+      "A",
+      "C=CCC1(c2ccccc2)CO1",
+      "45[c]",
+      "2.6"
+    ],
+    [
+      "CC(=C)CBr",
+      "A",
+      "C=C(C)CC1(c2ccccc2)CO1",
+      "38[d]",
+      "2.4"
+    ],
+    [
+      "PhCHO",
+      "A",
+      "OC(c1ccccc1)C2(c3ccccc3)CO2",
+      "84[d] (67:33)[e]",
+      "6.8"
+    ],
+    [
+      "PhCHO",
+      "B",
+      "OC(c1ccccc1)C2(c3ccccc3)CO2",
+      "80[d] (63:37)[e]",
+      "6.5"
+    ],
+    [
+      "PhCOCH3",
+      "A",
+      "CC(O)(c1ccccc1)C2(c3ccccc3)CO2",
+      "70[d] (82:18)[e]",
+      "6.1"
+    ],
+    [
+      "PhCOCH3",
+      "B",
+      "CC(O)(c1ccccc1)C2(c3ccccc3)CO2",
+      "67[d] (82:18)[e]",
+      "5.8"
+    ],
+    [
+      "Ph2CO",
+      "A",
+      "OC(c1ccccc1)(c2ccccc2)C3(c4ccccc4)CO3",
+      "82[d]",
+      "9.0"
+    ],
+    [
+      "CH3COCH3",
+      "A",
+      "CC(C)(O)C1(c2ccccc2)CO1",
+      "50[d]",
+      "3.2"
+    ],
+    [
+      "O=C1CCCC1",
+      "A",
+      "OC1(CCCC1)C2(c3ccccc3)CO2",
+      "61[d]",
+      "4.5"
+    ],
+    [
+      "O=C1CCCCC1",
+      "A",
+      "OC1(CCCCC1)C2(c3ccccc3)CO2",
+      "58[d]",
+      "4.5"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "MeI",
+      "smiles": "CI",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "Me3SiCl",
+      "smiles": "C[Si](C)(C)Cl",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "Me2SiHCl",
+      "smiles": "C[SiH](C)Cl",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "BnBr",
+      "smiles": "c1ccc(CBr)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "allyl bromide",
+      "smiles": "C=CCBr",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "methallyl bromide",
+      "smiles": "CC(=C)CBr",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "PhCHO",
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "PhCOCH3",
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "Ph2CO",
+      "smiles": "O=C(c1ccccc1)c2ccccc2",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "CH3COCH3",
+      "smiles": "CC(=O)C",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "cyclopentanone",
+      "smiles": "O=C1CCCC1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": "cyclohexanone",
+      "smiles": "O=C1CCCCC1",
+      "role": "electrophile"
+    }
+  ],
+  "footnotes": [
+    "[a] Solutions of styrene oxide (1) (0.10 M in THF), sBuLi (0.75 M in hexane), and electrophiles (0.45 M in THF) were allowed to react in the flow microreactor system.",
+    "[b] Reaction conditions A: T = -78 °C, tR = 23.8 s, B: T = -68 °C, tR = 5.95 s.",
+    "[c] Determined by GC.",
+    "[d] Isolated yield.",
+    "[e] Diastereomeric ratio as determined by 1H NMR spectroscopy."
+  ],
+  "notes": "The table contains drawn structures for both electrophiles (in some rows) and products. These have been converted to SMILES in the rows and structures array. The intermediate 2 is inferred to be lithiated styrene oxide based on the title and footnote [a].",
+  "_source_paper": "Nagaki_2010_Oxiranyl",
+  "_source_image": "Tahie 1. Reatioes of 2with c.png"
+}

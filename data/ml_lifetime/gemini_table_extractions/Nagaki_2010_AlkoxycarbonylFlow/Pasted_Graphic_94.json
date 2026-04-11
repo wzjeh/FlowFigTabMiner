@@ -1,0 +1,192 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 6",
+  "table_title": "Table 6. The I/Li exchange reaction of alkyl m-iodobenzoates (7) followed by reaction with an electrophile.[a]",
+  "reaction_context": {
+    "substrate": "alkyl m-iodobenzoates (7)",
+    "substrate_smiles": "null",
+    "organolithium_reagent": "null",
+    "intermediate": "alkyl m-lithiobenzoates",
+    "intermediate_smiles": "null",
+    "electrophile": "various",
+    "electrophile_smiles": "null",
+    "product": "various",
+    "product_smiles": "null",
+    "reaction_type": "I-Li exchange",
+    "solvent": "null",
+    "reactor_info": "null"
+  },
+  "columns": [
+    "Ester",
+    "E",
+    "Product",
+    "Yield [%]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "7a",
+      "tBuOH",
+      "3a",
+      "90"
+    ],
+    [
+      "7a",
+      "MeI",
+      "CC1=CC=CC(C(=O)OC(C)(C)C)=C1",
+      "78"
+    ],
+    [
+      "7a",
+      "Me3SiCl",
+      "CC(C)(C)OC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+      "94"
+    ],
+    [
+      "7a",
+      "PhCHO",
+      "CC(C)(C)OC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+      "90"
+    ],
+    [
+      "7b",
+      "iPrOH",
+      "3b",
+      "84"
+    ],
+    [
+      "7b",
+      "MeI",
+      "CC(C)OC(=O)C1=CC=CC(=C1)C",
+      "34"
+    ],
+    [
+      "7b",
+      "MeOTf",
+      "CC(C)OC(=O)C1=CC=CC(=C1)C",
+      "75"
+    ],
+    [
+      "7b",
+      "Me3SiCl",
+      "CC(C)OC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+      "78"
+    ],
+    [
+      "7b",
+      "PhCHO",
+      "CC(C)OC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+      "67"
+    ],
+    [
+      "7c",
+      "EtOH",
+      "3c",
+      "81"
+    ],
+    [
+      "7c",
+      "MeI",
+      "CCOC(=O)C1=CC=CC(=C1)C",
+      "21"
+    ],
+    [
+      "7c",
+      "MeOTf",
+      "CCOC(=O)C1=CC=CC(=C1)C",
+      "78"
+    ],
+    [
+      "7c",
+      "Me3SiOTf",
+      "CCOC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+      "74"
+    ],
+    [
+      "7c",
+      "PhCHO",
+      "CCOC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+      "72[b]"
+    ],
+    [
+      "7d",
+      "MeOH",
+      "3d",
+      "85"
+    ],
+    [
+      "7d",
+      "MeOTf",
+      "COC(=O)C1=CC=CC(=C1)C",
+      "79"
+    ],
+    [
+      "7d",
+      "Me3SiOTf",
+      "COC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+      "87"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "7a",
+      "name": "tert-butyl 3-iodobenzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=CC(I)=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3a",
+      "name": "tert-butyl benzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "7b",
+      "name": "isopropyl 3-iodobenzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=CC(I)=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3b",
+      "name": "isopropyl benzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "7c",
+      "name": "ethyl 3-iodobenzoate",
+      "smiles": "CCOC(=O)C1=CC=CC(I)=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3c",
+      "name": "ethyl benzoate",
+      "smiles": "CCOC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "7d",
+      "name": "methyl 3-iodobenzoate",
+      "smiles": "COC(=O)C1=CC=CC(I)=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3d",
+      "name": "methyl benzoate",
+      "smiles": "COC(=O)C1=CC=CC=C1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] Conditions: see text.",
+    "[b] Yield of isolated product."
+  ],
+  "notes": "Substrate structures are shown in the first column spanning multiple rows. Product structures are shown in the third column. SMILES for products without explicit labels are included in the rows array.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Pasted Graphic 94.png"
+}

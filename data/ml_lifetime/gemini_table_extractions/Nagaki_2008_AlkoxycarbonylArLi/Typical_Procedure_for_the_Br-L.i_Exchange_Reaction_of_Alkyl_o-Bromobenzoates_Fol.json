@@ -1,0 +1,40 @@
+{
+  "image_type": "scheme",
+  "table_id": null,
+  "table_title": "Typical Procedure for the Br-Li Exchange Reaction of Alkyl o-Bromobenzoates Followed by Reaction with Alcohols in Microflow Systems.",
+  "reaction_context": {
+    "substrate": "Alkyl o-Bromobenzoates 1",
+    "substrate_smiles": "O=C(OR)c1ccccc1Br",
+    "organolithium_reagent": "sec-BuLi",
+    "intermediate": "Alkyl o-lithiobenzoate",
+    "intermediate_smiles": "O=C(OR)c1ccccc1[Li]",
+    "electrophile": "ROH",
+    "electrophile_smiles": "RO",
+    "product": "Alkyl benzoates 3",
+    "product_smiles": "O=C(OR)c1ccccc1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF, n-hexane, cyclohexane",
+    "reactor_info": "two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2), and three tube pre-cooling units (P1, P2, P3)"
+  },
+  "columns": [],
+  "column_units": [],
+  "rows": [],
+  "structures": [
+    {
+      "label": "1",
+      "name": "Alkyl o-Bromobenzoate",
+      "smiles": "O=C(OR)c1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3",
+      "name": "Alkyl benzoate",
+      "smiles": "O=C(OR)c1ccccc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "The image shows a flow setup diagram with pre-cooling units (P1, P2, P3), micromixers (M1, M2), and residence time units (R1, R2). The text below describes the exact dimensions and flow rates used.",
+  "_source_paper": "Nagaki_2008_AlkoxycarbonylArLi",
+  "_source_image": "Typical Procedure for the Br-L.i Exchange Reaction of Alkyl o-Bromobenzoates Followed by.png"
+}

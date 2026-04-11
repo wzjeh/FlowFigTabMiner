@@ -1,0 +1,238 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-1",
+    "table_title": "The I-Li exchange reaction of tridecafluorohexyl iodide followed by reaction with chlorotributylstannate in flow microreactor systems.",
+    "reaction_context": {
+      "substrate": "tridecafluorohexyl iodide",
+      "substrate_smiles": "FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)I",
+      "organolithium_reagent": null,
+      "intermediate": "tridecafluorohexyllithium",
+      "intermediate_smiles": "FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)[Li]",
+      "electrophile": "chlorotributylstannate",
+      "electrophile_smiles": "CCCC[Sn](Cl)(CCCC)CCCC",
+      "product": "tributyl(tridecafluorohexyl)stannane",
+      "product_smiles": "CCCC[Sn](CCCC)(CCCC)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "tR1",
+      "T",
+      "yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%"
+    ],
+    "rows": [
+      [
+        "1000",
+        "3.5",
+        "0.147",
+        "-48",
+        "47"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.251",
+        "-48",
+        "31"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.524",
+        "-48",
+        "8"
+      ],
+      [
+        "1000",
+        "25",
+        "1.05",
+        "-48",
+        "2"
+      ],
+      [
+        "1000",
+        "50",
+        "2.09",
+        "-48",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "4.19",
+        "-48",
+        "0"
+      ],
+      [
+        "1000",
+        "200",
+        "8.38",
+        "-48",
+        "0"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.147",
+        "-58",
+        "72"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.251",
+        "-58",
+        "68"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.524",
+        "-58",
+        "56"
+      ],
+      [
+        "1000",
+        "25",
+        "1.05",
+        "-58",
+        "31"
+      ],
+      [
+        "1000",
+        "50",
+        "2.09",
+        "-58",
+        "11"
+      ],
+      [
+        "1000",
+        "100",
+        "4.19",
+        "-58",
+        "4"
+      ],
+      [
+        "1000",
+        "200",
+        "8.38",
+        "-58",
+        "2"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.147",
+        "-68",
+        "87"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.251",
+        "-68",
+        "85"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.524",
+        "-68",
+        "84"
+      ],
+      [
+        "1000",
+        "25",
+        "1.05",
+        "-68",
+        "72"
+      ],
+      [
+        "1000",
+        "50",
+        "2.09",
+        "-68",
+        "55"
+      ],
+      [
+        "1000",
+        "100",
+        "4.19",
+        "-68",
+        "23"
+      ],
+      [
+        "1000",
+        "200",
+        "8.38",
+        "-68",
+        "15"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.147",
+        "-78",
+        "75"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.251",
+        "-78",
+        "80"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.524",
+        "-78",
+        "80"
+      ],
+      [
+        "1000",
+        "25",
+        "1.05",
+        "-78",
+        "77"
+      ],
+      [
+        "1000",
+        "50",
+        "2.09",
+        "-78",
+        "71"
+      ],
+      [
+        "1000",
+        "100",
+        "4.19",
+        "-78",
+        "63"
+      ],
+      [
+        "1000",
+        "200",
+        "8.38",
+        "-78",
+        "41"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document, but the data is continuous. The temperature column has merged cells in the original image, which have been expanded to fill all corresponding rows.",
+    "_source_paper": "Nagaki_2011_Perfluoroalkyl",
+    "_source_image": "0.147.png"
+  }
+]

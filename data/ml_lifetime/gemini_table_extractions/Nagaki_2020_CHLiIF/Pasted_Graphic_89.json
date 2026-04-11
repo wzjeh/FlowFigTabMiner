@@ -1,0 +1,216 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 3",
+  "table_title": "Table 3: External trapping of 2 and 3 with polyfunctional electrophiles under continuous flow conditions.[a]",
+  "reaction_context": {
+    "substrate": "fluoroiodomethane (1)",
+    "substrate_smiles": "FIC",
+    "organolithium_reagent": "MeLi or LDA",
+    "intermediate": "fluoromethyllithium (2) and fluoroiodomethyllithium (3)",
+    "intermediate_smiles": "[Li]CF",
+    "electrophile": "polyfunctional electrophiles (Weinreb amides, benzophenones)",
+    "electrophile_smiles": null,
+    "product": "alpha-fluoroketones, fluoroalcohols, and fluoroepoxides",
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange / deprotonation followed by nucleophilic addition / Darzens reaction",
+    "solvent": "THF, Et2O",
+    "reactor_info": "M1, M2; R1 (tR1 = 0.013-0.082 s), R2 (tR2 = 7.85-20.94 s)"
+  },
+  "columns": [
+    "Polyfunctional electrophile",
+    "Lithiating agent",
+    "Product",
+    "Label",
+    "Yield"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "COc1ccc(C(=O)N(C)OC)cc1",
+      "MeLi",
+      "COc1ccc(C(=O)CF)cc1",
+      "4j",
+      "69[b]"
+    ],
+    [
+      "N#Cc1ccc(C(=O)N(C)OC)cc1",
+      "MeLi",
+      "N#Cc1ccc(C(=O)CF)cc1",
+      "4k",
+      "58 (64)[c]"
+    ],
+    [
+      "N#Cc1cccc(C(=O)N(C)OC)c1",
+      "MeLi",
+      "N#Cc1cccc(C(=O)CF)c1",
+      "4l",
+      "51 (58)[c]"
+    ],
+    [
+      "Brc1ccc(C(=O)N(C)OC)cc1",
+      "MeLi",
+      "Brc1ccc(C(=O)CF)cc1",
+      "4m",
+      "69 (80)[c]"
+    ],
+    [
+      "Brc1cccc(C(=O)N(C)OC)c1",
+      "MeLi",
+      "Brc1cccc(C(=O)CF)c1",
+      "4n",
+      "70 (75)[c]"
+    ],
+    [
+      "CN(OC)C(=O)c1ccc(C(=O)c2ccccc2)cc1",
+      "MeLi",
+      "CN(OC)C(=O)c1ccc(C(O)(CF)c2ccccc2)cc1",
+      "4o",
+      "60 (65)[c]"
+    ],
+    [
+      "C=Cc1ccc(C(=O)c2ccccc2)cc1",
+      "LDA",
+      "FC1OC1(c2ccccc2)c3ccc(C=C)cc3",
+      "6d",
+      "90 (99)[c]"
+    ],
+    [
+      "Brc1ccc(C(=O)c2ccccc2)cc1",
+      "LDA",
+      "FC1OC1(c2ccccc2)c3ccc(Br)cc3",
+      "6e",
+      "66 (91)[c]"
+    ],
+    [
+      "N#Cc1ccc(C(=O)c2ccccc2)cc1",
+      "LDA",
+      "FC1OC1(c2ccccc2)c3ccc(C#N)cc3",
+      "6f",
+      "(49)[c]"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "N-methoxy-N-methyl-4-methoxybenzamide",
+      "smiles": "COc1ccc(C(=O)N(C)OC)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4j",
+      "name": null,
+      "smiles": "COc1ccc(C(=O)CF)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-cyano-N-methoxy-N-methylbenzamide",
+      "smiles": "N#Cc1ccc(C(=O)N(C)OC)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4k",
+      "name": null,
+      "smiles": "N#Cc1ccc(C(=O)CF)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "3-cyano-N-methoxy-N-methylbenzamide",
+      "smiles": "N#Cc1cccc(C(=O)N(C)OC)c1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4l",
+      "name": null,
+      "smiles": "N#Cc1cccc(C(=O)CF)c1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-bromo-N-methoxy-N-methylbenzamide",
+      "smiles": "Brc1ccc(C(=O)N(C)OC)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4m",
+      "name": null,
+      "smiles": "Brc1ccc(C(=O)CF)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "3-bromo-N-methoxy-N-methylbenzamide",
+      "smiles": "Brc1cccc(C(=O)N(C)OC)c1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4n",
+      "name": null,
+      "smiles": "Brc1cccc(C(=O)CF)c1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-(phenylcarbonyl)-N-methoxy-N-methylbenzamide",
+      "smiles": "CN(OC)C(=O)c1ccc(C(=O)c2ccccc2)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "4o",
+      "name": null,
+      "smiles": "CN(OC)C(=O)c1ccc(C(O)(CF)c2ccccc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-vinylbenzophenone",
+      "smiles": "C=Cc1ccc(C(=O)c2ccccc2)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "6d",
+      "name": null,
+      "smiles": "FC1OC1(c2ccccc2)c3ccc(C=C)cc3",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-bromobenzophenone",
+      "smiles": "Brc1ccc(C(=O)c2ccccc2)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "6e",
+      "name": null,
+      "smiles": "FC1OC1(c2ccccc2)c3ccc(Br)cc3",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-cyanobenzophenone",
+      "smiles": "N#Cc1ccc(C(=O)c2ccccc2)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": "6f",
+      "name": null,
+      "smiles": "FC1OC1(c2ccccc2)c3ccc(C#N)cc3",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] A solution of fluoroiodomethane (1); 0.10 M in THF); flow rate: 4.0 mL min^-1) and a solution of MeLi (Br free; 0.20 M in Et2O; flow rate: 4.0 mL min^-1) or LDA (0.42 M in THF; flow rate: 1.0 mL min^-1) were introduced to M1 by syringe pumps. The resulting solution was passed through R1 (tR1 = 0.013 s, T = -60 °C (4j-o); tR1 = 0.082 s, T = -40 °C (6d and 6e), -60 °C (6f)) and was mixed with a solution of electrophiles (0.30 M in THF; flow rate: 4.0 mL min^-1) in M2. The resulting solution was passed through R2 (tR2 = 7.85 s, T = -60 °C (4j-o); tR2 = 20.94 s, T = -40 °C ((6d and 6e), -60 °C (6f)).",
+    "[b] Yield was determined by GC analysis using dodecane as an internal standard.",
+    "[c] Yields were determined by 1H NMR analysis using dibromomethane as an internal standard."
+  ],
+  "notes": "An unlabelled column for the product number designations (4j, 4k, etc.) was assigned the header 'Label'. Based on the reaction reagents, MeLi effects I-Li exchange of fluoroiodomethane to form fluoromethyllithium (2) which attacks Weinreb amides and ketones. LDA deprotonates fluoroiodomethane to form fluoroiodomethyllithium (3), which reacts with ketones followed by intramolecular cyclization (Darzens-type reaction) to yield fluoroepoxides.",
+  "_source_paper": "Nagaki_2020_CHLiIF",
+  "_source_image": "Pasted Graphic 89.png"
+}

@@ -31,6 +31,9 @@ data/tab-for-annotation/*
 data/*
 !data/ml_lifetime/
 !data/ml_lifetime/**
+data/ml_lifetime/papers/
+data/ml_lifetime/.DS_Store
+data/ml_lifetime/.claude/
 !data/final_output/
 data/final_output/*
 !data/final_output/organolithium_tr_subdataset_vlm_enriched*.csv

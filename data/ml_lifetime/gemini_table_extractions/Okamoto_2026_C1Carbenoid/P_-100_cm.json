@@ -1,0 +1,315 @@
+{
+  "image_type": "table",
+  "table_id": "Table S 2",
+  "table_title": "The results of optimization in flow microreactor.",
+  "reaction_context": {
+    "substrate": "1a",
+    "substrate_smiles": "ClCSCc1ccccc1",
+    "organolithium_reagent": "LiNp",
+    "intermediate": "lithium carbenoid",
+    "intermediate_smiles": "[Li]CSCc1ccccc1",
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "2a",
+    "product_smiles": "CSCc1ccccc1",
+    "reaction_type": "Cl-Li exchange",
+    "solvent": "THF",
+    "reactor_info": "three pre-cooling units (P1, P2 and P3; inner diameter φ = 1000 μm), two micromixers (R1 and R2), and two microreactors (M1 and M2)"
+  },
+  "columns": [
+    "entry",
+    "T",
+    "L1",
+    "Φ1",
+    "tR1",
+    "2a yield",
+    "3a yield",
+    "1a recover"
+  ],
+  "column_units": [
+    null,
+    "(°C)",
+    "(cm)",
+    "(μm)",
+    "(s)",
+    "(%)",
+    "(%)",
+    "(%)"
+  ],
+  "rows": [
+    [
+      "1",
+      "0",
+      "1.0",
+      "250",
+      "0.0020",
+      "clogging",
+      "-",
+      "-"
+    ],
+    [
+      "2",
+      "0",
+      "3.5",
+      "250",
+      "0.0069",
+      "clogging",
+      "-",
+      "-"
+    ],
+    [
+      "3",
+      "0",
+      "3.5",
+      "1000",
+      "0.11",
+      "52",
+      "6",
+      "n.d."
+    ],
+    [
+      "4",
+      "0",
+      "50",
+      "1000",
+      "1.6",
+      "trace",
+      "63",
+      "n.d."
+    ],
+    [
+      "5",
+      "0",
+      "200",
+      "1000",
+      "6.3",
+      "trace",
+      "59",
+      "n.d."
+    ],
+    [
+      "6",
+      "-20",
+      "1.0",
+      "250",
+      "0.0020",
+      "88",
+      "n.d.",
+      "trace"
+    ],
+    [
+      "7",
+      "-20",
+      "3.5",
+      "250",
+      "0.0069",
+      "87",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "8",
+      "-20",
+      "3.5",
+      "1000",
+      "0.11",
+      "87",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "9",
+      "-20",
+      "50",
+      "1000",
+      "1.6",
+      "47",
+      "10",
+      "n.d."
+    ],
+    [
+      "10",
+      "-20",
+      "200",
+      "1000",
+      "6.3",
+      "23",
+      "24",
+      "n.d."
+    ],
+    [
+      "11",
+      "-40",
+      "1.0",
+      "250",
+      "0.0020",
+      "87",
+      "n.d.",
+      "2"
+    ],
+    [
+      "12",
+      "-40",
+      "3.5",
+      "250",
+      "0.0069",
+      "89",
+      "n.d.",
+      "trace"
+    ],
+    [
+      "13",
+      "-40",
+      "3.5",
+      "1000",
+      "0.11",
+      "88",
+      "n.d.",
+      "trace"
+    ],
+    [
+      "14",
+      "-40",
+      "50",
+      "1000",
+      "1.6",
+      "89",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "15",
+      "-40",
+      "200",
+      "1000",
+      "6.3",
+      "77",
+      "trace",
+      "n.d."
+    ],
+    [
+      "16",
+      "-60",
+      "1.0",
+      "250",
+      "0.0020",
+      "73",
+      "n.d.",
+      "8"
+    ],
+    [
+      "17",
+      "-60",
+      "3.5",
+      "250",
+      "0.0069",
+      "85",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "18",
+      "-60",
+      "3.5",
+      "1000",
+      "0.11",
+      "93",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "19",
+      "-60",
+      "50",
+      "1000",
+      "1.6",
+      "93",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "20",
+      "-60",
+      "200",
+      "1000",
+      "6.3",
+      "92",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "21",
+      "-78",
+      "1.0",
+      "250",
+      "0.0020",
+      "63",
+      "n.d.",
+      "10"
+    ],
+    [
+      "22",
+      "-78",
+      "3.5",
+      "250",
+      "0.0069",
+      "87",
+      "n.d.",
+      "n.d."
+    ],
+    [
+      "23",
+      "-78",
+      "3.5",
+      "1000",
+      "0.11",
+      "91",
+      "n.d.",
+      "trace"
+    ],
+    [
+      "24",
+      "-78",
+      "50",
+      "1000",
+      "1.6",
+      "95",
+      "n.d.",
+      "trace"
+    ],
+    [
+      "25",
+      "-78",
+      "200",
+      "1000",
+      "6.3",
+      "95",
+      "n.d.",
+      "n.d."
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1a",
+      "name": null,
+      "smiles": "ClCSCc1ccccc1",
+      "role": "substrate"
+    },
+    {
+      "label": "2a",
+      "name": null,
+      "smiles": "CSCc1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": "3a",
+      "name": null,
+      "smiles": "Cc1ccccc1CS",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "The image contains both a reaction scheme (Scheme S1) and a data table (Table S 2). The scheme details the flow setup with flow rates, concentrations, and reactor dimensions. The table provides optimization data varying temperature, reactor length (L1), inner diameter (Φ1), and residence time (tR1). Compound 3a is a side product resulting from Wittig rearrangement.",
+  "_source_paper": "Okamoto_2026_C1Carbenoid",
+  "_source_image": "P，-100 cm.png"
+}

@@ -1,0 +1,651 @@
+[
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 2",
+    "table_title": "The Br/Li exchange reaction of dibromopyridines with n-BuLi followed by reaction with an electrophile using the flow microreactor systemᵃ",
+    "reaction_context": {
+      "substrate": "dibromopyridines",
+      "substrate_smiles": null,
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "lithiobromopyridine",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane",
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "Bromopyridine",
+      "Electrophile",
+      "Product",
+      "Yield (%)"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "Brc1cccnc1Br",
+        "MeI",
+        "Cc1cccnc1Br",
+        "87"
+      ],
+      [
+        "Brc1cccnc1Br",
+        "Me3SiCl",
+        "C[Si](C)(C)c1cccnc1Br",
+        "80"
+      ],
+      [
+        "Brc1cccnc1Br",
+        "PhCHO",
+        "OC(c1ccccc1)c1cccnc1Br",
+        "78"
+      ],
+      [
+        "Brc1ccc(Br)nc1",
+        "MeI",
+        "Cc1ccc(Br)nc1",
+        "84"
+      ],
+      [
+        "Brc1ccc(Br)nc1",
+        "Me3SiCl",
+        "C[Si](C)(C)c1ccc(Br)nc1",
+        "87"
+      ],
+      [
+        "Brc1ccc(Br)nc1",
+        "PhCHO",
+        "OC(c1ccccc1)c1ccc(Br)nc1",
+        "79"
+      ],
+      [
+        "Brc1cccc(Br)n1",
+        "MeI",
+        "Cc1cccc(Br)n1",
+        "94"
+      ],
+      [
+        "Brc1cccc(Br)n1",
+        "Me3SiCl",
+        "C[Si](C)(C)c1cccc(Br)n1",
+        "89"
+      ],
+      [
+        "Brc1cccc(Br)n1",
+        "PhCHO",
+        "OC(c1ccccc1)c1cccc(Br)n1",
+        "80"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": "2,3-dibromopyridine",
+        "smiles": "Brc1cccnc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-3-methylpyridine",
+        "smiles": "Cc1cccnc1Br",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-3-(trimethylsilyl)pyridine",
+        "smiles": "C[Si](C)(C)c1cccnc1Br",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "(2-bromopyridin-3-yl)(phenyl)methanol",
+        "smiles": "OC(c1ccccc1)c1cccnc1Br",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2,5-dibromopyridine",
+        "smiles": "Brc1ccc(Br)nc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-5-methylpyridine",
+        "smiles": "Cc1ccc(Br)nc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-5-(trimethylsilyl)pyridine",
+        "smiles": "C[Si](C)(C)c1ccc(Br)nc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "(6-bromopyridin-3-yl)(phenyl)methanol",
+        "smiles": "OC(c1ccccc1)c1ccc(Br)nc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2,6-dibromopyridine",
+        "smiles": "Brc1cccc(Br)n1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-6-methylpyridine",
+        "smiles": "Cc1cccc(Br)n1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2-bromo-6-(trimethylsilyl)pyridine",
+        "smiles": "C[Si](C)(C)c1cccc(Br)n1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "(6-bromopyridin-2-yl)(phenyl)methanol",
+        "smiles": "OC(c1ccccc1)c1cccc(Br)n1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "ᵃ Dibromopyridines in THF (0.10 M), n-BuLi in hexane (0.40 M), and an electrophile in THF (0.24 M) were reacted in the flow microreactor system at 0 °C. The yields were determined by GC analysis using an internal standard (pentadecane)."
+    ],
+    "notes": "The substrate column has merged cells where the structure applies to the three rows to its right.",
+    "_source_paper": "Nagaki_2011_Pyridines",
+    "_source_image": "Besmyyiidioe.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 3",
+    "table_title": "Sequential introduction of two electrophiles into dibromopyridines using the integrated flow microreactor systema",
+    "reaction_context": {
+      "substrate": "dibromopyridines",
+      "substrate_smiles": null,
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "dilithiopyridine",
+      "intermediate_smiles": null,
+      "electrophile": "E1, E2",
+      "electrophile_smiles": null,
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane",
+      "reactor_info": "R1: Ø = 500 μm, L = 3.5 cm, R2: Ø = 1000 μm, L = 310 cm, R3: Ø = 1000 μm, L = 25 cm, R4: Ø = 1000 μm, L = 200 cm"
+    },
+    "columns": [
+      "Dibromopyridine",
+      "E1",
+      "E2",
+      "Product",
+      "Yield (%)e",
+      "Productivity (g h–1)"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      null,
+      "%",
+      "g h–1"
+    ],
+    "rows": [
+      [
+        "Brc1cccnc1Br",
+        "MeIb",
+        "PhCHOb",
+        "Cc1cccnc1C(O)c2ccccc2",
+        "68f",
+        "4.85"
+      ],
+      [
+        "",
+        "MeIc",
+        "PhCNc",
+        "Cc1cccnc1C(=O)c2ccccc2",
+        "47",
+        "3.35"
+      ],
+      [
+        "Brc1ccc(Br)nc1",
+        "MeI",
+        "PhCHO",
+        "Cc1ccc(C(O)c2ccccc2)nc1",
+        "75g",
+        "5.39"
+      ],
+      [
+        "",
+        "Me3SiClb",
+        "PhCHOb",
+        "C[Si](C)(C)c1ccc(C(O)c2ccccc2)nc1",
+        "51h",
+        "4.75"
+      ],
+      [
+        "Brc1cccc(Br)n1",
+        "MeI",
+        "PhCHO",
+        "Cc1cccc(C(O)c2ccccc2)n1",
+        "67",
+        "4.80"
+      ],
+      [
+        "",
+        "MeId",
+        "PhCNd",
+        "Cc1cccc(C(=O)c2ccccc2)n1",
+        "56",
+        "3.95"
+      ],
+      [
+        "",
+        "Me3SiCl",
+        "PhC(O)Me",
+        "C[Si](C)(C)c1cccc(C(C)(O)c2ccccc2)n1",
+        "56",
+        "5.48"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": "2,3-dibromopyridine",
+        "smiles": "Brc1cccnc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2,5-dibromopyridine",
+        "smiles": "Brc1ccc(Br)nc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2,6-dibromopyridine",
+        "smiles": "Brc1cccc(Br)n1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "phenyl(3-methylpyridin-2-yl)methanol",
+        "smiles": "Cc1cccnc1C(O)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "phenyl(3-methylpyridin-2-yl)methanone",
+        "smiles": "Cc1cccnc1C(=O)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "phenyl(5-methylpyridin-2-yl)methanol",
+        "smiles": "Cc1ccc(C(O)c2ccccc2)nc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "phenyl(5-(trimethylsilyl)pyridin-2-yl)methanol",
+        "smiles": "C[Si](C)(C)c1ccc(C(O)c2ccccc2)nc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "phenyl(6-methylpyridin-2-yl)methanol",
+        "smiles": "Cc1cccc(C(O)c2ccccc2)n1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "phenyl(6-methylpyridin-2-yl)methanone",
+        "smiles": "Cc1cccc(C(=O)c2ccccc2)n1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-phenyl-1-(6-(trimethylsilyl)pyridin-2-yl)ethanol",
+        "smiles": "C[Si](C)(C)c1cccc(C(C)(O)c2ccccc2)n1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "a Reactions were carried out under the following conditions unless otherwise stated. Flow rate of dibromopyridine (0.10 M in THF): 6.00 mL min–1; flow rate of the first aliquot of n-BuLi (0.40 M in hexane): 1.50 mL min–1; flow rate of the solution of E1 (0.24 M in THF): 3.00 mL min–1; flow rate of the second aliquot of n-BuLi (0.40 M in hexane): 2.25 mL min–1; flow rate of the solution of E2 (0.24 M in THF): 4.00 mL min–1; R1: Ø = 500 μm, L = 3.5 cm, R2: Ø = 1000 μm, L = 310 cm, R3: Ø = 1000 μm, L = 25 cm, R4: Ø = 1000 μm, L = 200 cm.",
+      "b R3: Ø = 1000 μm, L = 12.5 cm.",
+      "c Flow rate of the solution of E2: 5.00 mL min–1.",
+      "d Flow rate of the solution of E2: 6.00 mL min–1.",
+      "e Isolated yields. Unless otherwise stated, the purity of product was >97% as judged by GC analysis.",
+      "f The purity was 88% (GC). 3-(α-Hydroxybenzyl)-2-methylpyridine was observed by GCMS as a major byproduct (9%, GC).",
+      "g The purity was 81% (GC). 5-(α-Hydroxybenzyl)-2-methylpyridine was observed by GCMS as a major byproduct (9%, GC); 2- and 3-hydroxybenzylpyridines were also observed by GCMS (total 10%, GC).",
+      "h The purity was 93% (GC). 5-(α-Hydroxybenzyl)-2-trimethylsilylpyridine was observed by GCMS as a major byproduct (7%, GC)."
+    ],
+    "notes": "Table contains structures for substrates and products. Substrate structures are repeated implicitly for empty cells in the first column.",
+    "_source_paper": "Nagaki_2011_Pyridines",
+    "_source_image": "Pasted Graphic 101.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "Table S-2. Deprotonation reaction of 2,3-dibromopyridine (1) with n-BuLi (1.0 eq) followed by reaction with iodomethane in flow microreactor systems.",
+    "reaction_context": {
+      "substrate": "2,3-dibromopyridine (1)",
+      "substrate_smiles": "Brc1cccnc1Br",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "2,3-dibromo-4-lithiopyridine",
+      "intermediate_smiles": "[Li]c1ccnc(Br)c1Br",
+      "electrophile": "iodomethane",
+      "electrophile_smiles": "CI",
+      "product": "2",
+      "product_smiles": "Cc1ccnc(Br)c1Br",
+      "reaction_type": "deprotonation",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "L1",
+      "phi1",
+      "tR",
+      "T",
+      "conversion (%) 1",
+      "yield (%) 2",
+      "yield (%) 3"
+    ],
+    "column_units": [
+      "cm",
+      "um",
+      "s",
+      "°C",
+      "%",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "3.50",
+        "250",
+        "0.014",
+        "25",
+        "94",
+        "64",
+        "3"
+      ],
+      [
+        "3.50",
+        "500",
+        "0.055",
+        "25",
+        "100",
+        "60",
+        "1"
+      ],
+      [
+        "3.50",
+        "1000",
+        "0.22",
+        "25",
+        "100",
+        "57",
+        "4"
+      ],
+      [
+        "12.5",
+        "",
+        "0.79",
+        "25",
+        "100",
+        "31",
+        "7"
+      ],
+      [
+        "50.0",
+        "",
+        "3.1",
+        "25",
+        "100",
+        "10",
+        "6"
+      ],
+      [
+        "200",
+        "",
+        "13",
+        "25",
+        "100",
+        "0",
+        "6"
+      ],
+      [
+        "3.50",
+        "250",
+        "0.014",
+        "0",
+        "100",
+        "84",
+        "1"
+      ],
+      [
+        "3.50",
+        "500",
+        "0.055",
+        "0",
+        "100",
+        "87",
+        "1"
+      ],
+      [
+        "3.50",
+        "1000",
+        "0.22",
+        "0",
+        "100",
+        "83",
+        "4"
+      ],
+      [
+        "12.5",
+        "",
+        "0.79",
+        "0",
+        "100",
+        "74",
+        "5"
+      ],
+      [
+        "50.0",
+        "",
+        "3.1",
+        "0",
+        "100",
+        "70",
+        "5"
+      ],
+      [
+        "200",
+        "",
+        "13",
+        "0",
+        "100",
+        "49",
+        "7"
+      ],
+      [
+        "3.50",
+        "250",
+        "0.014",
+        "-28",
+        "100",
+        "92",
+        "5"
+      ],
+      [
+        "3.50",
+        "500",
+        "0.055",
+        "-28",
+        "100",
+        "88",
+        "5"
+      ],
+      [
+        "3.50",
+        "1000",
+        "0.22",
+        "-28",
+        "100",
+        "86",
+        "4"
+      ],
+      [
+        "12.5",
+        "",
+        "0.79",
+        "-28",
+        "100",
+        "86",
+        "5"
+      ],
+      [
+        "50.0",
+        "",
+        "3.1",
+        "-28",
+        "100",
+        "84",
+        "4"
+      ],
+      [
+        "200",
+        "",
+        "13",
+        "-28",
+        "100",
+        "69",
+        "3"
+      ],
+      [
+        "3.50",
+        "250",
+        "0.014",
+        "-48",
+        "100",
+        "88",
+        "5"
+      ],
+      [
+        "3.50",
+        "500",
+        "0.055",
+        "-48",
+        "100",
+        "88",
+        "4"
+      ],
+      [
+        "3.50",
+        "1000",
+        "0.22",
+        "-48",
+        "100",
+        "90",
+        "4"
+      ],
+      [
+        "12.5",
+        "",
+        "0.79",
+        "-48",
+        "100",
+        "85",
+        "4"
+      ],
+      [
+        "50.0",
+        "",
+        "3.1",
+        "-48",
+        "100",
+        "91",
+        "3"
+      ],
+      [
+        "200",
+        "",
+        "13",
+        "-48",
+        "100",
+        "80",
+        "4"
+      ],
+      [
+        "3.50",
+        "250",
+        "0.014",
+        "-78",
+        "100",
+        "91",
+        "5"
+      ],
+      [
+        "3.50",
+        "500",
+        "0.055",
+        "-78",
+        "100",
+        "93",
+        "4"
+      ],
+      [
+        "3.50",
+        "1000",
+        "0.22",
+        "-78",
+        "100",
+        "93",
+        "4"
+      ],
+      [
+        "12.5",
+        "",
+        "0.79",
+        "-78",
+        "100",
+        "93",
+        "5"
+      ],
+      [
+        "50.0",
+        "",
+        "3.1",
+        "-78",
+        "97",
+        "86",
+        "5"
+      ],
+      [
+        "200",
+        "",
+        "13",
+        "-78",
+        "100",
+        "89",
+        "3"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document; the rows have been combined continuously. Temperature values from merged cells have been repeated for all corresponding rows.",
+    "_source_paper": "Nagaki_2011_Pyridines",
+    "_source_image": "Tabke S-2. Dezrolonstion reaction of 2.3-dibrompyridine （1） with n-BLi （1.0 cq） followed by rtactio.png"
+  }
+]

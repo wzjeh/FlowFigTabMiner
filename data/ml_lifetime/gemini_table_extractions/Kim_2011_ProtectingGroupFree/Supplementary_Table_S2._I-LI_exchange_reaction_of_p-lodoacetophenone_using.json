@@ -1,0 +1,92 @@
+{
+  "image_type": "table",
+  "table_id": "Supplementary Table S2",
+  "table_title": "Supplementary Table S2. I-Li exchange reaction of p-iodoacetophenone using high-pressure syringe pumpsa",
+  "reaction_context": {
+    "substrate": "p-iodoacetophenone",
+    "substrate_smiles": "CC(=O)c1ccc(I)cc1",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "p-lithioacetophenone",
+    "intermediate_smiles": "CC(=O)c1ccc([Li])cc1",
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "acetophenone",
+    "product_smiles": "CC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "high-pressure syringe pumps, Harvard Apparatus PHD 4400 equipped with stainless steel syringes (#70-2255)"
+  },
+  "columns": [
+    "Flow rate (mL/min) p-iodoacetophenone",
+    "Flow rate (mL/min) MesBr",
+    "Flow rate (mL/min) n-BuLi",
+    "Flow rate (mL/min) MeOH",
+    "Residence time",
+    "Yield"
+  ],
+  "column_units": [
+    "mL/min",
+    "mL/min",
+    "mL/min",
+    "mL/min",
+    "s",
+    "%"
+  ],
+  "rows": [
+    [
+      "3.0",
+      "5.0",
+      "1.8",
+      "2",
+      "0.0030",
+      "53"
+    ],
+    [
+      "3.6",
+      "6.0",
+      "2.16",
+      "2.4",
+      "0.0025",
+      "65"
+    ],
+    [
+      "3.9",
+      "6.5",
+      "2.3",
+      "2.6",
+      "0.0023",
+      "69"
+    ],
+    [
+      "4.8",
+      "8.0",
+      "2.9",
+      "3.2",
+      "0.0019",
+      "74"
+    ],
+    [
+      "6.0",
+      "10",
+      "3.6",
+      "4",
+      "0.0015",
+      "76"
+    ],
+    [
+      "2.3",
+      "12",
+      "4.1",
+      "4.6",
+      "0.0013",
+      "75"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [
+    "a Solutions were introduced to the flow microreactor system using high-pressure syringe pumps, Harvard Apparatus PHD 4400 equipped with stainless steel syringes (#70-2255) purchased from Harvard Apparatus PHD."
+  ],
+  "notes": "Row 5 is bolded in the original image, likely indicating optimal conditions. The column 'MesBr' is present, which is unusual for a simple I-Li exchange of p-iodoacetophenone; it might be an internal standard or a typo in the original paper's table header (perhaps meant to be solvent or another reagent, but transcribed exactly as shown).",
+  "_source_paper": "Kim_2011_ProtectingGroupFree",
+  "_source_image": "Supplementary Table S2. I-LI exchange reaction of p-lodoacetophenone using.png"
+}

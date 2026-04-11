@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-8",
+  "table_title": "The Br/Li exchange reaction of ethyl o-bromobenzoate (8c) followed by reaction with ethanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "ethyl o-bromobenzoate (8c)",
+    "substrate_smiles": "CCOC(=O)c1ccccc1Br",
+    "organolithium_reagent": null,
+    "intermediate": "ethyl o-lithiobenzoate",
+    "intermediate_smiles": "CCOC(=O)c1ccccc1[Li]",
+    "electrophile": "ethanol",
+    "electrophile_smiles": "CCO",
+    "product": null,
+    "product_smiles": "CCOC(=O)c1ccccc1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "100",
+      "65"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "100",
+      "37"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "15"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "9"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "100",
+      "4"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "0"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "100",
+      "84"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "100",
+      "63"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "58"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "48"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "38"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "10"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "80",
+      "64"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "86"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "80"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "100",
+      "77"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "43"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "64",
+      "56"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "100",
+      "88"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "100",
+      "82"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "100",
+      "77"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "100",
+      "78"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "62"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "51",
+      "33"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "60",
+      "43"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "67",
+      "52"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "85",
+      "56"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "89",
+      "64"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "96",
+      "58"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Table S-8. The BtLi exchange rcaction of ethyl o-bromobenzoate （8c） tollowed by rea.png"
+}

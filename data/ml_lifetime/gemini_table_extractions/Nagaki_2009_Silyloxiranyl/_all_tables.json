@@ -1,0 +1,416 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "Table S-2. Deprotonation of Epoxyethyltriphenylsilane (1) with n-BuLi (1.0 eq) followed by reaction with chlorotrimethylsilane in microflow systems.a",
+    "reaction_context": {
+      "substrate": "Epoxyethyltriphenylsilane (1)",
+      "substrate_smiles": null,
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "lithium silyloxiranyl intermediate",
+      "intermediate_smiles": null,
+      "electrophile": "chlorotrimethylsilane",
+      "electrophile_smiles": "C[Si](C)(C)Cl",
+      "product": "2, 3",
+      "product_smiles": null,
+      "reaction_type": "deprotonation",
+      "solvent": null,
+      "reactor_info": "microflow systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time",
+      "Bath temperature",
+      "Conversion",
+      "Yield 2",
+      "Yield 3"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "24",
+        "45",
+        "39",
+        "0"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "24",
+        "69",
+        "57",
+        "1"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "24",
+        "85",
+        "61",
+        "4"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "24",
+        "86",
+        "49",
+        "6"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "24",
+        "84",
+        "46",
+        "7"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "24",
+        "93",
+        "29",
+        "7"
+      ],
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "0",
+        "30",
+        "28",
+        "0"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "0",
+        "54",
+        "44",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "0",
+        "72",
+        "65",
+        "1"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "0",
+        "87",
+        "69",
+        "1"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "0",
+        "86",
+        "75",
+        "2"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "0",
+        "91",
+        "62",
+        "3"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [
+      "a A solution of n-BuLi: 0.40 M, a solution of chlorotrimethylsilane: 0.24 M"
+    ],
+    "notes": "The table is split across two pages in the original document, but the data is continuous. The 'Bath temperature' column has merged cells for '24' and '0', which have been expanded to fill the corresponding rows.",
+    "_source_paper": "Nagaki_2009_Silyloxiranyl",
+    "_source_image": "Conver-.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-1",
+    "table_title": "Deprotonation of Epoxyethyltriphenylsilane (1) with n-BuLi (1.5 eq) followed by reaction with chlorotrimethylsilane in microflow systems.",
+    "reaction_context": {
+      "substrate": "Epoxyethyltriphenylsilane (1)",
+      "substrate_smiles": "O1CC1[Si](c2ccccc2)(c3ccccc3)c4ccccc4",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "1-triphenylsilyloxiranyllithium",
+      "intermediate_smiles": "O1C[C-]1([Li])[Si](c2ccccc2)(c3ccccc3)c4ccccc4",
+      "electrophile": "chlorotrimethylsilane",
+      "electrophile_smiles": "C[Si](C)(C)Cl",
+      "product": "1-trimethylsilyl-1-triphenylsilylepoxyethane (2)",
+      "product_smiles": "C[Si](C)(C)C1(CO1)[Si](c2ccccc2)(c3ccccc3)c4ccccc4",
+      "reaction_type": "deprotonation",
+      "solvent": "THF/n-hexane",
+      "reactor_info": "two T-shaped micromixers (M1 (φ = 250 μm) and M2 (φ = 250 μm)), two microtube reactors (R1 and R2 (φ = 1000 μm, L = 50 cm)), and three tube pre-cooling units (P1 (φ = 1000 μm, length L = 100 cm), P2 (φ = 1000 μm, L = 50 cm) and P3 (φ = 1000 μm, L = 100 cm))"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time",
+      "Bath temperature",
+      "Conversion",
+      "Yield 2",
+      "Yield 3"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "24",
+        "58",
+        "50",
+        "1"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "24",
+        "86",
+        "77",
+        "2"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "24",
+        "98",
+        "69",
+        "10"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "24",
+        "100",
+        "56",
+        "23"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "24",
+        "100",
+        "34",
+        "27"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "24",
+        "100",
+        "21",
+        "33"
+      ],
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "0",
+        "39",
+        "36",
+        "0"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "0",
+        "64",
+        "57",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "0",
+        "91",
+        "85",
+        "1"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "0",
+        "100",
+        "92",
+        "3"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "0",
+        "100",
+        "87",
+        "6"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "0",
+        "100",
+        "82",
+        "12"
+      ],
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "-10",
+        "39",
+        "29",
+        "0"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "-10",
+        "64",
+        "44",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-10",
+        "91",
+        "74",
+        "0"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-10",
+        "99",
+        "87",
+        "1"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-10",
+        "100",
+        "93",
+        "2"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-10",
+        "100",
+        "93",
+        "4"
+      ],
+      [
+        "250",
+        "3.0",
+        "0.0118",
+        "-27",
+        "29",
+        "19",
+        "0"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.377",
+        "-27",
+        "40",
+        "28",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-27",
+        "68",
+        "54",
+        "0"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-27",
+        "87",
+        "77",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-27",
+        "98",
+        "86",
+        "1"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-27",
+        "100",
+        "93",
+        "1"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Bath temperature column has merged cells; values repeated for corresponding rows. Yield 3 refers to 2-triphenylsilyl-1-hexene.",
+    "_source_paper": "Nagaki_2009_Silyloxiranyl",
+    "_source_image": "Pasted Graphic 31.png"
+  }
+]

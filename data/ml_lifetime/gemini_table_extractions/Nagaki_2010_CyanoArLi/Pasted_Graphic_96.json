@@ -1,0 +1,144 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 2",
+  "table_title": "Reaction of lithiobenzonitriles (2) with electrophilesa",
+  "reaction_context": {
+    "substrate": "bromobenzonitriles (1a-1c)",
+    "substrate_smiles": null,
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "lithiobenzonitriles (2)",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF/hexane",
+    "reactor_info": "microflow system"
+  },
+  "columns": [
+    "bromobenzonitrile",
+    "electrophile",
+    "product",
+    "yield (%)"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "1a",
+      "Me3SiCl",
+      "N#Cc1ccccc1[Si](C)(C)C",
+      "90"
+    ],
+    [
+      "1a",
+      "Bu3SnCl",
+      "N#Cc1ccccc1[Sn](CCCC)(CCCC)CCCC",
+      "85"
+    ],
+    [
+      "1a",
+      "MeI",
+      "N#Cc1ccccc1C",
+      "93"
+    ],
+    [
+      "1a",
+      "PhCHO",
+      "O=C1OC(c2ccccc2)c3ccccc13",
+      "92"
+    ],
+    [
+      "1a",
+      "n-HexCHO",
+      "O=C1OC(CCCCCC)c2ccccc12",
+      "81b"
+    ],
+    [
+      "1a",
+      "Ph2CO",
+      "O=C1OC(c2ccccc2)(c3ccccc3)c4ccccc14",
+      "94b"
+    ],
+    [
+      "1b",
+      "Me3SiCl",
+      "N#Cc1cccc([Si](C)(C)C)c1",
+      "96"
+    ],
+    [
+      "1b",
+      "Bu3SnCl",
+      "N#Cc1cccc([Sn](CCCC)(CCCC)CCCC)c1",
+      "95"
+    ],
+    [
+      "1b",
+      "MeI",
+      "N#Cc1cccc(C)c1",
+      "81"
+    ],
+    [
+      "1b",
+      "PhCHO",
+      "N#Cc1cccc(C(O)c2ccccc2)c1",
+      "81"
+    ],
+    [
+      "1c",
+      "Me3SiCl",
+      "N#Cc1ccc([Si](C)(C)C)cc1",
+      "85"
+    ],
+    [
+      "1c",
+      "Bu3SnCl",
+      "N#Cc1ccc([Sn](CCCC)(CCCC)CCCC)cc1",
+      "93"
+    ],
+    [
+      "1c",
+      "MeI",
+      "N#Cc1ccc(C)cc1",
+      "90"
+    ],
+    [
+      "1c",
+      "PhCHO",
+      "N#Cc1ccc(C(O)c2ccccc2)cc1",
+      "87"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1a",
+      "name": "2-bromobenzonitrile",
+      "smiles": "N#Cc1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "1b",
+      "name": "3-bromobenzonitrile",
+      "smiles": "N#Cc1cccc(Br)c1",
+      "role": "substrate"
+    },
+    {
+      "label": "1c",
+      "name": "4-bromobenzonitrile",
+      "smiles": "N#Cc1ccc(Br)cc1",
+      "role": "substrate"
+    }
+  ],
+  "footnotes": [
+    "a Bromobenzonitriles (1a–1c) in THF (0.10 M), n-BuLi in hexane (0.42 M), and an electrophile in THF (0.60 M) were reacted in the microflow system under the following optimized conditions: 1a: 20 °C (residence time: 0.01 s), 1b: 0 °C (residence time: 0.01 s), 1c: 0 °C (residence time: 0.01 s). The yield was determined by GC.",
+    "b Isolated yield."
+  ],
+  "notes": "Substrate structures are shown once per block of rows. I have filled down the substrate label (1a, 1b, 1c) for all corresponding rows. The products for 1a with aldehydes/ketones undergo cyclization to form phthalides.",
+  "_source_paper": "Nagaki_2010_CyanoArLi",
+  "_source_image": "Pasted Graphic 96.png"
+}

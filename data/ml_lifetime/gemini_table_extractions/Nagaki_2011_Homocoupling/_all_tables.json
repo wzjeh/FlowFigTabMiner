@@ -1,0 +1,615 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S1",
+    "table_title": "Table S1: Br-Li Exchange Reaction of p-Bromoanisole Followed by the Reaction with Methanol in Flow Microreactor Systems",
+    "reaction_context": {
+      "substrate": "p-Bromoanisole",
+      "substrate_smiles": "COc1ccc(Br)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "p-Anisyllithium",
+      "intermediate_smiles": "COc1ccc([Li])cc1",
+      "electrophile": "Methanol",
+      "electrophile_smiles": "CO",
+      "product": "Anisole",
+      "product_smiles": "COc1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "Flow Microreactor Systems"
+    },
+    "columns": [
+      "temperature",
+      "inner diameter of R1",
+      "length of R1",
+      "residence time in R1",
+      "yield"
+    ],
+    "column_units": [
+      "°C",
+      "μm",
+      "cm",
+      "s",
+      "%"
+    ],
+    "rows": [
+      [
+        "24",
+        "1000",
+        "3.5",
+        "0.22",
+        "82"
+      ],
+      [
+        "24",
+        "1000",
+        "6.0",
+        "0.38",
+        "86"
+      ],
+      [
+        "24",
+        "1000",
+        "12.5",
+        "0.79",
+        "85"
+      ],
+      [
+        "24",
+        "1000",
+        "25",
+        "1.6",
+        "86"
+      ],
+      [
+        "24",
+        "1000",
+        "50",
+        "3.1",
+        "88"
+      ],
+      [
+        "24",
+        "1000",
+        "100",
+        "6.3",
+        "83"
+      ],
+      [
+        "0",
+        "1000",
+        "3.5",
+        "0.22",
+        "83"
+      ],
+      [
+        "0",
+        "1000",
+        "6.0",
+        "0.38",
+        "84"
+      ],
+      [
+        "0",
+        "1000",
+        "12.5",
+        "0.79",
+        "84"
+      ],
+      [
+        "0",
+        "1000",
+        "25",
+        "1.6",
+        "84"
+      ],
+      [
+        "0",
+        "1000",
+        "50",
+        "3.1",
+        "85"
+      ],
+      [
+        "0",
+        "1000",
+        "100",
+        "6.3",
+        "88"
+      ],
+      [
+        "-18",
+        "1000",
+        "3.5",
+        "0.22",
+        "77"
+      ],
+      [
+        "-18",
+        "1000",
+        "6.0",
+        "0.38",
+        "83"
+      ],
+      [
+        "-18",
+        "1000",
+        "12.5",
+        "0.79",
+        "85"
+      ],
+      [
+        "-18",
+        "1000",
+        "25",
+        "1.6",
+        "85"
+      ],
+      [
+        "-18",
+        "1000",
+        "50",
+        "3.1",
+        "86"
+      ],
+      [
+        "-18",
+        "1000",
+        "100",
+        "6.3",
+        "86"
+      ],
+      [
+        "-28",
+        "1000",
+        "3.5",
+        "0.22",
+        "72"
+      ],
+      [
+        "-28",
+        "1000",
+        "6.0",
+        "0.38",
+        "87"
+      ],
+      [
+        "-28",
+        "1000",
+        "12.5",
+        "0.79",
+        "90"
+      ],
+      [
+        "-28",
+        "1000",
+        "25",
+        "1.6",
+        "90"
+      ],
+      [
+        "-28",
+        "1000",
+        "50",
+        "3.1",
+        "88"
+      ],
+      [
+        "-28",
+        "1000",
+        "100",
+        "6.3",
+        "89"
+      ],
+      [
+        "-38",
+        "1000",
+        "3.5",
+        "0.22",
+        "65"
+      ],
+      [
+        "-38",
+        "1000",
+        "6.0",
+        "0.38",
+        "73"
+      ],
+      [
+        "-38",
+        "1000",
+        "12.5",
+        "0.79",
+        "86"
+      ],
+      [
+        "-38",
+        "1000",
+        "25",
+        "1.6",
+        "84"
+      ],
+      [
+        "-38",
+        "1000",
+        "50",
+        "3.1",
+        "87"
+      ],
+      [
+        "-38",
+        "1000",
+        "100",
+        "6.3",
+        "85"
+      ],
+      [
+        "-48",
+        "1000",
+        "3.5",
+        "0.22",
+        "66"
+      ],
+      [
+        "-48",
+        "1000",
+        "6.0",
+        "0.38",
+        "67"
+      ],
+      [
+        "-48",
+        "1000",
+        "12.5",
+        "0.79",
+        "87"
+      ],
+      [
+        "-48",
+        "1000",
+        "25",
+        "1.6",
+        "88"
+      ],
+      [
+        "-48",
+        "1000",
+        "50",
+        "3.1",
+        "88"
+      ],
+      [
+        "-48",
+        "1000",
+        "100",
+        "6.3",
+        "90"
+      ],
+      [
+        "-58",
+        "1000",
+        "3.5",
+        "0.22",
+        "45"
+      ],
+      [
+        "-58",
+        "1000",
+        "6.0",
+        "0.38",
+        "45"
+      ],
+      [
+        "-58",
+        "1000",
+        "12.5",
+        "0.79",
+        "77"
+      ],
+      [
+        "-58",
+        "1000",
+        "25",
+        "1.6",
+        "84"
+      ],
+      [
+        "-58",
+        "1000",
+        "50",
+        "3.1",
+        "92"
+      ],
+      [
+        "-58",
+        "1000",
+        "100",
+        "6.3",
+        "90"
+      ],
+      [
+        "-68",
+        "1000",
+        "3.5",
+        "0.22",
+        "29"
+      ],
+      [
+        "-68",
+        "1000",
+        "6.0",
+        "0.38",
+        "44"
+      ],
+      [
+        "-68",
+        "1000",
+        "12.5",
+        "0.79",
+        "63"
+      ],
+      [
+        "-68",
+        "1000",
+        "25",
+        "1.6",
+        "84"
+      ],
+      [
+        "-68",
+        "1000",
+        "50",
+        "3.1",
+        "85"
+      ],
+      [
+        "-68",
+        "1000",
+        "100",
+        "6.3",
+        "85"
+      ],
+      [
+        "-78",
+        "1000",
+        "3.5",
+        "0.22",
+        "12"
+      ],
+      [
+        "-78",
+        "1000",
+        "6.0",
+        "0.38",
+        "17"
+      ],
+      [
+        "-78",
+        "1000",
+        "12.5",
+        "0.79",
+        "62"
+      ],
+      [
+        "-78",
+        "1000",
+        "25",
+        "1.6",
+        "67"
+      ],
+      [
+        "-78",
+        "1000",
+        "50",
+        "3.1",
+        "84"
+      ],
+      [
+        "-78",
+        "1000",
+        "100",
+        "6.3",
+        "83"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document, but the data is continuous. The temperature column has merged cells in the original image, which have been expanded to repeat the value for each corresponding row.",
+    "_source_paper": "Nagaki_2011_Homocoupling",
+    "_source_image": "Pasted Graphic 66.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 1",
+    "table_title": "Homocoupling of aryl halides using the integrated flow microreactor system.",
+    "reaction_context": {
+      "substrate": "aryl halides",
+      "substrate_smiles": null,
+      "organolithium_reagent": "n-BuLi (PhLi for footnote a)",
+      "intermediate": "aryllithium",
+      "intermediate_smiles": null,
+      "electrophile": "aryl halide (homocoupling)",
+      "electrophile_smiles": null,
+      "product": "biaryl",
+      "product_smiles": null,
+      "reaction_type": "halogen-Li exchange followed by homocoupling",
+      "solvent": null,
+      "reactor_info": "integrated flow microreactor system"
+    },
+    "columns": [
+      "Ar-X",
+      "T",
+      "tR1",
+      "Ar-Ar",
+      "Yield"
+    ],
+    "column_units": [
+      null,
+      "°C",
+      "s",
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "COc1ccc(Br)cc1",
+        "24",
+        "3.100",
+        "COc1ccc(-c2ccc(OC)cc2)cc1",
+        "72"
+      ],
+      [
+        "COc1cccc(Br)c1",
+        "24",
+        "3.100",
+        "COc1cccc(-c2cccc(OC)c2)c1",
+        "69"
+      ],
+      [
+        "COc1ccccc1Br",
+        "0",
+        "3.100",
+        "COc1ccccc1-c1ccccc1OC",
+        "76"
+      ],
+      [
+        "N#Cc1ccc(Br)cc1",
+        "-28",
+        "0.055",
+        "N#Cc1ccc(-c2ccc(C#N)cc2)cc1",
+        "75"
+      ],
+      [
+        "N#Cc1cccc(Br)c1",
+        "0",
+        "0.055",
+        "N#Cc1cccc(-c2cccc(C#N)c2)c1",
+        "66"
+      ],
+      [
+        "N#Cc1ccccc1Br",
+        "24",
+        "0.055",
+        "N#Cc1ccccc1-c1ccccc1C#N",
+        "76"
+      ],
+      [
+        "O=[N+]([O-])c1ccc(I)cc1",
+        "-48",
+        "0.014",
+        "O=[N+]([O-])c1ccc(-c2ccc([N+](=O)[O-])cc2)cc1",
+        "53a"
+      ],
+      [
+        "O=[N+]([O-])c1ccccc1I",
+        "-48",
+        "0.014",
+        "O=[N+]([O-])c1ccccc1-c1ccccc1[N+](=O)[O-]",
+        "63a"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": "1-bromo-4-methoxybenzene",
+        "smiles": "COc1ccc(Br)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "4,4'-dimethoxy-1,1'-biphenyl",
+        "smiles": "COc1ccc(-c2ccc(OC)cc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-bromo-3-methoxybenzene",
+        "smiles": "COc1cccc(Br)c1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "3,3'-dimethoxy-1,1'-biphenyl",
+        "smiles": "COc1cccc(-c2cccc(OC)c2)c1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-bromo-2-methoxybenzene",
+        "smiles": "COc1ccccc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2,2'-dimethoxy-1,1'-biphenyl",
+        "smiles": "COc1ccccc1-c1ccccc1OC",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "4-bromobenzonitrile",
+        "smiles": "N#Cc1ccc(Br)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "[1,1'-biphenyl]-4,4'-dicarbonitrile",
+        "smiles": "N#Cc1ccc(-c2ccc(C#N)cc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "3-bromobenzonitrile",
+        "smiles": "N#Cc1cccc(Br)c1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "[1,1'-biphenyl]-3,3'-dicarbonitrile",
+        "smiles": "N#Cc1cccc(-c2cccc(C#N)c2)c1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "2-bromobenzonitrile",
+        "smiles": "N#Cc1ccccc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "[1,1'-biphenyl]-2,2'-dicarbonitrile",
+        "smiles": "N#Cc1ccccc1-c1ccccc1C#N",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-iodo-4-nitrobenzene",
+        "smiles": "O=[N+]([O-])c1ccc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "4,4'-dinitro-1,1'-biphenyl",
+        "smiles": "O=[N+]([O-])c1ccc(-c2ccc([N+](=O)[O-])cc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-iodo-2-nitrobenzene",
+        "smiles": "O=[N+]([O-])c1ccccc1I",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "2,2'-dinitro-1,1'-biphenyl",
+        "smiles": "O=[N+]([O-])c1ccccc1-c1ccccc1[N+](=O)[O-]",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "aPhLi instead of n-BuLi was used as lithiating reagent."
+    ],
+    "notes": "Table contains drawn structures for substrates and products. SMILES generated for all structures.",
+    "_source_paper": "Nagaki_2011_Homocoupling",
+    "_source_image": "mo-CC-am.png"
+  }
+]

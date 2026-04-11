@@ -1,0 +1,299 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 2",
+  "table_title": "The optimized Br/Li exchange reaction of alkyl o-bromobenzoates 1 followed by reaction with an electrophile (E).[a]",
+  "reaction_context": {
+    "substrate": "alkyl o-bromobenzoates 1",
+    "substrate_smiles": "O=C(OR)c1ccccc1Br",
+    "organolithium_reagent": "sBuLi",
+    "intermediate": "alkyl o-lithiobenzoates",
+    "intermediate_smiles": "O=C(OR)c1ccccc1[Li]",
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF, hexane/cyclohexane",
+    "reactor_info": "microflow system"
+  },
+  "columns": [
+    "Ester",
+    "Ester_label",
+    "E",
+    "Product",
+    "Product_label",
+    "Yield [%]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "O=C(OC(C)(C)C)c1ccccc1Br",
+      "1a",
+      "tBuOH",
+      "O=C(OC(C)(C)C)c1ccccc1",
+      "3a",
+      "93"
+    ],
+    [
+      "O=C(OC(C)(C)C)c1ccccc1Br",
+      "1a",
+      "MeI",
+      "O=C(OC(C)(C)C)c1ccccc1C",
+      "4a",
+      "88"
+    ],
+    [
+      "O=C(OC(C)(C)C)c1ccccc1Br",
+      "1a",
+      "Me3SiCl",
+      "O=C(OC(C)(C)C)c1ccccc1[Si](C)(C)C",
+      "5a",
+      "96"
+    ],
+    [
+      "O=C(OC(C)(C)C)c1ccccc1Br",
+      "1a",
+      "PhCHO",
+      "O=C1OC(c2ccccc2)c3ccccc13",
+      "6",
+      "82"
+    ],
+    [
+      "O=C(OC(C)C)c1ccccc1Br",
+      "1b",
+      "iPrOH",
+      "O=C(OC(C)C)c1ccccc1",
+      "3b",
+      "87"
+    ],
+    [
+      "O=C(OC(C)C)c1ccccc1Br",
+      "1b",
+      "MeI",
+      "O=C(OC(C)C)c1ccccc1C",
+      "4b",
+      "62"
+    ],
+    [
+      "O=C(OC(C)C)c1ccccc1Br",
+      "1b",
+      "MeOTf",
+      "O=C(OC(C)C)c1ccccc1C",
+      "4b",
+      "82"
+    ],
+    [
+      "O=C(OC(C)C)c1ccccc1Br",
+      "1b",
+      "Me3SiCl",
+      "O=C(OC(C)C)c1ccccc1[Si](C)(C)C",
+      "5b",
+      "93"
+    ],
+    [
+      "O=C(OC(C)C)c1ccccc1Br",
+      "1b",
+      "PhCHO",
+      "O=C1OC(c2ccccc2)c3ccccc13",
+      "6",
+      "66"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "EtOH",
+      "O=C(OCC)c1ccccc1",
+      "3c",
+      "90"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "MeI",
+      "O=C(OCC)c1ccccc1C",
+      "4c",
+      "12"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "MeOTf",
+      "O=C(OCC)c1ccccc1C",
+      "4c",
+      "62"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "Me3SiCl",
+      "O=C(OCC)c1ccccc1[Si](C)(C)C",
+      "5c",
+      "61"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "Me3SiOTf",
+      "O=C(OCC)c1ccccc1[Si](C)(C)C",
+      "5c",
+      "79"
+    ],
+    [
+      "O=C(OCC)c1ccccc1Br",
+      "1c",
+      "PhCHO",
+      "O=C1OC(c2ccccc2)c3ccccc13",
+      "6",
+      "70"
+    ],
+    [
+      "O=C(OC)c1ccccc1Br",
+      "1d",
+      "MeOH",
+      "O=C(OC)c1ccccc1",
+      "3d",
+      "74"
+    ],
+    [
+      "O=C(OC)c1ccccc1Br",
+      "1d",
+      "MeOTf",
+      "O=C(OC)c1ccccc1C",
+      "4d",
+      "65"
+    ],
+    [
+      "O=C(OC)c1ccccc1Br",
+      "1d",
+      "Me3SiOTf",
+      "O=C(OC)c1ccccc1[Si](C)(C)C",
+      "5d",
+      "82"
+    ],
+    [
+      "O=C(OC)c1ccccc1Br",
+      "1d",
+      "PhCHO",
+      "O=C1OC(c2ccccc2)c3ccccc13",
+      "6",
+      "85"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1a",
+      "name": "tert-butyl 2-bromobenzoate",
+      "smiles": "O=C(OC(C)(C)C)c1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "1b",
+      "name": "isopropyl 2-bromobenzoate",
+      "smiles": "O=C(OC(C)C)c1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "1c",
+      "name": "ethyl 2-bromobenzoate",
+      "smiles": "O=C(OCC)c1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "1d",
+      "name": "methyl 2-bromobenzoate",
+      "smiles": "O=C(OC)c1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "3a",
+      "name": "tert-butyl benzoate",
+      "smiles": "O=C(OC(C)(C)C)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": "4a",
+      "name": "tert-butyl 2-methylbenzoate",
+      "smiles": "O=C(OC(C)(C)C)c1ccccc1C",
+      "role": "product"
+    },
+    {
+      "label": "5a",
+      "name": "tert-butyl 2-(trimethylsilyl)benzoate",
+      "smiles": "O=C(OC(C)(C)C)c1ccccc1[Si](C)(C)C",
+      "role": "product"
+    },
+    {
+      "label": "6",
+      "name": "3-phenylisobenzofuran-1(3H)-one",
+      "smiles": "O=C1OC(c2ccccc2)c3ccccc13",
+      "role": "product"
+    },
+    {
+      "label": "3b",
+      "name": "isopropyl benzoate",
+      "smiles": "O=C(OC(C)C)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": "4b",
+      "name": "isopropyl 2-methylbenzoate",
+      "smiles": "O=C(OC(C)C)c1ccccc1C",
+      "role": "product"
+    },
+    {
+      "label": "5b",
+      "name": "isopropyl 2-(trimethylsilyl)benzoate",
+      "smiles": "O=C(OC(C)C)c1ccccc1[Si](C)(C)C",
+      "role": "product"
+    },
+    {
+      "label": "3c",
+      "name": "ethyl benzoate",
+      "smiles": "O=C(OCC)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": "4c",
+      "name": "ethyl 2-methylbenzoate",
+      "smiles": "O=C(OCC)c1ccccc1C",
+      "role": "product"
+    },
+    {
+      "label": "5c",
+      "name": "ethyl 2-(trimethylsilyl)benzoate",
+      "smiles": "O=C(OCC)c1ccccc1[Si](C)(C)C",
+      "role": "product"
+    },
+    {
+      "label": "3d",
+      "name": "methyl benzoate",
+      "smiles": "O=C(OC)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": "4d",
+      "name": "methyl 2-methylbenzoate",
+      "smiles": "O=C(OC)c1ccccc1C",
+      "role": "product"
+    },
+    {
+      "label": "5d",
+      "name": "methyl 2-(trimethylsilyl)benzoate",
+      "smiles": "O=C(OC)c1ccccc1[Si](C)(C)C",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] o-Bromobenzoates 1a-1d in THF (0.10 M), sBuLi in hexane/cyclohexane (0.42 M), and an electrophile (3.0 equiv) in THF (0.60 M) were allowed to react in the microflow system under the following optimized conditions: 1a: 0 °C (tR = 0.01 s), 1b: -28 °C (tR = 0.01 s), 1c: -48 °C (tR = 0.06 s), 1d: -48 °C (tR = 0.02 s)."
+  ],
+  "notes": "The table contains merged cells for the 'Ester' column. The values have been repeated for each corresponding row. For rows with multiple electrophiles (e.g., MeI, MeOTf) leading to the same product structure but different yields, they are split into separate rows in the JSON output for clarity, although they share the same product label and structure.",
+  "_source_paper": "Nagaki_2008_AlkoxycarbonylArLi",
+  "_source_image": "Pasted Graphic 91.png"
+}

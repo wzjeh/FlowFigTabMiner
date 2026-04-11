@@ -148,7 +148,7 @@ class LLMEngine:
                     model=self.model,
                     messages=messages,
                     result_format='message',
-                    max_tokens=65536,
+                    max_tokens=32768,
                     enable_thinking=False,
                     stream=True,
                     incremental_output=True,

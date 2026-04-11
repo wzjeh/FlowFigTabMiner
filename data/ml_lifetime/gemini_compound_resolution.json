@@ -1,0 +1,14 @@
+{
+  "OxiranylLi": {},
+  "BiaryLi": {
+    "2": "Brc1ccccc1-c2ccccc2",
+    "3": "c1ccccc1-c2ccccc2"
+  },
+  "SilyloxiranylLi": {
+    "2": "C[Si](C)(C)C1(OC1)[Si](c2ccccc2)(c3ccccc3)c4ccccc4",
+    "3": "C=C([Si](c1ccccc1)(c2ccccc2)c3ccccc3)CCCC"
+  },
+  "CHLiIF": {
+    "Table_S1_product": "O=C(CF)CCc1ccccc1"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 1",
+  "table_title": "External trapping of 2 and 3 with electrophiles under continuous flow conditions.",
+  "reaction_context": {
+    "substrate": "fluoroiodomethane (1)",
+    "substrate_smiles": "FCI",
+    "organolithium_reagent": "MeLi or LDA",
+    "intermediate": "fluoromethyllithium (2) or fluoroiodomethyllithium (3)",
+    "intermediate_smiles": "FC[Li]",
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange or deprotonation",
+    "solvent": "THF/Et2O",
+    "reactor_info": "M1, R1, M2, R2"
+  },
+  "columns": [
+    "Electrophile",
+    "Lithiating agent",
+    "Product",
+    "Product Label",
+    "Yield [%] Internal in batch",
+    "Yield [%] External in flow[a]",
+    "Productivity [g h-1][d]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    null,
+    "%",
+    "%",
+    "g h-1"
+  ],
+  "rows": [
+    [
+      "O=C(N(OC)C)CCC1=CC=CC=C1",
+      "MeLi",
+      "O=C(F)CCC1=CC=CC=C1",
+      "4a",
+      "34[b]",
+      "70 (82)[c]",
+      "2.8"
+    ],
+    [
+      "O=C(N(OC)C)/C=C/C1=CC=CC=C1",
+      "MeLi",
+      "O=C(F)/C=C/C1=CC=CC=C1",
+      "4b",
+      "41[b]",
+      "80 (88)[c]",
+      "3.2"
+    ],
+    [
+      "O=C(N(OC)C)CC1=CC=CC=C1",
+      "MeLi",
+      "O=C(F)CC1=CC=CC=C1",
+      "4c",
+      "58[b]",
+      "66 (79)[c]",
+      "2.2"
+    ],
+    [
+      "O=C(N(OC)C)CC1=CC=CS1",
+      "MeLi",
+      "O=C(F)CC1=CC=CS1",
+      "4d",
+      "45[b]",
+      "68 (80)[c]",
+      "2.4"
+    ],
+    [
+      "O=C(N(OC)C)C1=CC=C(C2=CC=CC=C2)C=C1",
+      "MeLi",
+      "O=C(F)C1=CC=C(C2=CC=CC=C2)C=C1",
+      "4e",
+      "53[b]",
+      "60 (72)[c]",
+      "3.1"
+    ],
+    [
+      "O=C(N(OC)C)C(CC)C1=CC=CC=C1",
+      "MeLi",
+      "O=C(F)C(CC)C1=CC=CC=C1",
+      "4f",
+      "30[b]",
+      "60 (65)[c]",
+      "2.6"
+    ],
+    [
+      "O=C(N(OC)C)C1=CC(F)=CC=C1",
+      "MeLi",
+      "O=C(F)C1=CC(F)=CC=C1",
+      "4g",
+      "47[b]",
+      "80 (93)[c]",
+      "3.0"
+    ],
+    [
+      "O=C(N(OC)C)C1=CC=C(C(F)(F)F)C=C1",
+      "MeLi",
+      "O=C(F)C1=CC=C(C(F)(F)F)C=C1",
+      "4h",
+      "41[b]",
+      "75 (84)[c]",
+      "3.7"
+    ],
+    [
+      "O=C(N(OC)C)C1=CC=C(F)C=C1",
+      "MeLi",
+      "O=C(F)C1=CC=C(F)C=C1",
+      "4i",
+      "55[b]",
+      "77 (87)[c]",
+      "2.9"
+    ],
+    [
+      "Bu3SnCl",
+      "LDA",
+      "CCCC[Sn](CCCC)(CCCC)C(F)I",
+      "5a",
+      "21[c]",
+      "84 (99)[c]",
+      "9.1"
+    ],
+    [
+      "Ph3SnCl",
+      "LDA",
+      "FC(I)[Sn](C1=CC=CC=C1)(C2=CC=CC=C2)C3=CC=CC=C3",
+      "5b",
+      "41[c]",
+      "80 (95)[c]",
+      "9.8"
+    ],
+    [
+      "Bu2PhSnCl",
+      "LDA",
+      "CCCC[Sn](CCCC)(C1=CC=CC=C1)C(F)I",
+      "5c",
+      "-",
+      "60 (65)[c]",
+      "6.8"
+    ],
+    [
+      "O=C(C1=CC=CC=C1)C2=CC=CC=C2",
+      "LDA",
+      "FC(I)C1(OC1)C2=CC=CC=C2C3=CC=CC=C3",
+      "6a",
+      "49[c]",
+      "76 (99)[c]",
+      "3.9"
+    ],
+    [
+      "O=C(C1=CC=C(F)C=C1)C2=CC=C(F)C=C2",
+      "LDA",
+      "FC(I)C1(OC1)C2=CC=C(F)C=C2C3=CC=C(F)C=C3",
+      "6b",
+      "42[c]",
+      "56 (99)[c]",
+      "3.4"
+    ],
+    [
+      "O=C(C(C)C)C1=CC=CC=C1",
+      "LDA",
+      "FC(I)C1(OC1)C(C)CC2=CC=CC=C2",
+      "6c",
+      "80[c]",
+      "85 (95)[c]",
+      "3.7"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "4a",
+      "name": null,
+      "smiles": "O=C(F)CCC1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4b",
+      "name": null,
+      "smiles": "O=C(F)/C=C/C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4c",
+      "name": null,
+      "smiles": "O=C(F)CC1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4d",
+      "name": null,
+      "smiles": "O=C(F)CC1=CC=CS1",
+      "role": "product"
+    },
+    {
+      "label": "4e",
+      "name": null,
+      "smiles": "O=C(F)C1=CC=C(C2=CC=CC=C2)C=C1",
+      "role": "product"
+    },
+    {
+      "label": "4f",
+      "name": null,
+      "smiles": "O=C(F)C(CC)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4g",
+      "name": null,
+      "smiles": "O=C(F)C1=CC(F)=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4h",
+      "name": null,
+      "smiles": "O=C(F)C1=CC=C(C(F)(F)F)C=C1",
+      "role": "product"
+    },
+    {
+      "label": "4i",
+      "name": null,
+      "smiles": "O=C(F)C1=CC=C(F)C=C1",
+      "role": "product"
+    },
+    {
+      "label": "5a",
+      "name": null,
+      "smiles": "CCCC[Sn](CCCC)(CCCC)C(F)I",
+      "role": "product"
+    },
+    {
+      "label": "5b",
+      "name": null,
+      "smiles": "FC(I)[Sn](C1=CC=CC=C1)(C2=CC=CC=C2)C3=CC=CC=C3",
+      "role": "product"
+    },
+    {
+      "label": "5c",
+      "name": null,
+      "smiles": "CCCC[Sn](CCCC)(C1=CC=CC=C1)C(F)I",
+      "role": "product"
+    },
+    {
+      "label": "6a",
+      "name": null,
+      "smiles": "FC(I)C1(OC1)C2=CC=CC=C2C3=CC=CC=C3",
+      "role": "product"
+    },
+    {
+      "label": "6b",
+      "name": null,
+      "smiles": "FC(I)C1(OC1)C2=CC=C(F)C=C2C3=CC=C(F)C=C3",
+      "role": "product"
+    },
+    {
+      "label": "6c",
+      "name": null,
+      "smiles": "FC(I)C1(OC1)C(C)CC2=CC=CC=C2",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] A solution of fluoroiodomethane (1) (0.10 M in THF; flow rate: 4.0 mL/min) and a solution of MeLi (Br free; 0.20 M in Et2O; flow rate: 4.0 mL/min) or LDA (0.42 M in THF; flow rate: 1.0 mL min-1) were introduced to M1 by syringe pumps. The resulting solution was passed through R1 (tR1 = 0.013 s, T = -60 °C (4a-i); tR1 = 0.082 s, T = -40 °C (5a-c, 6a-c)) and was mixed with a solution of electrophiles (0.30 M in THF) (flow rate: 4.0 mL min-1) in M2. The resulting solution was passed through R2 (tR2 = 7.85 s, T = -60 °C (4a-4i); tR2 = 10.47 s, T = -40 °C (5a-5c); tR2 = 20.94 s, T = -40 °C (6a-6c)).",
+    "[b] Previous research data (Ref. [3a]).",
+    "[c] Yields were determined by 1H NMR analysis using dibromomethane as an internal standard.",
+    "[d] The productivity was calculated based on the yield of the isolated product."
+  ],
+  "notes": "The table contains drawn structures for electrophiles and products. The product label column was added to separate the label from the structure. The yield column has two sub-columns: 'Internal in batch' and 'External in flow'. The external in flow yield has two values, the first is isolated yield and the second in parentheses is NMR yield.",
+  "_source_paper": "Nagaki_2020_CHLiIF",
+  "_source_image": "Pasted Graphic 88.png"
+}

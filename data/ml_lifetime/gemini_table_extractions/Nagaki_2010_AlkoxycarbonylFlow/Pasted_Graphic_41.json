@@ -1,0 +1,295 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table S-11",
+  "table_title": "The I/Li exchange reaction of tert-butyl p-iodobenzoate (4a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "tert-butyl p-iodobenzoate (4a)",
+    "substrate_smiles": "CC(C)(C)OC(=O)c1ccc(I)cc1",
+    "organolithium_reagent": "PhLi",
+    "intermediate": "tert-butyl p-lithiobenzoate",
+    "intermediate_smiles": "CC(C)(C)OC(=O)c1ccc([Li])cc1",
+    "electrophile": "tert-butyl alcohol",
+    "electrophile_smiles": "CC(C)(C)O",
+    "product": "tert-butyl benzoate (3)",
+    "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": "THF / Et2O / cyclohexane",
+    "reactor_info": "two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2), and three tube pre-cooling units (P1, P2, P3)"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "96",
+      "85"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "93",
+      "82"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "97",
+      "76"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "97",
+      "66"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "97",
+      "53"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "98",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "96",
+      "94"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "97",
+      "95"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "97",
+      "95"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "97",
+      "94"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "97",
+      "90"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "98",
+      "74"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "93",
+      "91"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "94",
+      "92"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "94",
+      "93"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "95",
+      "92"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "94",
+      "93"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "96",
+      "89"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "93",
+      "92"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "91",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "94",
+      "93"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "92",
+      "90"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "95",
+      "93"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "95",
+      "92"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "81",
+      "77"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "84",
+      "60"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "69",
+      "67"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "65",
+      "72"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "86",
+      "76"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "84",
+      "84"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "4a",
+      "name": "tert-butyl p-iodobenzoate",
+      "smiles": "CC(C)(C)OC(=O)c1ccc(I)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "3",
+      "name": "tert-butyl benzoate",
+      "smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "The image contains a reaction scheme showing the flow setup and a data table. The table spans across a page break in the original document, but the rows are continuous. The temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Pasted Graphic 41.png"
+}

@@ -1,0 +1,1251 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-3",
+    "table_title": "The Br-Li exchange reaction of m-bromobenzonitrile followed by reaction with methanol in microflow systems",
+    "reaction_context": {
+      "substrate": "m-bromobenzonitrile",
+      "substrate_smiles": "N#Cc1cccc(Br)c1",
+      "organolithium_reagent": null,
+      "intermediate": "m-cyanophenyllithium",
+      "intermediate_smiles": "N#Cc1cccc([Li])c1",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "benzonitrile",
+      "product_smiles": "N#Cc1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "microflow systems"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "residence time",
+      "temperature",
+      "conv.",
+      "yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "100",
+        "80"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "100",
+        "75"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "100",
+        "76"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "20",
+        "100",
+        "74"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "100",
+        "73"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "100",
+        "44"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "80"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "80"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "83"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "0",
+        "100",
+        "84"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "83"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "52"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "83"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "84"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-28",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "83"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "81"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "47",
+        "28"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "93",
+        "73"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "80"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-48",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "83"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "17",
+        "8"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "67",
+        "41"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "98",
+        "82"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-58",
+        "100",
+        "84"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "88"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "7",
+        "3"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "26",
+        "19"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "44",
+        "36"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-78",
+        "51",
+        "42"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "76",
+        "67"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "84"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document, with the top part showing 20°C and the first row of 0°C, and the bottom part continuing with the rest of 0°C and lower temperatures. The temperature column has merged cells; values have been repeated for each corresponding row.",
+    "_source_paper": "Nagaki_2010_CyanoArLi",
+    "_source_image": "88888888888888888888888.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "The Br-Li exchange reaction of o-bromobenzonitrile followed by reaction with methanol in microflow systems",
+    "reaction_context": {
+      "substrate": "o-bromobenzonitrile",
+      "substrate_smiles": "N#Cc1ccccc1Br",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "o-cyanophenyllithium",
+      "intermediate_smiles": "N#Cc1ccccc1[Li]",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "benzonitrile",
+      "product_smiles": "N#Cc1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane",
+      "reactor_info": "two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2) and three tube pre-cooling units (P1, P2, P3)"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "residence time",
+      "temperature",
+      "conv.",
+      "yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "100",
+        "90"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "100",
+        "83"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "20",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "100",
+        "80"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "100",
+        "71"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "91"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "0",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "83"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "89"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "88"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-28",
+        "100",
+        "84"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "84"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "26",
+        "25"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "74",
+        "72"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "94",
+        "93"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-48",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "92"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "85"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "13",
+        "13"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "43",
+        "40"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "60",
+        "56"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-58",
+        "100",
+        "89"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "87"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "6",
+        "6"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "12",
+        "12"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "49",
+        "40"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-78",
+        "56",
+        "48"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "74",
+        "62"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "81"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "1",
+        "name": "o-bromobenzonitrile",
+        "smiles": "N#Cc1ccccc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "3",
+        "name": "benzonitrile",
+        "smiles": "N#Cc1ccccc1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "The image contains both a reaction scheme (S1) and a data table (Table S-2). The scheme shows the flow setup and structures. The table provides data for the o-bromobenzonitrile substrate. The temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+    "_source_paper": "Nagaki_2010_CyanoArLi",
+    "_source_image": "Pasted Graphic 49.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 2",
+    "table_title": "Reaction of lithiobenzonitriles (2) with electrophilesa",
+    "reaction_context": {
+      "substrate": "bromobenzonitriles (1a-1c)",
+      "substrate_smiles": null,
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "lithiobenzonitriles (2)",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane",
+      "reactor_info": "microflow system"
+    },
+    "columns": [
+      "bromobenzonitrile",
+      "electrophile",
+      "product",
+      "yield (%)"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "1a",
+        "Me3SiCl",
+        "N#Cc1ccccc1[Si](C)(C)C",
+        "90"
+      ],
+      [
+        "1a",
+        "Bu3SnCl",
+        "N#Cc1ccccc1[Sn](CCCC)(CCCC)CCCC",
+        "85"
+      ],
+      [
+        "1a",
+        "MeI",
+        "N#Cc1ccccc1C",
+        "93"
+      ],
+      [
+        "1a",
+        "PhCHO",
+        "O=C1OC(c2ccccc2)c3ccccc13",
+        "92"
+      ],
+      [
+        "1a",
+        "n-HexCHO",
+        "O=C1OC(CCCCCC)c2ccccc12",
+        "81b"
+      ],
+      [
+        "1a",
+        "Ph2CO",
+        "O=C1OC(c2ccccc2)(c3ccccc3)c4ccccc14",
+        "94b"
+      ],
+      [
+        "1b",
+        "Me3SiCl",
+        "N#Cc1cccc([Si](C)(C)C)c1",
+        "96"
+      ],
+      [
+        "1b",
+        "Bu3SnCl",
+        "N#Cc1cccc([Sn](CCCC)(CCCC)CCCC)c1",
+        "95"
+      ],
+      [
+        "1b",
+        "MeI",
+        "N#Cc1cccc(C)c1",
+        "81"
+      ],
+      [
+        "1b",
+        "PhCHO",
+        "N#Cc1cccc(C(O)c2ccccc2)c1",
+        "81"
+      ],
+      [
+        "1c",
+        "Me3SiCl",
+        "N#Cc1ccc([Si](C)(C)C)cc1",
+        "85"
+      ],
+      [
+        "1c",
+        "Bu3SnCl",
+        "N#Cc1ccc([Sn](CCCC)(CCCC)CCCC)cc1",
+        "93"
+      ],
+      [
+        "1c",
+        "MeI",
+        "N#Cc1ccc(C)cc1",
+        "90"
+      ],
+      [
+        "1c",
+        "PhCHO",
+        "N#Cc1ccc(C(O)c2ccccc2)cc1",
+        "87"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "1a",
+        "name": "2-bromobenzonitrile",
+        "smiles": "N#Cc1ccccc1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "1b",
+        "name": "3-bromobenzonitrile",
+        "smiles": "N#Cc1cccc(Br)c1",
+        "role": "substrate"
+      },
+      {
+        "label": "1c",
+        "name": "4-bromobenzonitrile",
+        "smiles": "N#Cc1ccc(Br)cc1",
+        "role": "substrate"
+      }
+    ],
+    "footnotes": [
+      "a Bromobenzonitriles (1a–1c) in THF (0.10 M), n-BuLi in hexane (0.42 M), and an electrophile in THF (0.60 M) were reacted in the microflow system under the following optimized conditions: 1a: 20 °C (residence time: 0.01 s), 1b: 0 °C (residence time: 0.01 s), 1c: 0 °C (residence time: 0.01 s). The yield was determined by GC.",
+      "b Isolated yield."
+    ],
+    "notes": "Substrate structures are shown once per block of rows. I have filled down the substrate label (1a, 1b, 1c) for all corresponding rows. The products for 1a with aldehydes/ketones undergo cyclization to form phthalides.",
+    "_source_paper": "Nagaki_2010_CyanoArLi",
+    "_source_image": "Pasted Graphic 96.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 3",
+    "table_title": "Reaction of o-lithiobenzonitrile (2a) with carbonyl compounds followed by reaction with electrophilesa",
+    "reaction_context": {
+      "substrate": "o-lithiobenzonitrile (2a)",
+      "substrate_smiles": "N#Cc1ccccc1[Li]",
+      "organolithium_reagent": null,
+      "intermediate": "o-lithiobenzonitrile (2a)",
+      "intermediate_smiles": "N#Cc1ccccc1[Li]",
+      "electrophile": "carbonyl compounds followed by electrophiles",
+      "electrophile_smiles": null,
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "nucleophilic addition to carbonyl followed by trapping",
+      "solvent": null,
+      "reactor_info": null
+    },
+    "columns": [
+      "carbonyl compound",
+      "electrophile",
+      "product",
+      "yield (%)"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "PhCHO",
+        "AcCl",
+        "CC(=O)OC(c1ccccc1)c2ccccc2C#N",
+        "97"
+      ],
+      [
+        "PhCHO",
+        "Me2SO4b",
+        "COC(c1ccccc1)c2ccccc2C#N",
+        "83"
+      ],
+      [
+        "n-HexCHO",
+        "MeO2CCl",
+        "CCCCCC(OC(=O)OC)c1ccccc1C#N",
+        "75"
+      ],
+      [
+        "n-HexCHO",
+        "Me2SO4b",
+        "CCCCCC(OC)c1ccccc1C#N",
+        "51"
+      ],
+      [
+        "Ph2CO",
+        "Me2SO4b",
+        "COC(c1ccccc1)(c2ccccc2)c3ccccc3C#N",
+        "66"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": null,
+        "smiles": "CC(=O)OC(c1ccccc1)c2ccccc2C#N",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "COC(c1ccccc1)c2ccccc2C#N",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "CCCCCC(OC(=O)OC)c1ccccc1C#N",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "CCCCCC(OC)c1ccccc1C#N",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "COC(c1ccccc1)(c2ccccc2)c3ccccc3C#N",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "a The reaction was conducted under the following optimized conditions: temperature: 20 °C, residence time of R1: 0.01 s, residence time of R2: 2.3 s (See the supporting information for details).",
+      "b 3 eq of HMPA was added to a solution of Me2SO4."
+    ],
+    "notes": "The table shows a three-component reaction: o-lithiobenzonitrile reacts with a carbonyl compound (R1), and the resulting alkoxide is trapped with an electrophile (R2). The carbonyl compound column has merged cells for PhCHO and n-HexCHO.",
+    "_source_paper": "Nagaki_2010_CyanoArLi",
+    "_source_image": "Table 3 Reaction of o.fithiobenzonitrile （2a） with carbony compounds.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-4",
+    "table_title": "The Br-Li exchange reaction of p-bromobenzonitrile followed by reaction with methanol in microflow systems",
+    "reaction_context": {
+      "substrate": "p-bromobenzonitrile",
+      "substrate_smiles": "N#Cc1ccc(Br)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "p-cyanophenyllithium",
+      "intermediate_smiles": "N#Cc1ccc([Li])cc1",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "benzonitrile",
+      "product_smiles": "N#Cc1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "microflow systems"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "residence time",
+      "temperature",
+      "conv.",
+      "yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "100",
+        "82"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "100",
+        "78"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "100",
+        "78"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "20",
+        "100",
+        "72"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "100",
+        "77"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "100",
+        "41"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "88"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "0",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "84"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "48"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "87"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "89"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-28",
+        "100",
+        "88"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "88"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "85"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "50",
+        "33"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "84",
+        "63"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-48",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "89"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "86"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "34",
+        "17"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "54",
+        "37"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "68",
+        "51"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-58",
+        "95",
+        "79"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "91"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "7",
+        "2"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "38",
+        "27"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "45",
+        "30"
+      ],
+      [
+        "1000",
+        "6",
+        "0.38",
+        "-78",
+        "50",
+        "41"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "73",
+        "61"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "92"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document, as indicated by the 'S3' page number in the middle of the image. The rows have been combined into a single continuous list. The temperature column has merged cells in the original image; the values have been repeated for each corresponding row.",
+    "_source_paper": "Nagaki_2010_CyanoArLi",
+    "_source_image": "tollowed.png"
+  }
+]

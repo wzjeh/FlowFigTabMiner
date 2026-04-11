@@ -1,0 +1,295 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-2",
+  "table_title": "The I-Li exchange reaction of o-iodonitrobenzene (1a) followed by reaction with methanol in microflow systems.",
+  "reaction_context": {
+    "substrate": "o-iodonitrobenzene (1a)",
+    "substrate_smiles": "O=[N+]([O-])c1ccccc1I",
+    "organolithium_reagent": "PhLi",
+    "intermediate": "o-nitrophenyllithium",
+    "intermediate_smiles": "O=[N+]([O-])c1ccccc1[Li]",
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "nitrobenzene (2)",
+    "product_smiles": "O=[N+]([O-])c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": "THF, Et2O, cyclohexane",
+    "reactor_info": "two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2) and three tube pre-cooling units (P1, P2, P3)"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "temperature",
+    "conversion 1a",
+    "yield 2"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "97",
+      "87"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "99",
+      "87"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "98",
+      "86"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "98",
+      "85"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "0",
+      "98",
+      "79"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "30"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "100",
+      "92"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "100",
+      "89"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-28",
+      "100",
+      "92"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "89"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "100",
+      "95"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "100",
+      "88"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "91"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-48",
+      "100",
+      "92"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "89"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "65",
+      "47"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "68",
+      "61"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "97",
+      "83"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "100",
+      "85"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-58",
+      "100",
+      "88"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "88"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "68",
+      "47"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "72",
+      "51"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "76",
+      "54"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "82",
+      "63"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-78",
+      "85",
+      "76"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "96",
+      "87"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1",
+      "name": "o-iodonitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccccc1I",
+      "role": "substrate"
+    },
+    {
+      "label": "2",
+      "name": "nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccccc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "Temperature values were filled down for merged cells. The table was split across a page break in the original document and has been combined.",
+  "_source_paper": "Nagaki_2009_NitroArLi",
+  "_source_image": "Pasted Graphic 28.png"
+}

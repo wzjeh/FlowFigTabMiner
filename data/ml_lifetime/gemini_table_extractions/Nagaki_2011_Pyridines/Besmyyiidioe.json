@@ -1,0 +1,167 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 2",
+  "table_title": "The Br/Li exchange reaction of dibromopyridines with n-BuLi followed by reaction with an electrophile using the flow microreactor systemᵃ",
+  "reaction_context": {
+    "substrate": "dibromopyridines",
+    "substrate_smiles": null,
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "lithiobromopyridine",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF/hexane",
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Bromopyridine",
+    "Electrophile",
+    "Product",
+    "Yield (%)"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "Brc1cccnc1Br",
+      "MeI",
+      "Cc1cccnc1Br",
+      "87"
+    ],
+    [
+      "Brc1cccnc1Br",
+      "Me3SiCl",
+      "C[Si](C)(C)c1cccnc1Br",
+      "80"
+    ],
+    [
+      "Brc1cccnc1Br",
+      "PhCHO",
+      "OC(c1ccccc1)c1cccnc1Br",
+      "78"
+    ],
+    [
+      "Brc1ccc(Br)nc1",
+      "MeI",
+      "Cc1ccc(Br)nc1",
+      "84"
+    ],
+    [
+      "Brc1ccc(Br)nc1",
+      "Me3SiCl",
+      "C[Si](C)(C)c1ccc(Br)nc1",
+      "87"
+    ],
+    [
+      "Brc1ccc(Br)nc1",
+      "PhCHO",
+      "OC(c1ccccc1)c1ccc(Br)nc1",
+      "79"
+    ],
+    [
+      "Brc1cccc(Br)n1",
+      "MeI",
+      "Cc1cccc(Br)n1",
+      "94"
+    ],
+    [
+      "Brc1cccc(Br)n1",
+      "Me3SiCl",
+      "C[Si](C)(C)c1cccc(Br)n1",
+      "89"
+    ],
+    [
+      "Brc1cccc(Br)n1",
+      "PhCHO",
+      "OC(c1ccccc1)c1cccc(Br)n1",
+      "80"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "2,3-dibromopyridine",
+      "smiles": "Brc1cccnc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-3-methylpyridine",
+      "smiles": "Cc1cccnc1Br",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-3-(trimethylsilyl)pyridine",
+      "smiles": "C[Si](C)(C)c1cccnc1Br",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "(2-bromopyridin-3-yl)(phenyl)methanol",
+      "smiles": "OC(c1ccccc1)c1cccnc1Br",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2,5-dibromopyridine",
+      "smiles": "Brc1ccc(Br)nc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-5-methylpyridine",
+      "smiles": "Cc1ccc(Br)nc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-5-(trimethylsilyl)pyridine",
+      "smiles": "C[Si](C)(C)c1ccc(Br)nc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "(6-bromopyridin-3-yl)(phenyl)methanol",
+      "smiles": "OC(c1ccccc1)c1ccc(Br)nc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2,6-dibromopyridine",
+      "smiles": "Brc1cccc(Br)n1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-6-methylpyridine",
+      "smiles": "Cc1cccc(Br)n1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2-bromo-6-(trimethylsilyl)pyridine",
+      "smiles": "C[Si](C)(C)c1cccc(Br)n1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "(6-bromopyridin-2-yl)(phenyl)methanol",
+      "smiles": "OC(c1ccccc1)c1cccc(Br)n1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "ᵃ Dibromopyridines in THF (0.10 M), n-BuLi in hexane (0.40 M), and an electrophile in THF (0.24 M) were reacted in the flow microreactor system at 0 °C. The yields were determined by GC analysis using an internal standard (pentadecane)."
+  ],
+  "notes": "The substrate column has merged cells where the structure applies to the three rows to its right.",
+  "_source_paper": "Nagaki_2011_Pyridines",
+  "_source_image": "Besmyyiidioe.png"
+}

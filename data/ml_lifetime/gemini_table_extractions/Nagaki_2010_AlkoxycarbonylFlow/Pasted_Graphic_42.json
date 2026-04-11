@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-12",
+  "table_title": "Table S-12. The I/Li exchange reaction of isopropyl p-iodobenzoate (4b) followed by reaction with 2-propanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "isopropyl p-iodobenzoate (4b)",
+    "substrate_smiles": "CC(C)OC(=O)c1ccc(I)cc1",
+    "organolithium_reagent": null,
+    "intermediate": "isopropyl p-lithiobenzoate",
+    "intermediate_smiles": "CC(C)OC(=O)c1ccc([Li])cc1",
+    "electrophile": "2-propanol",
+    "electrophile_smiles": "CC(O)C",
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "95",
+      "40"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "93",
+      "28"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "97",
+      "11"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "97",
+      "8"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "89",
+      "7"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "2"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "92",
+      "78"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "94",
+      "69"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "96",
+      "51"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "97",
+      "37"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "27"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "8"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "92",
+      "89"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "90",
+      "85"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "91",
+      "83"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "93",
+      "80"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "96",
+      "73"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "27"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "93",
+      "93"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "96",
+      "94"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "97",
+      "94"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "97",
+      "92"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "97",
+      "88"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "98",
+      "55"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "79",
+      "77"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "73",
+      "71"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "69",
+      "66"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "77",
+      "74"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "84",
+      "80"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "95",
+      "89"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the JSON output.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Pasted Graphic 42.png"
+}

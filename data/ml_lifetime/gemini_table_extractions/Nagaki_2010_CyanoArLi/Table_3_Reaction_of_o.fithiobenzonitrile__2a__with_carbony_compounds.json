@@ -1,0 +1,102 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 3",
+  "table_title": "Reaction of o-lithiobenzonitrile (2a) with carbonyl compounds followed by reaction with electrophilesa",
+  "reaction_context": {
+    "substrate": "o-lithiobenzonitrile (2a)",
+    "substrate_smiles": "N#Cc1ccccc1[Li]",
+    "organolithium_reagent": null,
+    "intermediate": "o-lithiobenzonitrile (2a)",
+    "intermediate_smiles": "N#Cc1ccccc1[Li]",
+    "electrophile": "carbonyl compounds followed by electrophiles",
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "nucleophilic addition to carbonyl followed by trapping",
+    "solvent": null,
+    "reactor_info": null
+  },
+  "columns": [
+    "carbonyl compound",
+    "electrophile",
+    "product",
+    "yield (%)"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "PhCHO",
+      "AcCl",
+      "CC(=O)OC(c1ccccc1)c2ccccc2C#N",
+      "97"
+    ],
+    [
+      "PhCHO",
+      "Me2SO4b",
+      "COC(c1ccccc1)c2ccccc2C#N",
+      "83"
+    ],
+    [
+      "n-HexCHO",
+      "MeO2CCl",
+      "CCCCCC(OC(=O)OC)c1ccccc1C#N",
+      "75"
+    ],
+    [
+      "n-HexCHO",
+      "Me2SO4b",
+      "CCCCCC(OC)c1ccccc1C#N",
+      "51"
+    ],
+    [
+      "Ph2CO",
+      "Me2SO4b",
+      "COC(c1ccccc1)(c2ccccc2)c3ccccc3C#N",
+      "66"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)OC(c1ccccc1)c2ccccc2C#N",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COC(c1ccccc1)c2ccccc2C#N",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CCCCCC(OC(=O)OC)c1ccccc1C#N",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CCCCCC(OC)c1ccccc1C#N",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COC(c1ccccc1)(c2ccccc2)c3ccccc3C#N",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a The reaction was conducted under the following optimized conditions: temperature: 20 °C, residence time of R1: 0.01 s, residence time of R2: 2.3 s (See the supporting information for details).",
+    "b 3 eq of HMPA was added to a solution of Me2SO4."
+  ],
+  "notes": "The table shows a three-component reaction: o-lithiobenzonitrile reacts with a carbonyl compound (R1), and the resulting alkoxide is trapped with an electrophile (R2). The carbonyl compound column has merged cells for PhCHO and n-HexCHO.",
+  "_source_paper": "Nagaki_2010_CyanoArLi",
+  "_source_image": "Table 3 Reaction of o.fithiobenzonitrile （2a） with carbony compounds.png"
+}

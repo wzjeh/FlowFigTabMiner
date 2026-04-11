@@ -1,0 +1,593 @@
+[
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 1",
+    "table_title": "Generation of acyl-substituted aryllithiums and reactions with electrophiles in a flow-microreactor system.",
+    "reaction_context": {
+      "substrate": "acyliodobenzene",
+      "substrate_smiles": null,
+      "organolithium_reagent": "MesLi",
+      "intermediate": "acyl-substituted aryllithium",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": "THF",
+      "reactor_info": "residence time in R2=0.0015 s or 0.003 s"
+    },
+    "columns": [
+      "Entry",
+      "Substrate",
+      "Electrophile",
+      "Product",
+      "Yield*"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "1",
+        "1",
+        "MeOH",
+        "3",
+        "90 (91†)"
+      ],
+      [
+        "2",
+        "1",
+        "Me3SiOTf",
+        "8",
+        "86 (91†)"
+      ],
+      [
+        "3",
+        "1",
+        "Bu3SnCl",
+        "9",
+        "86"
+      ],
+      [
+        "4",
+        "1",
+        "MeO2CCl",
+        "10",
+        "68 (70†)"
+      ],
+      [
+        "5",
+        "1",
+        "PhCOMe",
+        "11",
+        "81"
+      ],
+      [
+        "6",
+        "1",
+        "PhCOCy",
+        "12",
+        "81"
+      ],
+      [
+        "7",
+        "1",
+        "PhCHO",
+        "13",
+        "60"
+      ],
+      [
+        "8",
+        "14",
+        "MeOH",
+        "15",
+        "83†"
+      ],
+      [
+        "9",
+        "14",
+        "Me3SiOTf",
+        "16",
+        "81 (84†)"
+      ],
+      [
+        "10",
+        "14",
+        "MeO2CCl",
+        "17",
+        "65 (69†)"
+      ],
+      [
+        "11",
+        "18",
+        "MeOH",
+        "7",
+        "77†"
+      ],
+      [
+        "12",
+        "18",
+        "MeOTf",
+        "19",
+        "42†"
+      ],
+      [
+        "13",
+        "20",
+        "PhNCO",
+        "21",
+        "87"
+      ],
+      [
+        "14",
+        "22",
+        "MeOH",
+        "23",
+        "78†"
+      ],
+      [
+        "15",
+        "22",
+        "PhCHO",
+        "24",
+        "73 (75†)"
+      ],
+      [
+        "16",
+        "22",
+        "PhCOMe",
+        "25",
+        "76"
+      ],
+      [
+        "17",
+        "26",
+        "PhNCO",
+        "27",
+        "71"
+      ],
+      [
+        "18",
+        "28",
+        "MeOH",
+        "3",
+        "67†"
+      ],
+      [
+        "19",
+        "28",
+        "PhNCO",
+        "29",
+        "51"
+      ],
+      [
+        "20",
+        "5",
+        "MeOH",
+        "7",
+        "54 (76‡)"
+      ],
+      [
+        "21",
+        "5",
+        "PhCHO",
+        "30",
+        "78‡"
+      ],
+      [
+        "22",
+        "31",
+        "MeOH",
+        "32",
+        "74"
+      ],
+      [
+        "23",
+        "31",
+        "PhCHO",
+        "33",
+        "77"
+      ],
+      [
+        "24",
+        "31",
+        "PhNCO",
+        "34",
+        "59"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "1",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccccc1I",
+        "role": "substrate"
+      },
+      {
+        "label": "3",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": "8",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccccc1[Si](C)(C)C",
+        "role": "product"
+      },
+      {
+        "label": "9",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccccc1[Sn](CCCC)(CCCC)CCCC",
+        "role": "product"
+      },
+      {
+        "label": "10",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccccc1C(=O)OC",
+        "role": "product"
+      },
+      {
+        "label": "11",
+        "name": null,
+        "smiles": "CCCC=C1OC(C)(c2ccccc2)c3ccccc13",
+        "role": "product"
+      },
+      {
+        "label": "12",
+        "name": null,
+        "smiles": "CCCC=C1OC(C2CCCCC2)(c3ccccc3)c4ccccc14",
+        "role": "product"
+      },
+      {
+        "label": "13",
+        "name": null,
+        "smiles": "CCCCC1(O)OC(c2ccccc2)c3ccccc13",
+        "role": "product"
+      },
+      {
+        "label": "14",
+        "name": null,
+        "smiles": "O=C(CC)c1ccccc1I",
+        "role": "substrate"
+      },
+      {
+        "label": "15",
+        "name": null,
+        "smiles": "O=C(CC)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": "16",
+        "name": null,
+        "smiles": "O=C(CC)c1ccccc1[Si](C)(C)C",
+        "role": "product"
+      },
+      {
+        "label": "17",
+        "name": null,
+        "smiles": "O=C(CC)c1ccccc1C(=O)OC",
+        "role": "product"
+      },
+      {
+        "label": "18",
+        "name": null,
+        "smiles": "O=C(C)c1ccccc1I",
+        "role": "substrate"
+      },
+      {
+        "label": "7",
+        "name": null,
+        "smiles": "O=C(C)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": "19",
+        "name": null,
+        "smiles": "O=C(C)c1ccccc1C",
+        "role": "product"
+      },
+      {
+        "label": "20",
+        "name": null,
+        "smiles": "O=C(C(C)(C)C)c1ccc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "21",
+        "name": null,
+        "smiles": "O=C(C(C)(C)C)c1ccc(C(=O)Nc2ccccc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": "22",
+        "name": null,
+        "smiles": "O=C(C1CCCCC1)c2ccc(I)cc2",
+        "role": "substrate"
+      },
+      {
+        "label": "23",
+        "name": null,
+        "smiles": "O=C(C1CCCCC1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": "24",
+        "name": null,
+        "smiles": "O=C(C1CCCCC1)c2ccc(C(O)c3ccccc3)cc2",
+        "role": "product"
+      },
+      {
+        "label": "25",
+        "name": null,
+        "smiles": "O=C(C1CCCCC1)c2ccc(C(O)(C)c3ccccc3)cc2",
+        "role": "product"
+      },
+      {
+        "label": "26",
+        "name": null,
+        "smiles": "O=C(c1ccccc1)c2ccc(I)cc2",
+        "role": "substrate"
+      },
+      {
+        "label": "27",
+        "name": null,
+        "smiles": "O=C(c1ccccc1)c2ccc(C(=O)Nc3ccccc3)cc2",
+        "role": "product"
+      },
+      {
+        "label": "28",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "29",
+        "name": null,
+        "smiles": "O=C(CCCC)c1ccc(C(=O)Nc2ccccc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": "5",
+        "name": null,
+        "smiles": "O=C(C)c1ccc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "30",
+        "name": null,
+        "smiles": "O=C(C)c1ccc(C(O)c2ccccc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": "31",
+        "name": null,
+        "smiles": "O=C(CCCC)c1sc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "32",
+        "name": null,
+        "smiles": "O=C(CCCC)c1sccc1",
+        "role": "product"
+      },
+      {
+        "label": "33",
+        "name": null,
+        "smiles": "O=C(CCCC)c1sc(C(O)c2ccccc2)cc1",
+        "role": "product"
+      },
+      {
+        "label": "34",
+        "name": null,
+        "smiles": "O=C(CCCC)c1sc(C(=O)Nc2ccccc2)cc1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "THF, tetrahydrofuran.",
+      "Reaction conditions: acyliodobenzene (0.20 M in THF), MesLi (1.3 equivalent in THF/hexane, generated in situ), electrophile (2.0 equivalent in THF or Et2O), residence time in R2=0.003 s.",
+      "*Isolated yields unless otherwise stated.",
+      "†GC (gas chromatography) yields obtained using an internal standard.",
+      "‡Residence time in R2=0.0015 s."
+    ],
+    "notes": "Folded table unfolded into a single continuous list of rows. Substrates are acyliodobenzenes and acyliodothiophenes. Organolithium reagent is MesLi (mesityllithium).",
+    "_source_paper": "Kim_2011_ProtectingGroupFree",
+    "_source_image": "Pasted Graphic 90.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Supplementary Table S2",
+    "table_title": "Supplementary Table S2. I-Li exchange reaction of p-iodoacetophenone using high-pressure syringe pumpsa",
+    "reaction_context": {
+      "substrate": "p-iodoacetophenone",
+      "substrate_smiles": "CC(=O)c1ccc(I)cc1",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "p-lithioacetophenone",
+      "intermediate_smiles": "CC(=O)c1ccc([Li])cc1",
+      "electrophile": "MeOH",
+      "electrophile_smiles": "CO",
+      "product": "acetophenone",
+      "product_smiles": "CC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "high-pressure syringe pumps, Harvard Apparatus PHD 4400 equipped with stainless steel syringes (#70-2255)"
+    },
+    "columns": [
+      "Flow rate (mL/min) p-iodoacetophenone",
+      "Flow rate (mL/min) MesBr",
+      "Flow rate (mL/min) n-BuLi",
+      "Flow rate (mL/min) MeOH",
+      "Residence time",
+      "Yield"
+    ],
+    "column_units": [
+      "mL/min",
+      "mL/min",
+      "mL/min",
+      "mL/min",
+      "s",
+      "%"
+    ],
+    "rows": [
+      [
+        "3.0",
+        "5.0",
+        "1.8",
+        "2",
+        "0.0030",
+        "53"
+      ],
+      [
+        "3.6",
+        "6.0",
+        "2.16",
+        "2.4",
+        "0.0025",
+        "65"
+      ],
+      [
+        "3.9",
+        "6.5",
+        "2.3",
+        "2.6",
+        "0.0023",
+        "69"
+      ],
+      [
+        "4.8",
+        "8.0",
+        "2.9",
+        "3.2",
+        "0.0019",
+        "74"
+      ],
+      [
+        "6.0",
+        "10",
+        "3.6",
+        "4",
+        "0.0015",
+        "76"
+      ],
+      [
+        "2.3",
+        "12",
+        "4.1",
+        "4.6",
+        "0.0013",
+        "75"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [
+      "a Solutions were introduced to the flow microreactor system using high-pressure syringe pumps, Harvard Apparatus PHD 4400 equipped with stainless steel syringes (#70-2255) purchased from Harvard Apparatus PHD."
+    ],
+    "notes": "Row 5 is bolded in the original image, likely indicating optimal conditions. The column 'MesBr' is present, which is unusual for a simple I-Li exchange of p-iodoacetophenone; it might be an internal standard or a typo in the original paper's table header (perhaps meant to be solvent or another reagent, but transcribed exactly as shown).",
+    "_source_paper": "Kim_2011_ProtectingGroupFree",
+    "_source_image": "Supplementary Table S2. I-LI exchange reaction of p-lodoacetophenone using.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Supplementary Table S1",
+    "table_title": "The I-Li exchange reaction of 1 and reaction with MeOH",
+    "reaction_context": {
+      "substrate": "1",
+      "substrate_smiles": null,
+      "organolithium_reagent": null,
+      "intermediate": null,
+      "intermediate_smiles": null,
+      "electrophile": "MeOH",
+      "electrophile_smiles": "CO",
+      "product": "3",
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "integrated microreactor used for some entries"
+    },
+    "columns": [
+      "Inner diameter of R2",
+      "Length of R2",
+      "Residence time in R2",
+      "GC yield of product 3",
+      "GC yield of byproduct 4"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "1.0a",
+        "0.0030",
+        "91",
+        "7"
+      ],
+      [
+        "250",
+        "2.0a",
+        "0.0060",
+        "80",
+        "12"
+      ],
+      [
+        "250",
+        "3.3",
+        "0.010",
+        "78",
+        "16"
+      ],
+      [
+        "250",
+        "5.0",
+        "0.015",
+        "73",
+        "15"
+      ],
+      [
+        "500",
+        "8.3",
+        "0.10",
+        "58",
+        "31"
+      ],
+      [
+        "1000",
+        "10.4",
+        "0.50",
+        "49",
+        "51"
+      ],
+      [
+        "1000",
+        "20.8",
+        "1.0",
+        "37",
+        "62"
+      ],
+      [
+        "1000",
+        "62.4",
+        "3.0",
+        "23",
+        "74"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [
+      "a The integrated microreactorwas used."
+    ],
+    "notes": "Table shows effect of residence time and reactor dimensions on yield of product 3 vs byproduct 4.",
+    "_source_paper": "Kim_2011_ProtectingGroupFree",
+    "_source_image": "Supplementary Tables.png"
+  }
+]

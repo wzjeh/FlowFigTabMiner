@@ -1,0 +1,256 @@
+{
+  "image_type": "table",
+  "table_id": "Table S10",
+  "table_title": "Table S10. Halogen-lithium exchange reaction of 3-bromo-2-methybenzofuran (1e) with n-BuLi followed by reaction with octafluorocyclopentene in integrated flow microreactor systems.",
+  "reaction_context": {
+    "substrate": "3-bromo-2-methybenzofuran (1e)",
+    "substrate_smiles": "Cc1oc2ccccc2c1Br",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "3-lithio-2-methylbenzofuran",
+    "intermediate_smiles": "Cc1oc2ccccc2c1[Li]",
+    "electrophile": "octafluorocyclopentene",
+    "electrophile_smiles": "FC1(F)C(F)=C(F)C(F)(F)C1(F)F",
+    "product": "1,2-bis(2-methyl-1-benzofuran-3-yl)perfluorocyclopentene (4ee)",
+    "product_smiles": "Cc1oc2ccccc2c1C1=C(c2c(C)oc3ccccc23)C(F)(F)C(F)(F)C1(F)F",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "integrated flow microreactor systems"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "tR1",
+    "inner diameter of R2",
+    "length of R2",
+    "tR2",
+    "T",
+    "1,2-bis(2-methyl-1-benzofuran-3-yl)perfluorocyclopentene (4ee)"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "250",
+      "3.5",
+      "0.011",
+      "24",
+      "2"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "1000",
+      "3.5",
+      "0.17",
+      "24",
+      "6"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "1000",
+      "12.5",
+      "0.62",
+      "24",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "1000",
+      "50",
+      "2.5",
+      "24",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "1000",
+      "200",
+      "9.9",
+      "24",
+      "7"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "250",
+      "3.5",
+      "0.011",
+      "0",
+      "0"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "1000",
+      "3.5",
+      "0.17",
+      "0",
+      "5"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "1000",
+      "12.5",
+      "0.62",
+      "0",
+      "10"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "1000",
+      "50",
+      "2.5",
+      "0",
+      "19"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "1000",
+      "200",
+      "9.9",
+      "0",
+      "20"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "250",
+      "3.5",
+      "0.011",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "1000",
+      "3.5",
+      "0.17",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "1000",
+      "12.5",
+      "0.62",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "1000",
+      "50",
+      "2.5",
+      "-28",
+      "22"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "1000",
+      "200",
+      "9.9",
+      "-28",
+      "29"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "2.17",
+      "200",
+      "57",
+      "-28",
+      "51"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "250",
+      "3.5",
+      "0.011",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "3.5",
+      "0.17",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "12.5",
+      "0.62",
+      "-48",
+      "1"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "50",
+      "2.5",
+      "-48",
+      "10"
+    ],
+    [
+      "1000",
+      "50",
+      "3.1",
+      "1000",
+      "200",
+      "9.9",
+      "-48",
+      "26"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Values for inner diameter of R1, length of R1, tR1, and T were merged across multiple rows in the original image and have been repeated for each corresponding row in the JSON output.",
+  "_source_paper": "Asai_2012_Photochromic",
+  "_source_image": "Table S10. Hakogen-lithium oxchange roaction of 3-bromo-2-mothybonzofuran （1o） with n-BuL.png"
+}

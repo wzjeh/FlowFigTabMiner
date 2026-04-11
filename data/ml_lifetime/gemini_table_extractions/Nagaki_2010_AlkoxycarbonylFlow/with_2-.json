@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-16",
+  "table_title": "The I/Li exchange reaction of isopropyl m-iodobenzoate (7b) followed by reaction with 2-propanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "isopropyl m-iodobenzoate (7b)",
+    "substrate_smiles": "CC(C)OC(=O)c1cc(I)ccc1",
+    "organolithium_reagent": null,
+    "intermediate": "isopropyl m-lithiobenzoate",
+    "intermediate_smiles": "CC(C)OC(=O)c1cc([Li])ccc1",
+    "electrophile": "2-propanol",
+    "electrophile_smiles": "CC(O)C",
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "95",
+      "39"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "97",
+      "22"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "12"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "9"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "100",
+      "7"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "3"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "93",
+      "77"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "97",
+      "69"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "50"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "34"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "24"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "9"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "87",
+      "84"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "90",
+      "81"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "98",
+      "82"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "98",
+      "78"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "100",
+      "64"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "23"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "79",
+      "75"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "87",
+      "84"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "95",
+      "89"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "95",
+      "85"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "96",
+      "78"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "43"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "55",
+      "54"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "58",
+      "57"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "69",
+      "68"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "71",
+      "69"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "84",
+      "84"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "94",
+      "85"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table spans across a page break in the original document. The temperature values are merged across multiple rows in the original image; they have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "with 2-.png"
+}

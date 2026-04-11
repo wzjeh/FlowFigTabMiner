@@ -1,0 +1,287 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table S-4",
+  "table_title": "Table S-4. The carbolithiation of benzyne followed by the reaction with electrophiles using the integrated flow microreactor systems",
+  "reaction_context": {
+    "substrate": "halobenzene (aryl/heteroaryl halide)",
+    "substrate_smiles": null,
+    "organolithium_reagent": "BuLi, PhLi",
+    "intermediate": "2-arylphenyllithium",
+    "intermediate_smiles": "c1ccc([Li])c(-c2ccccc2)c1",
+    "electrophile": "Various (MeOTf, TMSOTf, PhCNO, etc.)",
+    "electrophile_smiles": null,
+    "product": "ortho-substituted biaryls",
+    "product_smiles": null,
+    "reaction_type": "Br-Li / I-Li exchange followed by carbolithiation",
+    "solvent": null,
+    "reactor_info": "integrated flow microreactor systems"
+  },
+  "columns": [
+    "halobenzene",
+    "reagent",
+    "T²",
+    "inner diameter of R2",
+    "length of R2",
+    "tR2",
+    "electrophile",
+    "product",
+    "yield"
+  ],
+  "column_units": [
+    null,
+    null,
+    "°C",
+    "μm",
+    "cm",
+    "s",
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "MeOTf",
+      "Cc1ccccc1-c2ccc(Cl)cc2",
+      "73"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "TMSOTf",
+      "C[Si](C)(C)c1ccccc1-c2ccc(Cl)cc2",
+      "53"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "PhCNO",
+      "O=C(Nc1ccccc1)c1ccccc1-c2ccc(Cl)cc2",
+      "63"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "PhCHO",
+      "OC(c1ccccc1)c1ccccc1-c2ccc(Cl)cc2",
+      "69"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "Bu3SnCl",
+      "CCCC[Sn](CCCC)(CCCC)c1ccccc1-c2ccc(Cl)cc2",
+      "58"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "(CO2Et)2",
+      "CCOC(=O)C(=O)c1ccccc1-c2ccc(Cl)cc2",
+      "62"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "HCO2Me",
+      "O=Cc1ccccc1-c2ccc(Cl)cc2",
+      "54"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "I2",
+      "Ic1ccccc1-c2ccc(Cl)cc2",
+      "51"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "CBr4",
+      "Brc1ccccc1-c2ccc(Cl)cc2",
+      "63"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "C2Cl6",
+      "Clc1ccccc1-c2ccc(Cl)cc2",
+      "64"
+    ],
+    [
+      "Clc1ccc(Br)cc1",
+      "BuLi",
+      "0",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "NFSI",
+      "Fc1ccccc1-c2ccc(Cl)cc2",
+      "71"
+    ],
+    [
+      "N#Cc1ccc(Br)cc1",
+      "BuLi",
+      "-30",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "MeOTf",
+      "Cc1ccccc1-c2ccc(C#N)cc2",
+      "63"
+    ],
+    [
+      "N#Cc1cccc(Br)c1",
+      "BuLi",
+      "-30",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "MeOTf",
+      "Cc1ccccc1-c2cccc(C#N)c2",
+      "70"
+    ],
+    [
+      "N#Cc1ccccc1Br",
+      "BuLi",
+      "-20",
+      "1000 μm",
+      "3.5 cm",
+      "0.16",
+      "— ᵇ",
+      "O=C1c2ccccc2-c3ccccc13",
+      "71"
+    ],
+    [
+      "O=[N+]([O-])c1ccc(I)cc1",
+      "PhLi",
+      "-70",
+      "1000 μm",
+      "25 cm",
+      "1.18",
+      "MeOTf",
+      "Cc1ccccc1-c2ccc([N+](=O)[O-])cc2",
+      "50"
+    ],
+    [
+      "Brc1cccnc1",
+      "BuLi",
+      "-30",
+      "1000 μm",
+      "50 cm",
+      "2.36",
+      "MeI",
+      "Cc1ccccc1-c2cccnc2",
+      "50"
+    ],
+    [
+      "Brc1ccsc1",
+      "BuLi",
+      "-30",
+      "1000 μm",
+      "6.5 cm",
+      "0.31",
+      "MeOTf",
+      "Cc1ccccc1-c2ccsc2",
+      "58"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "1-bromo-4-chlorobenzene",
+      "smiles": "Clc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "4-bromobenzonitrile",
+      "smiles": "N#Cc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "3-bromobenzonitrile",
+      "smiles": "N#Cc1cccc(Br)c1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2-bromobenzonitrile",
+      "smiles": "N#Cc1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "1-iodo-4-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccc(I)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "3-bromopyridine",
+      "smiles": "Brc1cccnc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "3-bromothiophene",
+      "smiles": "Brc1ccsc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "9H-fluoren-9-one",
+      "smiles": "O=C1c2ccccc2-c3ccccc13",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a T³ = -50 °C",
+    "b M4, R4, and P5 were removed."
+  ],
+  "notes": "An unlabelled column containing the organolithium reagent ('BuLi', 'PhLi') has been assigned the header 'reagent'. The intermediate in this reaction sequence is formed via halogen-lithium exchange of the starting 'halobenzene', which then attacks benzyne to yield a 2-arylphenyllithium intermediate that is subsequently trapped by the electrophile. In the case of 2-bromobenzonitrile, the intermediate undergoes intramolecular trapping to form a fluorenone.",
+  "_source_paper": "Nagaki_2014_ThreeComponent",
+  "_source_image": "Table S-A. The carbolitbiation of benzyne folloued by the reacsie with cleetrophiles using the insegrased Tlow.png"
+}

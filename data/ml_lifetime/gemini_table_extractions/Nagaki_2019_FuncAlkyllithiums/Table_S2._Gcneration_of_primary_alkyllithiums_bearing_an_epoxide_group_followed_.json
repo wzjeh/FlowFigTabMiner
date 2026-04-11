@@ -1,0 +1,134 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table S2",
+  "table_title": "Table S2. Generation of primary alkyllithiums bearing an epoxide group followed by reaction with electrophiles.",
+  "reaction_context": {
+    "substrate": "primary alkyl bromides bearing an epoxide group",
+    "substrate_smiles": null,
+    "organolithium_reagent": null,
+    "intermediate": "primary alkyllithium bearing an epoxide group",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": null
+  },
+  "columns": [
+    "substrate",
+    "tR1",
+    "T",
+    "electrophile",
+    "product",
+    "Yield[a]"
+  ],
+  "column_units": [
+    null,
+    "(ms)",
+    "(°C)",
+    null,
+    null,
+    "(%)"
+  ],
+  "rows": [
+    [
+      "O1CC1CCCBr",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "O1CC1CCC[Sn](CCCC)(CCCC)CCCC",
+      "79"
+    ],
+    [
+      "",
+      "6.9",
+      "-60",
+      "PhNCO",
+      "O1CC1CCCC(=O)Nc2ccccc2",
+      "67[b]"
+    ],
+    [
+      "O1CC1CCCCBr",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "O1CC1CCCC[Sn](CCCC)(CCCC)CCCC",
+      "83"
+    ],
+    [
+      "",
+      "6.9",
+      "-60",
+      "PhNCO",
+      "O1CC1CCCCC(=O)Nc2ccccc2",
+      "78[b]"
+    ],
+    [
+      "O1CC1CCCCCBr",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "O1CC1CCCCC[Sn](CCCC)(CCCC)CCCC",
+      "78"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCBr",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCC[Sn](CCCC)(CCCC)CCCC",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCC(=O)Nc2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCCBr",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCC[Sn](CCCC)(CCCC)CCCC",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCCC(=O)Nc2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCCCBr",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O1CC1CCCCC[Sn](CCCC)(CCCC)CCCC",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a Unless otherwise stated the yields were determined by GC using an internal standard.",
+    "b Isolated yield."
+  ],
+  "notes": "Substrate structures are shown in the first column. Product structures are shown in the fifth column. Empty substrate cells imply the substrate from the row above is used.",
+  "_source_paper": "Nagaki_2019_FuncAlkyllithiums",
+  "_source_image": "Table S2. Gcneration of primary alkyllithiums bearing an epoxide group followed by reaction with electrophiles..png"
+}

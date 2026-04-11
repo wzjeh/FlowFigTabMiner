@@ -1,0 +1,347 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-2",
+  "table_title": "The Br-Li exchange reaction of p-dibromobenzene with n-BuLi followed by the quenching with MeOH using the micro flow system.",
+  "reaction_context": {
+    "substrate": "p-dibromobenzene",
+    "substrate_smiles": "Brc1ccc(Br)cc1",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "p-bromophenyllithium",
+    "intermediate_smiles": "[Li]c1ccc(Br)cc1",
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "bromobenzene",
+    "product_smiles": "Brc1ccccc1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": "THF / hexane",
+    "reactor_info": "two T-shaped micromixers (M1 and M2) and two microtube reactors (R1 and R2). M1: phi = 250 um. R1: phi = phi_1 um, L = L_x cm. M2: phi = 500 um. R2: phi = 1000 um, L = 50 cm."
+  },
+  "columns": [
+    "T",
+    "phi_1",
+    "L_x",
+    "R^t",
+    "yield"
+  ],
+  "column_units": [
+    "°C",
+    "um",
+    "cm",
+    "sec",
+    "%"
+  ],
+  "rows": [
+    [
+      "-78",
+      "500",
+      "3",
+      "0.049",
+      "11"
+    ],
+    [
+      "-78",
+      "1000",
+      "3",
+      "0.20",
+      "20"
+    ],
+    [
+      "-78",
+      "1000",
+      "6",
+      "0.39",
+      "24"
+    ],
+    [
+      "-78",
+      "1000",
+      "12.5",
+      "0.82",
+      "46"
+    ],
+    [
+      "-78",
+      "1000",
+      "25",
+      "1.6",
+      "49"
+    ],
+    [
+      "-78",
+      "1000",
+      "50",
+      "3.3",
+      "55"
+    ],
+    [
+      "-78",
+      "1000",
+      "100",
+      "6.6",
+      "71"
+    ],
+    [
+      "-60",
+      "500",
+      "3",
+      "0.049",
+      "45"
+    ],
+    [
+      "-60",
+      "1000",
+      "3",
+      "0.20",
+      "53"
+    ],
+    [
+      "-60",
+      "1000",
+      "6",
+      "0.39",
+      "82"
+    ],
+    [
+      "-60",
+      "1000",
+      "12.5",
+      "0.82",
+      "83"
+    ],
+    [
+      "-60",
+      "1000",
+      "25",
+      "1.6",
+      "83"
+    ],
+    [
+      "-60",
+      "1000",
+      "50",
+      "3.3",
+      "85"
+    ],
+    [
+      "-60",
+      "1000",
+      "100",
+      "6.6",
+      "85"
+    ],
+    [
+      "-48",
+      "500",
+      "3",
+      "0.049",
+      "84"
+    ],
+    [
+      "-48",
+      "1000",
+      "3",
+      "0.20",
+      "83"
+    ],
+    [
+      "-48",
+      "1000",
+      "6",
+      "0.39",
+      "82"
+    ],
+    [
+      "-48",
+      "1000",
+      "12.5",
+      "0.82",
+      "81"
+    ],
+    [
+      "-48",
+      "1000",
+      "25",
+      "1.6",
+      "84"
+    ],
+    [
+      "-48",
+      "1000",
+      "50",
+      "3.3",
+      "87"
+    ],
+    [
+      "-48",
+      "1000",
+      "100",
+      "6.6",
+      "85"
+    ],
+    [
+      "-28",
+      "500",
+      "3",
+      "0.049",
+      "86"
+    ],
+    [
+      "-28",
+      "1000",
+      "3",
+      "0.20",
+      "87"
+    ],
+    [
+      "-28",
+      "1000",
+      "6",
+      "0.39",
+      "83"
+    ],
+    [
+      "-28",
+      "1000",
+      "12.5",
+      "0.82",
+      "84"
+    ],
+    [
+      "-28",
+      "1000",
+      "25",
+      "1.6",
+      "86"
+    ],
+    [
+      "-28",
+      "1000",
+      "50",
+      "3.3",
+      "88"
+    ],
+    [
+      "-28",
+      "1000",
+      "100",
+      "6.6",
+      "87"
+    ],
+    [
+      "0",
+      "500",
+      "3",
+      "0.049",
+      "92"
+    ],
+    [
+      "0",
+      "1000",
+      "3",
+      "0.20",
+      "89"
+    ],
+    [
+      "0",
+      "1000",
+      "6",
+      "0.39",
+      "86"
+    ],
+    [
+      "0",
+      "1000",
+      "12.5",
+      "0.82",
+      "86"
+    ],
+    [
+      "0",
+      "1000",
+      "25",
+      "1.6",
+      "89"
+    ],
+    [
+      "0",
+      "1000",
+      "50",
+      "3.3",
+      "86"
+    ],
+    [
+      "0",
+      "1000",
+      "100",
+      "6.6",
+      "84"
+    ],
+    [
+      "20",
+      "500",
+      "3",
+      "0.049",
+      "87"
+    ],
+    [
+      "20",
+      "1000",
+      "3",
+      "0.20",
+      "82"
+    ],
+    [
+      "20",
+      "1000",
+      "6",
+      "0.39",
+      "86"
+    ],
+    [
+      "20",
+      "1000",
+      "12.5",
+      "0.82",
+      "84"
+    ],
+    [
+      "20",
+      "1000",
+      "25",
+      "1.6",
+      "83"
+    ],
+    [
+      "20",
+      "1000",
+      "50",
+      "3.3",
+      "88"
+    ],
+    [
+      "20",
+      "1000",
+      "100",
+      "6.6",
+      "84"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "p-dibromobenzene",
+      "smiles": "Brc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "bromobenzene",
+      "smiles": "Brc1ccccc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "The image contains both a reaction scheme and a data table. The scheme shows the flow setup with p-dibromobenzene reacting with n-BuLi to form p-bromophenyllithium, which is then quenched with MeOH to give bromobenzene. The table provides the experimental data for this reaction at various temperatures, reactor diameters (phi_1), and lengths (L_x). The temperature column has been filled down for all corresponding rows.",
+  "_source_paper": "Nagaki_2007_Dibromobenzenes",
+  "_source_image": "Pasted Graphic 17.png"
+}

@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-13",
+  "table_title": "Table S-13. The I/Li exchange reaction of ethyl p-iodobenzoate (4c) followed by reaction with ethanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "ethyl p-iodobenzoate (4c)",
+    "substrate_smiles": "CCOC(=O)c1ccc(I)cc1",
+    "organolithium_reagent": null,
+    "intermediate": "ethyl p-lithiobenzoate",
+    "intermediate_smiles": "CCOC(=O)c1ccc([Li])cc1",
+    "electrophile": "ethanol",
+    "electrophile_smiles": "CCO",
+    "product": "ethyl benzoate",
+    "product_smiles": "CCOC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "98",
+      "19"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "100",
+      "8"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "97",
+      "4"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "3"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "100",
+      "2"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "0"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "98",
+      "75"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "100",
+      "65"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "28"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "12"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "6"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "3"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "98",
+      "92"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "98",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "79"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "72"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "100",
+      "55"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "97",
+      "94"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "97",
+      "91"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "96",
+      "85"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "96",
+      "79"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "100",
+      "79"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "22"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "69",
+      "66"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "71",
+      "69"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "74",
+      "70"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "73",
+      "70"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "82",
+      "76"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "96",
+      "76"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table is split across two pages in the original document, but presented as a single continuous table here. The temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Resdence tire.png"
+}

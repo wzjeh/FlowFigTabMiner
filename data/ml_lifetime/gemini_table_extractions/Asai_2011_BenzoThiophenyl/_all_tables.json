@@ -1,0 +1,774 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-1",
+    "table_title": "Table S-1. Halogen-lithium exchange reaction of 3-bromo-2-methylbenzothiophene with n-BuLi followed by reaction with iodomethane in flow microreactor systems.",
+    "reaction_context": {
+      "substrate": "3-bromo-2-methylbenzothiophene",
+      "substrate_smiles": "Cc1sc2ccccc2c1Br",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "3-lithio-2-methylbenzothiophene",
+      "intermediate_smiles": "Cc1sc2ccccc2c1[Li]",
+      "electrophile": "iodomethane (MeI)",
+      "electrophile_smiles": "CI",
+      "product": "2,3-dimethylbenzothiophene",
+      "product_smiles": "Cc1sc2ccccc2c1C",
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF / n-hexane",
+      "reactor_info": "two T-shaped micromixers (M1 and M2, φ = 500 μm), two microtube reactors (R1 and R2, inner diameter φ = 1000 μm)"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "residence time",
+      "bath temperature",
+      "conversion",
+      "2,3-dimethylbenzothiophene",
+      "1-methylsulfanyl-2-(prop-1-ynyl)benzene"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "24",
+        "100",
+        "59",
+        "19"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "24",
+        "95",
+        "44",
+        "24"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "24",
+        "96",
+        "24",
+        "42"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "24",
+        "100",
+        "19",
+        "54"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "24",
+        "97",
+        "3",
+        "71"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "24",
+        "94",
+        "0",
+        "74"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "24",
+        "96",
+        "0",
+        "78"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "24",
+        "93",
+        "0",
+        "73"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "24",
+        "82",
+        "0",
+        "67"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "75",
+        "63",
+        "6"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "81",
+        "67",
+        "7"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "0",
+        "94",
+        "70",
+        "11"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "0",
+        "97",
+        "61",
+        "14"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "0",
+        "97",
+        "56",
+        "22"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "0",
+        "94",
+        "38",
+        "34"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "0",
+        "96",
+        "21",
+        "51"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "0",
+        "91",
+        "4",
+        "67"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "0",
+        "100",
+        "0",
+        "76"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "74",
+        "70",
+        "0"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "75",
+        "70",
+        "0"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "-28",
+        "78",
+        "72",
+        "0"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "-28",
+        "83",
+        "69",
+        "0"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "-28",
+        "89",
+        "77",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-28",
+        "100",
+        "81",
+        "1"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-28",
+        "98",
+        "81",
+        "3"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-28",
+        "100",
+        "79",
+        "5"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-28",
+        "88",
+        "66",
+        "9"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "75",
+        "70",
+        "1"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "79",
+        "70",
+        "0"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "-48",
+        "84",
+        "73",
+        "0"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "-48",
+        "95",
+        "76",
+        "0"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "-48",
+        "83",
+        "74",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-48",
+        "100",
+        "86",
+        "0"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-48",
+        "95",
+        "83",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-48",
+        "97",
+        "85",
+        "0"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-48",
+        "98",
+        "86",
+        "0"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": "3-bromo-2-methylbenzothiophene",
+        "smiles": "Cc1sc2ccccc2c1Br",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": "iodomethane",
+        "smiles": "CI",
+        "role": "electrophile"
+      },
+      {
+        "label": null,
+        "name": "2,3-dimethylbenzothiophene",
+        "smiles": "Cc1sc2ccccc2c1C",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": "1-methylsulfanyl-2-(prop-1-ynyl)benzene",
+        "smiles": "CC#Cc1ccccc1SC",
+        "role": "side product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "Bath temperature values have been repeated for applicable rows. The structure 1-methylsulfanyl-2-(prop-1-ynyl)benzene is formed as a side product due to a known ring-opening mechanism of the organolithium intermediate."
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "Halogen-lithium exchange of 3-bromo-2-methylbenzofuran with n-BuLi followed by reaction with methanol in flow microreactor systems.",
+    "reaction_context": {
+      "substrate": "3-bromo-2-methylbenzofuran",
+      "substrate_smiles": "Cc1oc2ccccc2c1Br",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "2-methylbenzofuran-3-yllithium",
+      "intermediate_smiles": "Cc1oc2ccccc2c1[Li]",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "2-methylbenzofuran",
+      "product_smiles": "Cc1oc2ccccc2c1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF / n-hexane",
+      "reactor_info": "two T-shaped micromixers (M1 (φ = 500 μm) and M2 (φ = 500 μm)), two microtube reactors (R1 and R2 ((inner diameter φ = 1000 μm, length L = 50 cm)), and three tube pre-cooling units (P1 φ = 1000 μm, length L = 100 cm), P2 (φ = 1000 μm, L = 50 cm) and P3 (φ = 1000 μm, L = 100 cm))"
+    },
+    "columns": [
+      "inner diameter of R1",
+      "length of R1",
+      "residence time",
+      "bath temperature",
+      "conversion",
+      "2-methylbenzofuran",
+      "1-hydroxy-2-(prop-1-ynyl)benzene"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "24",
+        "96",
+        "81",
+        "8"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "24",
+        "97",
+        "52",
+        "36"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "24",
+        "100",
+        "26",
+        "56"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "24",
+        "98",
+        "19",
+        "59"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "24",
+        "99",
+        "16",
+        "66"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "24",
+        "100",
+        "14",
+        "59"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "24",
+        "100",
+        "13",
+        "66"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "24",
+        "100",
+        "13",
+        "62"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "24",
+        "100",
+        "14",
+        "67"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "57",
+        "52",
+        "0"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "84",
+        "73",
+        "5"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "0",
+        "98",
+        "62",
+        "21"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "0",
+        "98",
+        "49",
+        "30"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "0",
+        "100",
+        "34",
+        "40"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "0",
+        "100",
+        "17",
+        "50"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "0",
+        "100",
+        "8",
+        "55"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "0",
+        "100",
+        "5",
+        "56"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "0",
+        "100",
+        "5",
+        "55"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "48",
+        "42",
+        "0"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "64",
+        "60",
+        "0"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "-28",
+        "96",
+        "93",
+        "0"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "-28",
+        "97",
+        "91",
+        "1"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "-28",
+        "98",
+        "83",
+        "3"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-28",
+        "95",
+        "84",
+        "9"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-28",
+        "98",
+        "76",
+        "13"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-28",
+        "99",
+        "62",
+        "27"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-28",
+        "100",
+        "43",
+        "46"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "27",
+        "22",
+        "0"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "36",
+        "36",
+        "0"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.220",
+        "-48",
+        "48",
+        "47",
+        "0"
+      ],
+      [
+        "1000",
+        "6",
+        "0.377",
+        "-48",
+        "56",
+        "55",
+        "0"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.785",
+        "-48",
+        "70",
+        "68",
+        "0"
+      ],
+      [
+        "1000",
+        "25",
+        "1.57",
+        "-48",
+        "82",
+        "80",
+        "0"
+      ],
+      [
+        "1000",
+        "50",
+        "3.14",
+        "-48",
+        "94",
+        "91",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "6.28",
+        "-48",
+        "94",
+        "90",
+        "2"
+      ],
+      [
+        "1000",
+        "200",
+        "12.6",
+        "-48",
+        "100",
+        "91",
+        "6"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "3-bromo-2-methylbenzofuran",
+        "name": "3-bromo-2-methylbenzofuran",
+        "smiles": "Cc1oc2ccccc2c1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "2-methylbenzofuran",
+        "name": "2-methylbenzofuran",
+        "smiles": "Cc1oc2ccccc2c1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "The table is split across two pages in the original document, but the data is continuous. The bath temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+    "_source_paper": "Asai_2011_BenzoThiophenyl",
+    "_source_image": "Pasted Graphic 1.png"
+  }
+]

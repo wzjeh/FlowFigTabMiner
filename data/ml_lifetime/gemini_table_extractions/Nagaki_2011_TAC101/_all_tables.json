@@ -1,0 +1,104 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "Effects on the residence time in R1 in the Br/Li exchange reaction of 1,3,5-tribromobenzene followed by the reaction with trimethylsilyl triflate in the flow microreactor system.",
+    "reaction_context": {
+      "substrate": "1,3,5-tribromobenzene",
+      "substrate_smiles": "Brc1cc(Br)cc(Br)c1",
+      "organolithium_reagent": "n-BuLi",
+      "intermediate": "3,5-dibromophenyllithium",
+      "intermediate_smiles": "[Li]c1cc(Br)cc(Br)c1",
+      "electrophile": "trimethylsilyl triflate",
+      "electrophile_smiles": "C[Si](C)(C)OS(=O)(=O)C(F)(F)F",
+      "product": "1,3-dibromo-5-(trimethylsilyl)benzene",
+      "product_smiles": "C[Si](C)(C)c1cc(Br)cc(Br)c1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane/Et2O",
+      "reactor_info": "Flow microreactor system: T-shaped micromixers M1 (φ = 250 μm) and M2 (φ = 500 μm), microtube reactors R1 (φ = 1000 μm, variable length) and R2 (φ = 1000 μm, L = 50 cm), 0 °C"
+    },
+    "columns": [
+      "residence time in R1",
+      "inner diameter of R1",
+      "length of R1",
+      "conversion of 1,3,5-tribromobenzene",
+      "yield of 1,3-dibromo-5-(trimethylsilyl)benzene"
+    ],
+    "column_units": [
+      "(s)",
+      "(μm)",
+      "(cm)",
+      "(%)",
+      "(%)"
+    ],
+    "rows": [
+      [
+        "0.22",
+        "1000",
+        "3.5",
+        "94",
+        "88"
+      ],
+      [
+        "0.38",
+        "1000",
+        "6.0",
+        "95",
+        "87"
+      ],
+      [
+        "0.75",
+        "1000",
+        "12",
+        "94",
+        "88"
+      ],
+      [
+        "1.57",
+        "1000",
+        "25",
+        "94",
+        "86"
+      ],
+      [
+        "3.14",
+        "1000",
+        "50",
+        "93",
+        "76"
+      ],
+      [
+        "6.28",
+        "1000",
+        "100",
+        "86",
+        "35"
+      ],
+      [
+        "12.57",
+        "1000",
+        "200",
+        "88",
+        "22"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "1,3,5-tribromobenzene",
+        "name": "1,3,5-tribromobenzene",
+        "smiles": "Brc1cc(Br)cc(Br)c1",
+        "role": "substrate"
+      },
+      {
+        "label": "1,3-dibromo-5-(trimethylsilyl)benzene",
+        "name": "1,3-dibromo-5-(trimethylsilyl)benzene",
+        "smiles": "C[Si](C)(C)c1cc(Br)cc(Br)c1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "Inner diameter of R1 is constant at 1000 μm, value repeated for all rows.",
+    "_source_paper": "Nagaki_2011_TAC101",
+    "_source_image": "pical Procedure for the BrLi Exchange Rcaction of 1.3,S-Tribromobenzcne Followed.png"
+  }
+]

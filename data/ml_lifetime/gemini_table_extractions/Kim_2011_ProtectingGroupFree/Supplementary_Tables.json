@@ -1,0 +1,98 @@
+{
+  "image_type": "table",
+  "table_id": "Supplementary Table S1",
+  "table_title": "The I-Li exchange reaction of 1 and reaction with MeOH",
+  "reaction_context": {
+    "substrate": "1",
+    "substrate_smiles": null,
+    "organolithium_reagent": null,
+    "intermediate": null,
+    "intermediate_smiles": null,
+    "electrophile": "MeOH",
+    "electrophile_smiles": "CO",
+    "product": "3",
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "integrated microreactor used for some entries"
+  },
+  "columns": [
+    "Inner diameter of R2",
+    "Length of R2",
+    "Residence time in R2",
+    "GC yield of product 3",
+    "GC yield of byproduct 4"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "1.0a",
+      "0.0030",
+      "91",
+      "7"
+    ],
+    [
+      "250",
+      "2.0a",
+      "0.0060",
+      "80",
+      "12"
+    ],
+    [
+      "250",
+      "3.3",
+      "0.010",
+      "78",
+      "16"
+    ],
+    [
+      "250",
+      "5.0",
+      "0.015",
+      "73",
+      "15"
+    ],
+    [
+      "500",
+      "8.3",
+      "0.10",
+      "58",
+      "31"
+    ],
+    [
+      "1000",
+      "10.4",
+      "0.50",
+      "49",
+      "51"
+    ],
+    [
+      "1000",
+      "20.8",
+      "1.0",
+      "37",
+      "62"
+    ],
+    [
+      "1000",
+      "62.4",
+      "3.0",
+      "23",
+      "74"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [
+    "a The integrated microreactorwas used."
+  ],
+  "notes": "Table shows effect of residence time and reactor dimensions on yield of product 3 vs byproduct 4.",
+  "_source_paper": "Kim_2011_ProtectingGroupFree",
+  "_source_image": "Supplementary Tables.png"
+}

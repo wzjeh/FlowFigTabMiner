@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-18",
+  "table_title": "The I/Li exchange reaction of methyl m-iodobenzoate (7d) followed by reaction with methanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "methyl m-iodobenzoate (7d)",
+    "substrate_smiles": "COC(=O)c1cccc(I)c1",
+    "organolithium_reagent": null,
+    "intermediate": "methyl m-lithiobenzoate",
+    "intermediate_smiles": "COC(=O)c1cccc([Li])c1",
+    "electrophile": "methanol",
+    "electrophile_smiles": "CO",
+    "product": "methyl benzoate",
+    "product_smiles": "COC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "99",
+      "5"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "97",
+      "4"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "2"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "1"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "80",
+      "0"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "0"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "100",
+      "48"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "99",
+      "53"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "17"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "6"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "4"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "0"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "97",
+      "87"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "97",
+      "63"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "99",
+      "50"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "99",
+      "38"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "99",
+      "25"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "5"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "93",
+      "85"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "100",
+      "68"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "96",
+      "61"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "99",
+      "47"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "99",
+      "43"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "13"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "83",
+      "67"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "81",
+      "64"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "79",
+      "62"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "88",
+      "74"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "84",
+      "70"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "100",
+      "51"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table spans two pages in the original document, but is presented as a single continuous table here. Temperature values were merged across rows in the original image and have been repeated for each corresponding row.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "888888888888g.png"
+}

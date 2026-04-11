@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-17",
+  "table_title": "Table S-17. The I/Li exchange reaction of ethyl m-iodobenzoate (7c) followed by reaction with ethanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "ethyl m-iodobenzoate (7c)",
+    "substrate_smiles": "O=C(OCC)c1cc(I)ccc1",
+    "organolithium_reagent": null,
+    "intermediate": "ethyl m-lithiobenzoate",
+    "intermediate_smiles": "O=C(OCC)c1cc([Li])ccc1",
+    "electrophile": "ethanol",
+    "electrophile_smiles": "CCO",
+    "product": "ethyl benzoate",
+    "product_smiles": "O=C(OCC)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "97",
+      "27"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "98",
+      "11"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "95",
+      "5"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "97",
+      "5"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "97",
+      "4"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "97",
+      "3"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "96",
+      "64"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "99",
+      "65"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "99",
+      "26"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "98",
+      "14"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "98",
+      "7"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "97",
+      "3"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "94",
+      "89"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "96",
+      "77"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "94",
+      "62"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "97",
+      "53"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "99",
+      "39"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "99",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "86",
+      "81"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "90",
+      "81"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "96",
+      "80"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "97",
+      "72"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "99",
+      "57"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "99",
+      "31"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "72",
+      "70"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "69",
+      "68"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "72",
+      "75"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "81",
+      "76"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "84",
+      "78"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "99",
+      "78"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Table S-17. The ILi cxchange reaction of cthy! m-iodobenzoae （7c） followed by reaction with cthanol ir.png"
+}

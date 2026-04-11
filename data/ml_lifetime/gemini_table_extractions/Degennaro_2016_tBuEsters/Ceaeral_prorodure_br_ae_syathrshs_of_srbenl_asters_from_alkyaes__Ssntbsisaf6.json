@@ -1,0 +1,174 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 2",
+  "table_title": "Conditions for alkynes.",
+  "reaction_context": {
+    "substrate": "alkynes 5",
+    "substrate_smiles": "null",
+    "organolithium_reagent": "HexLi",
+    "intermediate": "lithium acetylide",
+    "intermediate_smiles": "null",
+    "electrophile": "(Boc)2O",
+    "electrophile_smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C",
+    "product": "tert-butyl esters 6",
+    "product_smiles": "null",
+    "reaction_type": "deprotonation",
+    "solvent": "2-MeTHF / hexane",
+    "reactor_info": "two T-shaped micromixer [M1 and M2], two microtubes reaction (R1, length L = 6 cm and R2 length L = 200 cm) and three pre-cooling units (P1, length L = 100 cm, P2, length L = 50 cm, and P3, length L = 100 cm)"
+  },
+  "columns": [
+    "Alkyne 5",
+    "T",
+    "tR1",
+    "tR2",
+    "Yield",
+    "Ester 6",
+    "Conditions"
+  ],
+  "column_units": [
+    null,
+    "(°C)",
+    "(s)",
+    "(s)",
+    "(%)",
+    null,
+    null
+  ],
+  "rows": [
+    [
+      "CN(C)c1ccc(C#C)cc1",
+      "20",
+      "0.7",
+      "17.1",
+      "95",
+      "CN(C)c1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "A"
+    ],
+    [
+      "c1ccc(C#C)cc1",
+      "0",
+      "0.7",
+      "17.1",
+      "50",
+      "c1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "A"
+    ],
+    [
+      "COc1ccc(C#C)cc1OC",
+      "20",
+      "0.7",
+      "17.1",
+      "75",
+      "COc1ccc(C#CC(=O)OC(C)(C)C)cc1OC",
+      "A"
+    ],
+    [
+      "COc1ccc(C#C)cc1",
+      "0",
+      "0.7",
+      "17.1",
+      "70",
+      "COc1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "A"
+    ],
+    [
+      "c1cc(C#C)sc1",
+      "0",
+      "2.94",
+      "17.1",
+      "87",
+      "c1cc(C#CC(=O)OC(C)(C)C)sc1",
+      "D"
+    ],
+    [
+      "Cc1cc(C)c(C#C)c(C)c1",
+      "20",
+      "0.7",
+      "17.1",
+      "95",
+      "Cc1cc(C)c(C#CC(=O)OC(C)(C)C)c(C)c1",
+      "A"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "5k",
+      "name": null,
+      "smiles": "CN(C)c1ccc(C#C)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6k",
+      "name": null,
+      "smiles": "CN(C)c1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5l",
+      "name": null,
+      "smiles": "c1ccc(C#C)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6l",
+      "name": null,
+      "smiles": "c1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5m",
+      "name": null,
+      "smiles": "COc1ccc(C#C)cc1OC",
+      "role": "substrate"
+    },
+    {
+      "label": "6m",
+      "name": null,
+      "smiles": "COc1ccc(C#CC(=O)OC(C)(C)C)cc1OC",
+      "role": "product"
+    },
+    {
+      "label": "5n",
+      "name": null,
+      "smiles": "COc1ccc(C#C)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6n",
+      "name": null,
+      "smiles": "COc1ccc(C#CC(=O)OC(C)(C)C)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5o",
+      "name": null,
+      "smiles": "c1cc(C#C)sc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6o",
+      "name": null,
+      "smiles": "c1cc(C#CC(=O)OC(C)(C)C)sc1",
+      "role": "product"
+    },
+    {
+      "label": "5p",
+      "name": null,
+      "smiles": "Cc1cc(C)c(C#C)c(C)c1",
+      "role": "substrate"
+    },
+    {
+      "label": "6p",
+      "name": null,
+      "smiles": "Cc1cc(C)c(C#CC(=O)OC(C)(C)C)c(C)c1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a Condition A. Flow rate: Alkyne 2 mL/min; HexLi 2mL/min; Boc2O 1.5 mL/min.",
+    "Condition D. Flow rate: Alkyne 2 mL/min; HexLi 2mL/min; Boc2O 1.5 mL/min (R1 = 25 cm)."
+  ],
+  "notes": "The table contains drawn structures for substrates and products. The SMILES strings for these structures have been placed directly into the data rows in place of the images.",
+  "_source_paper": "Degennaro_2016_tBuEsters",
+  "_source_image": "Ceaeral prorodure br ae syathrshs of srbenl asters from alkyaes, Ssntbsisaf6.png"
+}

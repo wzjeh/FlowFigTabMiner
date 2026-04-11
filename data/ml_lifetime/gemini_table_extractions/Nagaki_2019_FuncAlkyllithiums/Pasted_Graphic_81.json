@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S1",
+  "table_title": "Table S1. Effects of the temperature (T) and the residence Time in R1 (tR1) on the yields of tributyl(3-(oxiran-2-yl)propyl)stannane for the lithiation of 2-(3-bromopropyl)oxirane with LiNp followed by trapping with Bu3SnCl using the flow microreactor system.",
+  "reaction_context": {
+    "substrate": "2-(3-bromopropyl)oxirane",
+    "substrate_smiles": "BrCCCC1CO1",
+    "organolithium_reagent": "LiNp",
+    "intermediate": "lithium 3-(oxiran-2-yl)propyl",
+    "intermediate_smiles": "[Li]CCCC1CO1",
+    "electrophile": "Bu3SnCl",
+    "electrophile_smiles": "CCCC[Sn](Cl)(CCCC)CCCC",
+    "product": "tributyl(3-(oxiran-2-yl)propyl)stannane",
+    "product_smiles": "CCCC[Sn](CCCC)(CCCC)CCCC1CO1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "T",
+    "inner diameter of R1",
+    "length of R1",
+    "tR1",
+    "conversion",
+    "yield"
+  ],
+  "column_units": [
+    "°C",
+    "μm",
+    "cm",
+    "sec",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "-78",
+      "250 (integrated device)",
+      "1.0",
+      "0.0020",
+      "70",
+      "25"
+    ],
+    [
+      "-78",
+      "250",
+      "3.5",
+      "0.0069",
+      "88",
+      "56"
+    ],
+    [
+      "-78",
+      "500",
+      "3.5",
+      "0.028",
+      "100",
+      "69"
+    ],
+    [
+      "-78",
+      "1000",
+      "12.5",
+      "0.39",
+      "100",
+      "65"
+    ],
+    [
+      "-78",
+      "1000",
+      "100",
+      "3.14",
+      "100",
+      "57"
+    ],
+    [
+      "-78",
+      "1000",
+      "500",
+      "15.7",
+      "100",
+      "54"
+    ],
+    [
+      "-60",
+      "250 (integrated device)",
+      "1.0",
+      "0.0020",
+      "79",
+      "50"
+    ],
+    [
+      "-60",
+      "250",
+      "3.5",
+      "0.0069",
+      "100",
+      "79"
+    ],
+    [
+      "-60",
+      "500",
+      "3.5",
+      "0.028",
+      "100",
+      "69"
+    ],
+    [
+      "-60",
+      "1000",
+      "12.5",
+      "0.39",
+      "100",
+      "64"
+    ],
+    [
+      "-60",
+      "1000",
+      "100",
+      "3.14",
+      "100",
+      "56"
+    ],
+    [
+      "-60",
+      "1000",
+      "500",
+      "15.7",
+      "100",
+      "40"
+    ],
+    [
+      "-40",
+      "250 (integrated device)",
+      "1.0",
+      "0.0020",
+      "100",
+      "66"
+    ],
+    [
+      "-40",
+      "250",
+      "3.5",
+      "0.0069",
+      "100",
+      "69"
+    ],
+    [
+      "-40",
+      "500",
+      "3.5",
+      "0.028",
+      "100",
+      "66"
+    ],
+    [
+      "-40",
+      "1000",
+      "12.5",
+      "0.39",
+      "100",
+      "53"
+    ],
+    [
+      "-40",
+      "1000",
+      "100",
+      "3.14",
+      "100",
+      "50"
+    ],
+    [
+      "-40",
+      "1000",
+      "500",
+      "15.7",
+      "100",
+      "24"
+    ],
+    [
+      "-20",
+      "250 (integrated device)",
+      "1.0",
+      "0.0020",
+      "100",
+      "56"
+    ],
+    [
+      "-20",
+      "250",
+      "3.5",
+      "0.0069",
+      "100",
+      "62"
+    ],
+    [
+      "-20",
+      "500",
+      "3.5",
+      "0.028",
+      "100",
+      "57"
+    ],
+    [
+      "-20",
+      "1000",
+      "12.5",
+      "0.39",
+      "100",
+      "52"
+    ],
+    [
+      "-20",
+      "1000",
+      "100",
+      "3.14",
+      "100",
+      "25"
+    ],
+    [
+      "-20",
+      "1000",
+      "500",
+      "15.7",
+      "100",
+      "15"
+    ],
+    [
+      "0",
+      "250 (integrated device)",
+      "1.0",
+      "0.0020",
+      "100",
+      "58"
+    ],
+    [
+      "0",
+      "250",
+      "3.5",
+      "0.0069",
+      "100",
+      "53"
+    ],
+    [
+      "0",
+      "500",
+      "3.5",
+      "0.028",
+      "100",
+      "39"
+    ],
+    [
+      "0",
+      "1000",
+      "12.5",
+      "0.39",
+      "100",
+      "47"
+    ],
+    [
+      "0",
+      "1000",
+      "100",
+      "3.14",
+      "100",
+      "7"
+    ],
+    [
+      "0",
+      "1000",
+      "500",
+      "15.7",
+      "100",
+      "1"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table is split across two pages in the original document, but the rows have been combined here. The temperature column has merged cells in the original image, which have been filled down for each corresponding row.",
+  "_source_paper": "Nagaki_2019_FuncAlkyllithiums",
+  "_source_image": "Pasted Graphic 81.png"
+}

@@ -1,0 +1,195 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 1",
+  "table_title": "Homocoupling of aryl halides using the integrated flow microreactor system.",
+  "reaction_context": {
+    "substrate": "aryl halides",
+    "substrate_smiles": null,
+    "organolithium_reagent": "n-BuLi (PhLi for footnote a)",
+    "intermediate": "aryllithium",
+    "intermediate_smiles": null,
+    "electrophile": "aryl halide (homocoupling)",
+    "electrophile_smiles": null,
+    "product": "biaryl",
+    "product_smiles": null,
+    "reaction_type": "halogen-Li exchange followed by homocoupling",
+    "solvent": null,
+    "reactor_info": "integrated flow microreactor system"
+  },
+  "columns": [
+    "Ar-X",
+    "T",
+    "tR1",
+    "Ar-Ar",
+    "Yield"
+  ],
+  "column_units": [
+    null,
+    "°C",
+    "s",
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "COc1ccc(Br)cc1",
+      "24",
+      "3.100",
+      "COc1ccc(-c2ccc(OC)cc2)cc1",
+      "72"
+    ],
+    [
+      "COc1cccc(Br)c1",
+      "24",
+      "3.100",
+      "COc1cccc(-c2cccc(OC)c2)c1",
+      "69"
+    ],
+    [
+      "COc1ccccc1Br",
+      "0",
+      "3.100",
+      "COc1ccccc1-c1ccccc1OC",
+      "76"
+    ],
+    [
+      "N#Cc1ccc(Br)cc1",
+      "-28",
+      "0.055",
+      "N#Cc1ccc(-c2ccc(C#N)cc2)cc1",
+      "75"
+    ],
+    [
+      "N#Cc1cccc(Br)c1",
+      "0",
+      "0.055",
+      "N#Cc1cccc(-c2cccc(C#N)c2)c1",
+      "66"
+    ],
+    [
+      "N#Cc1ccccc1Br",
+      "24",
+      "0.055",
+      "N#Cc1ccccc1-c1ccccc1C#N",
+      "76"
+    ],
+    [
+      "O=[N+]([O-])c1ccc(I)cc1",
+      "-48",
+      "0.014",
+      "O=[N+]([O-])c1ccc(-c2ccc([N+](=O)[O-])cc2)cc1",
+      "53a"
+    ],
+    [
+      "O=[N+]([O-])c1ccccc1I",
+      "-48",
+      "0.014",
+      "O=[N+]([O-])c1ccccc1-c1ccccc1[N+](=O)[O-]",
+      "63a"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": "1-bromo-4-methoxybenzene",
+      "smiles": "COc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "4,4'-dimethoxy-1,1'-biphenyl",
+      "smiles": "COc1ccc(-c2ccc(OC)cc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "1-bromo-3-methoxybenzene",
+      "smiles": "COc1cccc(Br)c1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "3,3'-dimethoxy-1,1'-biphenyl",
+      "smiles": "COc1cccc(-c2cccc(OC)c2)c1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "1-bromo-2-methoxybenzene",
+      "smiles": "COc1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2,2'-dimethoxy-1,1'-biphenyl",
+      "smiles": "COc1ccccc1-c1ccccc1OC",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "4-bromobenzonitrile",
+      "smiles": "N#Cc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "[1,1'-biphenyl]-4,4'-dicarbonitrile",
+      "smiles": "N#Cc1ccc(-c2ccc(C#N)cc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "3-bromobenzonitrile",
+      "smiles": "N#Cc1cccc(Br)c1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "[1,1'-biphenyl]-3,3'-dicarbonitrile",
+      "smiles": "N#Cc1cccc(-c2cccc(C#N)c2)c1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "2-bromobenzonitrile",
+      "smiles": "N#Cc1ccccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "[1,1'-biphenyl]-2,2'-dicarbonitrile",
+      "smiles": "N#Cc1ccccc1-c1ccccc1C#N",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "1-iodo-4-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccc(I)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "4,4'-dinitro-1,1'-biphenyl",
+      "smiles": "O=[N+]([O-])c1ccc(-c2ccc([N+](=O)[O-])cc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": "1-iodo-2-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccccc1I",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": "2,2'-dinitro-1,1'-biphenyl",
+      "smiles": "O=[N+]([O-])c1ccccc1-c1ccccc1[N+](=O)[O-]",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "aPhLi instead of n-BuLi was used as lithiating reagent."
+  ],
+  "notes": "Table contains drawn structures for substrates and products. SMILES generated for all structures.",
+  "_source_paper": "Nagaki_2011_Homocoupling",
+  "_source_image": "mo-CC-am.png"
+}

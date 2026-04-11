@@ -1,0 +1,708 @@
+[
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table S3",
+    "table_title": "Generation of functional alkyllitiums followed by reaction with electrophiles.",
+    "reaction_context": {
+      "substrate": "functional alkyl halides",
+      "substrate_smiles": null,
+      "organolithium_reagent": null,
+      "intermediate": "functional alkyllithiums",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "halogen-lithium exchange",
+      "solvent": null,
+      "reactor_info": null
+    },
+    "columns": [
+      "substrate",
+      "electrophile",
+      "temperature",
+      "tR1",
+      "product",
+      "yield"
+    ],
+    "column_units": [
+      null,
+      null,
+      "(°C)",
+      "(sec)",
+      null,
+      "(%)"
+    ],
+    "rows": [
+      [
+        "PhCOCCCBr",
+        "PhCHO",
+        "-40",
+        "7.85",
+        "PhCOCCCC(O)Ph",
+        "78\n(76)[b]"
+      ],
+      [
+        "PhCOCCCBr",
+        "MeOTf",
+        "-40",
+        "0.11",
+        "PhCOCCCC",
+        "78"
+      ],
+      [
+        "PhCOCCCCl",
+        "PhCHO",
+        "-40",
+        "3.14",
+        "PhCOCCCC(O)Ph",
+        "86"
+      ],
+      [
+        "PhCOCCCCl",
+        "PhCOCl",
+        "-40",
+        "1.57",
+        "PhCOCCCC(=O)Ph",
+        "65"
+      ],
+      [
+        "PhCOCCCl",
+        "PhMe2SiCl",
+        "-60",
+        "0.11",
+        "PhCOCC[Si](C)(C)Ph",
+        "75"
+      ],
+      [
+        "PhCOCCCl",
+        "PhCHO",
+        "-60",
+        "0.11",
+        "PhCOCCC(O)Ph",
+        "61"
+      ],
+      [
+        "C1CCCCC1OCCCl",
+        "PhCHO",
+        "-78",
+        "1.31",
+        "C1CCCCC1OCCC(O)Ph",
+        "61"
+      ],
+      [
+        "COCCCl",
+        "PhMe2SiCl",
+        "-78",
+        "0.78",
+        "COCC[Si](C)(C)Ph",
+        "68"
+      ],
+      [
+        "ClCCCCBr",
+        "PhCHO",
+        "-60",
+        "0.11",
+        "ClCCCCC(O)Ph",
+        "69"
+      ],
+      [
+        "ClCCCCCl",
+        "PhCHO",
+        "-60",
+        "0.79",
+        "ClCCCCC(O)Ph",
+        "72"
+      ],
+      [
+        "C=CCCCBr",
+        "PhNCO",
+        "-60",
+        "0.028",
+        "C=CCCCC(=O)Nc1ccccc1",
+        "90 [b]"
+      ],
+      [
+        "C=CCCCBr",
+        "PhCHO",
+        "-60",
+        "0.028",
+        "C=CCCCC(O)Ph",
+        "88 [b]"
+      ],
+      [
+        "C[Si](C)(C)CCCBr",
+        "PhNCO",
+        "-78",
+        "0.0069",
+        "C[Si](C)(C)CCCC(=O)Nc1ccccc1",
+        "78 [b]"
+      ],
+      [
+        "Brc1ccc(CCCBr)cc1",
+        "Bu3SnCl",
+        "-60",
+        "6.9",
+        "Brc1ccc(CCC[Sn](CCCC)(CCCC)CCCC)cc1",
+        "74 [b]"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": null,
+        "smiles": "BrCCCOCc1ccccc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "OC(CCCOCc1ccccc1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "CCCCOCc1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCCOCc1ccccc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O=C(CCCOCc1ccccc1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCOCc1ccccc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "C[Si](C)(CCOCc1ccccc1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "OC(CCOCc1ccccc1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCOC1CCCCC1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "OC(CCOC1CCCCC1)c2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCOC",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "C[Si](C)(CCOC)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCCCBr",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "OC(CCCCCl)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "ClCCCCCl",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "BrCCCC=C",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O=C(CCCC=C)Nc1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "OC(CCCC=C)c1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "C[Si](C)(C)CCCBr",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "C[Si](C)(C)CCCC(=O)Nc1ccccc1",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "Brc1ccc(CCCBr)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "CCCC[Sn](CCCC)(CCCC)CCCc1ccc(Br)cc1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] GC yield.",
+      "[b] Isolated yield."
+    ],
+    "notes": "The table spans two pages in the original document, but is presented here as a single continuous table. The substrate and product columns contain drawn molecular structures, which have been converted to SMILES in the 'rows' array for simplicity, and also listed in the 'structures' array.",
+    "_source_paper": "Nagaki_2019_FuncAlkyllithiums",
+    "_source_image": "Pasted Graphic 80.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S1",
+    "table_title": "Table S1. Effects of the temperature (T) and the residence Time in R1 (tR1) on the yields of tributyl(3-(oxiran-2-yl)propyl)stannane for the lithiation of 2-(3-bromopropyl)oxirane with LiNp followed by trapping with Bu3SnCl using the flow microreactor system.",
+    "reaction_context": {
+      "substrate": "2-(3-bromopropyl)oxirane",
+      "substrate_smiles": "BrCCCC1CO1",
+      "organolithium_reagent": "LiNp",
+      "intermediate": "lithium 3-(oxiran-2-yl)propyl",
+      "intermediate_smiles": "[Li]CCCC1CO1",
+      "electrophile": "Bu3SnCl",
+      "electrophile_smiles": "CCCC[Sn](Cl)(CCCC)CCCC",
+      "product": "tributyl(3-(oxiran-2-yl)propyl)stannane",
+      "product_smiles": "CCCC[Sn](CCCC)(CCCC)CCCC1CO1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "T",
+      "inner diameter of R1",
+      "length of R1",
+      "tR1",
+      "conversion",
+      "yield"
+    ],
+    "column_units": [
+      "°C",
+      "μm",
+      "cm",
+      "sec",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "-78",
+        "250 (integrated device)",
+        "1.0",
+        "0.0020",
+        "70",
+        "25"
+      ],
+      [
+        "-78",
+        "250",
+        "3.5",
+        "0.0069",
+        "88",
+        "56"
+      ],
+      [
+        "-78",
+        "500",
+        "3.5",
+        "0.028",
+        "100",
+        "69"
+      ],
+      [
+        "-78",
+        "1000",
+        "12.5",
+        "0.39",
+        "100",
+        "65"
+      ],
+      [
+        "-78",
+        "1000",
+        "100",
+        "3.14",
+        "100",
+        "57"
+      ],
+      [
+        "-78",
+        "1000",
+        "500",
+        "15.7",
+        "100",
+        "54"
+      ],
+      [
+        "-60",
+        "250 (integrated device)",
+        "1.0",
+        "0.0020",
+        "79",
+        "50"
+      ],
+      [
+        "-60",
+        "250",
+        "3.5",
+        "0.0069",
+        "100",
+        "79"
+      ],
+      [
+        "-60",
+        "500",
+        "3.5",
+        "0.028",
+        "100",
+        "69"
+      ],
+      [
+        "-60",
+        "1000",
+        "12.5",
+        "0.39",
+        "100",
+        "64"
+      ],
+      [
+        "-60",
+        "1000",
+        "100",
+        "3.14",
+        "100",
+        "56"
+      ],
+      [
+        "-60",
+        "1000",
+        "500",
+        "15.7",
+        "100",
+        "40"
+      ],
+      [
+        "-40",
+        "250 (integrated device)",
+        "1.0",
+        "0.0020",
+        "100",
+        "66"
+      ],
+      [
+        "-40",
+        "250",
+        "3.5",
+        "0.0069",
+        "100",
+        "69"
+      ],
+      [
+        "-40",
+        "500",
+        "3.5",
+        "0.028",
+        "100",
+        "66"
+      ],
+      [
+        "-40",
+        "1000",
+        "12.5",
+        "0.39",
+        "100",
+        "53"
+      ],
+      [
+        "-40",
+        "1000",
+        "100",
+        "3.14",
+        "100",
+        "50"
+      ],
+      [
+        "-40",
+        "1000",
+        "500",
+        "15.7",
+        "100",
+        "24"
+      ],
+      [
+        "-20",
+        "250 (integrated device)",
+        "1.0",
+        "0.0020",
+        "100",
+        "56"
+      ],
+      [
+        "-20",
+        "250",
+        "3.5",
+        "0.0069",
+        "100",
+        "62"
+      ],
+      [
+        "-20",
+        "500",
+        "3.5",
+        "0.028",
+        "100",
+        "57"
+      ],
+      [
+        "-20",
+        "1000",
+        "12.5",
+        "0.39",
+        "100",
+        "52"
+      ],
+      [
+        "-20",
+        "1000",
+        "100",
+        "3.14",
+        "100",
+        "25"
+      ],
+      [
+        "-20",
+        "1000",
+        "500",
+        "15.7",
+        "100",
+        "15"
+      ],
+      [
+        "0",
+        "250 (integrated device)",
+        "1.0",
+        "0.0020",
+        "100",
+        "58"
+      ],
+      [
+        "0",
+        "250",
+        "3.5",
+        "0.0069",
+        "100",
+        "53"
+      ],
+      [
+        "0",
+        "500",
+        "3.5",
+        "0.028",
+        "100",
+        "39"
+      ],
+      [
+        "0",
+        "1000",
+        "12.5",
+        "0.39",
+        "100",
+        "47"
+      ],
+      [
+        "0",
+        "1000",
+        "100",
+        "3.14",
+        "100",
+        "7"
+      ],
+      [
+        "0",
+        "1000",
+        "500",
+        "15.7",
+        "100",
+        "1"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table is split across two pages in the original document, but the rows have been combined here. The temperature column has merged cells in the original image, which have been filled down for each corresponding row.",
+    "_source_paper": "Nagaki_2019_FuncAlkyllithiums",
+    "_source_image": "Pasted Graphic 81.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table S2",
+    "table_title": "Table S2. Generation of primary alkyllithiums bearing an epoxide group followed by reaction with electrophiles.",
+    "reaction_context": {
+      "substrate": "primary alkyl bromides bearing an epoxide group",
+      "substrate_smiles": null,
+      "organolithium_reagent": null,
+      "intermediate": "primary alkyllithium bearing an epoxide group",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": null
+    },
+    "columns": [
+      "substrate",
+      "tR1",
+      "T",
+      "electrophile",
+      "product",
+      "Yield[a]"
+    ],
+    "column_units": [
+      null,
+      "(ms)",
+      "(°C)",
+      null,
+      null,
+      "(%)"
+    ],
+    "rows": [
+      [
+        "O1CC1CCCBr",
+        "6.9",
+        "-60",
+        "Bu3SnCl",
+        "O1CC1CCC[Sn](CCCC)(CCCC)CCCC",
+        "79"
+      ],
+      [
+        "",
+        "6.9",
+        "-60",
+        "PhNCO",
+        "O1CC1CCCC(=O)Nc2ccccc2",
+        "67[b]"
+      ],
+      [
+        "O1CC1CCCCBr",
+        "6.9",
+        "-60",
+        "Bu3SnCl",
+        "O1CC1CCCC[Sn](CCCC)(CCCC)CCCC",
+        "83"
+      ],
+      [
+        "",
+        "6.9",
+        "-60",
+        "PhNCO",
+        "O1CC1CCCCC(=O)Nc2ccccc2",
+        "78[b]"
+      ],
+      [
+        "O1CC1CCCCCBr",
+        "6.9",
+        "-60",
+        "Bu3SnCl",
+        "O1CC1CCCCC[Sn](CCCC)(CCCC)CCCC",
+        "78"
+      ]
+    ],
+    "structures": [
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCBr",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCC[Sn](CCCC)(CCCC)CCCC",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCC(=O)Nc2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCCBr",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCC[Sn](CCCC)(CCCC)CCCC",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCCC(=O)Nc2ccccc2",
+        "role": "product"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCCCBr",
+        "role": "substrate"
+      },
+      {
+        "label": null,
+        "name": null,
+        "smiles": "O1CC1CCCCC[Sn](CCCC)(CCCC)CCCC",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "a Unless otherwise stated the yields were determined by GC using an internal standard.",
+      "b Isolated yield."
+    ],
+    "notes": "Substrate structures are shown in the first column. Product structures are shown in the fifth column. Empty substrate cells imply the substrate from the row above is used.",
+    "_source_paper": "Nagaki_2019_FuncAlkyllithiums",
+    "_source_image": "Table S2. Gcneration of primary alkyllithiums bearing an epoxide group followed by reaction with electrophiles..png"
+  }
+]

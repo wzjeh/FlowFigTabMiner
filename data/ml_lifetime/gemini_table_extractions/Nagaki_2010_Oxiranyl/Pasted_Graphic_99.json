@@ -1,0 +1,153 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 2",
+  "table_title": "Reactions of α-aryloxiranyllithiums with electrophiles.[a]",
+  "reaction_context": {
+    "substrate": "styrene oxides",
+    "substrate_smiles": null,
+    "organolithium_reagent": "sBuLi",
+    "intermediate": "α-aryloxiranyllithium",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "deprotonation",
+    "solvent": "THF/hexane",
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Epoxide",
+    "Electrophile",
+    "Product",
+    "Yield [%]",
+    "Productivity [g h-1]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%",
+    "g h-1"
+  ],
+  "rows": [
+    [
+      "Clc1ccc(C2CO2)cc1",
+      "MeI",
+      "CC1(c2ccc(Cl)cc2)CO1",
+      "82[b]",
+      "5.0"
+    ],
+    [
+      "Clc1ccc(C2CO2)cc1",
+      "Me3SiCl",
+      "C[Si](C)(C)C1(c2ccc(Cl)cc2)CO1",
+      "73[c]",
+      "6.0"
+    ],
+    [
+      "Clc1ccc(C2CO2)cc1",
+      "Ph2CO",
+      "OC(c1ccccc1)(c1ccccc1)C1(c2ccc(Cl)cc2)CO1",
+      "82[c]",
+      "9.9"
+    ],
+    [
+      "Cc1ccc(C2CO2)cc1",
+      "MeI",
+      "CC1(c2ccc(C)cc2)CO1",
+      "63[b]",
+      "3.4"
+    ],
+    [
+      "Cc1ccc(C2CO2)cc1",
+      "Me3SiCl",
+      "C[Si](C)(C)C1(c2ccc(C)cc2)CO1",
+      "68[c]",
+      "5.1"
+    ],
+    [
+      "Cc1ccc(C2CO2)cc1",
+      "Ph2CO",
+      "OC(c1ccccc1)(c1ccccc1)C1(c2ccc(C)cc2)CO1",
+      "59[c]",
+      "6.8"
+    ],
+    [
+      "c1ccc2cc(C3CO3)ccc2c1",
+      "MeI",
+      "CC1(c2ccc3ccccc3c2)CO1",
+      "92[b]",
+      "6.1"
+    ],
+    [
+      "c1ccc2cc(C3CO3)ccc2c1",
+      "Me3SiCl",
+      "C[Si](C)(C)C1(c2ccc3ccccc3c2)CO1",
+      "92[c]",
+      "8.1"
+    ],
+    [
+      "c1ccc2cc(C3CO3)ccc2c1",
+      "Ph2CO",
+      "OC(c1ccccc1)(c1ccccc1)C1(c2ccc3ccccc3c2)CO1",
+      "85[c]",
+      "10.8"
+    ],
+    [
+      "c1ccc(c2ccc(C3CO3)cc2)cc1",
+      "MeI",
+      "CC1(c2ccc(c3ccccc3)cc2)CO1",
+      "84[b]",
+      "6.4"
+    ],
+    [
+      "c1ccc(c2ccc(C3CO3)cc2)cc1",
+      "Me3SiCl",
+      "C[Si](C)(C)C1(c2ccc(c3ccccc3)cc2)CO1",
+      "72[c]",
+      "7.0"
+    ],
+    [
+      "c1ccc(c2ccc(C3CO3)cc2)cc1",
+      "Ph2CO",
+      "OC(c1ccccc1)(c1ccccc1)C1(c2ccc(c3ccccc3)cc2)CO1",
+      "82[c]",
+      "11.1"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "4",
+      "name": null,
+      "smiles": "Clc1ccc(C2CO2)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "5",
+      "name": null,
+      "smiles": "CC1(c2ccc(Cl)cc2)CO1",
+      "role": "product"
+    },
+    {
+      "label": "6",
+      "name": null,
+      "smiles": "Cc1ccc(C2CO2)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "7",
+      "name": null,
+      "smiles": "CC1(c2ccc(C)cc2)CO1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] A solution of styrene oxides (0.10 M in THF), a solution of sBuLi (0.75 M in hexane) and a solution of electrophiles (0.45 M in THF) were allowed to react in the flow microreactor system.",
+    "[b] Determined by GC.",
+    "[c] Isolated yield."
+  ],
+  "notes": "Substrate structures are shown once per block of electrophiles. I have repeated the substrate SMILES for each row in the block.",
+  "_source_paper": "Nagaki_2010_Oxiranyl",
+  "_source_image": "Pasted Graphic 99.png"
+}

@@ -1,0 +1,162 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 1",
+  "table_title": "The I–Li exchange reaction of iodonitrobenzenes 1, followed by reaction with an electrophile.[a]",
+  "reaction_context": {
+    "substrate": "iodonitrobenzenes 1",
+    "substrate_smiles": null,
+    "organolithium_reagent": null,
+    "intermediate": "nitrophenyllithium",
+    "intermediate_smiles": null,
+    "electrophile": null,
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": null
+  },
+  "columns": [
+    "1",
+    "Electrophile",
+    "Product",
+    "Yield"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "[%]"
+  ],
+  "rows": [
+    [
+      "1a",
+      "MeOH",
+      "O=[N+]([O-])c1ccccc1",
+      "87"
+    ],
+    [
+      "1a",
+      "MeI",
+      "Cc1ccccc1[N+](=O)[O-]",
+      "36"
+    ],
+    [
+      "1a",
+      "MeOTf",
+      "Cc1ccccc1[N+](=O)[O-]",
+      "82"
+    ],
+    [
+      "1a",
+      "Me3SiCl",
+      "C[Si](C)(C)c1ccccc1[N+](=O)[O-]",
+      "62"
+    ],
+    [
+      "1a",
+      "Me3SiOTf",
+      "C[Si](C)(C)c1ccccc1[N+](=O)[O-]",
+      "88"
+    ],
+    [
+      "1a",
+      "PhCHO",
+      "O=[N+]([O-])c1ccccc1C(O)c2ccccc2",
+      "93"
+    ],
+    [
+      "1b",
+      "MeOH",
+      "O=[N+]([O-])c1ccccc1",
+      "87"
+    ],
+    [
+      "1b",
+      "MeI",
+      "Cc1cccc([N+](=O)[O-])c1",
+      "44"
+    ],
+    [
+      "1b",
+      "MeOTf",
+      "Cc1cccc([N+](=O)[O-])c1",
+      "86"
+    ],
+    [
+      "1b",
+      "Me3SiCl",
+      "C[Si](C)(C)c1cccc([N+](=O)[O-])c1",
+      "85"
+    ],
+    [
+      "1b",
+      "PhCHO",
+      "O=[N+]([O-])c1cccc(C(O)c2ccccc2)c1",
+      "93"
+    ],
+    [
+      "1c",
+      "MeOH",
+      "O=[N+]([O-])c1ccccc1",
+      "91"
+    ],
+    [
+      "1c",
+      "MeI",
+      "Cc1ccc([N+](=O)[O-])cc1",
+      "46"
+    ],
+    [
+      "1c",
+      "MeOTf",
+      "Cc1ccc([N+](=O)[O-])cc1",
+      "82"
+    ],
+    [
+      "1c",
+      "Me3SiCl",
+      "C[Si](C)(C)c1ccc([N+](=O)[O-])cc1",
+      "70"
+    ],
+    [
+      "1c",
+      "Me3SiOTf",
+      "C[Si](C)(C)c1ccc([N+](=O)[O-])cc1",
+      "80"
+    ],
+    [
+      "1c",
+      "PhCHO",
+      "O=[N+]([O-])c1ccc(C(O)c2ccccc2)cc1",
+      "86"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1a",
+      "name": "1-iodo-2-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccccc1I",
+      "role": "substrate"
+    },
+    {
+      "label": "1b",
+      "name": "1-iodo-3-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1cccc(I)c1",
+      "role": "substrate"
+    },
+    {
+      "label": "1c",
+      "name": "1-iodo-4-nitrobenzene",
+      "smiles": "O=[N+]([O-])c1ccc(I)cc1",
+      "role": "substrate"
+    }
+  ],
+  "footnotes": [
+    "[a] For substrate 1a, T = 0 °C (tR = 0.01 s); for 1b and 1c, T = -28 °C (tR = 0.01 s).",
+    "[b] The yield was determined by GC. Tf = trifluoromethanesulfonyl."
+  ],
+  "notes": "Product structures spanning multiple rows for different electrophiles were duplicated into each corresponding row.",
+  "_source_paper": "Nagaki_2009_NitroArLi",
+  "_source_image": "59.png"
+}

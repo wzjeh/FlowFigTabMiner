@@ -1,0 +1,85 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table S2",
+  "table_title": "Generation of primary alkyllithiums bearing an epoxide group followed by reaction with electrophiles.",
+  "reaction_context": {
+    "substrate": "primary alkyl bromides bearing an epoxide group",
+    "substrate_smiles": null,
+    "organolithium_reagent": null,
+    "intermediate": "primary alkyllithiums bearing an epoxide group",
+    "intermediate_smiles": null,
+    "electrophile": null,
+    "electrophile_smiles": null,
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": null
+  },
+  "columns": [
+    "substrate",
+    "tR1",
+    "T",
+    "electrophile",
+    "product",
+    "Yield[a]"
+  ],
+  "column_units": [
+    null,
+    "ms",
+    "°C",
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "BrCCCCC1CO1",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "CCCC[Sn](CCCC)(CCCC)CCCCC1CO1",
+      "79"
+    ],
+    [
+      "",
+      "6.9",
+      "-60",
+      "PhNCO",
+      "O=C(CCCCC1CO1)Nc1ccccc1",
+      "67[b]"
+    ],
+    [
+      "BrCCCCCC1CO1",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "CCCC[Sn](CCCC)(CCCC)CCCCCC1CO1",
+      "83"
+    ],
+    [
+      "",
+      "6.9",
+      "-60",
+      "PhNCO",
+      "O=C(CCCCCC1CO1)Nc1ccccc1",
+      "78[b]"
+    ],
+    [
+      "BrCCCCCCC1CO1",
+      "6.9",
+      "-60",
+      "Bu3SnCl",
+      "CCCC[Sn](CCCC)(CCCC)CCCCCCC1CO1",
+      "78"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [
+    "a Unless otherwise stated the yields were determined by GC using an internal standard.",
+    "b Isolated yield."
+  ],
+  "notes": "Empty substrate cells in rows 2 and 4 imply the use of the substrate from the preceding row.",
+  "_source_paper": "Nagaki_2019_Angew_Alkyllithium",
+  "_source_image": "Table S2. Gereration of primary alkyllithiums bcaring an epoxide group followed by reaction with clectrophiks..png"
+}

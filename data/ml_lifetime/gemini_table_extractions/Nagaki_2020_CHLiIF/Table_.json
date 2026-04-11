@@ -1,0 +1,236 @@
+{
+  "image_type": "table",
+  "table_id": "Table S1",
+  "table_title": "Lithiation of fluoroiodomethane (1) with MeLi followed by trapping with N-methoxy-N-methyl-3-phenylpropanamide (7a) using a flow microreactor system.",
+  "reaction_context": {
+    "substrate": "fluoroiodomethane (1)",
+    "substrate_smiles": "FCI",
+    "organolithium_reagent": "MeLi",
+    "intermediate": "fluoromethyllithium",
+    "intermediate_smiles": "FC[Li]",
+    "electrophile": "N-methoxy-N-methyl-3-phenylpropanamide (7a)",
+    "electrophile_smiles": "O=C(N(OC)C)CCc1ccccc1",
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Temperature",
+    "L1",
+    "φ1",
+    "tR1",
+    "Yield"
+  ],
+  "column_units": [
+    "[°C]",
+    "[cm]",
+    "[μm]",
+    "[s]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "–20",
+      "1.0",
+      "250",
+      "0.0037",
+      "60"
+    ],
+    [
+      "–20",
+      "3.5",
+      "250",
+      "0.013",
+      "13"
+    ],
+    [
+      "–20",
+      "3.5",
+      "500",
+      "0.052",
+      "5"
+    ],
+    [
+      "–20",
+      "3.5",
+      "1000",
+      "0.21",
+      "0"
+    ],
+    [
+      "–20",
+      "12.5",
+      "1000",
+      "0.74",
+      "0"
+    ],
+    [
+      "–20",
+      "25",
+      "1000",
+      "1.5",
+      "0"
+    ],
+    [
+      "–20",
+      "50",
+      "1000",
+      "2.9",
+      "0"
+    ],
+    [
+      "–40",
+      "1.0",
+      "250",
+      "0.0037",
+      "71"
+    ],
+    [
+      "–40",
+      "3.5",
+      "250",
+      "0.013",
+      "57"
+    ],
+    [
+      "–40",
+      "3.5",
+      "500",
+      "0.052",
+      "40"
+    ],
+    [
+      "–40",
+      "3.5",
+      "1000",
+      "0.21",
+      "0"
+    ],
+    [
+      "–40",
+      "12.5",
+      "1000",
+      "0.74",
+      "0"
+    ],
+    [
+      "–40",
+      "25",
+      "1000",
+      "1.5",
+      "0"
+    ],
+    [
+      "–40",
+      "50",
+      "1000",
+      "2.9",
+      "0"
+    ],
+    [
+      "–60",
+      "1.0",
+      "250",
+      "0.0037",
+      "80"
+    ],
+    [
+      "–60",
+      "3.5",
+      "250",
+      "0.013",
+      "84"
+    ],
+    [
+      "–60",
+      "3.5",
+      "500",
+      "0.052",
+      "74"
+    ],
+    [
+      "–60",
+      "3.5",
+      "1000",
+      "0.21",
+      "55"
+    ],
+    [
+      "–60",
+      "12.5",
+      "1000",
+      "0.74",
+      "14"
+    ],
+    [
+      "–60",
+      "25",
+      "1000",
+      "1.5",
+      "0"
+    ],
+    [
+      "–60",
+      "50",
+      "1000",
+      "2.9",
+      "0"
+    ],
+    [
+      "–78",
+      "1.0",
+      "250",
+      "0.0037",
+      "87"
+    ],
+    [
+      "–78",
+      "3.5",
+      "250",
+      "0.013",
+      "80"
+    ],
+    [
+      "–78",
+      "3.5",
+      "500",
+      "0.052",
+      "80"
+    ],
+    [
+      "–78",
+      "3.5",
+      "1000",
+      "0.21",
+      "76"
+    ],
+    [
+      "–78",
+      "12.5",
+      "1000",
+      "0.74",
+      "70"
+    ],
+    [
+      "–78",
+      "25",
+      "1000",
+      "1.5",
+      "65"
+    ],
+    [
+      "–78",
+      "50",
+      "1000",
+      "2.9",
+      "59"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "SMILES for substrate and electrophile inferred from names in title.",
+  "_source_paper": "Nagaki_2020_CHLiIF",
+  "_source_image": "Table：.png"
+}

@@ -1,0 +1,204 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 3",
+  "table_title": "The I/Li exchange reaction of alkyl p-iodobenzoates 4 followed by reaction with an electrophile.[a]",
+  "reaction_context": {
+    "substrate": "alkyl p-iodobenzoates 4",
+    "substrate_smiles": null,
+    "organolithium_reagent": "PhLi",
+    "intermediate": "alkyl p-lithiobenzoates",
+    "intermediate_smiles": null,
+    "electrophile": "various",
+    "electrophile_smiles": null,
+    "product": "various",
+    "product_smiles": null,
+    "reaction_type": "I-Li exchange",
+    "solvent": "THF, Et2O/cyclohexane",
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Ester",
+    "E",
+    "Product",
+    "Yield [%]"
+  ],
+  "column_units": [
+    null,
+    null,
+    null,
+    "%"
+  ],
+  "rows": [
+    [
+      "4a",
+      "tBuOH",
+      "3a",
+      "85"
+    ],
+    [
+      "4a",
+      "MeI",
+      "CC1=CC=C(C(=O)OC(C)(C)C)C=C1",
+      "74"
+    ],
+    [
+      "4a",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=C(C(=O)OC(C)(C)C)C=C1",
+      "87"
+    ],
+    [
+      "4a",
+      "PhCHO",
+      "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC(C)(C)C)C=C1",
+      "67[b]"
+    ],
+    [
+      "4b",
+      "iPrOH",
+      "3b",
+      "89"
+    ],
+    [
+      "4b",
+      "MeI",
+      "CC1=CC=C(C(=O)OC(C)C)C=C1",
+      "38"
+    ],
+    [
+      "4b",
+      "MeOTf",
+      "CC1=CC=C(C(=O)OC(C)C)C=C1",
+      "82"
+    ],
+    [
+      "4b",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=C(C(=O)OC(C)C)C=C1",
+      "74"
+    ],
+    [
+      "4b",
+      "PhCHO",
+      "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC(C)C)C=C1",
+      "79"
+    ],
+    [
+      "4c",
+      "EtOH",
+      "3c",
+      "84"
+    ],
+    [
+      "4c",
+      "MeI",
+      "CC1=CC=C(C(=O)OCC)C=C1",
+      "25"
+    ],
+    [
+      "4c",
+      "MeOTf",
+      "CC1=CC=C(C(=O)OCC)C=C1",
+      "77"
+    ],
+    [
+      "4c",
+      "Me3SiCl",
+      "C[Si](C)(C)C1=CC=C(C(=O)OCC)C=C1",
+      "67"
+    ],
+    [
+      "4c",
+      "Me3SiOTf",
+      "C[Si](C)(C)C1=CC=C(C(=O)OCC)C=C1",
+      "88"
+    ],
+    [
+      "4c",
+      "PhCHO",
+      "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OCC)C=C1",
+      "81"
+    ],
+    [
+      "4d",
+      "MeOH",
+      "3d",
+      "80"
+    ],
+    [
+      "4d",
+      "MeOTf",
+      "CC1=CC=C(C(=O)OC)C=C1",
+      "81"
+    ],
+    [
+      "4d",
+      "Me3SiOTf",
+      "C[Si](C)(C)C1=CC=C(C(=O)OC)C=C1",
+      "81"
+    ],
+    [
+      "4d",
+      "PhCHO",
+      "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC)C=C1",
+      "80"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "4a",
+      "name": "tert-butyl 4-iodobenzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=C(I)C=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3a",
+      "name": "tert-butyl benzoate",
+      "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4b",
+      "name": "isopropyl 4-iodobenzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=C(I)C=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3b",
+      "name": "isopropyl benzoate",
+      "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4c",
+      "name": "ethyl 4-iodobenzoate",
+      "smiles": "CCOC(=O)C1=CC=C(I)C=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3c",
+      "name": "ethyl benzoate",
+      "smiles": "CCOC(=O)C1=CC=CC=C1",
+      "role": "product"
+    },
+    {
+      "label": "4d",
+      "name": "methyl 4-iodobenzoate",
+      "smiles": "COC(=O)C1=CC=C(I)C=C1",
+      "role": "substrate"
+    },
+    {
+      "label": "3d",
+      "name": "methyl benzoate",
+      "smiles": "COC(=O)C1=CC=CC=C1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "[a] Alkyl p-iodobenzoates 4 in THF (0.10 M), PhLi in Et2O/cyclohexane (0.42 M), and an electrophile (3.0 equiv, 0.60 M) were reacted in the flow microreactor system at the following optimized temperatures: 4a: 0 °C, 4b: -48 °C, 4c: -58 °C, 4d: -78 °C. tR was 0.01 s in all cases. The yield of the product was determined by GC analysis unless otherwise stated.",
+    "[b] Isolated yield."
+  ],
+  "notes": "The table contains structures in the 'Ester' and 'Product' columns. I have extracted the labeled structures into the 'structures' array and replaced the cell contents with the label or SMILES where appropriate. For rows where the ester is not explicitly drawn but implied by the grouping, I repeated the ester label.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Pasted Graphic 93.png"
+}

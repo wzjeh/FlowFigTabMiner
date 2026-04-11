@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-15",
+  "table_title": "Table S-15. The I/Li exchange reaction of tert-butyl m-iodobenzoate (7a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "tert-butyl m-iodobenzoate (7a)",
+    "substrate_smiles": "CC(C)(C)OC(=O)c1cc(I)ccc1",
+    "organolithium_reagent": null,
+    "intermediate": "tert-butyl m-lithiobenzoate",
+    "intermediate_smiles": "CC(C)(C)OC(=O)c1cc([Li])ccc1",
+    "electrophile": "tert-butyl alcohol",
+    "electrophile_smiles": "CC(C)(C)O",
+    "product": "tert-butyl benzoate",
+    "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "95",
+      "90"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "96",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "81"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "76"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "100",
+      "56"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "100",
+      "11"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "85",
+      "83"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "97",
+      "95"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "95"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "95"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "91"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "69"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "95",
+      "95"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "84",
+      "83"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "97"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "99"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "100",
+      "97"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "94"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "76",
+      "74"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "71",
+      "70"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "100",
+      "97"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "100",
+      "98"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "100",
+      "92"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "98"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "65",
+      "63"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "64",
+      "61"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "76",
+      "75"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "80",
+      "77"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "84",
+      "82"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "95",
+      "95"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Tabe S-1S. The ILi cuchange reaction of sor-batyi me-iobenzoate （7a） followed by reaction with ter..png"
+}

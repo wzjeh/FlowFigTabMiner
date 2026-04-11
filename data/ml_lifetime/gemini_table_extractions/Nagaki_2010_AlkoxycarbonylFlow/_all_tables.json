@@ -1,0 +1,5323 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table S-7",
+    "table_title": "Table S-7. The Br/Li exchange reaction of isopropyl o-bromobenzoate (8b) followed by reaction with 2-propanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "isopropyl o-bromobenzoate (8b)",
+      "substrate_smiles": "CC(C)OC(=O)c1ccccc1Br",
+      "organolithium_reagent": null,
+      "intermediate": "isopropyl o-lithiobenzoate",
+      "intermediate_smiles": "CC(C)OC(=O)c1ccccc1[Li]",
+      "electrophile": "2-propanol",
+      "electrophile_smiles": "CC(O)C",
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "81"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "70"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "44"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "32"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "20"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "10"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "97",
+        "87"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "80"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "79"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "71"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "18"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "73",
+        "64"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "93",
+        "81"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "87"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "83"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "68"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "67",
+        "57"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "91",
+        "75"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "96",
+        "78"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "100",
+        "91"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "85"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "72"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "57",
+        "49"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "48",
+        "41"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "62",
+        "48"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "75",
+        "62"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "76",
+        "65"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "95",
+        "78"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document. The temperature column has merged cells; the temperature value has been repeated for each corresponding row in the JSON output.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "-78.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-18",
+    "table_title": "The I/Li exchange reaction of methyl m-iodobenzoate (7d) followed by reaction with methanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "methyl m-iodobenzoate (7d)",
+      "substrate_smiles": "COC(=O)c1cccc(I)c1",
+      "organolithium_reagent": null,
+      "intermediate": "methyl m-lithiobenzoate",
+      "intermediate_smiles": "COC(=O)c1cccc([Li])c1",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "methyl benzoate",
+      "product_smiles": "COC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "99",
+        "5"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "97",
+        "4"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "2"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "1"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "80",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "48"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "99",
+        "53"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "17"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "6"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "4"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "97",
+        "87"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "97",
+        "63"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "99",
+        "50"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "99",
+        "38"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "99",
+        "25"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "5"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "93",
+        "85"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "100",
+        "68"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "96",
+        "61"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "99",
+        "47"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "99",
+        "43"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "13"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "83",
+        "67"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "81",
+        "64"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "79",
+        "62"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "88",
+        "74"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "84",
+        "70"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "51"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans two pages in the original document, but is presented as a single continuous table here. Temperature values were merged across rows in the original image and have been repeated for each corresponding row.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "888888888888g.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-5",
+    "table_title": "Table S-5. The Br/Li exchange reaction of isopropyl m-bromobenzoate (5b) followed by reaction with 2-propanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "isopropyl m-bromobenzoate (5b)",
+      "substrate_smiles": "CC(C)OC(=O)c1cc(Br)ccc1",
+      "organolithium_reagent": null,
+      "intermediate": "isopropyl m-lithiobenzoate",
+      "intermediate_smiles": "CC(C)OC(=O)c1cc([Li])ccc1",
+      "electrophile": "2-propanol",
+      "electrophile_smiles": "CC(O)C",
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "84",
+        "15"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "97",
+        "9"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "90",
+        "5"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "90",
+        "3"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "92",
+        "3"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "91",
+        "2"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "91",
+        "42"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "93",
+        "30"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "95",
+        "22"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "97",
+        "19"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "98",
+        "15"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "99",
+        "7"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "93",
+        "62"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "94",
+        "53"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "98",
+        "48"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "99",
+        "44"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "99",
+        "36"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "99",
+        "26"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "91",
+        "67"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "85",
+        "56"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "97",
+        "58"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "98",
+        "55"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "99",
+        "51"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "99",
+        "38"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "65",
+        "54"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "63",
+        "45"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "65",
+        "37"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "70",
+        "40"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "78",
+        "43"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "85",
+        "27"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table is split across two pages in the original document, but the data is continuous. The temperature column has merged cells in the original image, which have been unmerged and repeated for each row in the JSON output.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "BrLi cxchange reaction of isopropy! m.g.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-4",
+    "table_title": "Table S-4. The Br/Li exchange reaction of tert-butyl m-bromobenzoate (5a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "tert-butyl m-bromobenzoate (5a)",
+      "substrate_smiles": "CC(C)(C)OC(=O)c1cc(Br)ccc1",
+      "organolithium_reagent": null,
+      "intermediate": "tert-butyl m-lithiobenzoate",
+      "intermediate_smiles": "CC(C)(C)OC(=O)c1cc([Li])ccc1",
+      "electrophile": "tert-butyl alcohol",
+      "electrophile_smiles": "CC(C)(C)O",
+      "product": "tert-butyl benzoate",
+      "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "µm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "98",
+        "77"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "98",
+        "70"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "99",
+        "60"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "20",
+        "99",
+        "59"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "99",
+        "32"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "99",
+        "16"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "97",
+        "85"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "98",
+        "79"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "99",
+        "78"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "99",
+        "78"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "99",
+        "75"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "99",
+        "48"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "99",
+        "91"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "99",
+        "91"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "99",
+        "91"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "98",
+        "84"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "99",
+        "89"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "99",
+        "80"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "97",
+        "93"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "99",
+        "94"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "99",
+        "91"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "99",
+        "91"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "99",
+        "93"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "99",
+        "95"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "83",
+        "73"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "85",
+        "93"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "98",
+        "93"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "98",
+        "92"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "99",
+        "93"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "99",
+        "92"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "61",
+        "55"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "69",
+        "59"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "77",
+        "67"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "98",
+        "87"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "98",
+        "87"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "95",
+        "87"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been filled down for each corresponding block.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Fr.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-2",
+    "table_title": "Table S-2. The Br/Li exchange reaction of tert-butyl p-bromobenzoate (1a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "tert-butyl p-bromobenzoate (1a)",
+      "substrate_smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1",
+      "organolithium_reagent": "sBuLi",
+      "intermediate": "tert-butyl p-lithiobenzoate",
+      "intermediate_smiles": "CC(C)(C)OC(=O)c1ccc([Li])cc1",
+      "electrophile": "tert-butyl alcohol",
+      "electrophile_smiles": "CC(C)(C)O",
+      "product": "tert-butyl benzoate (3)",
+      "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF, hexane, cyclohexane",
+      "reactor_info": "flow microreactor system consisting of two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2), and three tube pre-cooling units (P1, P2, P3)"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "100",
+        "80"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "100",
+        "66"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "100",
+        "54"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "20",
+        "100",
+        "44"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "100",
+        "22"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "100",
+        "6"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "88"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "91"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "90"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "88"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "71"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "97"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "90"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "94"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "94"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "95"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "92"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "92",
+        "81"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "96",
+        "87"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "95"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "69",
+        "62"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "76",
+        "67"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "100",
+        "99"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "97"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "59",
+        "50"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "65",
+        "54"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "67",
+        "60"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "81",
+        "76"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "100",
+        "94"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "98"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "",
+        "name": "alkyl p-bromobenzoate",
+        "smiles": "O=C(OR)c1ccc(Br)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "3",
+        "name": "alkyl benzoate",
+        "smiles": "O=C(OR)c1ccccc1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document. The temperature values for the second part of the -58 °C block were inferred from the pattern.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 33.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-9",
+    "table_title": "The Br/Li exchange reaction of methyl o-bromobenzoate (8d) followed by reaction with methanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "methyl o-bromobenzoate (8d)",
+      "substrate_smiles": "COC(=O)c1ccccc1Br",
+      "organolithium_reagent": null,
+      "intermediate": "methyl o-lithiobenzoate",
+      "intermediate_smiles": "COC(=O)c1ccccc1[Li]",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "methyl benzoate",
+      "product_smiles": "COC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "90",
+        "41"
+      ],
+      [
+        "250",
+        "6.0",
+        "0.028",
+        "0",
+        "86",
+        "24"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "88",
+        "13"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "91",
+        "4"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "92",
+        "0"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "88",
+        "0"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "88",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "85",
+        "50"
+      ],
+      [
+        "250",
+        "6.0",
+        "0.028",
+        "-28",
+        "91",
+        "57"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "95",
+        "57"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "96",
+        "36"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "95",
+        "21"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "20"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "5"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "89",
+        "71"
+      ],
+      [
+        "250",
+        "6.0",
+        "0.028",
+        "-48",
+        "95",
+        "74"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "89",
+        "63"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "89",
+        "52"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "89",
+        "45"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "94",
+        "42"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "14"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "86",
+        "61"
+      ],
+      [
+        "250",
+        "6.0",
+        "0.028",
+        "-58",
+        "89",
+        "72"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "87",
+        "62"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "90",
+        "62"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "90",
+        "55"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "92",
+        "49"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "33"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "52",
+        "33"
+      ],
+      [
+        "250",
+        "6.0",
+        "0.028",
+        "-78",
+        "51",
+        "33"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "58",
+        "33"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "66",
+        "41"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "76",
+        "49"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "85",
+        "46"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "81",
+        "34"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 40.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table S-11",
+    "table_title": "The I/Li exchange reaction of tert-butyl p-iodobenzoate (4a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "tert-butyl p-iodobenzoate (4a)",
+      "substrate_smiles": "CC(C)(C)OC(=O)c1ccc(I)cc1",
+      "organolithium_reagent": "PhLi",
+      "intermediate": "tert-butyl p-lithiobenzoate",
+      "intermediate_smiles": "CC(C)(C)OC(=O)c1ccc([Li])cc1",
+      "electrophile": "tert-butyl alcohol",
+      "electrophile_smiles": "CC(C)(C)O",
+      "product": "tert-butyl benzoate (3)",
+      "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": "THF / Et2O / cyclohexane",
+      "reactor_info": "two T-shaped micromixers (M1 and M2), two microtube reactors (R1 and R2), and three tube pre-cooling units (P1, P2, P3)"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "96",
+        "85"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "93",
+        "82"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "97",
+        "76"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "97",
+        "66"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "97",
+        "53"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "98",
+        "7"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "96",
+        "94"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "97",
+        "95"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "97",
+        "95"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "97",
+        "94"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "97",
+        "90"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "98",
+        "74"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "93",
+        "91"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "94",
+        "92"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "94",
+        "93"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "95",
+        "92"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "94",
+        "93"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "96",
+        "89"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "93",
+        "92"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "91",
+        "90"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "94",
+        "93"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "92",
+        "90"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "95",
+        "93"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "95",
+        "92"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "81",
+        "77"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "84",
+        "60"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "69",
+        "67"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "65",
+        "72"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "86",
+        "76"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "84",
+        "84"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "4a",
+        "name": "tert-butyl p-iodobenzoate",
+        "smiles": "CC(C)(C)OC(=O)c1ccc(I)cc1",
+        "role": "substrate"
+      },
+      {
+        "label": "3",
+        "name": "tert-butyl benzoate",
+        "smiles": "CC(C)(C)OC(=O)c1ccccc1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [],
+    "notes": "The image contains a reaction scheme showing the flow setup and a data table. The table spans across a page break in the original document, but the rows are continuous. The temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 41.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-12",
+    "table_title": "Table S-12. The I/Li exchange reaction of isopropyl p-iodobenzoate (4b) followed by reaction with 2-propanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "isopropyl p-iodobenzoate (4b)",
+      "substrate_smiles": "CC(C)OC(=O)c1ccc(I)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "isopropyl p-lithiobenzoate",
+      "intermediate_smiles": "CC(C)OC(=O)c1ccc([Li])cc1",
+      "electrophile": "2-propanol",
+      "electrophile_smiles": "CC(O)C",
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "95",
+        "40"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "93",
+        "28"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "97",
+        "11"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "97",
+        "8"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "89",
+        "7"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "2"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "92",
+        "78"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "94",
+        "69"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "96",
+        "51"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "97",
+        "37"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "27"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "8"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "92",
+        "89"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "90",
+        "85"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "91",
+        "83"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "93",
+        "80"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "96",
+        "73"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "27"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "93",
+        "93"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "96",
+        "94"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "97",
+        "94"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "97",
+        "92"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "97",
+        "88"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "98",
+        "55"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "79",
+        "77"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "73",
+        "71"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "69",
+        "66"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "77",
+        "74"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "84",
+        "80"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "95",
+        "89"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the JSON output.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 42.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 3",
+    "table_title": "The I/Li exchange reaction of alkyl p-iodobenzoates 4 followed by reaction with an electrophile.[a]",
+    "reaction_context": {
+      "substrate": "alkyl p-iodobenzoates 4",
+      "substrate_smiles": null,
+      "organolithium_reagent": "PhLi",
+      "intermediate": "alkyl p-lithiobenzoates",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": "THF, Et2O/cyclohexane",
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "Ester",
+      "E",
+      "Product",
+      "Yield [%]"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "4a",
+        "tBuOH",
+        "3a",
+        "85"
+      ],
+      [
+        "4a",
+        "MeI",
+        "CC1=CC=C(C(=O)OC(C)(C)C)C=C1",
+        "74"
+      ],
+      [
+        "4a",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=C(C(=O)OC(C)(C)C)C=C1",
+        "87"
+      ],
+      [
+        "4a",
+        "PhCHO",
+        "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC(C)(C)C)C=C1",
+        "67[b]"
+      ],
+      [
+        "4b",
+        "iPrOH",
+        "3b",
+        "89"
+      ],
+      [
+        "4b",
+        "MeI",
+        "CC1=CC=C(C(=O)OC(C)C)C=C1",
+        "38"
+      ],
+      [
+        "4b",
+        "MeOTf",
+        "CC1=CC=C(C(=O)OC(C)C)C=C1",
+        "82"
+      ],
+      [
+        "4b",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=C(C(=O)OC(C)C)C=C1",
+        "74"
+      ],
+      [
+        "4b",
+        "PhCHO",
+        "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC(C)C)C=C1",
+        "79"
+      ],
+      [
+        "4c",
+        "EtOH",
+        "3c",
+        "84"
+      ],
+      [
+        "4c",
+        "MeI",
+        "CC1=CC=C(C(=O)OCC)C=C1",
+        "25"
+      ],
+      [
+        "4c",
+        "MeOTf",
+        "CC1=CC=C(C(=O)OCC)C=C1",
+        "77"
+      ],
+      [
+        "4c",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=C(C(=O)OCC)C=C1",
+        "67"
+      ],
+      [
+        "4c",
+        "Me3SiOTf",
+        "C[Si](C)(C)C1=CC=C(C(=O)OCC)C=C1",
+        "88"
+      ],
+      [
+        "4c",
+        "PhCHO",
+        "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OCC)C=C1",
+        "81"
+      ],
+      [
+        "4d",
+        "MeOH",
+        "3d",
+        "80"
+      ],
+      [
+        "4d",
+        "MeOTf",
+        "CC1=CC=C(C(=O)OC)C=C1",
+        "81"
+      ],
+      [
+        "4d",
+        "Me3SiOTf",
+        "C[Si](C)(C)C1=CC=C(C(=O)OC)C=C1",
+        "81"
+      ],
+      [
+        "4d",
+        "PhCHO",
+        "OC(C1=CC=CC=C1)C1=CC=C(C(=O)OC)C=C1",
+        "80"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "4a",
+        "name": "tert-butyl 4-iodobenzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=C(I)C=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3a",
+        "name": "tert-butyl benzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4b",
+        "name": "isopropyl 4-iodobenzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=C(I)C=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3b",
+        "name": "isopropyl benzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4c",
+        "name": "ethyl 4-iodobenzoate",
+        "smiles": "CCOC(=O)C1=CC=C(I)C=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3c",
+        "name": "ethyl benzoate",
+        "smiles": "CCOC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "4d",
+        "name": "methyl 4-iodobenzoate",
+        "smiles": "COC(=O)C1=CC=C(I)C=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3d",
+        "name": "methyl benzoate",
+        "smiles": "COC(=O)C1=CC=CC=C1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] Alkyl p-iodobenzoates 4 in THF (0.10 M), PhLi in Et2O/cyclohexane (0.42 M), and an electrophile (3.0 equiv, 0.60 M) were reacted in the flow microreactor system at the following optimized temperatures: 4a: 0 °C, 4b: -48 °C, 4c: -58 °C, 4d: -78 °C. tR was 0.01 s in all cases. The yield of the product was determined by GC analysis unless otherwise stated.",
+      "[b] Isolated yield."
+    ],
+    "notes": "The table contains structures in the 'Ester' and 'Product' columns. I have extracted the labeled structures into the 'structures' array and replaced the cell contents with the label or SMILES where appropriate. For rows where the ester is not explicitly drawn but implied by the grouping, I repeated the ester label.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 93.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 6",
+    "table_title": "Table 6. The I/Li exchange reaction of alkyl m-iodobenzoates (7) followed by reaction with an electrophile.[a]",
+    "reaction_context": {
+      "substrate": "alkyl m-iodobenzoates (7)",
+      "substrate_smiles": "null",
+      "organolithium_reagent": "null",
+      "intermediate": "alkyl m-lithiobenzoates",
+      "intermediate_smiles": "null",
+      "electrophile": "various",
+      "electrophile_smiles": "null",
+      "product": "various",
+      "product_smiles": "null",
+      "reaction_type": "I-Li exchange",
+      "solvent": "null",
+      "reactor_info": "null"
+    },
+    "columns": [
+      "Ester",
+      "E",
+      "Product",
+      "Yield [%]"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "7a",
+        "tBuOH",
+        "3a",
+        "90"
+      ],
+      [
+        "7a",
+        "MeI",
+        "CC1=CC=CC(C(=O)OC(C)(C)C)=C1",
+        "78"
+      ],
+      [
+        "7a",
+        "Me3SiCl",
+        "CC(C)(C)OC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+        "94"
+      ],
+      [
+        "7a",
+        "PhCHO",
+        "CC(C)(C)OC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+        "90"
+      ],
+      [
+        "7b",
+        "iPrOH",
+        "3b",
+        "84"
+      ],
+      [
+        "7b",
+        "MeI",
+        "CC(C)OC(=O)C1=CC=CC(=C1)C",
+        "34"
+      ],
+      [
+        "7b",
+        "MeOTf",
+        "CC(C)OC(=O)C1=CC=CC(=C1)C",
+        "75"
+      ],
+      [
+        "7b",
+        "Me3SiCl",
+        "CC(C)OC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+        "78"
+      ],
+      [
+        "7b",
+        "PhCHO",
+        "CC(C)OC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+        "67"
+      ],
+      [
+        "7c",
+        "EtOH",
+        "3c",
+        "81"
+      ],
+      [
+        "7c",
+        "MeI",
+        "CCOC(=O)C1=CC=CC(=C1)C",
+        "21"
+      ],
+      [
+        "7c",
+        "MeOTf",
+        "CCOC(=O)C1=CC=CC(=C1)C",
+        "78"
+      ],
+      [
+        "7c",
+        "Me3SiOTf",
+        "CCOC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+        "74"
+      ],
+      [
+        "7c",
+        "PhCHO",
+        "CCOC(=O)C1=CC=CC(=C1)C(O)C2=CC=CC=C2",
+        "72[b]"
+      ],
+      [
+        "7d",
+        "MeOH",
+        "3d",
+        "85"
+      ],
+      [
+        "7d",
+        "MeOTf",
+        "COC(=O)C1=CC=CC(=C1)C",
+        "79"
+      ],
+      [
+        "7d",
+        "Me3SiOTf",
+        "COC(=O)C1=CC=CC(=C1)[Si](C)(C)C",
+        "87"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "7a",
+        "name": "tert-butyl 3-iodobenzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=CC(I)=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3a",
+        "name": "tert-butyl benzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "7b",
+        "name": "isopropyl 3-iodobenzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=CC(I)=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3b",
+        "name": "isopropyl benzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "7c",
+        "name": "ethyl 3-iodobenzoate",
+        "smiles": "CCOC(=O)C1=CC=CC(I)=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3c",
+        "name": "ethyl benzoate",
+        "smiles": "CCOC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "7d",
+        "name": "methyl 3-iodobenzoate",
+        "smiles": "COC(=O)C1=CC=CC(I)=C1",
+        "role": "substrate"
+      },
+      {
+        "label": "3d",
+        "name": "methyl benzoate",
+        "smiles": "COC(=O)C1=CC=CC=C1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] Conditions: see text.",
+      "[b] Yield of isolated product."
+    ],
+    "notes": "Substrate structures are shown in the first column spanning multiple rows. Product structures are shown in the third column. SMILES for products without explicit labels are included in the rows array.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Pasted Graphic 94.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-13",
+    "table_title": "Table S-13. The I/Li exchange reaction of ethyl p-iodobenzoate (4c) followed by reaction with ethanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "ethyl p-iodobenzoate (4c)",
+      "substrate_smiles": "CCOC(=O)c1ccc(I)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "ethyl p-lithiobenzoate",
+      "intermediate_smiles": "CCOC(=O)c1ccc([Li])cc1",
+      "electrophile": "ethanol",
+      "electrophile_smiles": "CCO",
+      "product": "ethyl benzoate",
+      "product_smiles": "CCOC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "98",
+        "19"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "8"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "97",
+        "4"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "3"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "2"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "98",
+        "75"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "65"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "28"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "12"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "6"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "3"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "98",
+        "92"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "98",
+        "90"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "79"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "72"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "55"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "7"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "97",
+        "94"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "97",
+        "91"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "96",
+        "85"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "96",
+        "79"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "79"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "22"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "69",
+        "66"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "71",
+        "69"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "74",
+        "70"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "73",
+        "70"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "82",
+        "76"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "96",
+        "76"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table is split across two pages in the original document, but presented as a single continuous table here. The temperature column has merged cells in the original image, which have been expanded to fill every row in the JSON output.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Resdence tire.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-15",
+    "table_title": "Table S-15. The I/Li exchange reaction of tert-butyl m-iodobenzoate (7a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "tert-butyl m-iodobenzoate (7a)",
+      "substrate_smiles": "CC(C)(C)OC(=O)c1cc(I)ccc1",
+      "organolithium_reagent": null,
+      "intermediate": "tert-butyl m-lithiobenzoate",
+      "intermediate_smiles": "CC(C)(C)OC(=O)c1cc([Li])ccc1",
+      "electrophile": "tert-butyl alcohol",
+      "electrophile_smiles": "CC(C)(C)O",
+      "product": "tert-butyl benzoate",
+      "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "95",
+        "90"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "96",
+        "90"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "81"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "76"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "56"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "11"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "85",
+        "83"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "97",
+        "95"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "95"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "95"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "91"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "69"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "95",
+        "95"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "84",
+        "83"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "99"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "94"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "76",
+        "74"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "71",
+        "70"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "92"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "98"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "65",
+        "63"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "64",
+        "61"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "76",
+        "75"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "80",
+        "77"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "84",
+        "82"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "95",
+        "95"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Tabe S-1S. The ILi cuchange reaction of sor-batyi me-iobenzoate （7a） followed by reaction with ter..png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-14",
+    "table_title": "The I/Li exchange reaction of methyl p-iodobenzoate (4d) followed by reaction with methanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "methyl p-iodobenzoate (4d)",
+      "substrate_smiles": "COC(=O)c1ccc(I)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "methyl p-lithiobenzoate",
+      "intermediate_smiles": "COC(=O)c1ccc([Li])cc1",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "methyl benzoate",
+      "product_smiles": "COC(=O)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "89",
+        "10"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "93",
+        "7"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "5"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "95",
+        "4"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "4"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "88",
+        "5"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "97",
+        "56"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "45"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "11"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "8"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "5"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "3"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "95",
+        "78"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "94",
+        "64"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "61"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "46"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "16"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "4"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "91",
+        "81"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "79",
+        "68"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "92",
+        "64"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "90",
+        "53"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "47"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "7"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "84",
+        "80"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "72",
+        "67"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "70",
+        "63"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "71",
+        "64"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "87",
+        "67"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "93",
+        "55"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Tabie S-l4. The ULi exchange reaction of mcthy! priodobcnzose （4d） followed by reaction with.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-17",
+    "table_title": "Table S-17. The I/Li exchange reaction of ethyl m-iodobenzoate (7c) followed by reaction with ethanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "ethyl m-iodobenzoate (7c)",
+      "substrate_smiles": "O=C(OCC)c1cc(I)ccc1",
+      "organolithium_reagent": null,
+      "intermediate": "ethyl m-lithiobenzoate",
+      "intermediate_smiles": "O=C(OCC)c1cc([Li])ccc1",
+      "electrophile": "ethanol",
+      "electrophile_smiles": "CCO",
+      "product": "ethyl benzoate",
+      "product_smiles": "O=C(OCC)c1ccccc1",
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "97",
+        "27"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "98",
+        "11"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "95",
+        "5"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "97",
+        "5"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "97",
+        "4"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "97",
+        "3"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "96",
+        "64"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "99",
+        "65"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "99",
+        "26"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "98",
+        "14"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "98",
+        "7"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "97",
+        "3"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "94",
+        "89"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "96",
+        "77"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "94",
+        "62"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "97",
+        "53"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "99",
+        "39"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "99",
+        "7"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "86",
+        "81"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "90",
+        "81"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "96",
+        "80"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "97",
+        "72"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "99",
+        "57"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "99",
+        "31"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "72",
+        "70"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "69",
+        "68"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "72",
+        "75"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "81",
+        "76"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "84",
+        "78"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "99",
+        "78"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Table S-17. The ILi cxchange reaction of cthy! m-iodobenzoae （7c） followed by reaction with cthanol ir.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-3",
+    "table_title": "Table S-3. The Br/Li exchange reaction of isopropyl p-bromobenzoate (1b) followed by reaction with 2-propanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "isopropyl p-bromobenzoate (1b)",
+      "substrate_smiles": "CC(C)OC(=O)c1ccc(Br)cc1",
+      "organolithium_reagent": null,
+      "intermediate": "isopropyl p-lithiobenzoate",
+      "intermediate_smiles": "CC(C)OC(=O)c1ccc([Li])cc1",
+      "electrophile": "2-propanol",
+      "electrophile_smiles": "CC(O)C",
+      "product": "isopropyl benzoate",
+      "product_smiles": "CC(C)OC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "82",
+        "19"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "87",
+        "11"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "88",
+        "5"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "88",
+        "3"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "93",
+        "3"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "97",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "78",
+        "47"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "84",
+        "31"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "89",
+        "20"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "94",
+        "21"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "92",
+        "12"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "95",
+        "5"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "57",
+        "30"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "59",
+        "25"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "62",
+        "29"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "87",
+        "29"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "84",
+        "25"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "93",
+        "11"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "51",
+        "31"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "73",
+        "31"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "81",
+        "28"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "88",
+        "29"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "94",
+        "22"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "91",
+        "23"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "45",
+        "29"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "54",
+        "28"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "59",
+        "28"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "56",
+        "33"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "64",
+        "30"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "94",
+        "21"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image; they have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Table S-3. The BrLi exchange rcaction of isopropy! p-bromobenzoate （1b）.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-8",
+    "table_title": "The Br/Li exchange reaction of ethyl o-bromobenzoate (8c) followed by reaction with ethanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "ethyl o-bromobenzoate (8c)",
+      "substrate_smiles": "CCOC(=O)c1ccccc1Br",
+      "organolithium_reagent": null,
+      "intermediate": "ethyl o-lithiobenzoate",
+      "intermediate_smiles": "CCOC(=O)c1ccccc1[Li]",
+      "electrophile": "ethanol",
+      "electrophile_smiles": "CCO",
+      "product": null,
+      "product_smiles": "CCOC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "μm",
+      "cm",
+      "s",
+      "°C",
+      "%",
+      "%"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "100",
+        "65"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "37"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "15"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "9"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "4"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "0"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "100",
+        "84"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "63"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "58"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "48"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "38"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "10"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "80",
+        "64"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "100",
+        "90"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "86"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "80"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "77"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "43"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "64",
+        "56"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "100",
+        "88"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "100",
+        "82"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "100",
+        "77"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "78"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "62"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "51",
+        "33"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "60",
+        "43"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "67",
+        "52"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "85",
+        "56"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "89",
+        "64"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "96",
+        "58"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "Table S-8. The BtLi exchange rcaction of ethyl o-bromobenzoate （8c） tollowed by rea.png"
+  },
+  {
+    "image_type": "table_with_structures",
+    "table_id": "Table 8",
+    "table_title": "Table 8. The Br/Li exchange reaction of alkyl o-bromobenzoates 8 followed by reaction with an electrophile.[a]",
+    "reaction_context": {
+      "substrate": "alkyl o-bromobenzoates 8",
+      "substrate_smiles": null,
+      "organolithium_reagent": "sBuLi",
+      "intermediate": "alkyl o-lithiobenzoates",
+      "intermediate_smiles": null,
+      "electrophile": "various",
+      "electrophile_smiles": null,
+      "product": "various",
+      "product_smiles": null,
+      "reaction_type": "Br-Li exchange",
+      "solvent": "THF/hexane/cyclohexane",
+      "reactor_info": "flow microreactor system"
+    },
+    "columns": [
+      "Ester",
+      "E",
+      "Product",
+      "Yield [%]"
+    ],
+    "column_units": [
+      null,
+      null,
+      null,
+      "%"
+    ],
+    "rows": [
+      [
+        "8a",
+        "tBuOH",
+        "3a",
+        "93"
+      ],
+      [
+        "8a",
+        "MeI",
+        "CC1=CC=CC=C1C(=O)OC(C)(C)C",
+        "88"
+      ],
+      [
+        "8a",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=CC=C1C(=O)OC(C)(C)C",
+        "96"
+      ],
+      [
+        "8a",
+        "PhCHO",
+        "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+        "82"
+      ],
+      [
+        "8b",
+        "iPrOH",
+        "3b",
+        "87"
+      ],
+      [
+        "8b",
+        "MeI",
+        "CC1=CC=CC=C1C(=O)OC(C)C",
+        "62"
+      ],
+      [
+        "8b",
+        "MeOTf",
+        "CC1=CC=CC=C1C(=O)OC(C)C",
+        "82"
+      ],
+      [
+        "8b",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=CC=C1C(=O)OC(C)C",
+        "93"
+      ],
+      [
+        "8b",
+        "PhCHO",
+        "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+        "66"
+      ],
+      [
+        "8c",
+        "EtOH",
+        "3c",
+        "90"
+      ],
+      [
+        "8c",
+        "MeI",
+        "CC1=CC=CC=C1C(=O)OCC",
+        "12"
+      ],
+      [
+        "8c",
+        "MeOTf",
+        "CC1=CC=CC=C1C(=O)OCC",
+        "62"
+      ],
+      [
+        "8c",
+        "Me3SiCl",
+        "C[Si](C)(C)C1=CC=CC=C1C(=O)OCC",
+        "61"
+      ],
+      [
+        "8c",
+        "Me3SiOTf",
+        "C[Si](C)(C)C1=CC=CC=C1C(=O)OCC",
+        "79"
+      ],
+      [
+        "8c",
+        "PhCHO",
+        "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+        "70"
+      ],
+      [
+        "8d",
+        "MeOH",
+        "3d",
+        "74"
+      ],
+      [
+        "8d",
+        "MeOTf",
+        "CC1=CC=CC=C1C(=O)OC",
+        "65"
+      ],
+      [
+        "8d",
+        "Me3SiOTf",
+        "C[Si](C)(C)C1=CC=CC=C1C(=O)OC",
+        "82"
+      ],
+      [
+        "8d",
+        "PhCHO",
+        "O=C1OC(C2=CC=CC=C2)C3=CC=CC=C13",
+        "85"
+      ]
+    ],
+    "structures": [
+      {
+        "label": "8a",
+        "name": "tert-butyl 2-bromobenzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "3a",
+        "name": "tert-butyl benzoate",
+        "smiles": "CC(C)(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "8b",
+        "name": "isopropyl 2-bromobenzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=CC=C1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "3b",
+        "name": "isopropyl benzoate",
+        "smiles": "CC(C)OC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "8c",
+        "name": "ethyl 2-bromobenzoate",
+        "smiles": "CCOC(=O)C1=CC=CC=C1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "3c",
+        "name": "ethyl benzoate",
+        "smiles": "CCOC(=O)C1=CC=CC=C1",
+        "role": "product"
+      },
+      {
+        "label": "8d",
+        "name": "methyl 2-bromobenzoate",
+        "smiles": "COC(=O)C1=CC=CC=C1Br",
+        "role": "substrate"
+      },
+      {
+        "label": "3d",
+        "name": "methyl benzoate",
+        "smiles": "COC(=O)C1=CC=CC=C1",
+        "role": "product"
+      }
+    ],
+    "footnotes": [
+      "[a] Alkyl o-bromobenzoates in THF (0.10 M), sBuLi in hexane/cyclohexane (0.42 M), and an electrophile (3.0 equiv, 0.60 M) were reacted in the flow microreactor system under the following optimized conditions: 8a: 0 °C (tR = 0.01 s), 8b: -28 °C (tR = 0.01 s), 8c: -48 °C (tR = 0.06 s), 8d: -48 °C (tR = 0.02 s). The yield of the product was determined by GC analysis."
+    ],
+    "notes": "The table contains molecular structures in the 'Ester' and 'Product' columns. I have extracted the structures into the 'structures' array and replaced the cell contents with the compound labels or SMILES strings where appropriate. For rows where multiple electrophiles are listed (e.g., MeI, MeOTf), I have split them into separate rows with the corresponding product and yield.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "nalo.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-6",
+    "table_title": "The Br/Li exchange reaction of tert-butyl o-bromobenzoate (8a) followed by reaction with tert-butyl alcohol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "tert-butyl o-bromobenzoate (8a)",
+      "substrate_smiles": "CC(C)(C)OC(=O)c1ccccc1Br",
+      "organolithium_reagent": null,
+      "intermediate": "tert-butyl o-lithiobenzoate",
+      "intermediate_smiles": "CC(C)(C)OC(=O)c1ccccc1[Li]",
+      "electrophile": "tert-butyl alcohol",
+      "electrophile_smiles": "CC(C)(C)O",
+      "product": "tert-butyl benzoate",
+      "product_smiles": "CC(C)(C)OC(=O)c1ccccc1",
+      "reaction_type": "Br-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "20",
+        "93",
+        "83"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "20",
+        "94",
+        "81"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "20",
+        "100",
+        "74"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "20",
+        "96",
+        "71"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "20",
+        "96",
+        "61"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "20",
+        "90",
+        "30"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "97",
+        "93"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "100",
+        "93"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "90"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "97",
+        "89"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "97",
+        "84"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "43"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "96",
+        "75"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "100",
+        "99"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "99"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "88"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "73",
+        "65"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "94",
+        "94"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "100",
+        "98"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "100",
+        "99"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "96"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "92"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "69",
+        "54"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "80",
+        "77"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "94",
+        "92"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "100",
+        "96"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "100",
+        "97"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "94"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "59",
+        "48"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "65",
+        "48"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "67",
+        "58"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "70",
+        "61"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "87",
+        "76"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "100",
+        "91"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "tert-buryl onbromobenzoate （8a）.png"
+  },
+  {
+    "image_type": "table",
+    "table_id": "Table S-16",
+    "table_title": "The I/Li exchange reaction of isopropyl m-iodobenzoate (7b) followed by reaction with 2-propanol in flow microreactor systems",
+    "reaction_context": {
+      "substrate": "isopropyl m-iodobenzoate (7b)",
+      "substrate_smiles": "CC(C)OC(=O)c1cc(I)ccc1",
+      "organolithium_reagent": null,
+      "intermediate": "isopropyl m-lithiobenzoate",
+      "intermediate_smiles": "CC(C)OC(=O)c1cc([Li])ccc1",
+      "electrophile": "2-propanol",
+      "electrophile_smiles": "CC(O)C",
+      "product": null,
+      "product_smiles": null,
+      "reaction_type": "I-Li exchange",
+      "solvent": null,
+      "reactor_info": "flow microreactor systems"
+    },
+    "columns": [
+      "Inner diameter of R1",
+      "Length of R1",
+      "Residence time in R1",
+      "Temperature",
+      "Conv.",
+      "Yield"
+    ],
+    "column_units": [
+      "[μm]",
+      "[cm]",
+      "[s]",
+      "[°C]",
+      "[%]",
+      "[%]"
+    ],
+    "rows": [
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "0",
+        "95",
+        "39"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "0",
+        "97",
+        "22"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "0",
+        "100",
+        "12"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "0",
+        "100",
+        "9"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "0",
+        "100",
+        "7"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "0",
+        "100",
+        "3"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-28",
+        "93",
+        "77"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-28",
+        "97",
+        "69"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-28",
+        "100",
+        "50"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-28",
+        "100",
+        "34"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-28",
+        "100",
+        "24"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-28",
+        "100",
+        "9"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-48",
+        "87",
+        "84"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-48",
+        "90",
+        "81"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-48",
+        "98",
+        "82"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-48",
+        "98",
+        "78"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-48",
+        "100",
+        "64"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-48",
+        "100",
+        "23"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-58",
+        "79",
+        "75"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-58",
+        "87",
+        "84"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-58",
+        "95",
+        "89"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-58",
+        "95",
+        "85"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-58",
+        "96",
+        "78"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-58",
+        "100",
+        "43"
+      ],
+      [
+        "250",
+        "3.5",
+        "0.014",
+        "-78",
+        "55",
+        "54"
+      ],
+      [
+        "500",
+        "3.5",
+        "0.055",
+        "-78",
+        "58",
+        "57"
+      ],
+      [
+        "1000",
+        "3.5",
+        "0.22",
+        "-78",
+        "69",
+        "68"
+      ],
+      [
+        "1000",
+        "6.0",
+        "0.38",
+        "-78",
+        "71",
+        "69"
+      ],
+      [
+        "1000",
+        "12.5",
+        "0.76",
+        "-78",
+        "84",
+        "84"
+      ],
+      [
+        "1000",
+        "100",
+        "6.3",
+        "-78",
+        "94",
+        "85"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "The table spans across a page break in the original document. The temperature values are merged across multiple rows in the original image; they have been repeated for each corresponding row in the extracted data.",
+    "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+    "_source_image": "with 2-.png"
+  }
+]

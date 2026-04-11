@@ -1,0 +1,242 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-2",
+  "table_title": "Table S-2. Effects of the temperature (T) and the residence Time in R1 (tR1) on the yields of 1-(p-tolyl)propan-1-one for the lithiation of p-propanoylbenzyl chloride with LiNp followed by trapping with methanol using the flow microreactor",
+  "reaction_context": {
+    "substrate": "p-propanoylbenzyl chloride",
+    "substrate_smiles": "CCC(=O)c1ccc(CCl)cc1",
+    "organolithium_reagent": "LiNp",
+    "intermediate": "p-propanoylbenzyllithium",
+    "intermediate_smiles": "CCC(=O)c1ccc(C[Li])cc1",
+    "electrophile": "methanol",
+    "electrophile_smiles": "CO",
+    "product": "1-(p-tolyl)propan-1-one",
+    "product_smiles": "CCC(=O)c1ccc(C)cc1",
+    "reaction_type": "Cl-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "temperature",
+    "conversion",
+    "yield"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "1.0",
+      "0.00131",
+      "0",
+      "100",
+      "66"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.0183",
+      "0",
+      "100",
+      "63"
+    ],
+    [
+      "1000",
+      "6",
+      "0.126",
+      "0",
+      "100",
+      "63"
+    ],
+    [
+      "1000",
+      "100",
+      "2.09",
+      "0",
+      "100",
+      "53"
+    ],
+    [
+      "1000",
+      "1000",
+      "20.9",
+      "0",
+      "100",
+      "27"
+    ],
+    [
+      "250",
+      "1.0",
+      "0.00131",
+      "-20",
+      "100",
+      "71"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.0183",
+      "-20",
+      "100",
+      "66"
+    ],
+    [
+      "1000",
+      "6",
+      "0.126",
+      "-20",
+      "100",
+      "60"
+    ],
+    [
+      "1000",
+      "100",
+      "2.09",
+      "-20",
+      "100",
+      "62"
+    ],
+    [
+      "1000",
+      "1000",
+      "20.9",
+      "-20",
+      "100",
+      "35"
+    ],
+    [
+      "250",
+      "1.0",
+      "0.00131",
+      "-40",
+      "100",
+      "75"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.0183",
+      "-40",
+      "100",
+      "69"
+    ],
+    [
+      "1000",
+      "6",
+      "0.126",
+      "-40",
+      "100",
+      "62"
+    ],
+    [
+      "1000",
+      "100",
+      "2.09",
+      "-40",
+      "100",
+      "64"
+    ],
+    [
+      "1000",
+      "1000",
+      "20.9",
+      "-40",
+      "100",
+      "41"
+    ],
+    [
+      "250",
+      "1.0",
+      "0.00131",
+      "-60",
+      "100",
+      "78"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.0183",
+      "-60",
+      "100",
+      "67"
+    ],
+    [
+      "1000",
+      "6",
+      "0.126",
+      "-60",
+      "100",
+      "63"
+    ],
+    [
+      "1000",
+      "100",
+      "2.09",
+      "-60",
+      "100",
+      "64"
+    ],
+    [
+      "1000",
+      "1000",
+      "20.9",
+      "-60",
+      "100",
+      "41"
+    ],
+    [
+      "250",
+      "1.0",
+      "0.00131",
+      "-78",
+      "100",
+      "80"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.0183",
+      "-78",
+      "100",
+      "71"
+    ],
+    [
+      "1000",
+      "6",
+      "0.126",
+      "-78",
+      "100",
+      "67"
+    ],
+    [
+      "1000",
+      "100",
+      "2.09",
+      "-78",
+      "100",
+      "66"
+    ],
+    [
+      "1000",
+      "1000",
+      "20.9",
+      "-78",
+      "100",
+      "43"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2015_Benzyllithiums",
+  "_source_image": "able S-2. Effects of the temperature （7） and the residence Time in R1 （C） on the yields of 1-fp.png"
+}

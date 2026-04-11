@@ -1,0 +1,247 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-1",
+  "table_title": "Table S-1. Deprotonation reaction of 1-tert-butylsulfonyl-2-phenylaziridine (1) with n-BuLi (1.2 eq) followed by reaction with iodomethane in microflow systems.",
+  "reaction_context": {
+    "substrate": "1-tert-butylsulfonyl-2-phenylaziridine (1)",
+    "substrate_smiles": "CC(C)(C)S(=O)(=O)N1CC1c2ccccc2",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "lithiated 1-tert-butylsulfonyl-2-phenylaziridine",
+    "intermediate_smiles": "CC(C)(C)S(=O)(=O)N1C[C@]1([Li])c2ccccc2",
+    "electrophile": "iodomethane",
+    "electrophile_smiles": "CI",
+    "product": "1-tert-butylsulfonyl-2-methyl-2-phenylaziridine (2)",
+    "product_smiles": "CC(C)(C)S(=O)(=O)N1CC1(C)c2ccccc2",
+    "reaction_type": "deprotonation",
+    "solvent": "THF / n-hexane",
+    "reactor_info": "M1 (φ = 250 μm), M2 (φ = 500 μm), R1 and R2 (φ = 1000 μm)"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time",
+    "Bath temperature",
+    "Conversion",
+    "Yield 2"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "1000",
+      "6.0",
+      "0.377",
+      "-18",
+      "85",
+      "71"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.785",
+      "-18",
+      "93",
+      "79"
+    ],
+    [
+      "1000",
+      "25",
+      "1.57",
+      "-18",
+      "96",
+      "74"
+    ],
+    [
+      "1000",
+      "50",
+      "3.14",
+      "-18",
+      "97",
+      "52"
+    ],
+    [
+      "1000",
+      "100",
+      "6.28",
+      "-18",
+      "93",
+      "46"
+    ],
+    [
+      "1000",
+      "200",
+      "12.6",
+      "-18",
+      "98",
+      "32"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.377",
+      "-28",
+      "71",
+      "60"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.785",
+      "-28",
+      "84",
+      "76"
+    ],
+    [
+      "1000",
+      "25",
+      "1.57",
+      "-28",
+      "93",
+      "82"
+    ],
+    [
+      "1000",
+      "50",
+      "3.14",
+      "-28",
+      "95",
+      "83"
+    ],
+    [
+      "1000",
+      "100",
+      "6.28",
+      "-28",
+      "96",
+      "68"
+    ],
+    [
+      "1000",
+      "200",
+      "12.6",
+      "-28",
+      "96",
+      "58"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.377",
+      "-38",
+      "57",
+      "47"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.785",
+      "-38",
+      "73",
+      "64"
+    ],
+    [
+      "1000",
+      "25",
+      "1.57",
+      "-38",
+      "86",
+      "78"
+    ],
+    [
+      "1000",
+      "50",
+      "3.14",
+      "-38",
+      "92",
+      "84"
+    ],
+    [
+      "1000",
+      "100",
+      "6.28",
+      "-38",
+      "94",
+      "83"
+    ],
+    [
+      "1000",
+      "200",
+      "12.6",
+      "-38",
+      "95",
+      "80"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.377",
+      "-48",
+      "36",
+      "31"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.785",
+      "-48",
+      "54",
+      "44"
+    ],
+    [
+      "1000",
+      "25",
+      "1.57",
+      "-48",
+      "71",
+      "64"
+    ],
+    [
+      "1000",
+      "50",
+      "3.14",
+      "-48",
+      "83",
+      "77"
+    ],
+    [
+      "1000",
+      "100",
+      "6.28",
+      "-48",
+      "89",
+      "82"
+    ],
+    [
+      "1000",
+      "200",
+      "12.6",
+      "-48",
+      "93",
+      "83"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "1",
+      "name": "1-tert-butylsulfonyl-2-phenylaziridine",
+      "smiles": "CC(C)(C)S(=O)(=O)N1CC1c2ccccc2",
+      "role": "substrate"
+    },
+    {
+      "label": "2",
+      "name": "1-tert-butylsulfonyl-2-methyl-2-phenylaziridine",
+      "smiles": "CC(C)(C)S(=O)(=O)N1CC1(C)c2ccccc2",
+      "role": "product"
+    }
+  ],
+  "footnotes": [],
+  "notes": "The text paragraph mentions chlorotrimethylsilane as the electrophile, but the scheme, table title, and product structure clearly indicate iodomethane was used. Data extracted reflects iodomethane. Bath temperature values were filled down for grouped rows.",
+  "_source_paper": "Nagaki_2009_Aziridinyl",
+  "_source_image": "Pasted Graphic 25.png"
+}

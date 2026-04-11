@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-3",
+  "table_title": "Table S-3. The Br/Li exchange reaction of isopropyl p-bromobenzoate (1b) followed by reaction with 2-propanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "isopropyl p-bromobenzoate (1b)",
+    "substrate_smiles": "CC(C)OC(=O)c1ccc(Br)cc1",
+    "organolithium_reagent": null,
+    "intermediate": "isopropyl p-lithiobenzoate",
+    "intermediate_smiles": "CC(C)OC(=O)c1ccc([Li])cc1",
+    "electrophile": "2-propanol",
+    "electrophile_smiles": "CC(O)C",
+    "product": "isopropyl benzoate",
+    "product_smiles": "CC(C)OC(=O)c1ccccc1",
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "82",
+      "19"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "87",
+      "11"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "88",
+      "5"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "88",
+      "3"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "93",
+      "3"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "97",
+      "0"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "78",
+      "47"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "84",
+      "31"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "89",
+      "20"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "94",
+      "21"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "92",
+      "12"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "95",
+      "5"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "57",
+      "30"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "59",
+      "25"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "62",
+      "29"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "87",
+      "29"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "84",
+      "25"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "93",
+      "11"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "51",
+      "31"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "73",
+      "31"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "81",
+      "28"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "88",
+      "29"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "94",
+      "22"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "91",
+      "23"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "45",
+      "29"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "54",
+      "28"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "59",
+      "28"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "56",
+      "33"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "64",
+      "30"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "94",
+      "21"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image; they have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Table S-3. The BrLi exchange rcaction of isopropy! p-bromobenzoate （1b）.png"
+}

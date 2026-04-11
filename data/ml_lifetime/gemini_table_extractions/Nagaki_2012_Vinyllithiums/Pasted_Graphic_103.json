@@ -1,0 +1,377 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 3",
+  "table_title": "Table 3. Br/Li exchange reaction of 1 followed by reaction with electrophiles (1.5 eq) in a flow microreactor system",
+  "reaction_context": {
+    "substrate": "Vinyl bromide",
+    "substrate_smiles": null,
+    "organolithium_reagent": null,
+    "intermediate": "Vinyllithium",
+    "intermediate_smiles": null,
+    "electrophile": "Electrophile",
+    "electrophile_smiles": null,
+    "product": "Product",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Vinyl bromide",
+    "Temperature",
+    "Electrophile",
+    "Product",
+    "Yield"
+  ],
+  "column_units": [
+    null,
+    "(°C)",
+    null,
+    null,
+    "(%)a"
+  ],
+  "rows": [
+    [
+      "Br\\C=C\\c1ccccc1",
+      "0",
+      "O=Cc1ccccc1",
+      "OC(c1ccccc1)\\C=C\\c2ccccc2",
+      "95"
+    ],
+    [
+      "Br\\C=C\\c1ccccc1",
+      "0",
+      "CC(=O)c1ccccc1",
+      "CC(O)(c1ccccc1)\\C=C\\c2ccccc2",
+      "90"
+    ],
+    [
+      "Br\\C=C\\c1ccccc1",
+      "0",
+      "C[Si](C)(C)Cl",
+      "C[Si](C)(C)\\C=C\\c1ccccc1",
+      "90"
+    ],
+    [
+      "Br\\C=C\\c1ccccc1",
+      "0",
+      "CCCC[Sn](CCCC)(CCCC)Cl",
+      "CCCC[Sn](CCCC)(CCCC)\\C=C\\c1ccccc1",
+      "91"
+    ],
+    [
+      "COc1ccc(\\C=C\\Br)cc1",
+      "0",
+      "O=Cc1ccccc1",
+      "COc1ccc(\\C=C\\C(O)c2ccccc2)cc1",
+      "89"
+    ],
+    [
+      "COc1ccc(\\C=C\\Br)cc1",
+      "0",
+      "CC(=O)c1ccccc1",
+      "COc1ccc(\\C=C\\C(C)(O)c2ccccc2)cc1",
+      "98"
+    ],
+    [
+      "Clc1ccc(\\C=C\\Br)cc1",
+      "0",
+      "O=Cc1ccccc1",
+      "Clc1ccc(\\C=C\\C(O)c2ccccc2)cc1",
+      "77"
+    ],
+    [
+      "Clc1ccc(\\C=C\\Br)cc1",
+      "0",
+      "CC(=O)c1ccccc1",
+      "Clc1ccc(\\C=C\\C(C)(O)c2ccccc2)cc1",
+      "56b"
+    ],
+    [
+      "C=C(Br)c1ccccc1",
+      "0",
+      "O=Cc1ccccc1",
+      "C=C(c1ccccc1)C(O)c2ccccc2",
+      "93"
+    ],
+    [
+      "C=C(Br)c1ccccc1",
+      "0",
+      "CC(=O)c1ccccc1",
+      "C=C(c1ccccc1)C(C)(O)c2ccccc2",
+      "87"
+    ],
+    [
+      "C\\C=C\\Br",
+      "0",
+      "O=Cc1ccccc1",
+      "C\\C=C\\C(O)c1ccccc1",
+      "72"
+    ],
+    [
+      "C\\C=C\\Br",
+      "0",
+      "CC(=O)c1ccccc1",
+      "C\\C=C\\C(C)(O)c1ccccc1",
+      "65"
+    ],
+    [
+      "C\\C=C/Br",
+      "0",
+      "O=Cc1ccccc1",
+      "C\\C=C/C(O)c1ccccc1",
+      "43"
+    ],
+    [
+      "Br\\C=C1/CCCCC1",
+      "-28",
+      "O=Cc1ccccc1",
+      "OC(c1ccccc1)\\C=C2/CCCCC2",
+      "63"
+    ],
+    [
+      "COc1ccc(C(=C(Br)c2ccc(C#N)cc2)c3ccccc3)cc1",
+      "-28",
+      "O=Cc1ccc(C(F)(F)F)cc1",
+      "COc1ccc(C(=C(C(O)c2ccc(C(F)(F)F)cc2)c3ccc(C#N)cc3)c4ccccc4)cc1",
+      "49b"
+    ]
+  ],
+  "structures": [
+    {
+      "label": null,
+      "name": null,
+      "smiles": "Br\\C=C\\c1ccccc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "OC(c1ccccc1)\\C=C\\c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(O)(c1ccccc1)\\C=C\\c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C[Si](C)(C)Cl",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C[Si](C)(C)\\C=C\\c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CCCC[Sn](CCCC)(CCCC)Cl",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CCCC[Sn](CCCC)(CCCC)\\C=C\\c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COc1ccc(\\C=C\\Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COc1ccc(\\C=C\\C(O)c2ccccc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COc1ccc(\\C=C\\C(C)(O)c2ccccc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "Clc1ccc(\\C=C\\Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "Clc1ccc(\\C=C\\C(O)c2ccccc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "Clc1ccc(\\C=C\\C(C)(O)c2ccccc2)cc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C=C(Br)c1ccccc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C=C(c1ccccc1)C(O)c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C=C(c1ccccc1)C(C)(O)c2ccccc2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C\\C=C\\Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C\\C=C\\C(O)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "CC(=O)c1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C\\C=C\\C(C)(O)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C\\C=C/Br",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "C\\C=C/C(O)c1ccccc1",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "Br\\C=C1/CCCCC1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccccc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "OC(c1ccccc1)\\C=C2/CCCCC2",
+      "role": "product"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COc1ccc(C(=C(Br)c2ccc(C#N)cc2)c3ccccc3)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "O=Cc1ccc(C(F)(F)F)cc1",
+      "role": "electrophile"
+    },
+    {
+      "label": null,
+      "name": null,
+      "smiles": "COc1ccc(C(=C(C(O)c2ccc(C(F)(F)F)cc2)c3ccc(C#N)cc3)c4ccccc4)cc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "aThe yield of the product was determined by GC.",
+    "bIsolated yields."
+  ],
+  "notes": "The table shows the reaction of various vinyl bromides with electrophiles after Br/Li exchange. The substrate column contains drawn structures, which have been converted to SMILES in the rows. The electrophile column contains drawn structures or text formulas, which have been converted to SMILES in the rows. The product column contains drawn structures, which have been converted to SMILES in the rows. The temperature is repeated for rows where the substrate is the same but the electrophile is different.",
+  "_source_paper": "Nagaki_2012_Vinyllithiums",
+  "_source_image": "Pasted Graphic 103.png"
+}

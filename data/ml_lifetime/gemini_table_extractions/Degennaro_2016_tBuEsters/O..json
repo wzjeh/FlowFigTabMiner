@@ -1,0 +1,284 @@
+{
+  "image_type": "table_with_structures",
+  "table_id": "Table 1",
+  "table_title": "Table 1. Conditions for aryl and heteroaryl bromides.",
+  "reaction_context": {
+    "substrate": "aryl and heteroaryl bromides (Ar-Br)",
+    "substrate_smiles": null,
+    "organolithium_reagent": "HexLi",
+    "intermediate": "aryllithium / heteroaryllithium",
+    "intermediate_smiles": null,
+    "electrophile": "Di-tert-butyl dicarbonate ((Boc)2O)",
+    "electrophile_smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C",
+    "product": "tert-butyl aryl/heteroaryl esters (Ar-Boc)",
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": "2-MeTHF, hexane",
+    "reactor_info": "Microreactor setup: M1/M2 = 250 µm T-mixers; R1 = 6 cm or 13 cm; R2 = 200 cm or 145 cm; Pre-cooling units P1=100 cm, P2=50 cm, P3=100 cm"
+  },
+  "columns": [
+    "R-Br 5 (Structure)",
+    "R-Br 5 (Label)",
+    "T",
+    "tR1",
+    "tR2",
+    "Yield",
+    "Ester 6 (Structure)",
+    "Ester 6 (Label)",
+    "Conditions"
+  ],
+  "column_units": [
+    null,
+    null,
+    "°C",
+    "s",
+    "s",
+    "%",
+    null,
+    null,
+    null
+  ],
+  "rows": [
+    [
+      "Clc1ccc(Br)cc1",
+      "5a",
+      "0",
+      "0.7",
+      "17.1",
+      "90",
+      "CC(C)(C)OC(=O)c1ccc(Cl)cc1",
+      "6a",
+      "A"
+    ],
+    [
+      "COc1ccc(Br)cc1",
+      "5b",
+      "0",
+      "0.7",
+      "17.1",
+      "65",
+      "CC(C)(C)OC(=O)c1ccc(OC)cc1",
+      "6b",
+      "A"
+    ],
+    [
+      "Fc1ccc(Br)cc1",
+      "5c",
+      "0",
+      "0.7",
+      "17.1",
+      "75",
+      "CC(C)(C)OC(=O)c1ccc(F)cc1",
+      "6c",
+      "Aᵇ"
+    ],
+    [
+      "FC(F)(F)c1ccc(Br)cc1",
+      "5d",
+      "0",
+      "0.7",
+      "17.1",
+      "65",
+      "CC(C)(C)OC(=O)c1ccc(C(F)(F)F)cc1",
+      "6d",
+      "A"
+    ],
+    [
+      "Clc1cccc(Br)c1",
+      "5e",
+      "0",
+      "0.7",
+      "17.1",
+      "50",
+      "CC(C)(C)OC(=O)c1cccc(Cl)c1",
+      "6e",
+      "A"
+    ],
+    [
+      "Cc1cc(Br)cc(C)c1",
+      "5f",
+      "0",
+      "2.04",
+      "20.9",
+      "80",
+      "Cc1cc(C(=O)OC(C)(C)C)cc(C)c1",
+      "6f",
+      "B (A)ᶜ"
+    ],
+    [
+      "Cc1cc(C(F)(F)F)ccc1Br",
+      "5g",
+      "0",
+      "2.04",
+      "20.9",
+      "60",
+      "Cc1cc(C(F)(F)F)ccc1C(=O)OC(C)(C)C",
+      "6g",
+      "B (A)ᵈ"
+    ],
+    [
+      "Clc1ccc(Br)s1",
+      "5h",
+      "-40",
+      "0.41",
+      "6.7",
+      "90",
+      "CC(C)(C)OC(=O)c1ccc(Cl)s1",
+      "6h",
+      "C"
+    ],
+    [
+      "Cn1ccc2cc(Br)ccc21",
+      "5i",
+      "0",
+      "0.41",
+      "6.7",
+      "65",
+      "Cn1ccc2cc(C(=O)OC(C)(C)C)ccc21",
+      "6i",
+      "C"
+    ],
+    [
+      "Brc1cccnc1",
+      "5j",
+      "0",
+      "0.7",
+      "17.38",
+      "75",
+      "CC(C)(C)OC(=O)c1cccnc1",
+      "6j",
+      "A"
+    ]
+  ],
+  "structures": [
+    {
+      "label": "5a",
+      "name": null,
+      "smiles": "Clc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6a",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1ccc(Cl)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5b",
+      "name": null,
+      "smiles": "COc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6b",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1ccc(OC)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5c",
+      "name": null,
+      "smiles": "Fc1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6c",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1ccc(F)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5d",
+      "name": null,
+      "smiles": "FC(F)(F)c1ccc(Br)cc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6d",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1ccc(C(F)(F)F)cc1",
+      "role": "product"
+    },
+    {
+      "label": "5e",
+      "name": null,
+      "smiles": "Clc1cccc(Br)c1",
+      "role": "substrate"
+    },
+    {
+      "label": "6e",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1cccc(Cl)c1",
+      "role": "product"
+    },
+    {
+      "label": "5f",
+      "name": null,
+      "smiles": "Cc1cc(Br)cc(C)c1",
+      "role": "substrate"
+    },
+    {
+      "label": "6f",
+      "name": null,
+      "smiles": "Cc1cc(C(=O)OC(C)(C)C)cc(C)c1",
+      "role": "product"
+    },
+    {
+      "label": "5g",
+      "name": null,
+      "smiles": "Cc1cc(C(F)(F)F)ccc1Br",
+      "role": "substrate"
+    },
+    {
+      "label": "6g",
+      "name": null,
+      "smiles": "Cc1cc(C(F)(F)F)ccc1C(=O)OC(C)(C)C",
+      "role": "product"
+    },
+    {
+      "label": "5h",
+      "name": null,
+      "smiles": "Clc1ccc(Br)s1",
+      "role": "substrate"
+    },
+    {
+      "label": "6h",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1ccc(Cl)s1",
+      "role": "product"
+    },
+    {
+      "label": "5i",
+      "name": null,
+      "smiles": "Cn1ccc2cc(Br)ccc21",
+      "role": "substrate"
+    },
+    {
+      "label": "6i",
+      "name": null,
+      "smiles": "Cn1ccc2cc(C(=O)OC(C)(C)C)ccc21",
+      "role": "product"
+    },
+    {
+      "label": "5j",
+      "name": null,
+      "smiles": "Brc1cccnc1",
+      "role": "substrate"
+    },
+    {
+      "label": "6j",
+      "name": null,
+      "smiles": "CC(C)(C)OC(=O)c1cccnc1",
+      "role": "product"
+    }
+  ],
+  "footnotes": [
+    "a Condition A. Flow rate: ArBr 2 mL/min; HexLi 2mL/min; Boc2O 1.5 mL/min. Condition B. Flow rate: ArBr 2 mL/min; HexLi 2mL/min; Boc2O 1.5 mL/min (R1 = 13 cm, R2 = 145 cm). Condition C. Flow rate: ArBr 2 mL/min (0.337 M); HexLi 2mL/min (0.337 M); Boc2O 1.5 mL/min (0.27 M) (R1 = 13 cm, R2 = 145 cm).",
+    "b To the solution of arylbromide (0.12 M) in 2-MeTHF (flow rate: 2 mL/min) was added 2 equivalent of TMEDA.",
+    "c By using condition A the yield was 45%.",
+    "d By using condition A the yield was 50%."
+  ],
+  "notes": "Some image text labels for structures 5d and 5e are misaligned ('5c' and '5d' appear next to the molecules). The labels in column 2 have been correctly assigned based on logical order.",
+  "_source_paper": "Degennaro_2016_tBuEsters",
+  "_source_image": "O..png"
+}

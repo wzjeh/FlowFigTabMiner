@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-14",
+  "table_title": "The I/Li exchange reaction of methyl p-iodobenzoate (4d) followed by reaction with methanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "methyl p-iodobenzoate (4d)",
+    "substrate_smiles": "COC(=O)c1ccc(I)cc1",
+    "organolithium_reagent": null,
+    "intermediate": "methyl p-lithiobenzoate",
+    "intermediate_smiles": "COC(=O)c1ccc([Li])cc1",
+    "electrophile": "methanol",
+    "electrophile_smiles": "CO",
+    "product": "methyl benzoate",
+    "product_smiles": "COC(=O)c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "89",
+      "10"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "93",
+      "7"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "5"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "95",
+      "4"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "100",
+      "4"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "88",
+      "5"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "97",
+      "56"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "100",
+      "45"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "11"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "8"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "100",
+      "5"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "3"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "95",
+      "78"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "94",
+      "64"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "61"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "46"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "100",
+      "16"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "4"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "91",
+      "81"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "79",
+      "68"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "92",
+      "64"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "90",
+      "53"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "100",
+      "47"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "84",
+      "80"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "72",
+      "67"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "70",
+      "63"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "71",
+      "64"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "87",
+      "67"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "93",
+      "55"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "Tabie S-l4. The ULi exchange reaction of mcthy! priodobcnzose （4d） followed by reaction with.png"
+}

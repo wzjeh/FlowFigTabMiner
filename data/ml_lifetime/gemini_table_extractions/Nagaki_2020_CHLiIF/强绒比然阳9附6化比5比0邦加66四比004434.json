@@ -1,0 +1,239 @@
+{
+  "image_type": "table",
+  "table_id": "Table S4",
+  "table_title": "Lithiation of fluoroiodomethane (1) with LDA followed by trapping with Bu3SnCl using a flow microreactor system.",
+  "reaction_context": {
+    "substrate": "fluoroiodomethane (1)",
+    "substrate_smiles": "FCI",
+    "organolithium_reagent": "LDA",
+    "intermediate": "fluoroiodomethyllithium",
+    "intermediate_smiles": "FC(I)[Li]",
+    "electrophile": "Bu3SnCl",
+    "electrophile_smiles": "CCCC[Sn](Cl)(CCCC)CCCC",
+    "product": null,
+    "product_smiles": "CCCC[Sn](CCCC)(CCCC)C(F)I",
+    "reaction_type": "deprotonation",
+    "solvent": null,
+    "reactor_info": "flow microreactor system"
+  },
+  "columns": [
+    "Temperature",
+    "L1",
+    "phi1",
+    "tR1",
+    "Yield"
+  ],
+  "column_units": [
+    "[°C]",
+    "[cm]",
+    "[µm]",
+    "[s]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "-20",
+      "1.0",
+      "250",
+      "0.0037 a)",
+      "59"
+    ],
+    [
+      "-20",
+      "1.0",
+      "250",
+      "0.0059",
+      "69"
+    ],
+    [
+      "-20",
+      "3.5",
+      "250",
+      "0.021",
+      "85"
+    ],
+    [
+      "-20",
+      "3.5",
+      "500",
+      "0.082",
+      "69"
+    ],
+    [
+      "-20",
+      "3.5",
+      "1000",
+      "0.33",
+      "47"
+    ],
+    [
+      "-20",
+      "12.5",
+      "1000",
+      "1.2",
+      "0"
+    ],
+    [
+      "-20",
+      "31.2",
+      "1000",
+      "2.9 b)",
+      "0"
+    ],
+    [
+      "-40",
+      "1.0",
+      "250",
+      "0.0037 a)",
+      "34"
+    ],
+    [
+      "-40",
+      "1.0",
+      "250",
+      "0.0059",
+      "60"
+    ],
+    [
+      "-40",
+      "3.5",
+      "250",
+      "0.021",
+      "99"
+    ],
+    [
+      "-40",
+      "3.5",
+      "500",
+      "0.082",
+      "99"
+    ],
+    [
+      "-40",
+      "3.5",
+      "1000",
+      "0.33",
+      "94"
+    ],
+    [
+      "-40",
+      "12.5",
+      "1000",
+      "1.2",
+      "48"
+    ],
+    [
+      "-40",
+      "31.2",
+      "1000",
+      "2.9 b)",
+      "0"
+    ],
+    [
+      "-60",
+      "1.0",
+      "250",
+      "0.0037 a)",
+      "34"
+    ],
+    [
+      "-60",
+      "1.0",
+      "250",
+      "0.0059",
+      "57"
+    ],
+    [
+      "-60",
+      "3.5",
+      "250",
+      "0.021",
+      "73"
+    ],
+    [
+      "-60",
+      "3.5",
+      "500",
+      "0.082",
+      "91"
+    ],
+    [
+      "-60",
+      "3.5",
+      "1000",
+      "0.33",
+      "86"
+    ],
+    [
+      "-60",
+      "12.5",
+      "1000",
+      "1.2",
+      "81"
+    ],
+    [
+      "-60",
+      "31.2",
+      "1000",
+      "2.9 b)",
+      "34"
+    ],
+    [
+      "-78",
+      "1.0",
+      "250",
+      "0.0037 a)",
+      "24"
+    ],
+    [
+      "-78",
+      "1.0",
+      "250",
+      "0.0059",
+      "35"
+    ],
+    [
+      "-78",
+      "3.5",
+      "250",
+      "0.021",
+      "80"
+    ],
+    [
+      "-78",
+      "3.5",
+      "500",
+      "0.082",
+      "91"
+    ],
+    [
+      "-78",
+      "3.5",
+      "1000",
+      "0.33",
+      "99"
+    ],
+    [
+      "-78",
+      "12.5",
+      "1000",
+      "1.2",
+      "90"
+    ],
+    [
+      "-78",
+      "31.2",
+      "1000",
+      "2.9 b)",
+      "62"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [
+    "a) Flow rate of fluoroiodomethane (1): 6.4 mL/min, flow rate of LDA: 1.6 mL/min.",
+    "b) Flow rate of fluoroiodomethane (1): 4.0 mL/min, flow rate of LDA: 1.0 mL/min."
+  ],
+  "notes": "The table is split across two pages in the original document, but presented as a single continuous table here.",
+  "_source_paper": "Nagaki_2020_CHLiIF",
+  "_source_image": "强绒比然阳9附6化比5比0邦加66四比004434.png"
+}

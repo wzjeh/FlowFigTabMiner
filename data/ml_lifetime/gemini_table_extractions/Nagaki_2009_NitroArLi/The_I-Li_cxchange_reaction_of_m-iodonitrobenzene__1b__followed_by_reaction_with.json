@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-3",
+  "table_title": "Table S-3. The I-Li exchange reaction of m-iodonitrobenzene (1b) followed by reaction with methanol in microflow systems.",
+  "reaction_context": {
+    "substrate": "m-iodonitrobenzene (1b)",
+    "substrate_smiles": "O=[N+]([O-])c1cccc(I)c1",
+    "organolithium_reagent": null,
+    "intermediate": "m-nitrophenyllithium",
+    "intermediate_smiles": "O=[N+]([O-])c1cccc([Li])c1",
+    "electrophile": "methanol",
+    "electrophile_smiles": "CO",
+    "product": "2",
+    "product_smiles": "O=[N+]([O-])c1ccccc1",
+    "reaction_type": "I-Li exchange",
+    "solvent": null,
+    "reactor_info": "microflow systems"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "residence time in R1",
+    "temperature",
+    "conversion 1b",
+    "Yield 2"
+  ],
+  "column_units": [
+    "μm",
+    "cm",
+    "s",
+    "°C",
+    "%",
+    "%"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "100",
+      "84"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "100",
+      "83"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "100",
+      "74"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "100",
+      "75"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "0",
+      "100",
+      "58"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "96",
+      "5"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "100",
+      "87"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "100",
+      "85"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "100",
+      "82"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-28",
+      "100",
+      "82"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "100",
+      "66"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "97",
+      "87"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "100",
+      "90"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "100",
+      "83"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "100",
+      "83"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-48",
+      "100",
+      "82"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "100",
+      "80"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "61",
+      "61"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "64",
+      "64"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "100",
+      "84"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "100",
+      "80"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-58",
+      "100",
+      "84"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "100",
+      "82"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "52",
+      "47"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "59",
+      "49"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "79",
+      "62"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "79",
+      "60"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "-78",
+      "90",
+      "75"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "100",
+      "86"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Temperature values were merged across multiple rows in the original image and have been repeated for each corresponding row in the extracted data. Product 2 is nitrobenzene, formed by protonation of the intermediate m-nitrophenyllithium by methanol.",
+  "_source_paper": "Nagaki_2009_NitroArLi",
+  "_source_image": "The I-Li cxchange reaction of m-iodonitrobenzene （1b） followed by reaction with.png"
+}

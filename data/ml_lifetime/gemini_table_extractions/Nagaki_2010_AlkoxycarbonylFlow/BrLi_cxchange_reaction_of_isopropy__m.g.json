@@ -1,0 +1,282 @@
+{
+  "image_type": "table",
+  "table_id": "Table S-5",
+  "table_title": "Table S-5. The Br/Li exchange reaction of isopropyl m-bromobenzoate (5b) followed by reaction with 2-propanol in flow microreactor systems",
+  "reaction_context": {
+    "substrate": "isopropyl m-bromobenzoate (5b)",
+    "substrate_smiles": "CC(C)OC(=O)c1cc(Br)ccc1",
+    "organolithium_reagent": null,
+    "intermediate": "isopropyl m-lithiobenzoate",
+    "intermediate_smiles": "CC(C)OC(=O)c1cc([Li])ccc1",
+    "electrophile": "2-propanol",
+    "electrophile_smiles": "CC(O)C",
+    "product": null,
+    "product_smiles": null,
+    "reaction_type": "Br-Li exchange",
+    "solvent": null,
+    "reactor_info": "flow microreactor systems"
+  },
+  "columns": [
+    "Inner diameter of R1",
+    "Length of R1",
+    "Residence time in R1",
+    "Temperature",
+    "Conv.",
+    "Yield"
+  ],
+  "column_units": [
+    "[μm]",
+    "[cm]",
+    "[s]",
+    "[°C]",
+    "[%]",
+    "[%]"
+  ],
+  "rows": [
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "0",
+      "84",
+      "15"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "0",
+      "97",
+      "9"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "0",
+      "90",
+      "5"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "0",
+      "90",
+      "3"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "0",
+      "92",
+      "3"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "0",
+      "91",
+      "2"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-28",
+      "91",
+      "42"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-28",
+      "93",
+      "30"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-28",
+      "95",
+      "22"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-28",
+      "97",
+      "19"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-28",
+      "98",
+      "15"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-28",
+      "99",
+      "7"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-48",
+      "93",
+      "62"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-48",
+      "94",
+      "53"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-48",
+      "98",
+      "48"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-48",
+      "99",
+      "44"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-48",
+      "99",
+      "36"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-48",
+      "99",
+      "26"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-58",
+      "91",
+      "67"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-58",
+      "85",
+      "56"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-58",
+      "97",
+      "58"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-58",
+      "98",
+      "55"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-58",
+      "99",
+      "51"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-58",
+      "99",
+      "38"
+    ],
+    [
+      "250",
+      "3.5",
+      "0.014",
+      "-78",
+      "65",
+      "54"
+    ],
+    [
+      "500",
+      "3.5",
+      "0.055",
+      "-78",
+      "63",
+      "45"
+    ],
+    [
+      "1000",
+      "3.5",
+      "0.22",
+      "-78",
+      "65",
+      "37"
+    ],
+    [
+      "1000",
+      "6.0",
+      "0.38",
+      "-78",
+      "70",
+      "40"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.76",
+      "-78",
+      "78",
+      "43"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "-78",
+      "85",
+      "27"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "The table is split across two pages in the original document, but the data is continuous. The temperature column has merged cells in the original image, which have been unmerged and repeated for each row in the JSON output.",
+  "_source_paper": "Nagaki_2010_AlkoxycarbonylFlow",
+  "_source_image": "BrLi cxchange reaction of isopropy! m.g.png"
+}

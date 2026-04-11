@@ -1,0 +1,220 @@
+[
+  {
+    "image_type": "table",
+    "table_id": "Table 1",
+    "table_title": "Table 1. Effects of temperature and residence time on the yield of bromobenzene obtained by quenching of o-bromophenyllithium with methanol.",
+    "reaction_context": {
+      "substrate": null,
+      "substrate_smiles": null,
+      "organolithium_reagent": null,
+      "intermediate": "o-bromophenyllithium",
+      "intermediate_smiles": "c1ccc(c(c1)Br)[Li]",
+      "electrophile": "methanol",
+      "electrophile_smiles": "CO",
+      "product": "bromobenzene",
+      "product_smiles": "c1ccccc1Br",
+      "reaction_type": "protonation",
+      "solvent": null,
+      "reactor_info": null
+    },
+    "columns": [
+      "T",
+      "L",
+      "X",
+      "Yield"
+    ],
+    "column_units": [
+      "°C",
+      "cm",
+      "sec",
+      "%"
+    ],
+    "rows": [
+      [
+        "-85",
+        "6.0",
+        "0.10",
+        "24"
+      ],
+      [
+        "-85",
+        "12.5",
+        "0.21",
+        "16"
+      ],
+      [
+        "-85",
+        "25.0",
+        "0.41",
+        "20"
+      ],
+      [
+        "-85",
+        "50.0",
+        "0.82",
+        "44"
+      ],
+      [
+        "-85",
+        "100.0",
+        "1.64",
+        "51"
+      ],
+      [
+        "-78",
+        "6.0",
+        "0.10",
+        "29"
+      ],
+      [
+        "-78",
+        "12.5",
+        "0.21",
+        "33"
+      ],
+      [
+        "-78",
+        "25.0",
+        "0.41",
+        "37"
+      ],
+      [
+        "-78",
+        "50.0",
+        "0.82",
+        "74"
+      ],
+      [
+        "-78",
+        "100.0",
+        "1.64",
+        "61"
+      ],
+      [
+        "-70",
+        "3.0",
+        "0.05",
+        "41"
+      ],
+      [
+        "-70",
+        "6.0",
+        "0.10",
+        "42"
+      ],
+      [
+        "-70",
+        "12.5",
+        "0.21",
+        "52"
+      ],
+      [
+        "-70",
+        "25.0",
+        "0.41",
+        "59"
+      ],
+      [
+        "-70",
+        "50.0",
+        "0.82",
+        "70"
+      ],
+      [
+        "-70",
+        "100.0",
+        "1.64",
+        "47"
+      ],
+      [
+        "-65",
+        "3.0",
+        "0.05",
+        "41"
+      ],
+      [
+        "-65",
+        "6.0",
+        "0.10",
+        "45"
+      ],
+      [
+        "-65",
+        "12.5",
+        "0.21",
+        "40"
+      ],
+      [
+        "-65",
+        "25.0",
+        "0.41",
+        "35"
+      ],
+      [
+        "-60",
+        "3.0",
+        "0.05",
+        "31"
+      ],
+      [
+        "-60",
+        "6.0",
+        "0.10",
+        "15"
+      ],
+      [
+        "-60",
+        "12.5",
+        "0.21",
+        "14"
+      ],
+      [
+        "-60",
+        "25.0",
+        "0.41",
+        "5"
+      ],
+      [
+        "-60",
+        "50.0",
+        "0.82",
+        "7"
+      ],
+      [
+        "-50",
+        "3.0",
+        "0.05",
+        "4"
+      ],
+      [
+        "-50",
+        "6.0",
+        "0.10",
+        "2"
+      ],
+      [
+        "-50",
+        "12.5",
+        "0.21",
+        "2"
+      ],
+      [
+        "-50",
+        "25.0",
+        "0.41",
+        "0"
+      ],
+      [
+        "-50",
+        "50.0",
+        "0.82",
+        "0"
+      ]
+    ],
+    "structures": [],
+    "footnotes": [],
+    "notes": "Folded table unfolded into a single list of rows. Temperature values filled down for merged cells.",
+    "_source_paper": "Usutani_2007_oBrPhLi",
+    "_source_image": "Table 1. Efiects of temperature and residence time on the yield of bronobenzene oblained by.png"
+  }
+]

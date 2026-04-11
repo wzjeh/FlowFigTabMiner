@@ -1,0 +1,286 @@
+{
+  "image_type": "table",
+  "table_id": "Table S7",
+  "table_title": "Table S7. Halogen-lithium exchange reaction of 3-bromo-2,4-dimethyl-5-phenylthiophene (1b) with n-BuLi followed by reaction with octafluorocyclopentene in integrated flow microreactor systems.",
+  "reaction_context": {
+    "substrate": "3-bromo-2,4-dimethyl-5-phenylthiophene (1b)",
+    "substrate_smiles": "Cc1sc(-c2ccccc2)c(C)c1Br",
+    "organolithium_reagent": "n-BuLi",
+    "intermediate": "3-lithio-2,4-dimethyl-5-phenylthiophene",
+    "intermediate_smiles": "Cc1sc(-c2ccccc2)c(C)c1[Li]",
+    "electrophile": "octafluorocyclopentene",
+    "electrophile_smiles": "FC1=C(F)C(F)(F)C(F)(F)C1(F)F",
+    "product": "1,2-bis(2,4-dimethyl-5-phenyl-3-thienyl)perfluorocyclopentene (4bb)",
+    "product_smiles": "Cc1sc(-c2ccccc2)c(C)c1C1=C(c2c(C)c(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F",
+    "reaction_type": "Halogen-lithium exchange",
+    "solvent": null,
+    "reactor_info": "integrated flow microreactor systems"
+  },
+  "columns": [
+    "inner diameter of R1",
+    "length of R1",
+    "tR1",
+    "inner diameter of R2",
+    "length of R2",
+    "tR2",
+    "T",
+    "1,2-bis(2,4-dimethyl-5-phenyl-3-thienyl)perfluorocyclopentene (4bb)"
+  ],
+  "column_units": [
+    "(μm)",
+    "(cm)",
+    "(s)",
+    "(μm)",
+    "(cm)",
+    "(s)",
+    "(°C)",
+    "(%)"
+  ],
+  "rows": [
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "250",
+      "3.5",
+      "0.011",
+      "24",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "500",
+      "3.5",
+      "0.043",
+      "24",
+      "6"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "3.5",
+      "0.17",
+      "24",
+      "18"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "12.5",
+      "0.62",
+      "24",
+      "43"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "50",
+      "2.5",
+      "24",
+      "68"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "200",
+      "9.9",
+      "24",
+      "75"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "250",
+      "3.5",
+      "0.011",
+      "0",
+      "0"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "500",
+      "3.5",
+      "0.043",
+      "0",
+      "9"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "3.5",
+      "0.17",
+      "0",
+      "10"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "12.5",
+      "0.62",
+      "0",
+      "28"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "50",
+      "2.5",
+      "0",
+      "59"
+    ],
+    [
+      "1000",
+      "12.5",
+      "0.79",
+      "1000",
+      "200",
+      "9.9",
+      "0",
+      "75"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "250",
+      "3.5",
+      "0.011",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "500",
+      "3.5",
+      "0.043",
+      "-28",
+      "0"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "1000",
+      "3.5",
+      "0.17",
+      "-28",
+      "4"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "1000",
+      "12.5",
+      "0.62",
+      "-28",
+      "12"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "1000",
+      "50",
+      "2.5",
+      "-28",
+      "33"
+    ],
+    [
+      "1000",
+      "25",
+      "1.6",
+      "1000",
+      "200",
+      "9.9",
+      "-28",
+      "60"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "250",
+      "3.5",
+      "0.011",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "500",
+      "3.5",
+      "0.043",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "1000",
+      "3.5",
+      "0.17",
+      "-48",
+      "0"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "1000",
+      "12.5",
+      "0.62",
+      "-48",
+      "4"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "1000",
+      "50",
+      "2.5",
+      "-48",
+      "15"
+    ],
+    [
+      "1000",
+      "100",
+      "6.3",
+      "1000",
+      "200",
+      "9.9",
+      "-48",
+      "36"
+    ]
+  ],
+  "structures": [],
+  "footnotes": [],
+  "notes": "Merged cells in the first three columns and the temperature column were expanded to repeat their values for each corresponding row.",
+  "_source_paper": "Asai_2012_Photochromic",
+  "_source_image": "Table S7. Haiogon.ithium oxchange roaction of 3-bcomo-2.4.dimethy.5-phonyttiophece （1b）withn-.png"
+}
