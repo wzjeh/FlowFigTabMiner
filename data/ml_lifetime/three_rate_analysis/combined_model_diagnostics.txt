@@ -1,0 +1,63 @@
+EMP+DFT-2 COMBINED MODEL DIAGNOSTICS
+======================================================================
+Model: Ea, ln_A ~ σ + Es + δ_ortho + δ_benzyne + dipole_D + Gsolv_kJ
+n = 9, p = 6, df_residual = 2
+
+⚠️  df_resid = 2: extremely low → model is near-saturated
+   (7 parameters estimated from 9 observations)
+
+Ea model equation:
+  Ea = -77.68 -127.603·σ +14.685·Es +91.145·δ_ortho +99.505·δ_benzyne +10.633·dipole -0.733·Gsolv
+  R² = 0.9997
+  Q²_LOO = 0.9938
+  Max |residual| = 0.784 kJ/mol
+  RMSE = 0.358 kJ/mol
+
+======================================================================
+  Ea Shapiro-Wilk: W=0.8813, p=0.162
+  ln_A Shapiro-Wilk: W=0.9127, p=0.335
+
+  VIF values:
+    σ           : 48.84 ⚠️
+    Es          : 3.74
+    δ_ortho     : 273.20 ⚠️
+    δ_benzyne   : 132.44 ⚠️
+    dipole      : 286.29 ⚠️
+    Gsolv       : 12.68 ⚠️
+
+  Leverage (hᵢᵢ) and influence (Ea):
+  Intermediate                h_ii   Cook D   DFFITS   |t*|
+  tert-butyl 4-(lithio)benz  0.971    0.121  +22.600  3.900 [high-DFFIT]
+  methyl o-(lithio)benzoate  0.645    0.113   -2.004  1.488 [high-DFFIT]
+  (Br, Li substituents on b  0.983    0.789  -99.599 13.139 [high-Cook] [high-DFFIT]
+  isopropyl o-(lithio)benzo  0.416    0.127   -1.855  2.198 [high-DFFIT]
+  ethyl o-(lithio)benzoate   0.422    0.193   +5.137  6.013 [high-DFFIT]
+  (I, Li substituents on be  0.983    0.789  +99.599 13.139 [high-Cook] [high-DFFIT]
+  tert-butyl o-(lithio)benz  0.954    2.914  +97.273 21.387 [high-Cook] [high-DFFIT]
+  p-lithiobenzonitrile (fro  0.885    0.003   -0.955  0.344
+  m-lithiobenzonitrile (fro  0.742    0.000   -0.073  0.043
+
+  Ea Bootstrap 95% CI (standardized, n_boot=5000):
+    σ           : median=-5.989  95% CI=[-64.952, +19.268]  n.s.
+    Es          : median=+5.566  95% CI=[-21.172, +13.028]  n.s.
+    δ_ortho     : median=+12.335  95% CI=[-3.474, +89.291]  n.s.
+    δ_benzyne   : median=+20.414  95% CI=[-0.000, +63.390]  n.s.
+    dipole      : median=-5.129  95% CI=[-19.466, +88.751]  n.s.
+    Gsolv       : median=-5.483  95% CI=[-19.698, +20.412]  n.s.
+
+  Ea LOO Sensitivity (full Q²=0.9938):
+    Drop tert-butyl 4-(lithio)benz → ΔQ²=-0.6461  (new Q²=0.3477)
+    Drop methyl o-(lithio)benzoate → ΔQ²=-0.4583  (new Q²=0.5355)
+    Drop (Br, Li substituents on b → ΔQ²=-4.5707  (new Q²=-3.5769)
+    Drop isopropyl o-(lithio)benzo → ΔQ²=-0.1733  (new Q²=0.8204)
+    Drop ethyl o-(lithio)benzoate  → ΔQ²=+0.0005  (new Q²=0.9942)
+    Drop (I, Li substituents on be → ΔQ²=-3.8364  (new Q²=-2.8426)
+    Drop tert-butyl o-(lithio)benz → ΔQ²=-0.0554  (new Q²=0.9384)
+    Drop p-lithiobenzonitrile (fro → ΔQ²=-2.5832  (new Q²=-1.5894)
+    Drop m-lithiobenzonitrile (fro → ΔQ²=-3.6751  (new Q²=-2.6813)
+
+  Condition number (standardized X): 45.4
+  Singular values: 5.049, 4.249, 3.000, 2.441, 2.030, 0.602, 0.111
+  ⚠️ Condition number > 30 → moderate multicollinearity
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/combined_model_diagnostics.png

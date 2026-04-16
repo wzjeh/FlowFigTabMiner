@@ -1,0 +1,53 @@
+
+======================================================================
+ArLi HALF-LIFE PREDICTION — SUMMARY REPORT
+======================================================================
+
+DATA:
+  Training set: 9 ArLi intermediates with Arrhenius-derived t½
+  Prediction set: 37 ArLi with required descriptors
+  Target: log₁₀(t½) at -40°C
+  t½ range: 0.00 s to 51.9 s
+            (-2.48 to 1.72 decades)
+
+BEST MODEL: σ+Es+δ_ortho+μ
+  Q²_LOO = 0.9191
+  R²     = 0.9957
+  MAE_LOO = 0.254 decades (= 1.8× factor)
+  MAE_fit = 0.068 decades
+
+EQUATION:
+  log₁₀(t½) = 0.1997 -1.6406·sigma_hammett -0.4045·Es_taft +2.0635·delta_ortho +3.2150·dft_dipole_D
+
+MODEL COMPARISON (all on n=9 ArLi):
+  Model                           p     R²      Q²  MAE_LOO
+  --------------------------------------------------------
+  σ                               1  0.493   0.191    0.851
+  σ+Es                            2  0.721   0.358    0.807
+  σ+Es+δ_ortho                    3  0.725   0.239    0.886
+  σ+Es+δ_ortho+δ_benzyne          4  0.912   0.566    0.591
+  μ                               1  0.233  -0.078    0.894
+  μ+Gsolv                         2  0.404  -1.386    1.379
+  μ+Gsolv+BDE                     3  0.833   0.278    0.904
+  σ+Es+δ_ortho+μ                  4  0.996   0.919    0.254
+  σ+Es+δ_ortho+Gsolv              4  0.743   0.436    0.670
+
+APPLICABILITY DOMAIN:
+  Leverage threshold h* = 1.33 (= 3p/n)
+  High confidence: 17/28 predictions
+  Moderate (in descriptor range): 6/28 predictions
+  Extrapolation: 14/28 predictions
+
+INTERPRETATION:
+  - MAE_LOO = 0.25 decades means predictions are accurate
+    to within ~1.8x of true t1/2 on average.
+  - This is excellent predictive power for a QSPR model.
+
+CHEMICAL INTERPRETATION:
+  log10(t1/2) = 0.20 -1.64*sigma_hammett -0.40*Es_taft +2.06*delta_ortho +3.21*dft_dipole_D
+
+  Key drivers (ranked by |coefficient|):
+    dft_dipole_D: +3.21 → higher dft_dipole_D increases t1/2
+    delta_ortho: +2.06 → higher delta_ortho increases t1/2
+    sigma_hammett: -1.64 → higher sigma_hammett decreases t1/2
+    Es_taft: -0.40 → higher Es_taft decreases t1/2

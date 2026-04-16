@@ -1,0 +1,272 @@
+THREE-RATE KINETIC MODELING REPORT
+======================================================================
+Dataset: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/clean_organolithium_unified_descriptors.csv
+Arrhenius: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/phase_b_arrhenius.csv
+Total rows: 2609
+Arrhenius intermediates: 14
+  with DFT: 12
+  with sigma: 9
+======================================================================
+PART 1: kd (DECOMPOSITION) MODELING
+======================================================================
+
+--- Ea Prediction ---
+
+  Univariate DFT correlations with Ea:
+    dft_charge_Li            : r=+0.130  (p=0.688)
+    dft_charge_C_ipso        : r=-0.158  (p=0.625)
+    dft_HOMO_eV              : r=+0.060  (p=0.853)
+    dft_LUMO_eV              : r=+0.356  (p=0.256)
+    dft_LiC_bond_A           : r=-0.134  (p=0.677)
+    dft_LiC_BDE_kJ           : r=+0.471  (p=0.122)
+    dft_wiberg_LiC           : r=-0.046  (p=0.888)
+    dft_dipole_D             : r=-0.830  (p=0.001)
+    dft_Gsolv_kJ             : r=+0.563  (p=0.057)
+
+  Feature set: Empirical (σ,Es,δ_o,δ_b)
+  n=9, features=4
+  R² = 0.9882,  Q²_LOO = 0.9178
+  Intercept = 31.637
+    sigma_hammett            : -40.7483
+    Es_taft                  : +8.0018
+    delta_ortho              : +26.5211
+    delta_benzyne            : +42.7555
+
+  Feature set: DFT-Ridge (9 desc, reg.)
+  n=12, features=9
+  Ridge alpha=1.0
+  R² = 0.9531,  Q²_LOO = 0.6330
+  Intercept = 32.967
+    dft_charge_Li            : +14.8192
+    dft_charge_C_ipso        : -120.6235
+    dft_HOMO_eV              : -13.5814
+    dft_LUMO_eV              : +10.9344
+    dft_LiC_bond_A           : -144.2159
+    dft_LiC_BDE_kJ           : +0.0730
+    dft_wiberg_LiC           : +3.6161
+    dft_dipole_D             : -5.1648
+    dft_Gsolv_kJ             : +0.2520
+
+  Feature set: DFT-best2 (dipole_D,Gsolv_kJ)
+  n=12, features=2
+  R² = 0.7306,  Q²_LOO = 0.5482
+  Intercept = 84.614
+    dft_dipole_D             : -5.4485
+    dft_Gsolv_kJ             : +0.3467
+
+  Feature set: DFT-best3 (dipole_D,Gsolv_kJ,LiC_BDE_kJ)
+  n=12, features=3
+  R² = 0.8668,  Q²_LOO = 0.5842
+  Intercept = 246.136
+    dft_dipole_D             : -9.4748
+    dft_Gsolv_kJ             : +0.3398
+    dft_LiC_BDE_kJ           : -0.2960
+
+  Feature set: Emp+DFT-2 (σ,Es,δ+best2)
+  n=9, features=6
+  R² = 0.9997,  Q²_LOO = 0.9938
+  Intercept = -77.681
+    sigma_hammett            : -127.6026
+    Es_taft                  : +14.6850
+    delta_ortho              : +91.1449
+    delta_benzyne            : +99.5053
+    dft_dipole_D             : +10.6329
+    dft_Gsolv_kJ             : -0.7327
+
+--- ln_A Prediction ---
+
+  Univariate DFT correlations with ln_A:
+    dft_charge_Li            : r=+0.136  (p=0.674)
+    dft_charge_C_ipso        : r=-0.139  (p=0.667)
+    dft_HOMO_eV              : r=-0.039  (p=0.904)
+    dft_LUMO_eV              : r=+0.397  (p=0.201)
+    dft_LiC_bond_A           : r=-0.128  (p=0.692)
+    dft_LiC_BDE_kJ           : r=+0.406  (p=0.190)
+    dft_wiberg_LiC           : r=-0.042  (p=0.898)
+    dft_dipole_D             : r=-0.781  (p=0.003)
+    dft_Gsolv_kJ             : r=+0.594  (p=0.042)
+
+  Feature set: Empirical (σ,Es,δ_o,δ_b)
+  n=9, features=4
+  R² = 0.9912,  Q²_LOO = 0.9400
+  Intercept = 12.815
+    sigma_hammett            : -19.4851
+    Es_taft                  : +6.7205
+    delta_ortho              : +16.0335
+    delta_benzyne            : +29.0008
+
+  Feature set: DFT-Ridge (9 desc, reg.)
+  n=12, features=9
+  Ridge alpha=1.0
+  R² = 0.9424,  Q²_LOO = 0.7268
+  Intercept = 16.377
+    dft_charge_Li            : -5.8953
+    dft_charge_C_ipso        : -64.5083
+    dft_HOMO_eV              : -11.3389
+    dft_LUMO_eV              : +7.1023
+    dft_LiC_bond_A           : -61.8796
+    dft_LiC_BDE_kJ           : +0.0288
+    dft_wiberg_LiC           : +7.1358
+    dft_dipole_D             : -3.3746
+    dft_Gsolv_kJ             : +0.2047
+
+  Feature set: DFT-best2 (dipole_D,Gsolv_kJ)
+  n=12, features=2
+  R² = 0.6793,  Q²_LOO = 0.4678
+  Intercept = 51.495
+    dft_dipole_D             : -3.0767
+    dft_Gsolv_kJ             : +0.2849
+
+  Feature set: DFT-best3 (dipole_D,Gsolv_kJ,LiC_BDE_kJ)
+  n=12, features=3
+  R² = 0.8481,  Q²_LOO = 0.6134
+  Intercept = 165.715
+    dft_dipole_D             : -5.9238
+    dft_Gsolv_kJ             : +0.2800
+    dft_LiC_BDE_kJ           : -0.2093
+
+  Feature set: Emp+DFT-2 (σ,Es,δ+best2)
+  n=9, features=6
+  R² = 0.9998,  Q²_LOO = 0.9901
+  Intercept = -30.708
+    sigma_hammett            : -22.7564
+    Es_taft                  : +9.0130
+    delta_ortho              : +32.2866
+    delta_benzyne            : +47.3631
+    dft_dipole_D             : +1.9572
+    dft_Gsolv_kJ             : -0.3343
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/model_comparison.png
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/kd_dft_parity.png
+
+======================================================================
+PART 2: DIRECT YIELD PREDICTION (kd_clean + kd_valid)
+======================================================================
+
+  Data: 2112 rows, 54 intermediates
+  LOSO substrates: 54
+
+  LOSO GBR Results:
+    R²_LOSO = 0.0955
+    MAE_LOSO = 22.34%
+
+  Per-substrate LOSO:
+    lithium 3-(oxiran-2-yl)propyl            n=  30  R²=  0.755  MAE=7.4%
+    2-methylbenzofuran-3-yllithium           n=  36  R²=  0.749  MAE=12.3%
+    3-(oxiran-2-yl)propyllithium             n=  30  R²=  0.744  MAE=7.6%
+    3-lithio-2-methylbenzofuran              n=  36  R²=  0.725  MAE=12.9%
+    m-nitrophenyllithium                     n=  30  R²=  0.695  MAE=6.0%
+    ethyl m-lithiobenzoate                   n=  30  R²=  0.691  MAE=15.3%
+    ethyl p-lithiobenzoate                   n=  30  R²=  0.602  MAE=20.1%
+    isopropyl o-lithiobenzoate               n=  60  R²=  0.562  MAE=10.8%
+    p-bromophenyllithium                     n=  42  R²=  0.558  MAE=10.9%
+    m-cyanophenyllithium                     n=  36  R²=  0.550  MAE=10.8%
+    p-cyanophenyllithium                     n=  36  R²=  0.542  MAE=12.7%
+    lithium oxiranyl anion                   n= 105  R²=  0.466  MAE=18.1%
+    ethyl o-lithiobenzoate                   n=  60  R²=  0.408  MAE=15.7%
+    lithiated 2-(2-naphthyl)ethylene oxide   n=  35  R²=  0.370  MAE=18.9%
+    isopropyl p-lithiobenzoate               n=  60  R²=  0.290  MAE=22.2%
+    tert-butyl m-lithiobenzoate              n=  66  R²=  0.276  MAE=13.8%
+    methyl m-lithiobenzoate                  n=  30  R²=  0.248  MAE=21.1%
+    methyl o-lithiobenzoate                  n=  70  R²=  0.138  MAE=16.5%
+    p-nitrophenyllithium                     n=  30  R²=  0.109  MAE=15.7%
+    lithiated 1-tert-butylsulfonyl-2-phenyla n=  24  R²=  0.055  MAE=13.7%
+    3-lithio-2,4-dimethyl-5-phenylthiophene  n=  36  R²= -0.003  MAE=15.4%
+    2-pyridyllithium                         n=  17  R²= -0.011  MAE=12.7%
+    oxiranyllithium                          n= 154  R²= -0.033  MAE=27.0%
+    m-bromophenyllithium                     n=  42  R²= -0.061  MAE=12.9%
+    2,3-dibromo-4-lithiopyridine             n=  30  R²= -0.062  MAE=22.8%
+    methyl p-lithiobenzoate                  n=  30  R²= -0.120  MAE=24.7%
+    fluoroiodomethyllithium                  n=  20  R²= -0.182  MAE=23.8%
+    functional alkyllithiums                 n=   5  R²= -0.198  MAE=12.0%
+    p-Anisyllithium                          n=  54  R²= -0.271  MAE=14.7%
+    2-bromophenyllithium                     n=  64  R²= -0.293  MAE=28.5%
+    1-triphenylsilyloxiranyllithium          n=  36  R²= -0.402  MAE=24.1%
+    3-lithio-2-methylbenzothiophene          n=  72  R²= -0.461  MAE=26.2%
+    oxiranyllithium intermediate             n=  28  R²= -0.823  MAE=34.9%
+    tert-butyl o-lithiobenzoate              n=  72  R²= -0.872  MAE=22.4%
+    p-propanoylbenzyllithium                 n=  25  R²= -0.910  MAE=15.8%
+    (E)-β-styryllithium                      n=  18  R²= -0.923  MAE=44.5%
+    lithium (2R*,3S*)-2,3-diphenyloxiran-2-i n=  24  R²= -0.969  MAE=39.3%
+    lithium carbenoid                        n=  21  R²= -1.033  MAE=24.8%
+    o-bromophenyllithium                     n=  60  R²= -1.144  MAE=27.2%
+    2-bromo-2'-lithiobiphenyl                n=  16  R²= -1.175  MAE=26.5%
+    isopropyl m-lithiobenzoate               n=  60  R²= -1.193  MAE=32.9%
+    o-cyanophenyllithium                     n=  36  R²= -1.283  MAE=33.5%
+    monolithiated 4,4'-dibromobiphenyl       n=  16  R²= -1.355  MAE=23.5%
+    tridecafluorohexyllithium                n=  28  R²= -1.402  MAE=42.2%
+    2-iodophenyllithium                      n=  32  R²= -1.479  MAE=43.9%
+    3-lithio-2-methyl-5-phenylthiophene      n=  36  R²= -1.528  MAE=26.8%
+    tert-butyl p-lithiobenzoate              n=  66  R²= -2.286  MAE=32.7%
+    4-lithio-5-methyl-2-phenylthiazole       n=  36  R²= -2.359  MAE=39.1%
+    p-formylbenzyllithium                    n=  25  R²= -3.114  MAE=26.9%
+    lithium 4-methylstyrene oxide            n=  35  R²= -4.551  MAE=38.7%
+    primary alkyllithiums bearing an epoxide n=   3  R²= -7.045  MAE=5.2%
+    o-nitrophenyllithium                     n=  30  R²= -8.070  MAE=44.8%
+    aryllithium                              n=   6  R²=-19.379  MAE=11.2%
+    primary alkyllithium bearing an epoxide  n=   3  R²=-64.707  MAE=15.5%
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/yield_loso.png
+
+======================================================================
+PART 3: kf (FORMATION RATE) ANALYSIS
+======================================================================
+
+  kf data points: 53
+  Intermediates: 15
+
+  kf by intermediate:
+    (Br, Li substituents on benzene ring)    Ea_kf= 2639.3 kJ/mol, ln_A_kf=   6.77, n_T=4, r²=0.164
+    (I, Li substituents on benzene ring)     Ea_kf=41842.3 kJ/mol, ln_A_kf=  31.68, n_T=4, r²=0.372
+    CHLi(I)(F) (iodofluoromethyllithium), li Ea_kf=14658.2 kJ/mol, ln_A_kf=  12.48, n_T=4, r²=0.727
+    Li-CH2-F (fluoromethyllithium), lifetime Ea_kf= 3263.0 kJ/mol, ln_A_kf=  11.91, n_T=4, r²=0.007
+    aryllithium (then borylated to arylboron Ea_kf=35699.2 kJ/mol, ln_A_kf=  17.28, n_T=2, r²=1.000
+    chloroiodomethyllithium (CHLi(I)(Cl))    Ea_kf=21677.8 kJ/mol, ln_A_kf=  13.40, n_T=3, r²=0.996
+    ethyl o-(lithio)benzoate                 Ea_kf=41501.9 kJ/mol, ln_A_kf=  27.79, n_T=4, r²=0.852
+    isopropyl o-(lithio)benzoate             Ea_kf=36222.4 kJ/mol, ln_A_kf=  25.43, n_T=4, r²=0.393
+    m-lithiobenzonitrile (from 1b)           Ea_kf=124624.0 kJ/mol, ln_A_kf=  60.26, n_T=2, r²=1.000
+    methyl o-(lithio)benzoate                Ea_kf= 7655.3 kJ/mol, ln_A_kf=  12.18, n_T=5, r²=0.029
+    oxiranyllithium                          Ea_kf=26859.2 kJ/mol, ln_A_kf=  15.51, n_T=6, r²=0.781
+    p-lithiobenzonitrile (from 1c)           Ea_kf=-133728.3 kJ/mol, ln_A_kf= -47.06, n_T=2, r²=1.000
+    tert-butyl 4-(lithio)benzoate (aryllithi Ea_kf= 4925.3 kJ/mol, ln_A_kf=  10.74, n_T=5, r²=0.020
+    tert-butyl o-(lithio)benzoate (aryllithi Ea_kf=76710.6 kJ/mol, ln_A_kf=  41.89, n_T=3, r²=0.773
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/kf_formation_analysis.png
+
+======================================================================
+PART 4: k2 (TRAPPING RATE) ANALYSIS
+======================================================================
+
+  tR2 data: 147 rows
+  Papers: 4
+  Intermediates: 9
+  Electrophiles: 16
+
+  tR2 range: 0.00 - 57.00 s
+  Yield range: 0.0 - 96.0%
+
+  Paper: Photochromic_2012_Asai
+    Rows: 106
+    Intermediates: ['3-lithio-2-methylbenzothiophene', '3-lithio-2-methylbenzofuran', '4-lithio-5-methyl-2-phenylthiazole', '3-lithio-2-methyl-5-phenylthiophene', '3-lithio-2,4-dimethyl-5-phenylthiophene']
+    Electrophiles: ['octafluorocyclopentene']
+
+  Paper: ProtGroupFree_2011_Kim
+    Rows: 8
+    Intermediates: ['acyl-substituted aryllithium']
+    Electrophiles: ['methanol']
+
+  Paper: ThreeComp_2014_Nagaki
+    Rows: 17
+    Intermediates: ['2-arylphenyllithium']
+    Electrophiles: ['methyl triflate', 'TMSOTf', 'phenyl isocyanate', 'benzaldehyde', 'chlorotributylstannane', 'diethyl oxalate', 'HCO2Me', 'iodine', 'CBr4', 'C2Cl6', 'NFSI', 'intramolecular cyclization', 'iodomethane']
+    T2 range: -70 to 0 °C
+
+  Paper: tBuEsters_2016_Degennaro
+    Rows: 16
+    Intermediates: ['aryllithium / heteroaryllithium', 'lithium acetylide']
+    Electrophiles: ['di-tert-butyl dicarbonate']
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/k2_trapping_analysis.png
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/three_rate_summary.png

@@ -1,0 +1,15 @@
+intermediate,smiles,smiles_canonical,Ea,ln_A,t_half_m40,n_T,arrhenius_r2,dft_charge_Li,dft_charge_C_ipso,dft_HOMO_eV,dft_LUMO_eV,dft_LiC_bond_A,dft_LiC_BDE_kJ,dft_wiberg_LiC,dft_dipole_D,dft_Gsolv_kJ,sigma_hammett,Es_taft,delta_ortho,delta_benzyne,intermediate_class
+oxiranyllithium,[Li]C1CO1,[Li]C1(c2ccccc2)CO1,35.57,15.9003,8.01,6,0.9103,0.5078,-0.142,-8.754,-5.966,1.9035,456.5,0.4477,4.792,-61.53,,0.0,0.0,0.0,carbanion
+tert-butyl 4-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccc([Li])cc1,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,14.97,5.7831,4.817,5,0.8248,0.421,-0.2235,-8.885,-6.398,1.907,411.6,0.7409,7.527,-95.56,0.45,0.0,0.0,0.0,ArLi
+methyl o-(lithio)benzoate,COC(=O)c1ccccc1[Li],[Li]c1ccccc1C(=O)OC,36.53,18.9868,0.6021,5,0.9832,0.4733,-0.2207,-8.76,-7.023,1.9444,524.2,0.6073,3.182,-64.08,0.45,0.0,1.0,0.0,ArLi
+"(Br, Li substituents on benzene ring)",Brc1ccccc1[Li],[Li]c1ccccc1Br,65.42,36.174,0.06133,4,0.9706,0.4765,-0.2368,-9.314,-5.991,1.9147,477.7,0.6507,2.958,-56.67,0.23,0.0,0.0,1.0,ArLi
+isopropyl o-(lithio)benzoate,CC(C)OC(=O)c1ccccc1[Li],[Li]c1ccccc1C(=O)OC(C)C,38.05,17.5376,5.627,4,0.9923,0.4711,-0.2219,-8.673,-6.916,1.9459,524.0,0.6065,3.45,-72.16,0.45,-0.47,1.0,0.0,ArLi
+ethyl o-(lithio)benzoate,CCOC(=O)c1ccccc1[Li],[Li]c1ccccc1C(=O)OCC,41.26,20.3066,1.846,4,0.9985,0.4722,-0.2215,-8.721,-6.975,1.9448,523.6,0.6072,3.355,-67.95,0.45,-0.07,1.0,0.0,ArLi
+"(I, Li substituents on benzene ring)",Ic1ccccc1[Li],[Li]c1ccccc1I,59.73,36.1561,0.003323,4,0.9876,0.4634,-0.2364,-9.286,-6.278,1.9224,471.5,0.6535,3.514,-61.65,0.35,0.0,0.0,1.0,ArLi
+"CHLi(I)(F) (iodofluoromethyllithium), lifetime 82 ms at -40 °C",[Li]C(F)I,[Li]C(F)I,16.21,7.7579,1.27,4,0.975,0.5943,-0.1104,-9.599,-6.732,2.0024,490.1,0.2653,5.961,-53.33,,0.0,0.0,0.0,ArLi
+"Li-CH2-F (fluoromethyllithium), lifetime 13 ms at -60 °C",[Li]CF,[Li]CF,49.17,28.2835,0.03747,4,0.9895,0.4727,-0.1694,-8.825,-5.496,1.9058,473.8,0.6066,4.287,-44.91,,0.0,0.0,0.0,ArLi
+tert-butyl o-(lithio)benzoate (aryllithium),CC(C)(C)OC(=O)c1ccccc1[Li],[Li]c1ccccc1C(=O)OC(C)(C)C,26.8,9.5109,51.91,3,0.947,0.4697,-0.2234,-8.614,-6.858,1.941,522.9,0.6048,3.66,-74.1,0.45,-1.54,1.0,0.0,ArLi
+chloroiodomethyllithium (CHLi(I)(Cl)),[Li]C(Cl)I,,25.0,10.383,8.555,3,0.9914,,,,,,,,,,,,,,
+p-lithiobenzonitrile (from 1c),N#Cc1ccc([Li])cc1,[Li]c1ccc(C#N)cc1,7.06,0.4727,16.52,2,1.0,0.4272,-0.2239,-9.157,-6.49,1.9132,419.1,0.7365,10.704,-75.28,0.66,0.0,0.0,0.0,ArLi
+m-lithiobenzonitrile (from 1b),N#Cc1cccc([Li])c1,[Li]c1cccc(C#N)c1,4.83,-0.3511,11.9,2,1.0,0.4289,-0.2284,-9.14,-6.505,1.9116,418.4,0.7328,9.332,-74.72,0.56,0.0,0.0,0.0,ArLi
+aryllithium (then borylated to arylboronate),[Li]c1ccccc1,,36.54,15.376,22.36,2,1.0,,,,,,,,,,,,,,

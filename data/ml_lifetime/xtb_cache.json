@@ -1,0 +1,1457 @@
+{
+  "[Li]c1cccc(C(=O)OC)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4242,
+      "dft_charge_C_ipso": -0.2292,
+      "dft_HOMO_eV": -8.924,
+      "dft_LUMO_eV": -6.565,
+      "dft_LiC_bond_A": 1.906,
+      "dft_wiberg_LiC": 0.7391,
+      "dft_dipole_D": 8.509,
+      "dft_Gsolv_kJ": -85.11,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 412.2
+    }
+  },
+  "[Li]c1cccc(C(=O)OC(C)C)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4214,
+      "dft_charge_C_ipso": -0.2294,
+      "dft_HOMO_eV": -8.875,
+      "dft_LUMO_eV": -6.479,
+      "dft_LiC_bond_A": 1.9071,
+      "dft_wiberg_LiC": 0.7414,
+      "dft_dipole_D": 8.546,
+      "dft_Gsolv_kJ": -93.78,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 410.7
+    }
+  },
+  "[Li]c1cccc(C(=O)OC(C)(C)C)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4191,
+      "dft_charge_C_ipso": -0.2296,
+      "dft_HOMO_eV": -8.837,
+      "dft_LUMO_eV": -6.417,
+      "dft_LiC_bond_A": 1.9065,
+      "dft_wiberg_LiC": 0.7432,
+      "dft_dipole_D": 8.359,
+      "dft_Gsolv_kJ": -95.12,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 409.5
+    }
+  },
+  "[Li]c1ccc(C(=O)OC(C)(C)C)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.421,
+      "dft_charge_C_ipso": -0.2235,
+      "dft_HOMO_eV": -8.885,
+      "dft_LUMO_eV": -6.398,
+      "dft_LiC_bond_A": 1.907,
+      "dft_wiberg_LiC": 0.7409,
+      "dft_dipole_D": 7.527,
+      "dft_Gsolv_kJ": -95.56,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 411.6
+    }
+  },
+  "[Li]c1ccc(C(=O)OC(C)C)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.423,
+      "dft_charge_C_ipso": -0.2231,
+      "dft_HOMO_eV": -8.923,
+      "dft_LUMO_eV": -6.456,
+      "dft_LiC_bond_A": 1.9067,
+      "dft_wiberg_LiC": 0.7391,
+      "dft_dipole_D": 7.785,
+      "dft_Gsolv_kJ": -94.33,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 412.7
+    }
+  },
+  "[Li]c1ccc(C(=O)OCC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4242,
+      "dft_charge_C_ipso": -0.2228,
+      "dft_HOMO_eV": -8.947,
+      "dft_LUMO_eV": -6.504,
+      "dft_LiC_bond_A": 1.9065,
+      "dft_wiberg_LiC": 0.738,
+      "dft_dipole_D": 7.86,
+      "dft_Gsolv_kJ": -89.24,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 413.2
+    }
+  },
+  "[Li]c1ccc(C(=O)OC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4254,
+      "dft_charge_C_ipso": -0.2226,
+      "dft_HOMO_eV": -8.971,
+      "dft_LUMO_eV": -6.541,
+      "dft_LiC_bond_A": 1.9047,
+      "dft_wiberg_LiC": 0.737,
+      "dft_dipole_D": 7.987,
+      "dft_Gsolv_kJ": -85.78,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 414.0
+    }
+  },
+  "[Li]c1cccc(C(=O)OCC)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4229,
+      "dft_charge_C_ipso": -0.2295,
+      "dft_HOMO_eV": -8.9,
+      "dft_LUMO_eV": -6.521,
+      "dft_LiC_bond_A": 1.905,
+      "dft_wiberg_LiC": 0.7401,
+      "dft_dipole_D": 8.648,
+      "dft_Gsolv_kJ": -90.76,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 411.3
+    }
+  },
+  "[Li]CCCC1CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4016,
+      "dft_charge_C_ipso": -0.2957,
+      "dft_HOMO_eV": -8.205,
+      "dft_LUMO_eV": -5.349,
+      "dft_LiC_bond_A": 1.9226,
+      "dft_wiberg_LiC": 0.7948,
+      "dft_dipole_D": 4.117,
+      "dft_Gsolv_kJ": -60.35,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 375.2
+    }
+  },
+  "[Li]CCCCC1CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3961,
+      "dft_charge_C_ipso": -0.2921,
+      "dft_HOMO_eV": -8.059,
+      "dft_LUMO_eV": -5.126,
+      "dft_LiC_bond_A": 1.9249,
+      "dft_wiberg_LiC": 0.7855,
+      "dft_dipole_D": 2.888,
+      "dft_Gsolv_kJ": -58.01,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 390.1
+    }
+  },
+  "[Li]CCCCCC1CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3861,
+      "dft_charge_C_ipso": -0.2933,
+      "dft_HOMO_eV": -7.911,
+      "dft_LUMO_eV": -5.075,
+      "dft_LiC_bond_A": 1.9195,
+      "dft_wiberg_LiC": 0.813,
+      "dft_dipole_D": 4.168,
+      "dft_Gsolv_kJ": -68.15,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 369.4
+    }
+  },
+  "[Li]CCCCCCC1CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3901,
+      "dft_charge_C_ipso": -0.2943,
+      "dft_HOMO_eV": -8.118,
+      "dft_LUMO_eV": -5.25,
+      "dft_LiC_bond_A": 1.928,
+      "dft_wiberg_LiC": 0.811,
+      "dft_dipole_D": 6.096,
+      "dft_Gsolv_kJ": -72.14,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 371.9
+    }
+  },
+  "[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5537,
+      "dft_charge_C_ipso": -0.168,
+      "dft_HOMO_eV": -8.871,
+      "dft_LUMO_eV": -5.579,
+      "dft_LiC_bond_A": 2.0174,
+      "dft_wiberg_LiC": 0.5065,
+      "dft_dipole_D": 4.993,
+      "dft_Gsolv_kJ": -79.93,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 580.6
+    }
+  },
+  "[Li]c1c(C)sc2ccccc12": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4283,
+      "dft_charge_C_ipso": -0.257,
+      "dft_HOMO_eV": -9.195,
+      "dft_LUMO_eV": -5.986,
+      "dft_LiC_bond_A": 1.8887,
+      "dft_wiberg_LiC": 0.6901,
+      "dft_dipole_D": 6.635,
+      "dft_Gsolv_kJ": -68.92,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 444.5
+    }
+  },
+  "[Li]c1c(C)oc2ccccc12": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4184,
+      "dft_charge_C_ipso": -0.2851,
+      "dft_HOMO_eV": -9.14,
+      "dft_LUMO_eV": -5.748,
+      "dft_LiC_bond_A": 1.875,
+      "dft_wiberg_LiC": 0.7407,
+      "dft_dipole_D": 5.627,
+      "dft_Gsolv_kJ": -69.1,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 459.9
+    }
+  },
+  "[Li]Cc1ccc(C=O)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5015,
+      "dft_charge_C_ipso": -0.2499,
+      "dft_HOMO_eV": -9.094,
+      "dft_LUMO_eV": -7.034,
+      "dft_LiC_bond_A": 1.9785,
+      "dft_wiberg_LiC": 0.5309,
+      "dft_dipole_D": 8.455,
+      "dft_Gsolv_kJ": -78.1,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 363.5
+    }
+  },
+  "[Li]Cc1ccc(C(=O)CC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4906,
+      "dft_charge_C_ipso": -0.253,
+      "dft_HOMO_eV": -8.918,
+      "dft_LUMO_eV": -6.812,
+      "dft_LiC_bond_A": 1.9742,
+      "dft_wiberg_LiC": 0.5503,
+      "dft_dipole_D": 7.335,
+      "dft_Gsolv_kJ": -83.09,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 361.2
+    }
+  },
+  "[Li]c1ccccc1-c1ccccc1Br": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4303,
+      "dft_charge_C_ipso": -0.2221,
+      "dft_HOMO_eV": -8.963,
+      "dft_LUMO_eV": -6.862,
+      "dft_LiC_bond_A": 1.8957,
+      "dft_wiberg_LiC": 0.7295,
+      "dft_dipole_D": 6.322,
+      "dft_Gsolv_kJ": -71.07,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 433.4
+    }
+  },
+  "[Li]c1ccc(-c2ccc(Br)cc2)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.413,
+      "dft_charge_C_ipso": -0.2294,
+      "dft_HOMO_eV": -8.9,
+      "dft_LUMO_eV": -6.493,
+      "dft_LiC_bond_A": 1.9059,
+      "dft_wiberg_LiC": 0.7496,
+      "dft_dipole_D": 10.947,
+      "dft_Gsolv_kJ": -83.58,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 410.9
+    }
+  },
+  "[Li]CSCc1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4641,
+      "dft_charge_C_ipso": -0.223,
+      "dft_HOMO_eV": -8.444,
+      "dft_LUMO_eV": -6.225,
+      "dft_LiC_bond_A": 1.9412,
+      "dft_wiberg_LiC": 0.6792,
+      "dft_dipole_D": 5.3,
+      "dft_Gsolv_kJ": -68.34,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 370.4
+    }
+  },
+  "[Li]C(F)I": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5943,
+      "dft_charge_C_ipso": -0.1104,
+      "dft_HOMO_eV": -9.599,
+      "dft_LUMO_eV": -6.732,
+      "dft_LiC_bond_A": 2.0024,
+      "dft_wiberg_LiC": 0.2653,
+      "dft_dipole_D": 5.961,
+      "dft_Gsolv_kJ": -53.33,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 490.1
+    }
+  },
+  "[Li]CF": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4727,
+      "dft_charge_C_ipso": -0.1694,
+      "dft_HOMO_eV": -8.825,
+      "dft_LUMO_eV": -5.496,
+      "dft_LiC_bond_A": 1.9058,
+      "dft_wiberg_LiC": 0.6066,
+      "dft_dipole_D": 4.287,
+      "dft_Gsolv_kJ": -44.91,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 473.8
+    }
+  },
+  "[Li]c1cccc(C#N)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4289,
+      "dft_charge_C_ipso": -0.2284,
+      "dft_HOMO_eV": -9.14,
+      "dft_LUMO_eV": -6.505,
+      "dft_LiC_bond_A": 1.9116,
+      "dft_wiberg_LiC": 0.7328,
+      "dft_dipole_D": 9.332,
+      "dft_Gsolv_kJ": -74.72,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 418.4
+    }
+  },
+  "[Li]c1ccc(C#N)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4272,
+      "dft_charge_C_ipso": -0.2239,
+      "dft_HOMO_eV": -9.157,
+      "dft_LUMO_eV": -6.49,
+      "dft_LiC_bond_A": 1.9132,
+      "dft_wiberg_LiC": 0.7365,
+      "dft_dipole_D": 10.704,
+      "dft_Gsolv_kJ": -75.28,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 419.1
+    }
+  },
+  "[Li]c1ccccc1Br": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4765,
+      "dft_charge_C_ipso": -0.2368,
+      "dft_HOMO_eV": -9.314,
+      "dft_LUMO_eV": -5.991,
+      "dft_LiC_bond_A": 1.9147,
+      "dft_wiberg_LiC": 0.6507,
+      "dft_dipole_D": 2.958,
+      "dft_Gsolv_kJ": -56.67,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 477.7
+    }
+  },
+  "[Li]c1ccc(Br)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4279,
+      "dft_charge_C_ipso": -0.2311,
+      "dft_HOMO_eV": -9.158,
+      "dft_LUMO_eV": -5.906,
+      "dft_LiC_bond_A": 1.9095,
+      "dft_wiberg_LiC": 0.7364,
+      "dft_dipole_D": 10.151,
+      "dft_Gsolv_kJ": -68.68,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 420.9
+    }
+  },
+  "[Li]c1cccc(Br)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4358,
+      "dft_charge_C_ipso": -0.2293,
+      "dft_HOMO_eV": -9.177,
+      "dft_LUMO_eV": -5.95,
+      "dft_LiC_bond_A": 1.9094,
+      "dft_wiberg_LiC": 0.7264,
+      "dft_dipole_D": 8.948,
+      "dft_Gsolv_kJ": -68.66,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 420.6
+    }
+  },
+  "[Li]CCC[Si](C)(C)C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3938,
+      "dft_charge_C_ipso": -0.2882,
+      "dft_HOMO_eV": -7.874,
+      "dft_LUMO_eV": -5.009,
+      "dft_LiC_bond_A": 1.9119,
+      "dft_wiberg_LiC": 0.7783,
+      "dft_dipole_D": 3.993,
+      "dft_Gsolv_kJ": -58.78,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 388.5
+    }
+  },
+  "[Li]CCOC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4112,
+      "dft_charge_C_ipso": -0.3062,
+      "dft_HOMO_eV": -8.408,
+      "dft_LUMO_eV": -5.487,
+      "dft_LiC_bond_A": 1.9243,
+      "dft_wiberg_LiC": 0.7925,
+      "dft_dipole_D": 5.768,
+      "dft_Gsolv_kJ": -58.53,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 388.2
+    }
+  },
+  "[Li]CCOC1CCCCC1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4231,
+      "dft_charge_C_ipso": -0.3001,
+      "dft_HOMO_eV": -7.876,
+      "dft_LUMO_eV": -4.619,
+      "dft_LiC_bond_A": 1.9604,
+      "dft_wiberg_LiC": 0.6594,
+      "dft_dipole_D": 4.264,
+      "dft_Gsolv_kJ": -56.14,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 475.0
+    }
+  },
+  "[Li]CCCC=C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3962,
+      "dft_charge_C_ipso": -0.287,
+      "dft_HOMO_eV": -8.07,
+      "dft_LUMO_eV": -5.556,
+      "dft_LiC_bond_A": 1.9103,
+      "dft_wiberg_LiC": 0.7832,
+      "dft_dipole_D": 4.121,
+      "dft_Gsolv_kJ": -46.37,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 389.2
+    }
+  },
+  "[Li]c1ccc(OC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4014,
+      "dft_charge_C_ipso": -0.2409,
+      "dft_HOMO_eV": -8.577,
+      "dft_LUMO_eV": -5.42,
+      "dft_LiC_bond_A": 1.8984,
+      "dft_wiberg_LiC": 0.7627,
+      "dft_dipole_D": 5.775,
+      "dft_Gsolv_kJ": -68.87,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 407.4
+    }
+  },
+  "[Li]c1ccc([N+](=O)[O-])cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4503,
+      "dft_charge_C_ipso": -0.2167,
+      "dft_HOMO_eV": -9.584,
+      "dft_LUMO_eV": -7.927,
+      "dft_LiC_bond_A": 1.9221,
+      "dft_wiberg_LiC": 0.7145,
+      "dft_dipole_D": 12.377,
+      "dft_Gsolv_kJ": -85.23,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 434.6
+    }
+  },
+  "[Li]c1cccc(OC)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4078,
+      "dft_charge_C_ipso": -0.2298,
+      "dft_HOMO_eV": -8.549,
+      "dft_LUMO_eV": -5.441,
+      "dft_LiC_bond_A": 1.8971,
+      "dft_wiberg_LiC": 0.7533,
+      "dft_dipole_D": 4.694,
+      "dft_Gsolv_kJ": -69.24,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 405.4
+    }
+  },
+  "[Li]c1cccc([N+](=O)[O-])c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4497,
+      "dft_charge_C_ipso": -0.2209,
+      "dft_HOMO_eV": -9.561,
+      "dft_LUMO_eV": -8.082,
+      "dft_LiC_bond_A": 1.9063,
+      "dft_wiberg_LiC": 0.7111,
+      "dft_dipole_D": 8.883,
+      "dft_Gsolv_kJ": -80.38,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 436.7
+    }
+  },
+  "[Li]C1(c2ccc3ccccc3c2)CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5085,
+      "dft_charge_C_ipso": -0.1381,
+      "dft_HOMO_eV": -8.822,
+      "dft_LUMO_eV": -6.474,
+      "dft_LiC_bond_A": 1.8992,
+      "dft_wiberg_LiC": 0.4623,
+      "dft_dipole_D": 5.584,
+      "dft_Gsolv_kJ": -72.85,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 451.4
+    }
+  },
+  "[Li]C1(c2ccc(Cl)cc2)CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5165,
+      "dft_charge_C_ipso": -0.1381,
+      "dft_HOMO_eV": -9.082,
+      "dft_LUMO_eV": -6.246,
+      "dft_LiC_bond_A": 1.8998,
+      "dft_wiberg_LiC": 0.4709,
+      "dft_dipole_D": 7.178,
+      "dft_Gsolv_kJ": -69.94,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 458.7
+    }
+  },
+  "[Li]C1(C)OC1c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4921,
+      "dft_charge_C_ipso": -0.1484,
+      "dft_HOMO_eV": -8.743,
+      "dft_LUMO_eV": -5.777,
+      "dft_LiC_bond_A": 1.8798,
+      "dft_wiberg_LiC": 0.539,
+      "dft_dipole_D": 4.592,
+      "dft_Gsolv_kJ": -67.46,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 464.3
+    }
+  },
+  "[Li]C1OC1c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4727,
+      "dft_charge_C_ipso": -0.1795,
+      "dft_HOMO_eV": -8.66,
+      "dft_LUMO_eV": -6.219,
+      "dft_LiC_bond_A": 1.8829,
+      "dft_wiberg_LiC": 0.5754,
+      "dft_dipole_D": 4.283,
+      "dft_Gsolv_kJ": -61.63,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 489.1
+    }
+  },
+  "[Li]C1(c2ccc(C)cc2)CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5036,
+      "dft_charge_C_ipso": -0.1418,
+      "dft_HOMO_eV": -8.699,
+      "dft_LUMO_eV": -5.906,
+      "dft_LiC_bond_A": 1.8958,
+      "dft_wiberg_LiC": 0.4738,
+      "dft_dipole_D": 4.647,
+      "dft_Gsolv_kJ": -66.56,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 451.8
+    }
+  },
+  "[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5059,
+      "dft_charge_C_ipso": -0.1426,
+      "dft_HOMO_eV": -8.807,
+      "dft_LUMO_eV": -6.031,
+      "dft_LiC_bond_A": 1.9055,
+      "dft_wiberg_LiC": 0.4548,
+      "dft_dipole_D": 5.307,
+      "dft_Gsolv_kJ": -76.05,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 451.6
+    }
+  },
+  "[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4872,
+      "dft_charge_C_ipso": -0.146,
+      "dft_HOMO_eV": -8.719,
+      "dft_LUMO_eV": -5.85,
+      "dft_LiC_bond_A": 1.8958,
+      "dft_wiberg_LiC": 0.4706,
+      "dft_dipole_D": 5.491,
+      "dft_Gsolv_kJ": -81.12,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 458.1
+    }
+  },
+  "[Li]C1(c2ccccc2)CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5078,
+      "dft_charge_C_ipso": -0.142,
+      "dft_HOMO_eV": -8.754,
+      "dft_LUMO_eV": -5.966,
+      "dft_LiC_bond_A": 1.9035,
+      "dft_wiberg_LiC": 0.4477,
+      "dft_dipole_D": 4.792,
+      "dft_Gsolv_kJ": -61.53,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 456.5
+    }
+  },
+  "[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.6088,
+      "dft_charge_C_ipso": 0.0221,
+      "dft_HOMO_eV": -11.107,
+      "dft_LUMO_eV": -7.089,
+      "dft_LiC_bond_A": 2.0188,
+      "dft_wiberg_LiC": 0.2511,
+      "dft_dipole_D": 7.323,
+      "dft_Gsolv_kJ": -46.89,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 609.9
+    }
+  },
+  "[Li]c1nc(-c2ccccc2)sc1C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4227,
+      "dft_charge_C_ipso": -0.1798,
+      "dft_HOMO_eV": -9.007,
+      "dft_LUMO_eV": -6.888,
+      "dft_LiC_bond_A": 1.8816,
+      "dft_wiberg_LiC": 0.6019,
+      "dft_dipole_D": 4.921,
+      "dft_Gsolv_kJ": -77.43,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 483.0
+    }
+  },
+  "[Li]c1cc(-c2ccccc2)sc1C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4182,
+      "dft_charge_C_ipso": -0.2532,
+      "dft_HOMO_eV": -9.082,
+      "dft_LUMO_eV": -6.253,
+      "dft_LiC_bond_A": 1.8999,
+      "dft_wiberg_LiC": 0.7259,
+      "dft_dipole_D": 7.805,
+      "dft_Gsolv_kJ": -79.94,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 434.4
+    }
+  },
+  "[Li]c1c(C)sc(-c2ccccc2)c1C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4156,
+      "dft_charge_C_ipso": -0.2626,
+      "dft_HOMO_eV": -8.98,
+      "dft_LUMO_eV": -6.058,
+      "dft_LiC_bond_A": 1.9007,
+      "dft_wiberg_LiC": 0.7128,
+      "dft_dipole_D": 7.763,
+      "dft_Gsolv_kJ": -79.06,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 434.7
+    }
+  },
+  "[Li]c1ccc(C(C)=O)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4222,
+      "dft_charge_C_ipso": -0.2229,
+      "dft_HOMO_eV": -8.972,
+      "dft_LUMO_eV": -6.776,
+      "dft_LiC_bond_A": 1.9067,
+      "dft_wiberg_LiC": 0.7395,
+      "dft_dipole_D": 9.086,
+      "dft_Gsolv_kJ": -79.83,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 413.6
+    }
+  },
+  "[Li]c1ccc(C(=O)C(C)(C)C)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4169,
+      "dft_charge_C_ipso": -0.2275,
+      "dft_HOMO_eV": -8.845,
+      "dft_LUMO_eV": -6.486,
+      "dft_LiC_bond_A": 1.9045,
+      "dft_wiberg_LiC": 0.7457,
+      "dft_dipole_D": 8.225,
+      "dft_Gsolv_kJ": -85.2,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 409.4
+    }
+  },
+  "[Li]c1ccc(C(=O)C2CCCCC2)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4212,
+      "dft_charge_C_ipso": -0.2235,
+      "dft_HOMO_eV": -8.94,
+      "dft_LUMO_eV": -6.734,
+      "dft_LiC_bond_A": 1.9081,
+      "dft_wiberg_LiC": 0.7407,
+      "dft_dipole_D": 8.732,
+      "dft_Gsolv_kJ": -89.29,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 412.2
+    }
+  },
+  "[Li]c1ccc(C(=O)c2ccccc2)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4185,
+      "dft_charge_C_ipso": -0.2203,
+      "dft_HOMO_eV": -8.993,
+      "dft_LUMO_eV": -7.116,
+      "dft_LiC_bond_A": 1.9004,
+      "dft_wiberg_LiC": 0.7377,
+      "dft_dipole_D": 8.122,
+      "dft_Gsolv_kJ": -92.1,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 413.4
+    }
+  },
+  "[Li]c1ccc(C(=O)CCCC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4216,
+      "dft_charge_C_ipso": -0.2231,
+      "dft_HOMO_eV": -8.952,
+      "dft_LUMO_eV": -6.729,
+      "dft_LiC_bond_A": 1.9061,
+      "dft_wiberg_LiC": 0.7403,
+      "dft_dipole_D": 8.864,
+      "dft_Gsolv_kJ": -89.58,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 412.7
+    }
+  },
+  "[Li]c1ccc(C(=O)CCCC)s1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4969,
+      "dft_charge_C_ipso": -0.208,
+      "dft_HOMO_eV": -9.839,
+      "dft_LUMO_eV": -7.002,
+      "dft_LiC_bond_A": 1.8847,
+      "dft_wiberg_LiC": 0.6847,
+      "dft_dipole_D": 6.292,
+      "dft_Gsolv_kJ": -91.51,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 471.8
+    }
+  },
+  "[Li]c1ccnc(Br)c1Br": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5154,
+      "dft_charge_C_ipso": -0.2231,
+      "dft_HOMO_eV": -9.842,
+      "dft_LUMO_eV": -6.956,
+      "dft_LiC_bond_A": 1.9309,
+      "dft_wiberg_LiC": 0.6024,
+      "dft_dipole_D": 7.725,
+      "dft_Gsolv_kJ": -69.7,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 479.1
+    }
+  },
+  "[Li]c1cccnc1Br": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4889,
+      "dft_charge_C_ipso": -0.2479,
+      "dft_HOMO_eV": -9.454,
+      "dft_LUMO_eV": -6.503,
+      "dft_LiC_bond_A": 1.9204,
+      "dft_wiberg_LiC": 0.6318,
+      "dft_dipole_D": 4.216,
+      "dft_Gsolv_kJ": -61.22,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 484.5
+    }
+  },
+  "[Li]c1ccc(Br)nc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4458,
+      "dft_charge_C_ipso": -0.2458,
+      "dft_HOMO_eV": -9.294,
+      "dft_LUMO_eV": -6.381,
+      "dft_LiC_bond_A": 1.9115,
+      "dft_wiberg_LiC": 0.7171,
+      "dft_dipole_D": 11.483,
+      "dft_Gsolv_kJ": -74.01,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 423.5
+    }
+  },
+  "[Li]c1cccc(Br)n1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4581,
+      "dft_charge_C_ipso": -0.1447,
+      "dft_HOMO_eV": -9.156,
+      "dft_LUMO_eV": -6.617,
+      "dft_LiC_bond_A": 1.8981,
+      "dft_wiberg_LiC": 0.5963,
+      "dft_dipole_D": 4.645,
+      "dft_Gsolv_kJ": -64.06,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 463.8
+    }
+  },
+  "[Li]c1cccnc1[Li]": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.306,
+      "dft_charge_C_ipso": -0.2244,
+      "dft_HOMO_eV": -7.657,
+      "dft_LUMO_eV": -5.693,
+      "dft_LiC_bond_A": 1.904,
+      "dft_wiberg_LiC": 0.6484,
+      "dft_dipole_D": 6.257,
+      "dft_Gsolv_kJ": -92.48,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 381.3
+    }
+  },
+  "[Li]c1ccc([Li])nc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.373,
+      "dft_charge_C_ipso": -0.2484,
+      "dft_HOMO_eV": -7.391,
+      "dft_LUMO_eV": -5.184,
+      "dft_LiC_bond_A": 1.8823,
+      "dft_wiberg_LiC": 0.7689,
+      "dft_dipole_D": 2.759,
+      "dft_Gsolv_kJ": -98.6,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 354.4
+    }
+  },
+  "[Li]c1cccc([Li])n1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3576,
+      "dft_charge_C_ipso": -0.1465,
+      "dft_HOMO_eV": -7.78,
+      "dft_LUMO_eV": -5.763,
+      "dft_LiC_bond_A": 1.8582,
+      "dft_wiberg_LiC": 0.7028,
+      "dft_dipole_D": 8.221,
+      "dft_Gsolv_kJ": -96.11,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 366.9
+    }
+  },
+  "[Li]c1ccccn1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.402,
+      "dft_charge_C_ipso": -0.1481,
+      "dft_HOMO_eV": -8.447,
+      "dft_LUMO_eV": -5.887,
+      "dft_LiC_bond_A": 1.8783,
+      "dft_wiberg_LiC": 0.6378,
+      "dft_dipole_D": 3.539,
+      "dft_Gsolv_kJ": -57.02,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 438.9
+    }
+  },
+  "[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.5304,
+      "dft_charge_C_ipso": -0.2375,
+      "dft_HOMO_eV": -8.539,
+      "dft_LUMO_eV": -6.119,
+      "dft_LiC_bond_A": 1.9299,
+      "dft_wiberg_LiC": 0.4125,
+      "dft_dipole_D": 5.214,
+      "dft_Gsolv_kJ": -93.45,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 435.2
+    }
+  },
+  "[Li]c1cc(Br)cc(Br)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4687,
+      "dft_charge_C_ipso": -0.2274,
+      "dft_HOMO_eV": -9.757,
+      "dft_LUMO_eV": -6.449,
+      "dft_LiC_bond_A": 1.9204,
+      "dft_wiberg_LiC": 0.6927,
+      "dft_dipole_D": 10.2,
+      "dft_Gsolv_kJ": -77.2,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 438.2
+    }
+  },
+  "[Li]c1ccccc1-c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4119,
+      "dft_charge_C_ipso": -0.2229,
+      "dft_HOMO_eV": -8.69,
+      "dft_LUMO_eV": -6.33,
+      "dft_LiC_bond_A": 1.9044,
+      "dft_wiberg_LiC": 0.7238,
+      "dft_dipole_D": 4.83,
+      "dft_Gsolv_kJ": -64.58,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 433.3
+    }
+  },
+  "[Li]c1ccccc1I": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4634,
+      "dft_charge_C_ipso": -0.2364,
+      "dft_HOMO_eV": -9.286,
+      "dft_LUMO_eV": -6.278,
+      "dft_LiC_bond_A": 1.9224,
+      "dft_wiberg_LiC": 0.6535,
+      "dft_dipole_D": 3.514,
+      "dft_Gsolv_kJ": -61.65,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 471.5
+    }
+  },
+  "[Li]/C=C/c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3918,
+      "dft_charge_C_ipso": -0.2663,
+      "dft_HOMO_eV": -8.721,
+      "dft_LUMO_eV": -5.927,
+      "dft_LiC_bond_A": 1.8878,
+      "dft_wiberg_LiC": 0.7815,
+      "dft_dipole_D": 5.664,
+      "dft_Gsolv_kJ": -64.57,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 418.5
+    }
+  },
+  "[Li]C=C1CCCCC1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3721,
+      "dft_charge_C_ipso": -0.2928,
+      "dft_HOMO_eV": -8.348,
+      "dft_LUMO_eV": -5.05,
+      "dft_LiC_bond_A": 1.8802,
+      "dft_wiberg_LiC": 0.7854,
+      "dft_dipole_D": 4.319,
+      "dft_Gsolv_kJ": -53.85,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 417.0
+    }
+  },
+  "[Li]C(=C(c1ccccc1)c1ccc(OC)cc1)c1ccc(C#N)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4454,
+      "dft_charge_C_ipso": -0.2153,
+      "dft_HOMO_eV": -9.186,
+      "dft_LUMO_eV": -6.988,
+      "dft_LiC_bond_A": 1.9247,
+      "dft_wiberg_LiC": 0.61,
+      "dft_dipole_D": 11.298,
+      "dft_Gsolv_kJ": -109.72,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 429.0
+    }
+  },
+  "[Li]/C=C/c1ccc(OC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3878,
+      "dft_charge_C_ipso": -0.2688,
+      "dft_HOMO_eV": -8.659,
+      "dft_LUMO_eV": -5.738,
+      "dft_LiC_bond_A": 1.8873,
+      "dft_wiberg_LiC": 0.7863,
+      "dft_dipole_D": 4.863,
+      "dft_Gsolv_kJ": -73.56,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 417.5
+    }
+  },
+  "[Li]C(=C)c1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3932,
+      "dft_charge_C_ipso": -0.2337,
+      "dft_HOMO_eV": -8.495,
+      "dft_LUMO_eV": -5.983,
+      "dft_LiC_bond_A": 1.8999,
+      "dft_wiberg_LiC": 0.7263,
+      "dft_dipole_D": 4.674,
+      "dft_Gsolv_kJ": -59.22,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 409.1
+    }
+  },
+  "[Li]/C=C/C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3697,
+      "dft_charge_C_ipso": -0.2788,
+      "dft_HOMO_eV": -8.409,
+      "dft_LUMO_eV": -5.207,
+      "dft_LiC_bond_A": 1.8794,
+      "dft_wiberg_LiC": 0.8046,
+      "dft_dipole_D": 4.597,
+      "dft_Gsolv_kJ": -48.83,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 412.6
+    }
+  },
+  "[Li]/C=C\\C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3811,
+      "dft_charge_C_ipso": -0.2801,
+      "dft_HOMO_eV": -8.332,
+      "dft_LUMO_eV": -5.037,
+      "dft_LiC_bond_A": 1.8901,
+      "dft_wiberg_LiC": 0.782,
+      "dft_dipole_D": 4.871,
+      "dft_Gsolv_kJ": -44.89,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 418.0
+    }
+  },
+  "[Li]c1ccc(Cl)s1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4835,
+      "dft_charge_C_ipso": -0.2207,
+      "dft_HOMO_eV": -9.528,
+      "dft_LUMO_eV": -6.314,
+      "dft_LiC_bond_A": 1.8929,
+      "dft_wiberg_LiC": 0.7105,
+      "dft_dipole_D": 7.792,
+      "dft_Gsolv_kJ": -70.96,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 467.7
+    }
+  },
+  "[Li]c1ccc2c(ccn2C)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3873,
+      "dft_charge_C_ipso": -0.2401,
+      "dft_HOMO_eV": -8.288,
+      "dft_LUMO_eV": -5.194,
+      "dft_LiC_bond_A": 1.8936,
+      "dft_wiberg_LiC": 0.7729,
+      "dft_dipole_D": 3.883,
+      "dft_Gsolv_kJ": -71.51,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 397.1
+    }
+  },
+  "[Li]C#Cc1ccccc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3863,
+      "dft_charge_C_ipso": -0.2883,
+      "dft_HOMO_eV": -9.301,
+      "dft_LUMO_eV": -5.71,
+      "dft_LiC_bond_A": 1.8484,
+      "dft_wiberg_LiC": 0.8288,
+      "dft_dipole_D": 6.599,
+      "dft_Gsolv_kJ": -70.93,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 519.9
+    }
+  },
+  "[Li]C#Cc1ccc(OC)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3835,
+      "dft_charge_C_ipso": -0.2902,
+      "dft_HOMO_eV": -9.079,
+      "dft_LUMO_eV": -5.53,
+      "dft_LiC_bond_A": 1.8495,
+      "dft_wiberg_LiC": 0.832,
+      "dft_dipole_D": 6.305,
+      "dft_Gsolv_kJ": -79.82,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 517.8
+    }
+  },
+  "[Li]c1ccc(Cl)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4238,
+      "dft_charge_C_ipso": -0.232,
+      "dft_HOMO_eV": -9.004,
+      "dft_LUMO_eV": -5.795,
+      "dft_LiC_bond_A": 1.9069,
+      "dft_wiberg_LiC": 0.7406,
+      "dft_dipole_D": 8.262,
+      "dft_Gsolv_kJ": -68.09,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 417.5
+    }
+  },
+  "[Li]c1ccc(F)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4204,
+      "dft_charge_C_ipso": -0.2349,
+      "dft_HOMO_eV": -8.962,
+      "dft_LUMO_eV": -5.739,
+      "dft_LiC_bond_A": 1.9053,
+      "dft_wiberg_LiC": 0.7444,
+      "dft_dipole_D": 8.214,
+      "dft_Gsolv_kJ": -65.61,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 418.5
+    }
+  },
+  "[Li]c1ccc(C(F)(F)F)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4406,
+      "dft_charge_C_ipso": -0.223,
+      "dft_HOMO_eV": -9.311,
+      "dft_LUMO_eV": -6.074,
+      "dft_LiC_bond_A": 1.9106,
+      "dft_wiberg_LiC": 0.7251,
+      "dft_dipole_D": 10.354,
+      "dft_Gsolv_kJ": -70.19,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 425.7
+    }
+  },
+  "[Li]c1cccc(Cl)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4295,
+      "dft_charge_C_ipso": -0.227,
+      "dft_HOMO_eV": -9.008,
+      "dft_LUMO_eV": -5.828,
+      "dft_LiC_bond_A": 1.9082,
+      "dft_wiberg_LiC": 0.7335,
+      "dft_dipole_D": 7.48,
+      "dft_Gsolv_kJ": -67.59,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 416.6
+    }
+  },
+  "[Li]c1cccnc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.414,
+      "dft_charge_C_ipso": -0.2447,
+      "dft_HOMO_eV": -8.509,
+      "dft_LUMO_eV": -5.656,
+      "dft_LiC_bond_A": 1.905,
+      "dft_wiberg_LiC": 0.7438,
+      "dft_dipole_D": 7.05,
+      "dft_Gsolv_kJ": -64.31,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 399.1
+    }
+  },
+  "[Li]c1cc(C)cc(C)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3941,
+      "dft_charge_C_ipso": -0.2328,
+      "dft_HOMO_eV": -8.4,
+      "dft_LUMO_eV": -5.317,
+      "dft_LiC_bond_A": 1.897,
+      "dft_wiberg_LiC": 0.7641,
+      "dft_dipole_D": 5.396,
+      "dft_Gsolv_kJ": -65.81,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 397.8
+    }
+  },
+  "[Li]c1ccc(C(F)(F)F)cc1C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4317,
+      "dft_charge_C_ipso": -0.2322,
+      "dft_HOMO_eV": -9.231,
+      "dft_LUMO_eV": -5.964,
+      "dft_LiC_bond_A": 1.9161,
+      "dft_wiberg_LiC": 0.7085,
+      "dft_dipole_D": 10.433,
+      "dft_Gsolv_kJ": -71.38,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 428.7
+    }
+  },
+  "[Li]C#Cc1cccs1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4043,
+      "dft_charge_C_ipso": -0.2827,
+      "dft_HOMO_eV": -9.22,
+      "dft_LUMO_eV": -6.138,
+      "dft_LiC_bond_A": 1.8487,
+      "dft_wiberg_LiC": 0.8134,
+      "dft_dipole_D": 6.661,
+      "dft_Gsolv_kJ": -71.86,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 529.5
+    }
+  },
+  "[Li]C#Cc1ccc(N(C)C)cc1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3674,
+      "dft_charge_C_ipso": -0.296,
+      "dft_HOMO_eV": -8.429,
+      "dft_LUMO_eV": -5.099,
+      "dft_LiC_bond_A": 1.8434,
+      "dft_wiberg_LiC": 0.8474,
+      "dft_dipole_D": 3.832,
+      "dft_Gsolv_kJ": -82.81,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 500.5
+    }
+  },
+  "[Li]C#Cc1ccc(OC)c(OC)c1": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3838,
+      "dft_charge_C_ipso": -0.291,
+      "dft_HOMO_eV": -8.974,
+      "dft_LUMO_eV": -5.514,
+      "dft_LiC_bond_A": 1.846,
+      "dft_wiberg_LiC": 0.8319,
+      "dft_dipole_D": 7.059,
+      "dft_Gsolv_kJ": -90.53,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 514.2
+    }
+  },
+  "[Li]C#Cc1c(C)cc(C)cc1C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.3686,
+      "dft_charge_C_ipso": -0.2935,
+      "dft_HOMO_eV": -9.007,
+      "dft_LUMO_eV": -5.451,
+      "dft_LiC_bond_A": 1.8441,
+      "dft_wiberg_LiC": 0.8373,
+      "dft_dipole_D": 6.452,
+      "dft_Gsolv_kJ": -78.41,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 515.3
+    }
+  },
+  "[Li]c1ccccc1C(=O)OC(C)(C)C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4697,
+      "dft_charge_C_ipso": -0.2234,
+      "dft_HOMO_eV": -8.614,
+      "dft_LUMO_eV": -6.858,
+      "dft_LiC_bond_A": 1.941,
+      "dft_wiberg_LiC": 0.6048,
+      "dft_dipole_D": 3.66,
+      "dft_Gsolv_kJ": -74.1,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 522.9
+    }
+  },
+  "[Li]c1ccccc1C(=O)OC(C)C": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4711,
+      "dft_charge_C_ipso": -0.2219,
+      "dft_HOMO_eV": -8.673,
+      "dft_LUMO_eV": -6.916,
+      "dft_LiC_bond_A": 1.9459,
+      "dft_wiberg_LiC": 0.6065,
+      "dft_dipole_D": 3.45,
+      "dft_Gsolv_kJ": -72.16,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 524.0
+    }
+  },
+  "[Li]c1ccccc1C(=O)OC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4733,
+      "dft_charge_C_ipso": -0.2207,
+      "dft_HOMO_eV": -8.76,
+      "dft_LUMO_eV": -7.023,
+      "dft_LiC_bond_A": 1.9444,
+      "dft_wiberg_LiC": 0.6073,
+      "dft_dipole_D": 3.182,
+      "dft_Gsolv_kJ": -64.08,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 524.2
+    }
+  },
+  "[Li]c1ccccc1C(=O)OCC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4722,
+      "dft_charge_C_ipso": -0.2215,
+      "dft_HOMO_eV": -8.721,
+      "dft_LUMO_eV": -6.975,
+      "dft_LiC_bond_A": 1.9448,
+      "dft_wiberg_LiC": 0.6072,
+      "dft_dipole_D": 3.355,
+      "dft_Gsolv_kJ": -67.95,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 523.6
+    }
+  },
+  "[Li]c1ccccc1C#N": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4438,
+      "dft_charge_C_ipso": -0.2137,
+      "dft_HOMO_eV": -9.263,
+      "dft_LUMO_eV": -6.818,
+      "dft_LiC_bond_A": 1.9765,
+      "dft_wiberg_LiC": 0.6512,
+      "dft_dipole_D": 2.068,
+      "dft_Gsolv_kJ": -57.29,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 476.6
+    }
+  },
+  "[Li]c1ccccc1[N+](=O)[O-]": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.493,
+      "dft_charge_C_ipso": -0.221,
+      "dft_HOMO_eV": -9.518,
+      "dft_LUMO_eV": -8.534,
+      "dft_LiC_bond_A": 1.9477,
+      "dft_wiberg_LiC": 0.5614,
+      "dft_dipole_D": 3.5,
+      "dft_Gsolv_kJ": -59.66,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 553.6
+    }
+  },
+  "[Li]c1ccccc1OC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4284,
+      "dft_charge_C_ipso": -0.2462,
+      "dft_HOMO_eV": -8.558,
+      "dft_LUMO_eV": -5.015,
+      "dft_LiC_bond_A": 1.9124,
+      "dft_wiberg_LiC": 0.6598,
+      "dft_dipole_D": 5.311,
+      "dft_Gsolv_kJ": -59.65,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 473.3
+    }
+  },
+  "[Li]c1ccccc1C(=O)CCCC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.451,
+      "dft_charge_C_ipso": -0.2173,
+      "dft_HOMO_eV": -8.665,
+      "dft_LUMO_eV": -7.247,
+      "dft_LiC_bond_A": 1.9746,
+      "dft_wiberg_LiC": 0.5854,
+      "dft_dipole_D": 2.117,
+      "dft_Gsolv_kJ": -63.75,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 527.2
+    }
+  },
+  "[Li]c1ccccc1C(=O)CC": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.466,
+      "dft_charge_C_ipso": -0.2163,
+      "dft_HOMO_eV": -8.677,
+      "dft_LUMO_eV": -7.318,
+      "dft_LiC_bond_A": 1.9601,
+      "dft_wiberg_LiC": 0.596,
+      "dft_dipole_D": 1.968,
+      "dft_Gsolv_kJ": -62.31,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 522.2
+    }
+  },
+  "[Li]c1ccccc1C(C)=O": {
+    "status": "ok",
+    "descriptors": {
+      "dft_charge_Li": 0.4664,
+      "dft_charge_C_ipso": -0.2159,
+      "dft_HOMO_eV": -8.694,
+      "dft_LUMO_eV": -7.364,
+      "dft_LiC_bond_A": 1.9615,
+      "dft_wiberg_LiC": 0.5946,
+      "dft_dipole_D": 1.774,
+      "dft_Gsolv_kJ": -58.91,
+      "dft_method": "GFN2-xTB",
+      "dft_LiC_BDE_kJ": 522.5
+    }
+  }
+}

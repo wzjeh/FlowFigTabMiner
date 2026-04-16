@@ -34,6 +34,44 @@ data/*
 data/ml_lifetime/papers/
 data/ml_lifetime/.DS_Store
 data/ml_lifetime/.claude/
+data/ml_lifetime/gemini_table_extractions/
+data/ml_lifetime/gemini_compound_resolution.json
+data/ml_lifetime/method_b_results/
+data/ml_lifetime/clean_organolithium_unified.csv
+
+# ORCA binary/temp files (large, not useful in git)
+data/ml_lifetime/ts_calc/*.gbw
+data/ml_lifetime/ts_calc/*.densities
+data/ml_lifetime/ts_calc/*.densitiesinfo
+data/ml_lifetime/ts_calc/*.tmp
+data/ml_lifetime/ts_calc/*.hess
+data/ml_lifetime/ts_calc/*.engrad
+data/ml_lifetime/ts_calc/*.bas[0-9]
+data/ml_lifetime/ts_calc/*.cpcm
+data/ml_lifetime/ts_calc/*.cpcm_corr
+data/ml_lifetime/ts_calc/*.bibtex
+data/ml_lifetime/ts_calc/*.opt
+data/ml_lifetime/ts_calc/*.property.txt
+data/ml_lifetime/ts_calc/*.hostnames
+data/ml_lifetime/ts_calc/*.interp
+data/ml_lifetime/ts_calc/*_trj.xyz
+data/ml_lifetime/ts_calc/*_ALL_trj.xyz
+data/ml_lifetime/ts_calc/*_initial_path_trj.xyz
+data/ml_lifetime/ts_calc/*.allxyz
+data/ml_lifetime/ts_calc/*.final.interp
+# Keep only key scan geometries, skip per-step .gbw
+data/ml_lifetime/ts_calc/*.relaxscanact.dat
+data/ml_lifetime/ts_calc/*.relaxscanscf.dat
+
+# M06-2X fchk files (37 files, 36 MB total - can regenerate)
+data/ml_lifetime/m06_fchk/
+
+# Psi4/Multiwfn temp files
+CPprop.txt
+PEDRA.OUT*
+cavity.npz
+cavity.off*
+timer.dat
 !data/final_output/
 data/final_output/*
 !data/final_output/organolithium_tr_subdataset_vlm_enriched*.csv

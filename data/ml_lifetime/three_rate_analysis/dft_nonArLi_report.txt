@@ -1,0 +1,211 @@
+======================================================================
+DFT DESCRIPTORS FOR NON-ArLi LIFETIME PREDICTION
+======================================================================
+
+Arrhenius intermediates with DFT: 12
+  ArLi (has σ): 9
+  Non-ArLi (no σ): 3
+
+Non-ArLi intermediates:
+  oxiranyllithium                                    Ea= 35.6  t½(-40°C)=   8.010s
+  CHLi(I)(F) (iodofluoromethyllithium), lifetime 82  Ea= 16.2  t½(-40°C)=   1.270s
+  Li-CH2-F (fluoromethyllithium), lifetime 13 ms at  Ea= 49.2  t½(-40°C)=   0.037s
+
+======================================================================
+ANALYSIS 1: Train on ArLi → Predict Non-ArLi
+======================================================================
+
+  --- Ea ---
+  Model                     R²_train  oxiranyllith  CHLi(I)(F) (  Li-CH2-F (fl
+                                             35.57         16.21         49.17
+  dipole only                  0.713         35.77         28.77         38.80
+  dipole+Gsolv                 0.814         42.35         43.38         57.06
+  dipole+Gsolv+BDE             0.947         51.32         37.20         63.53
+  Ridge-9 (α=1.0)              0.724         25.37         42.28         34.48
+
+  Absolute errors (Ea):
+    dipole only                   0.20     12.56     10.37  MAE=7.71
+    dipole+Gsolv                  6.78     27.17      7.89  MAE=13.94
+    dipole+Gsolv+BDE             15.75     20.99     14.36  MAE=17.03
+    Ridge-9 (α=1.0)              10.20     26.07     14.69  MAE=16.99
+
+  --- ln_A ---
+  Model                     R²_train  oxiranyllith  CHLi(I)(F) (  Li-CH2-F (fl
+                                             15.90          7.76         28.28
+  dipole only                  0.627         17.87         13.69         19.68
+  dipole+Gsolv                 0.750         22.48         23.93         32.47
+  dipole+Gsolv+BDE             0.945         29.38         19.17         37.45
+  Ridge-9 (α=5.0)              0.667         -4.89         -2.95          6.07
+
+  Absolute errors (ln_A):
+    dipole only                   1.97      5.94      8.60  MAE=5.50
+    dipole+Gsolv                  6.58     16.17      4.19  MAE=8.98
+    dipole+Gsolv+BDE             13.48     11.42      9.16  MAE=11.35
+    Ridge-9 (α=5.0)              20.79     10.71     22.21  MAE=17.90
+
+======================================================================
+ANALYSIS 2: LOOCV on All 12 — Non-ArLi LOO Errors
+======================================================================
+
+  Ea LOO errors (DFT-best2, all 12):
+  Intermediate                                  Observed LOO pred    Error     Type
+  oxiranyllithium                                  35.57    37.35    -1.78 non-ArLi
+  tert-butyl 4-(lithio)benzoate (aryllithium)      14.97     5.47    +9.50     ArLi
+  methyl o-(lithio)benzoate                        36.53    46.47    -9.94     ArLi
+  (Br, Li substituents on benzene ring)            65.42    45.49   +19.93     ArLi
+  isopropyl o-(lithio)benzoate                     38.05    41.42    -3.37     ArLi
+  ethyl o-(lithio)benzoate                         41.26    43.04    -1.78     ArLi
+  (I, Li substituents on benzene ring)             59.73    41.89   +17.84     ArLi
+  CHLi(I)(F) (iodofluoromethyllithium), lifetim    16.21    39.36   -23.15 non-ArLi
+  Li-CH2-F (fluoromethyllithium), lifetime 13 m    49.17    43.73    +5.44 non-ArLi
+  tert-butyl o-(lithio)benzoate (aryllithium)      26.80    41.95   -15.15     ArLi
+  p-lithiobenzonitrile (from 1c)                    7.06    -6.51   +13.57     ArLi
+  m-lithiobenzonitrile (from 1b)                    4.83     9.22    -4.39     ArLi
+
+  ArLi MAE: 10.61
+  Non-ArLi MAE: 10.12
+
+  ln_A LOO errors (DFT-best2, all 12):
+  Intermediate                                  Observed LOO pred    Error     Type
+  oxiranyllithium                                  15.90    19.59    -3.69 non-ArLi
+  tert-butyl 4-(lithio)benzoate (aryllithium)       5.78    -4.08    +9.87     ArLi
+  methyl o-(lithio)benzoate                        18.99    24.19    -5.20     ArLi
+  (Br, Li substituents on benzene ring)            36.17    24.24   +11.93     ArLi
+  isopropyl o-(lithio)benzoate                     17.54    20.96    -3.42     ArLi
+  ethyl o-(lithio)benzoate                         20.31    22.08    -1.78     ArLi
+  (I, Li substituents on benzene ring)             36.16    21.29   +14.87     ArLi
+  CHLi(I)(F) (iodofluoromethyllithium), lifetim     7.76    21.31   -13.55 non-ArLi
+  Li-CH2-F (fluoromethyllithium), lifetime 13 m    28.28    23.95    +4.33 non-ArLi
+  tert-butyl o-(lithio)benzoate (aryllithium)       9.51    21.47   -11.96     ArLi
+  p-lithiobenzonitrile (from 1c)                    0.47    -6.16    +6.63     ArLi
+  m-lithiobenzonitrile (from 1b)                   -0.35     2.33    -2.68     ArLi
+
+  ArLi MAE: 7.59
+  Non-ArLi MAE: 7.19
+
+======================================================================
+ANALYSIS 3: Predicted Stability Ranking (All Intermediates)
+======================================================================
+
+  Model trained on 12 intermediates:
+  Ea = 84.61 -5.449·dipole +0.3467·Gsolv
+  ln_A = 51.50 -3.077·dipole +0.2849·Gsolv
+
+  Predicted stability ranking (t½ at -40°C, 97 intermediates):
+    # Intermediate                                  Class         dipole   Gsolv Ea_pred    t½_pred     t½_obs
+    1 Vinyllithium                                  vinylLi        11.30  -109.7   -15.0        617         --
+    2 dilithiopyridine                              ArLi            8.22   -96.1     6.5       64.3         --
+    3 aryllithium                                   ArLi           12.38   -85.2   -12.4       61.3         --
+    4 tert-butyl m-lithiobenzoate                   ArLi            8.36   -95.1     6.1       60.1         --
+    5 isopropyl m-lithiobenzoate                    ArLi            8.55   -93.8     5.5       54.8         --
+    6 tert-butyl p-lithiobenzoate                   ArLi            7.53   -95.6    10.5       50.5      4.817
+    7 isopropyl p-lithiobenzoate                    ArLi            7.79   -94.3     9.5       47.5         --
+    8 acyl-substituted aryllithium                  ArLi            8.12   -92.1     8.4         41         --
+    9 ethyl m-lithiobenzoate                        ArLi            8.65   -90.8     6.0       40.9         --
+   10 acyl-substituted aryllithium                  ArLi            8.86   -89.6     5.3       38.2         --
+   11 acyl-substituted aryllithium                  ArLi            8.73   -89.3     6.1       35.8         --
+   12 monolithiated 4,4'-dibromobiphenyl            ArLi           10.95   -83.6    -4.0       35.2         --
+   13 ethyl p-lithiobenzoate                        ArLi            7.86   -89.2    10.8       28.2         --
+   14 lithium acetylide                             carbanion       7.06   -90.5    14.8       26.1         --
+   15 dilithiopyridine                              ArLi            6.26   -92.5    18.5         26         --
+   16 acyl-substituted aryllithium                  ArLi            6.29   -91.5    18.6       23.7         --
+   17 1-triphenylsilyloxiranyllithium               oxiranylLi      5.21   -93.5    23.8       21.8         --
+   18 methyl m-lithiobenzoate                       ArLi            8.51   -85.1     8.7       21.6         --
+   19 acyl-substituted aryllithium                  ArLi            8.22   -85.2    10.3       20.3         --
+   20 methyl p-lithiobenzoate                       ArLi            7.99   -85.8    11.4       20.2         --
+   21 dilithiopyridine                              ArLi            2.76   -98.6    35.4       19.6         --
+   22 lithiobromopyridine                           ArLi           11.48   -74.0    -3.6       14.7         --
+   23 3,5-dibromophenyllithium                      ArLi           10.20   -77.2     2.3       14.7         --
+   24 m-nitrophenyllithium                          ArLi            8.88   -80.4     8.3       14.5         --
+   25 p-lithioacetophenone                          ArLi            9.09   -79.8     7.4       14.4         --
+   26 p-cyanophenyllithium                          ArLi           10.70   -75.3     0.2       13.7     16.520
+   27 p-propanoylbenzyllithium                      benzylLi        7.33   -83.1    15.8       12.8         --
+   28 3-lithio-2-methyl-5-phenylthiophene           ArLi            7.80   -79.9    14.4       10.4         --
+   29 p-formylbenzyllithium                         benzylLi        8.46   -78.1    11.5       10.1         --
+   30 3-lithio-2,4-dimethyl-5-phenylthiophene       ArLi            7.76   -79.1    14.9       9.35         --
+   31 m-cyanophenyllithium                          ArLi            9.33   -74.7     7.9       8.95     11.900
+   32 aryllithium / heteroaryllithium               ArLi           10.43   -71.4     3.0       8.42         --
+   33 aryllithium / heteroaryllithium               ArLi           10.35   -70.2     3.9       7.27         --
+   34 lithium acetylide                             carbanion       6.30   -79.8    22.6       6.88         --
+   35 oxiranyllithium intermediate                  oxiranylLi      5.49   -81.1    26.6       6.36         --
+   36 lithium acetylide                             carbanion       6.45   -78.4    22.3       6.16         --
+   37 p-bromophenyllithium                          ArLi           10.15   -68.7     5.5       5.87         --
+   38 lithiated 1-tert-butylsulfonyl-2-phenylazirid aziridinylLi    4.99   -79.9    29.7       4.91         --
+   39 lithium acetylide                             carbanion       3.83   -82.8    35.0       4.89         --
+   40 m-bromophenyllithium                          ArLi            8.95   -68.7    12.1       4.25         --
+   41 aryllithium / heteroaryllithium               ArLi            7.79   -71.0    17.6       3.99         --
+   42 4-lithio-5-methyl-2-phenylthiazole            ArLi            4.92   -77.4    31.0       3.69         --
+   43 lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide    oxiranylLi      5.31   -76.0    29.3       3.54         --
+   44 2,3-dibromo-4-lithiopyridine                  ArLi            7.72   -69.7    18.4       3.43         --
+   45 aryllithium / heteroaryllithium               ArLi            8.26   -68.1    16.0       3.34         --
+   46 lithium acetylide                             carbanion       6.66   -71.9    23.4       3.25         --
+   47 lithium oxiranyl anion                        oxiranylLi      7.18   -69.9    21.3       3.04         --
+   48 lithium acetylide                             carbanion       6.60   -70.9    24.1        2.9         --
+   49 primary alkyllithiums bearing an epoxide grou oxiranylLi      6.10   -72.1    26.4       2.88         --
+   50 2-bromo-2'-lithiobiphenyl                     ArLi            6.32   -71.1    25.5       2.73         --
+   51 lithiated 2-(2-naphthyl)ethylene oxide        ArLi            5.58   -72.8    28.9       2.71         --
+   52 aryllithium / heteroaryllithium               ArLi            7.48   -67.6    20.4       2.57         --
+   53 aryllithium / heteroaryllithium               ArLi            8.21   -65.6    17.1       2.53         --
+   54 Vinyllithium                                  vinylLi         4.86   -73.6    32.6       2.41         --
+   55 3-lithio-2-methylbenzothiophene               ArLi            6.63   -68.9    24.6       2.36         --
+   56 p-Anisyllithium                               ArLi            5.78   -68.9    29.3       1.87         --
+   57 tert-butyl o-lithiobenzoate                   ArLi            3.66   -74.1    39.0       1.86     51.910
+   58 2-methylbenzofuran-3-yllithium                ArLi            5.63   -69.1    30.0       1.84         --
+   59 aryllithium / heteroaryllithium               ArLi            7.05   -64.3    23.9       1.62         --
+   60 lithium carbenoid                             carbenoid       5.30   -68.3    32.0       1.56         --
+   61 aryllithium / heteroaryllithium               ArLi            3.88   -71.5    38.7        1.5         --
+   62 aryllithium                                   ArLi            4.69   -69.2    35.0       1.46         --
+   63 isopropyl o-lithiobenzoate                    ArLi            3.45   -72.2    40.8       1.43      5.627
+   64 aryllithium / heteroaryllithium               ArLi            5.40   -65.8    32.4       1.22         --
+   65 oxiranyllithium                               oxiranylLi      4.59   -67.5    36.2       1.18         --
+   66 (E)-β-styryllithium                           vinylLi         5.66   -64.6    31.4       1.15         --
+   67 primary alkyllithiums bearing an epoxide grou oxiranylLi      4.17   -68.2    38.3       1.13         --
+   68 lithium 4-methylstyrene oxide                 carbanion       4.65   -66.6    36.2       1.08         --
+   69 2-arylphenyllithium                           ArLi            4.83   -64.6    35.9      0.923         --
+   70 ethyl o-lithiobenzoate                        ArLi            3.35   -68.0    42.8      0.892      1.846
+   71 lithiobromopyridine                           ArLi            4.64   -64.1    37.1      0.832         --
+   72 α-phenyloxiranyllithium                       carbanion       4.79   -61.5    37.2      0.661      8.010
+   73 functional alkyllithiums                      alkylLi         5.77   -58.5    32.9      0.624         --
+   74 aryllithium                                   ArLi            5.31   -59.6    35.0      0.622         --
+   75 lithium oxiranyl anion                        oxiranylLi      4.28   -61.6    39.9      0.584         --
+   76 methyl o-lithiobenzoate                       ArLi            3.18   -64.1    45.1      0.565      0.602
+   77 lithiobromopyridine                           ArLi            4.22   -61.2    40.4      0.549         --
+   78 Vinyllithium                                  vinylLi         4.67   -59.2    38.6      0.502         --
+   79 3-(oxiran-2-yl)propyllithium                  oxiranylLi      4.12   -60.4    41.3      0.488         --
+   80 2-iodophenyllithium                           ArLi            3.51   -61.6    44.1      0.477      0.003
+   81 acyl-substituted aryllithium                  ArLi            2.12   -63.8    51.0      0.411         --
+   82 functional alkyllithiums                      alkylLi         3.99   -58.8    42.5        0.4         --
+   83 aryllithium                                   ArLi            3.50   -59.7    44.9      0.385         --
+   84 fluoroiodomethyllithium                       ArLi            5.96   -53.3    33.6      0.378      1.270
+   85 acyl-substituted aryllithium                  ArLi            1.97   -62.3    52.3      0.339         --
+   86 functional alkyllithiums                      alkylLi         4.26   -56.1    41.9      0.325         --
+   87 2-pyridyllithium                              ArLi            3.54   -57.0    45.6      0.294         --
+   88 tridecafluorohexyllithium                     ArLi            7.32   -46.9    28.5      0.275         --
+   89 primary alkyllithiums bearing an epoxide grou oxiranylLi      2.89   -58.0    48.8      0.275         --
+   90 Vinyllithium                                  vinylLi         4.32   -53.9    42.4      0.258         --
+   91 o-bromophenyllithium                          ArLi            2.96   -56.7    48.9      0.243      0.061
+   92 acyl-substituted aryllithium                  ArLi            1.77   -58.9    54.5      0.225         --
+   93 o-cyanophenyllithium                          ArLi            2.07   -57.3    53.5      0.205         --
+   94 Vinyllithium                                  vinylLi         4.60   -48.8    42.6      0.163         --
+   95 Vinyllithium                                  vinylLi         4.87   -44.9    42.5      0.116         --
+   96 functional alkyllithiums                      alkylLi         4.12   -46.4    46.1      0.111         --
+   97 fluoromethyllithium                           ArLi            4.29   -44.9    45.7     0.0993      0.037
+
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/dft_nonArLi_prediction.png
+  Saved: /Users/zhaowenyuan/Projects/FlowFigTabMiner/data/ml_lifetime/three_rate_analysis/dft_nonArLi_extrapolation.png
+
+======================================================================
+ANALYSIS 4: Applicability Domain
+======================================================================
+
+  Average training leverage: 1.000
+  3× threshold: 3.000
+
+  Non-ArLi leverage (9-DFT descriptor space):
+    oxiranyllithium                          h=1633.377 ⚠️ OUTSIDE AD
+    CHLi(I)(F) (iodofluoromethyllithium), li h=35715.427 ⚠️ OUTSIDE AD
+    Li-CH2-F (fluoromethyllithium), lifetime h=23460.099 ⚠️ OUTSIDE AD
+
+  Applicability domain (dipole+Gsolv model):
+    Inside AD (h ≤ 0.667): 87/97 intermediates
+    Outside AD: 10/97

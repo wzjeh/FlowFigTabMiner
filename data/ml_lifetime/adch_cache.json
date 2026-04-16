@@ -1,0 +1,150 @@
+{
+  "[Li]Cc1ccc(C(=O)CC)cc1": {
+    "adch_Li": 0.68997877,
+    "adch_C": -0.77477242
+  },
+  "[Li]c1ccc(C#N)cc1": {
+    "adch_Li": 0.69528113,
+    "adch_C": -0.54897685
+  },
+  "[Li]c1cccc(C#N)c1": {
+    "adch_Li": 0.69636855,
+    "adch_C": -0.55593741
+  },
+  "[Li]CCCC1CO1": {
+    "adch_Li": 0.6332394,
+    "adch_C": -0.73929769
+  },
+  "[Li]Cc1ccc(C=O)cc1": {
+    "adch_Li": 0.69257952,
+    "adch_C": -0.78645175
+  },
+  "[Li]c1ccccc1C(=O)OC(C)(C)C": {
+    "adch_Li": 0.6758028,
+    "adch_C": -0.51139066
+  },
+  "[Li]c1ccc([N+](=O)[O-])cc1": {
+    "adch_Li": 0.70394491,
+    "adch_C": -0.5367714
+  },
+  "[Li]C(F)I": {
+    "adch_Li": 0.68778012,
+    "adch_C": -0.48215804
+  },
+  "[Li]c1ccnc(Br)c1Br": {
+    "adch_Li": 0.68719071,
+    "adch_C": -0.53331921
+  },
+  "[Li]c1cc(-c2ccccc2)sc1C": {
+    "adch_Li": 0.7062893,
+    "adch_C": -0.61855215
+  },
+  "[Li]c1cccc(C(=O)OC(C)C)c1": {
+    "adch_Li": 0.68570776,
+    "adch_C": -0.55701854
+  },
+  "[Li]c1ccc(C(=O)OCC)cc1": {
+    "adch_Li": 0.68937177,
+    "adch_C": -0.54902439
+  },
+  "[Li]c1ccc(C(=O)OC(C)C)cc1": {
+    "adch_Li": 0.68935652,
+    "adch_C": -0.54897564
+  },
+  "[Li]c1c(C)oc2ccccc12": {
+    "adch_Li": 0.7786444,
+    "adch_C": -0.77865947
+  },
+  "[Li]c1cccc(C(=O)OCC)c1": {
+    "adch_Li": 0.68539921,
+    "adch_C": -0.55727112
+  },
+  "[Li]c1ccccc1C(=O)OC": {
+    "adch_Li": 0.67821562,
+    "adch_C": -0.51200997
+  },
+  "[Li]c1cccc(C(=O)OC)c1": {
+    "adch_Li": 0.68555426,
+    "adch_C": -0.5571569
+  },
+  "[Li]c1ccccc1C(=O)OC(C)C": {
+    "adch_Li": 0.63224128,
+    "adch_C": -0.50288088
+  },
+  "[Li]c1cccc(C(=O)OC(C)(C)C)c1": {
+    "adch_Li": 0.6856748,
+    "adch_C": -0.55701352
+  },
+  "[Li]c1ccc(C(=O)OC)cc1": {
+    "adch_Li": 0.68904082,
+    "adch_C": -0.5493631
+  },
+  "[Li]c1ccccc1C(=O)OCC": {
+    "adch_Li": 0.65771136,
+    "adch_C": -0.52005169
+  },
+  "[Li]c1cccc([N+](=O)[O-])c1": {
+    "adch_Li": 0.70412847,
+    "adch_C": -0.54344027
+  },
+  "[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C": {
+    "adch_Li": 0.64923054,
+    "adch_C": -0.34722714
+  },
+  "[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F": {
+    "adch_Li": 0.68173053,
+    "adch_C": -0.24076465
+  },
+  "[Li]CF": {
+    "adch_Li": 0.62343861,
+    "adch_C": -0.58494141
+  },
+  "[Li]C1(c2ccc(C)cc2)CO1": {
+    "adch_Li": 0.69902399,
+    "adch_C": -0.55142055
+  },
+  "[Li]c1ccc(C(=O)OC(C)(C)C)cc1": {
+    "adch_Li": 0.68930805,
+    "adch_C": -0.5489634
+  },
+  "[Li]c1ccccc1I": {
+    "adch_Li": 0.65054339,
+    "adch_C": -0.55189454
+  },
+  "[Li]c1c(C)sc2ccccc12": {
+    "adch_Li": 0.71012836,
+    "adch_C": -0.69665014
+  },
+  "[Li]C1(C)OC1c1ccccc1": {
+    "adch_Li": 0.67269493,
+    "adch_C": -0.48910316
+  },
+  "[Li]CSCc1ccccc1": {
+    "adch_Li": 0.64834794,
+    "adch_C": -0.65800609
+  },
+  "[Li]C1(c2ccc3ccccc3c2)CO1": {
+    "adch_Li": 0.70408338,
+    "adch_C": -0.55630867
+  },
+  "[Li]C1OC1c1ccccc1": {
+    "adch_Li": 0.63626989,
+    "adch_C": -0.55183124
+  },
+  "[Li]C1(c2ccc(Cl)cc2)CO1": {
+    "adch_Li": 0.70655848,
+    "adch_C": -0.55988765
+  },
+  "[Li]c1ccccc1Br": {
+    "adch_Li": 0.66657277,
+    "adch_C": -0.56457853
+  },
+  "[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1": {
+    "adch_Li": 0.70616673,
+    "adch_C": -0.52535132
+  },
+  "[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1": {
+    "adch_Li": 0.69713398,
+    "adch_C": -0.5071653
+  }
+}

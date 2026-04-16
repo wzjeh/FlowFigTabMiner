@@ -32,7 +32,8 @@ from collections import defaultdict
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-INPUT_CSV = os.path.join(PROJECT_ROOT, "data/final_output/organolithium_tr_subdataset_vlm_enriched.csv")
+# v2: use clean unified dataset (covers 34 ArLi with 3+ temps, was 15 from old enriched)
+INPUT_CSV = os.path.join(PROJECT_ROOT, "data/ml_lifetime/clean_organolithium_unified_descriptors.csv")
 OUTPUT_CSV = os.path.join(PROJECT_ROOT, "data/ml_lifetime/phase_a_halflives.csv")
 PLOT_DIR = os.path.join(PROJECT_ROOT, "data/ml_lifetime/phase_a_curves")
 
@@ -43,13 +44,21 @@ MIN_DECAY_DROP = 10  # percentage points
 
 
 def load_tr1_data():
-    """Load tR1 data, grouped by (intermediate_smiles, T)."""
+    """Load tR1 data, grouped by (intermediate_smiles, T).
+
+    Compatible with both old enriched and new clean unified datasets.
+    """
     groups = defaultdict(list)
     with open(INPUT_CSV) as f:
         for r in csv.DictReader(f):
-            if r["tR_step"] != "tR1":
+            # tR_step filter: accept "tR1" and "tR1+tR2" (use tR1 value)
+            tr_step = r.get("tR_step", "")
+            if not tr_step.startswith("tR1"):
                 continue
-            smi = r.get("intermediate_smiles", "").strip()
+            # SMILES: try canonical first, then raw
+            smi = r.get("intermediate_smiles_canonical", "").strip()
+            if not smi:
+                smi = r.get("intermediate_smiles", "").strip()
             t_str = r.get("T1_C", "").strip()
             tr_str = r.get("tR1_s", "").strip()
             y_str = r.get("yield_pct", "").strip()
@@ -59,7 +68,7 @@ def load_tr1_data():
             tR = float(tr_str)
             y = float(y_str)
             inter_name = r.get("intermediate", "")
-            paper = r.get("paper", "")[:50]
+            paper = r.get("paper_id", r.get("paper", ""))[:50]
             groups[(smi, T_C)].append({
                 "tR": tR, "yield": y,
                 "intermediate": inter_name, "paper": paper,

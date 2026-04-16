@@ -1,0 +1,224 @@
+{
+  "[Li]Cc1ccc(C(=O)CC)cc1": {
+    "file": "mol_000.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 23
+  },
+  "[Li]c1ccc(C#N)cc1": {
+    "file": "mol_001.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 13
+  },
+  "[Li]c1cccc(C#N)c1": {
+    "file": "mol_002.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 13
+  },
+  "[Li]CCCC1CO1": {
+    "file": "mol_003.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 16
+  },
+  "[Li]Cc1ccc(C=O)cc1": {
+    "file": "mol_004.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 17
+  },
+  "[Li]c1ccccc1C(=O)OC(C)(C)C": {
+    "file": "mol_005.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 27
+  },
+  "[Li]c1ccc([N+](=O)[O-])cc1": {
+    "file": "mol_006.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 14
+  },
+  "[Li]C(F)I": {
+    "file": "mol_007.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 5
+  },
+  "[Li]c1ccnc(Br)c1Br": {
+    "file": "mol_008.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 11
+  },
+  "[Li]c1cc(-c2ccccc2)sc1C": {
+    "file": "mol_009.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 22
+  },
+  "[Li]c1cccc(C(=O)OC(C)C)c1": {
+    "file": "mol_010.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 24
+  },
+  "[Li]c1ccc(C(=O)OCC)cc1": {
+    "file": "mol_011.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 21
+  },
+  "[Li]c1ccc(C(=O)OC(C)C)cc1": {
+    "file": "mol_012.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 24
+  },
+  "[Li]c1c(C)oc2ccccc12": {
+    "file": "mol_013.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 18
+  },
+  "[Li]c1cccc(C(=O)OCC)c1": {
+    "file": "mol_014.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 21
+  },
+  "[Li]c1ccccc1C(=O)OC": {
+    "file": "mol_015.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 18
+  },
+  "[Li]c1cccc(C(=O)OC)c1": {
+    "file": "mol_016.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 18
+  },
+  "[Li]c1ccccc1C(=O)OC(C)C": {
+    "file": "mol_017.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 24
+  },
+  "[Li]c1cccc(C(=O)OC(C)(C)C)c1": {
+    "file": "mol_018.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 27
+  },
+  "[Li]c1ccc(C(=O)OC)cc1": {
+    "file": "mol_019.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 18
+  },
+  "[Li]c1ccccc1C(=O)OCC": {
+    "file": "mol_020.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 21
+  },
+  "[Li]c1cccc([N+](=O)[O-])c1": {
+    "file": "mol_021.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 14
+  },
+  "[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C": {
+    "file": "mol_022.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 33
+  },
+  "[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F": {
+    "file": "mol_023.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 20
+  },
+  "[Li]CF": {
+    "file": "mol_024.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 5
+  },
+  "[Li]C1(c2ccc(C)cc2)CO1": {
+    "file": "mol_025.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 20
+  },
+  "[Li]c1ccc(C(=O)OC(C)(C)C)cc1": {
+    "file": "mol_026.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 27
+  },
+  "[Li]c1ccccc1I": {
+    "file": "mol_027.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 12
+  },
+  "[Li]c1c(C)sc2ccccc12": {
+    "file": "mol_028.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 18
+  },
+  "[Li]C1(C)OC1c1ccccc1": {
+    "file": "mol_029.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 20
+  },
+  "[Li]CSCc1ccccc1": {
+    "file": "mol_030.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 19
+  },
+  "[Li]C1(c2ccc3ccccc3c2)CO1": {
+    "file": "mol_031.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 23
+  },
+  "[Li]C1OC1c1ccccc1": {
+    "file": "mol_032.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 17
+  },
+  "[Li]C1(c2ccc(Cl)cc2)CO1": {
+    "file": "mol_033.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 17
+  },
+  "[Li]c1ccccc1Br": {
+    "file": "mol_034.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 12
+  },
+  "[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1": {
+    "file": "mol_035.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 27
+  },
+  "[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1": {
+    "file": "mol_036.xyz",
+    "li_idx": 0,
+    "c_idx": 1,
+    "n_atoms": 30
+  }
+}
