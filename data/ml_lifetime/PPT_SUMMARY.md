@@ -252,11 +252,15 @@ M06-2X/def2-SVP [7], ORCA 6.1.1 [12], NEB-TS → OptTS + Freq, 298.15 K
 
 ### 结果
 
-| 体系 | 气相 ΔH‡ | +CPCM(THF) ΔH‡ | 实验 Ea | 气/实 | CPCM/实 |
-|---|---|---|---|---|---|
-| oxiranylLi | 134.7 kJ/mol | **111.6 kJ/mol** | 35.6 | 4.1× | **3.4×** |
-| PhLi+THF | ~96 kJ/mol | — | 36.5 | 2.6× | — |
-| o-BrPhLi | **无势垒** (吸热) | — | 72.1 | — | — |
+注：气相/CPCM 值为 ΔH‡（焓垒），实验值为 Ea（Arrhenius），ΔH‡ ≈ Ea - RT ≈ Ea - 2.5 kJ/mol @298K。
+
+| 体系 | 气相 ΔH‡ | +CPCM ΔH‡ | 实验 Ea (ΔH‡) | 气相/实验 |
+|---|---|---|---|---|
+| oxiranylLi | 134.7 | **111.6** | 35.6 (33.1) | **3.8×** (Ea) / **4.1×** (ΔH‡) |
+| PhLi+THF | ~96 | — | 36.5 (34.1) | **2.6×** (Ea) |
+| o-BrPhLi | **无势垒** | — | 72.1 (69.7) | — (气相吸热) |
+
+单位：kJ/mol
 
 ### ΔS‡ 对比
 
@@ -514,7 +518,7 @@ Collum [14]: "只考虑 TS 端 is complete nonsense"
 
 ---
 
-## 10. 所有模型性能汇总表
+## 10. 所有模型性能汇总表（PPT 中可作为附录）
 
 | 模型 | 类别 | n | 目标 | 描述符 | LOO-R² | p | 备注 |
 |---|---|---|---|---|---|---|---|
@@ -535,7 +539,22 @@ Collum [14]: "只考虑 TS 端 is complete nonsense"
 
 ---
 
-## 11. PPT 建议结构（12 页）
+## 11. PPT 建议结构（12 页）+ 图表建议
+
+### 建议图表（8 张）
+
+| # | 图表类型 | 内容 | 对应页 | 数据来源 |
+|---|---|---|---|---|
+| Fig.1 | 示意图 | 有机锂聚集态在不同溶剂中的变化（六聚→四聚→二聚→单体） | p.2 | [15,17] 文献数据 |
+| Fig.2 | 柱状图 | 描述符层级对比：xTB (0.69) > HF (0.55) > M06-2X (0.41) > QTAIM (~0) | p.5 | Section 3.5 |
+| Fig.3 | 热力图 | LOCO 验证：3×2 矩阵，训练类→预测类，颜色=R²（全负值=全红） | p.6 | Section 4.3 |
+| Fig.4 | 散点图 | Ea vs lnA，标注 r=0.96，按类别着色，揭示补偿效应 | p.7 | phase_b_arrhenius.csv |
+| Fig.5 | Parity plot | Ea_pred vs Ea_exp，按类别着色+误差线，全局模型+类别模型对比 | p.8 | VALIDATED_MODELS.md |
+| Fig.6 | 能级图 | oxiranylLi 势垒：气相(134.7) → CPCM(111.6) → 实验(33.1)，标注各层贡献 | p.9 | Section 6 |
+| Fig.7 | 柱状图 | 三系统 ΔS‡ 对比：oxiranylLi(-121), PhLi(-125), o-BrPhLi(+77)，标注机制类型 | p.9 | Section 5 |
+| Fig.8 | 流程图 | 建模管线：SMILES → xTB → 描述符 → 分类 → 预测（已在 Section 9.1） | p.10 | Section 9.1 |
+
+### 12 页结构
 
 1. **背景**：有机锂中间体在流动化学中的重要性 → 需要稳定性预测工具 [1]
 2. **聚集态专题** [14,15,17,18]：有机锂在不同溶剂中的聚集态表（六聚体→二聚体→单体），Schlenk 平衡，聚集态如何影响表观 Ea
@@ -552,7 +571,7 @@ Collum [14]: "只考虑 TS 端 is complete nonsense"
 
 ---
 
-## 10. 参考文献
+## 12. 参考文献
 
 [1] De Gennaro, L.; Fanelli, F.; Luisi, R. "Organolithium Compounds in Flow Chemistry." *Lithium Compounds in Organic Synthesis*, Wiley, 2014, Chapter 18, pp. 513–548. — 有机锂分解动力学综述，Arrhenius 数据主要来源，LFER (σ+Es+δ) 模型基础。
 
