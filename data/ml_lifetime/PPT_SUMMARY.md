@@ -1,6 +1,6 @@
 # 有机锂中间体分解动力学预测：模型与描述符筛选全景
 
-> 本文档汇总所有建模尝试、描述符对比和结论，用于制作 PPT。
+> 本文档汇总所有建模尝试、描述符对比和结论，用于制作 PPT。所有引用以 [n] 标注，参考文献列表见末尾。
 
 ---
 
@@ -12,10 +12,10 @@
 - 半衰期 t½ (s)（在指定温度下）
 
 ### 应用场景
-流动化学反应器选型：flash mixing (<1 s) / flow reactor (1–1000 s) / batch (>1000 s)
+流动化学反应器选型：flash mixing (<1 s) / flow reactor (1–1000 s) / batch (>1000 s) [1]
 
 ### 数据集
-- **75 个有机锂中间体**，从 12 篇文献中提取
+- **75 个有机锂中间体**，从 12 篇文献中提取（主要来源：[1–6]）
 - **40 个有 Arrhenius 参数**（Ea + lnA），其中 26 个为可靠数据（≥3 个温度拟合，R² > 0.95）
 - **类别分布**：ArLi (45), oxiranylLi (12), carbanion (6), alkylLi (5), 其他 (7)
 - **溶剂**：THF / THF-hexane 4:1（所有数据统一）
@@ -29,10 +29,10 @@
 | 层级 | 方法 | 软件 | 成本/化合物 | 描述符数量 |
 |---|---|---|---|---|
 | **Level 0** | 文献经验参数 | 查表 | 0 | 3 (σ, Es, δ) |
-| **Level 1** | GFN2-xTB 半经验 | tblite + morfeus | ~秒 | 12 |
-| **Level 2** | HF/def2-SVP | Psi4 | ~分钟 | 3 |
-| **Level 3** | M06-2X/def2-SVP | Psi4 + Multiwfn | ~10分钟 | 5 |
-| **Level 4** | M06-2X/def2-SVP TS | ORCA | ~小时-天 | 3 (仅3个化合物) |
+| **Level 1** | GFN2-xTB 半经验 [8] | tblite + morfeus [9] | ~秒 | 12 |
+| **Level 2** | HF/def2-SVP | Psi4 [10] | ~分钟 | 3 |
+| **Level 3** | M06-2X/def2-SVP [7] | Psi4 + Multiwfn [11] | ~10分钟 | 5 |
+| **Level 4** | M06-2X/def2-SVP TS [7] | ORCA [12] | ~小时-天 | 3 (仅3个化合物) |
 
 ### Level 1: xTB 描述符（最终采用）
 
@@ -64,7 +64,7 @@
 
 ### 3.1 经验 LFER 模型（σ + Es + δ）
 
-来源：De Gennaro 2014 综述中的 Hammett-Taft 四参数模型。
+来源：De Gennaro 2014 综述 [1] 中的 Hammett-Taft 四参数模型（σ 值取自 Hansch 1991 [13]）。
 
 | 模型 | 数据 | 结果 |
 |---|---|---|
@@ -136,7 +136,7 @@
 | M06-2X + ADCH | Hirshfeld charge | 0.40 | 10 分钟 | 同上 |
 | QTAIM | ρ(BCP) | ~0 | 20 分钟 | 完全失败 |
 
-**关键发现：更昂贵的理论层级并不带来更好的描述符。** xTB 的半经验方法虽然近似，但对有机锂体系的相对趋势捕捉得最好。DFT 的 Mulliken 电荷对基组更敏感（噪声更大），反而降低了预测能力。
+**关键发现：更昂贵的理论层级并不带来更好的描述符。** xTB [8] 的半经验方法虽然近似，但对有机锂体系的相对趋势捕捉得最好。DFT 的 Mulliken 电荷对基组更敏感（噪声更大），反而降低了预测能力。这与 Collum [14] 的观察一致：溶液相动力学的复杂性（聚集态、溶剂配位）远超气相电子结构的精度差异。
 
 ---
 
@@ -187,20 +187,20 @@ Ea 和 lnA 高度相关（r = 0.96）：
 
 这意味着：**高 Ea 不一定意味着更稳定**，因为高 lnA 会部分补偿。
 
-### 聚集态的贡献（Collum 2007, Angew. Chem.）
+### 聚集态的贡献 [14]
 
-有机锂在 THF 中以二聚体/四聚体存在，反应前可能需要解聚。实验测得的 Ea 是**表观活化能**，包含多个贡献：
+有机锂在 THF 中以二聚体/四聚体存在 [14,15]，反应前可能需要解聚。实验测得的 Ea 是**表观活化能**，包含多个贡献：
 
 ```
 Ea_obs = Ea_intrinsic(单体) + ΔH_deaggregation + ΔH_solvent_reorganization
 ```
 
-Collum 的关键发现：
-- **二聚体可以比单体更活泼**（Section 3.3）：>60% 的 LDA 反应经二聚体路径
-- **解聚不一定需要额外溶剂化**（Section 3.4）：60% 的速率方程对溶剂浓度零级
-- **底物依赖的机制是常态**（Section 3.2）：不同底物在同一溶剂中走不同路径
+Collum [14] 的关键发现：
+- **二聚体可以比单体更活泼** [14, Section 3.3]：>60% 的 LDA 反应经二聚体路径
+- **解聚不一定需要额外溶剂化** [14, Section 3.4]：60% 的速率方程对溶剂浓度零级
+- **底物依赖的机制是常态** [14, Section 3.2]：不同底物在同一溶剂中走不同路径
 
-Ramachandran 2010 (J. Phys. Chem. A) 的定量数据 (M06-2X/6-31+G(d))：
+Ramachandran 等 [7] 的定量数据 (M06-2X/6-31+G(d), SI)：
 
 | 状态 | LiMeCl 环丙烷化势垒 | 变化 |
 |---|---|---|
@@ -222,7 +222,7 @@ Ramachandran 2010 (J. Phys. Chem. A) 的定量数据 (M06-2X/6-31+G(d))：
 - **解聚**：释放片段 → 正贡献
 - **溶剂重组/配位变化**：THF 分子被组织 → 负贡献
 - **TS 构象受限**：键断裂时的几何约束 → 负贡献
-- **混合聚集体效应**（Collum Section 3.14）：方向不定
+- **混合聚集体效应** [14, Section 3.14]：方向不定
 
 | 体系 | 实验 ΔS‡ | 主要贡献 |
 |---|---|---|
@@ -240,7 +240,7 @@ Ramachandran 2010 (J. Phys. Chem. A) 的定量数据 (M06-2X/6-31+G(d))：
 用 DFT 过渡态计算验证"为什么基态描述符比精确 TS 计算更实用"。
 
 ### 方法
-M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
+M06-2X/def2-SVP [7], ORCA 6.1.1 [12], NEB-TS → OptTS + Freq, 298.15 K
 
 ### 三个代表体系
 
@@ -268,24 +268,24 @@ M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
 
 ### 溶剂化效应分解（oxiranylLi，修正版）
 
-注意：气相 TS 计算的是**单体固有势垒**，而实验 Ea 是**表观活化能**（包含聚集态和溶剂效应）。两者不能直接比较，但差距揭示了溶液相效应的量级。
+注意：气相 TS 计算的是**单体固有势垒**，而实验 Ea 是**表观活化能**（包含聚集态和溶剂效应）[14]。两者不能直接比较，但差距揭示了溶液相效应的量级。
 
 ```
 气相单体 ΔH‡ = 134.7 kJ/mol    ← 我们的 TS 计算
   ↓ CPCM(THF) — 介电稳定（GS 和 TS 差异化稳定）
 111.6 kJ/mol (−23.1 kJ/mol, 23%)
-  ↓ 显式 Li·(THF)₂₋₃ — 文献参考: Ramachandran 报道 3THF 降低 31 kJ/mol
+  ↓ 显式 Li·(THF)₂₋₃ — 文献参考: Ramachandran 报道 3THF 降低 31 kJ/mol [7]
 ~80 kJ/mol (估计)
-  ↓ 聚集态效应 — 方向取决于机制：
+  ↓ 聚集态效应 — 方向取决于机制 [14]：
      若经单体路径: 解聚能升高表观 Ea (+20~30 kJ/mol)
-     若经二聚体路径: Collum 证明二聚体路径常见
+     若经二聚体路径: Collum 证明二聚体路径常见 [14]
   ↓ 溶剂动力学 (ΔS‡ 贡献) — 只有 MD 能算
 实验 Ea = 35.6 kJ/mol (表观值)
 
-关键: 溶剂同时稳定基态和过渡态 (Collum 2007 Section 3.11)
+关键: 溶剂同时稳定基态和过渡态 [14, Section 3.11]
      净效应 = ΔΔG_solv(TS) - ΔΔG_solv(GS)
      "只考虑溶剂对 TS 的效应而忽略对基态的效应，
-      is complete nonsense" — Collum
+      is complete nonsense" — Collum [14]
 ```
 
 **结论：气相/CPCM 与实验的差距来自四个维度——介电(23%)、显式配位(~30%)、聚集态(方向不定)、溶剂动力学(~ΔS‡ 贡献)——都无法由静态单分子计算捕捉。**
@@ -301,7 +301,7 @@ M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
 - **o-ArLi (o-BrPhLi)**：苯炔消除（ΔS‡ = +77，碎裂型 TS）
 
 **统计证据**：LOCO R² < -12 证明跨类别预测完全失败。
-**文献支撑**：Collum 2007 指出 "substrate-dependent mechanisms may be the rule, not the exception"（Section 3.2）。
+**文献支撑**：Collum [14] 指出 "substrate-dependent mechanisms may be the rule, not the exception"（Section 3.2）。
 
 ### 7.2 描述符层级悖论
 更昂贵的 DFT 描述符并不比廉价的 xTB 描述符更好：
@@ -309,13 +309,13 @@ M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
 - M06-2X Mulliken charge → LOO-R² = 0.41
 - QTAIM ρ(BCP) → r ≈ 0
 
-原因：预测模型的瓶颈不在"基态电子结构精度"，而在"溶液相动力学复杂性"——聚集态、溶剂配位、动态熵效应（Collum 2007）。更精确的气相电子结构反而引入了与溶液行为不相关的噪声。
+原因：预测模型的瓶颈不在"基态电子结构精度"，而在"溶液相动力学复杂性"——聚集态、溶剂配位、动态熵效应 [14]。更精确的气相电子结构反而引入了与溶液行为不相关的噪声。
 
 ### 7.3 TS 计算不可行
 - 气相单体 TS 高估 2.6–4.1×（注意：比较的是单体固有势垒 vs 表观 Ea）
 - +CPCM(THF) 仅修正 23%（介电效应），ΔS‡ 修正 0%
 - 苯炔消除在气相无过渡态（吸热反应，需要溶剂化 LiBr 才有势垒）
-- 文献参考：Ramachandran 2010 的显式 3THF 降低势垒 31 kJ/mol，但聚集态又升高 24 kJ/mol
+- 文献参考：Ramachandran [7] 的显式 3THF 降低势垒 31 kJ/mol，但聚集态又升高 24 kJ/mol
 - 精确 TS 需要微溶剂化 + 聚集态采样 + AIMD（天-周/化合物），无法扩展
 
 ### 7.4 推荐策略
@@ -334,13 +334,6 @@ M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
 - lnA（∝ΔS‡）无法从基态描述符完全预测 → t½ 精度受限（因为 ΔS‡ 受聚集态和溶剂动力学主导）
 - 对新结构类别（如杂环 ArLi）需要新的实验数据
 - 聚集态信息未显式纳入（当前模型假设所有化合物在 THF 中的聚集行为类似）
-
-### 7.6 文献支撑
-| 文献 | 与本工作的关系 |
-|---|---|
-| Collum 2007, Angew. Chem. | ΔS‡ 的多重贡献、聚集态 TS、底物依赖的机制 |
-| Ramachandran 2010, J. Phys. Chem. A | M06-2X 最佳泛函；聚集态 +24 kJ/mol、溶剂化 -31 kJ/mol |
-| De Gennaro 2014, Chem. Rev. | 有机锂分解动力学数据源；LFER 基础 |
 
 ---
 
@@ -379,3 +372,39 @@ M06-2X/def2-SVP, ORCA 6.1.1, NEB-TS → OptTS + Freq, 298.15 K
    - ΔS‡: CPCM +1.1 vs 实验 -121（0% 改善）→ 静态计算原理性失败
 9. **ΔS‡ 揭示机制多样性**：解聚/溶剂重组/碎裂的叠加，不同类别符号不同
 10. **结论**：基态描述符 QSPR 是唯一可行且有效的预测路线（描述符隐式编码溶液相效应）
+
+---
+
+## 10. 参考文献
+
+[1] De Gennaro, L.; Fanelli, F.; Luisi, R. "Organolithium Compounds in Flow Chemistry." *Lithium Compounds in Organic Synthesis*, Wiley, 2014, Chapter 18, pp. 513–548. — 有机锂分解动力学综述，Arrhenius 数据主要来源，LFER (σ+Es+δ) 模型基础。
+
+[2] Nagaki, A.; Ichinari, D.; Yoshida, J. "Three-Component Coupling Based on Flash Chemistry." *J. Am. Chem. Soc.* **2014**, 136, 12245–12248. — o-BrPhLi、o-IPhLi 等 ArLi 热稳定性数据。
+
+[3] Nagaki, A.; Takahashi, Y.; Yoshida, J. "Generation and Reaction of Oxiranyllithium Using Flow Microreactor." *Angew. Chem. Int. Ed.* **2019**, 58, 4027–4030. — oxiranylLi 类分解动力学数据。
+
+[4] Nagaki, A.; Yamada, D.; Yoshida, J. "Flow Microreactor Synthesis Involving Alkoxycarbonyl ortho-Lithioaryl." *J. Flow Chem.* **2008**, 1–8. — o-CO₂R-ArLi 分解 Arrhenius 参数。
+
+[5] Musci, P.; et al. "Flow Microreactor Technology for Lithium Carbenoid Generation." *React. Chem. Eng.* **2020**, 5, 935–941. — 卡宾类 LiCHXY 分解动力学。
+
+[6] Stanetty, P.; Koller, H.; Mihovilovic, M. "Directed Ortho-Lithiation of Phenylcarbamic Acid tert-Butyl Ester. Revision of the Synthesis of Methyl 2-Amino-benzoate from Aniline." *J. Org. Chem.* **1992**, 57, 6833–6837. — PhLi 分解参考数据。
+
+[7] Ramachandran, B.; Kharidehal, P.; Pratt, L. M.; Voit, S.; Okeke, F. N.; Ewan, M. "Computational Strategies for Reactions of Aggregated and Solvated Organolithium Carbenoids." *J. Phys. Chem. A* **2010**, 114, 8423–8433. — **M06-2X 被确认为有机锂最佳 DFT 泛函**（误差 2.47 kcal/mol）。SI 数据：聚集态升高势垒 +24 kJ/mol，3THF 溶剂化降低 -31 kJ/mol。14 种泛函基准测试。
+
+[8] Bannwarth, C.; Ehlert, S.; Grimme, S. "GFN2-xTB — An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method with Multipole Electrostatics and Density-Dependent Dispersion Contributions." *J. Chem. Theory Comput.* **2019**, 15, 1652–1671. — GFN2-xTB 半经验方法，本工作描述符计算的主要理论层级。
+
+[9] Falivene, L.; et al. "SambVca 2. A Web Tool for Analyzing Catalytic Pockets with Topographic Steric Maps." *Organometallics* **2016**, 35, 2286–2293. — 埋藏体积 (%Vbur) 和 Sterimol 参数计算（通过 morfeus 实现）。
+
+[10] Smith, D. G. A.; et al. "PSI4 1.4: Open-Source Software for High-Throughput Quantum Chemistry." *J. Chem. Phys.* **2020**, 152, 184108. — Psi4 量子化学软件，HF 和 M06-2X 单点计算。
+
+[11] Lu, T.; Chen, F. "Multiwfn: A Multifunctional Wavefunction Analyzer." *J. Comput. Chem.* **2012**, 33, 580–592. — Multiwfn 波函数分析，QTAIM BCP 性质和 ADCH 电荷计算。
+
+[12] Neese, F. "Software Update: The ORCA Program System—Version 5.0." *WIREs Comput. Mol. Sci.* **2022**, 12, e1606. — ORCA 量子化学软件，NEB-TS 过渡态搜索。
+
+[13] Hansch, C.; Leo, A.; Taft, R. W. "A Survey of Hammett Substituent Constants and Resonance and Field Parameters." *Chem. Rev.* **1991**, 91, 165–195. — Hammett σ 取代基常数来源。
+
+[14] Collum, D. B.; McNeil, A. J.; Ramirez, A. "Lithium Diisopropylamide: Solution Kinetics and Implications for Organic Synthesis." *Angew. Chem. Int. Ed.* **2007**, 46, 3002–3017. — **有机锂溶液动力学经典综述**。关键论断：(a) 速率方程揭示 TS 聚集态/溶剂化计量；(b) 二聚体路径普遍（>60%）；(c) 底物依赖的机制是常态；(d) 溶剂同时影响基态和 TS，不可只考虑 TS 端；(e) 解聚不一定需要额外溶剂化。
+
+[15] Seebach, D. "Structure and Reactivity of Lithium Enolates. From Pinacolone to Selective C-Alkylations of Peptides." *Angew. Chem. Int. Ed. Engl.* **1988**, 27, 1624–1654. — 有机锂聚集态结构的早期晶体学研究。
+
+[16] Verkhov, V. A.; et al. "Analysis of Chemical Bonding in Lithium Molecular Compounds Based on the Electron Density and Electron Localization Function." *J. Chem. Phys.* **2025**, 162, 044114. — QTAIM/ELF 描述符对 C-Li 键分类（84-89% 准确率），ELF basin population 是最重要描述符。
