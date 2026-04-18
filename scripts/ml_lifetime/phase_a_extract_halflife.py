@@ -115,6 +115,13 @@ def _formation_only(tR, k_f, y_max):
     return y_max * (1.0 - np.exp(-k_f * tR))
 
 
+def _decay_only(tR, k_d, y0):
+    """Pure exponential decay from plateau.
+    yield = y0 * exp(-k_d * tR)
+    """
+    return y0 * np.exp(-k_d * tR)
+
+
 def fit_curve(tR_arr, y_arr):
     """Fit competing kinetics model. Returns dict of fitted params or None."""
     tR = np.array(tR_arr, dtype=float)
@@ -130,7 +137,7 @@ def fit_curve(tR_arr, y_arr):
     tR_peak = tR[peak_idx]
 
     # Check if decay is visible
-    has_decay = (peak_idx < len(y) - 1) and (y_peak - y[-1] > MIN_DECAY_DROP)
+    has_decay = (peak_idx < len(y) - 1) and (y_peak - y[-1] >= MIN_DECAY_DROP)
 
     if has_decay:
         # Fit competing kinetics
@@ -178,7 +185,47 @@ def fit_curve(tR_arr, y_arr):
         except (RuntimeError, ValueError):
             pass
 
-    # Fallback: formation-only (no measurable decay)
+    # Fallback 1: if decay visible but competing model failed/gave t½>1e6,
+    # try fitting only the decay portion (data from peak onward) with pure
+    # exponential. This handles "plateau + slow decay" cases.
+    if has_decay and peak_idx > 0:
+        tR_decay = tR[peak_idx:]
+        y_decay = y[peak_idx:]
+        if len(tR_decay) >= 3:
+            # Shift tR so decay starts at 0
+            tR_shifted = tR_decay - tR_decay[0]
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    popt_d, _ = curve_fit(
+                        _decay_only, tR_shifted, y_decay,
+                        p0=[0.1, y_peak],
+                        bounds=([1e-10, 1.0], [1e6, 150.0]),
+                        maxfev=10000,
+                    )
+                k_d_pure, y0 = popt_d
+                t_half_pure = np.log(2) / k_d_pure
+                y_pred_d = _decay_only(tR_shifted, *popt_d)
+                ss_res_d = np.sum((y_decay - y_pred_d) ** 2)
+                ss_tot_d = np.sum((y_decay - np.mean(y_decay)) ** 2)
+                r2_d = 1.0 - ss_res_d / ss_tot_d if ss_tot_d > 0 else 0.0
+
+                if t_half_pure < 1e6 and r2_d > 0.3:
+                    return {
+                        "model": "competing",
+                        "k_f": 1e6,  # formation assumed fast
+                        "k_d": k_d_pure,
+                        "t_half": t_half_pure,
+                        "t_peak": tR_peak,
+                        "y_max": y0,
+                        "r2": r2_d,
+                        "tR_data": tR,
+                        "y_data": y,
+                    }
+            except (RuntimeError, ValueError):
+                pass
+
+    # Fallback 2: formation-only (no measurable decay)
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

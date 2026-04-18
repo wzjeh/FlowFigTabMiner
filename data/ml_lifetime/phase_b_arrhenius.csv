@@ -8,7 +8,6 @@ chloroiodomethyllithium (CHLi(I)(Cl)),[Li]C(Cl)I,25.0,10.383,0.9914,3,-40 to 0,1
 isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,25.25,12.4393,0.8645,5,-78 to 0,15.73,1.2452,0.1849,0.0728,AlkoxycarbonylFlow_2010_Nagaki,tier1
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,28.14,9.9607,0.9368,3,-28 to 20,1116.95,66.1082,7.887,2.7902,AlkoxycarbonylArLi_2008_Nagaki,tier1
 p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,28.95,11.443,0.9147,4,-58 to 0,416.71,22.7467,2.5536,0.8769,NitroArLi_2009_Nagaki,tier1
-fluoroiodomethyllithium,[Li]C(F)I,30.82,15.4378,1.0,2,-40 to -20,24.32,1.0998,0.1072,0.0344,CHLiIF_2020_Nagaki,tier2_2pt
 "2,3-dibromo-4-lithiopyridine",[Li]c1ccnc(Br)c1Br,32.7,12.1996,0.8674,4,-48 to 25,1978.61,74.0672,6.2612,1.8718,PyridineLi_2011_Nagaki,tier1
 3-lithio-2-methyl-5-phenylthiophene,[Li]c1cc(-c2ccccc2)sc1C,33.26,8.3935,1.0,2,0 to 24,125430.36136775404,4439.902737991319,359.8606803320604,105.3898666608023,,tier2_2pt_legacy
 oxiranyllithium,[Li]C1CO1,35.57,15.9003,0.9103,6,-70 to 20,285.3,8.01,0.5455,0.1467,Nagaki et al. 2010 - Generation and reactions of o,tier1_legacy
@@ -16,17 +15,18 @@ aryllithium (then borylated to arylboronate),[Li]c1ccccc1,36.54,15.376,1.0,2,0 t
 ethyl p-lithiobenzoate,[Li]c1ccc(C(=O)OCC)cc1,37.13,19.4327,0.9803,4,-58 to 0,21.86,0.5246,0.0317,0.0081,AlkoxycarbonylFlow_2010_Nagaki,tier1
 isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,37.58,18.5078,0.9693,4,-58 to 0,72.85,1.6706,0.0977,0.0244,AlkoxycarbonylFlow_2010_Nagaki,tier1
 ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,38.29,20.0954,0.9515,4,-58 to 0,23.11,0.4934,0.0273,0.0066,AlkoxycarbonylFlow_2010_Nagaki,tier1
+o-bromophenyllithium,[Li]c1ccccc1Br,39.07,23.1004,0.7377,3,-78 to -60,1.85,0.0365,0.0019,0.0005,DibromoBenzArLi_2007_Nagaki,tier2_low_r2
 methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,39.59,20.5743,0.9691,5,-78 to 0,31.88,0.5973,0.03,0.007,AlkoxycarbonylArLi_2008_Nagaki,tier1
 methyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC)c1,40.02,21.8439,0.9687,4,-78 to -28,11.65,0.2091,0.0102,0.0023,AlkoxycarbonylFlow_2010_Nagaki,tier1
+m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,40.07,16.7536,0.9897,3,-48 to 0,1955.85,34.9202,1.6916,0.3852,NitroArLi_2009_Nagaki,tier1
 isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,40.73,18.6869,0.9904,4,-58 to 0,425.39,7.1066,0.3275,0.0728,AlkoxycarbonylArLi_2008_Nagaki,tier1
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,40.85,16.5652,0.9751,3,-28 to 20,3813.45,62.9694,2.8764,0.6365,AlkoxycarbonylFlow_2010_Nagaki,tier1
 methyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC)cc1,41.55,22.5643,0.9873,4,-78 to -28,14.59,0.2245,0.0097,0.0021,AlkoxycarbonylFlow_2010_Nagaki,tier1
 ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,44.74,21.7652,0.9862,4,-58 to 0,231.5,2.5858,0.088,0.0169,AlkoxycarbonylArLi_2008_Nagaki,tier1
-o-bromophenyllithium,[Li]c1ccccc1Br,45.52,27.2555,1.0,2,-78 to -60,1.54,0.0159,0.0005,0.0001,DibromoBenzArLi_2007_Nagaki,tier2_2pt
-m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,46.52,19.693,1.0,2,-28 to 0,5484.51,51.2657,1.5265,0.274,NitroArLi_2009_Nagaki,tier2_2pt
 fluoromethyllithium,[Li]CF,46.69,26.6025,0.927,4,-78 to -20,6.08,0.0559,0.0016,0.0003,CHLiIF_2020_Nagaki,tier1
 lithiated 1-tert-butylsulfonyl-2-phenylaziridine,[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,47.19,19.7858,1.0,2,-28 to -18,7591.07,66.286,1.8752,0.3283,AziridinylLi_2009_Nagaki,tier2_2pt
 tridecafluorohexyllithium,[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,48.27,27.1204,0.9927,4,-78 to -48,9.62,0.0754,0.002,0.0003,PerfluoroalkylLi_2011_Nagaki,tier1
+fluoroiodomethyllithium,[Li]C(F)I,49.55,24.6047,0.9637,3,-60 to -20,261.7,1.8038,0.0427,0.0069,CHLiIF_2020_Nagaki,tier1
 2-methylbenzofuran-3-yllithium,[Li]c1c(C)oc2ccccc12,50.2,21.8849,0.9935,3,-28 to 24,5926.85,38.2717,0.8629,0.1352,BenzoThiophenylLi_2011_Asai,tier1
 lithium 4-methylstyrene oxide,[Li]C1(c2ccc(C)cc2)CO1,51.25,27.1634,0.9911,4,-68 to -38,57.84,0.336,0.007,0.0011,OxiranylLi_2010_Nagaki,tier1
 tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,52.99,21.8606,0.9476,3,-28 to 20,33943.31,165.5737,3.023,0.4273,AlkoxycarbonylFlow_2010_Nagaki,tier1
@@ -37,6 +37,6 @@ lithium carbenoid,[Li]CSCc1ccccc1,61.53,27.9495,1.0,2,-40 to -20,14858.85,30.74,
 lithiated 2-(2-naphthyl)ethylene oxide,[Li]C1(c2ccc3ccccc3c2)CO1,62.4,32.2461,0.9986,4,-68 to -38,346.16,0.6561,0.0059,0.0006,OxiranylLi_2010_Nagaki,tier1
 lithium oxiranyl anion,[Li]C1OC1c1ccccc1,63.81,32.6837,0.9974,4,-68 to -38,532.27,0.8758,0.0071,0.0007,OxiranylLi_2010_Nagaki,tier1
 lithium oxiranyl anion,[Li]C1(c2ccc(Cl)cc2)CO1,64.88,33.5496,0.9951,4,-68 to -38,433.17,0.6401,0.0048,0.0004,OxiranylLi_2010_Nagaki,tier1
-1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,74.63,27.7514,1.0,2,0 to 24,58356122.93,32362.5726,115.1734,7.321,SilyloxiranylLi_2009_Nagaki,tier2_2pt
+1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,73.64,27.3484,1.0,2,0 to 24,47271941.14,28973.2672,111.1664,7.3309,SilyloxiranylLi_2009_Nagaki,tier2_2pt
 oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,75.6,27.5829,1.0,2,0 to 24,125200648.58,63016.4504,208.4948,12.789,OxiranylLi_2010_Nagaki,tier2_2pt
 "lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide",[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1,76.36,30.9469,1.0,2,0 to 24,6936749.12,3233.4949,10.0983,0.6022,OxiranylLi_2010_Nagaki,tier2_2pt
