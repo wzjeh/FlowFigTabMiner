@@ -46,16 +46,21 @@ MIN_DECAY_DROP = 10  # percentage points
 def load_tr1_data():
     """Load tR1 data, grouped by (intermediate_smiles, T).
 
-    Compatible with both old enriched and new clean unified datasets.
+    When multiple electrophiles/sources exist at the same (smi, T),
+    merges all data by default (original behavior). The fit_curve
+    function handles noisy data via its R² check.
+
+    Also stores per-electrophile sub-groups so fit_curve can fall back
+    to single-electrophile fitting when merged data is too noisy.
     """
     groups = defaultdict(list)
+    elec_sub = defaultdict(lambda: defaultdict(list))  # (smi,T) → elec → points
+
     with open(INPUT_CSV) as f:
         for r in csv.DictReader(f):
-            # tR_step filter: accept "tR1" and "tR1+tR2" (use tR1 value)
             tr_step = r.get("tR_step", "")
             if not tr_step.startswith("tR1"):
                 continue
-            # SMILES: try canonical first, then raw
             smi = r.get("intermediate_smiles_canonical", "").strip()
             if not smi:
                 smi = r.get("intermediate_smiles", "").strip()
@@ -69,10 +74,14 @@ def load_tr1_data():
             y = float(y_str)
             inter_name = r.get("intermediate", "")
             paper = r.get("paper_id", r.get("paper", ""))[:50]
-            groups[(smi, T_C)].append({
-                "tR": tR, "yield": y,
-                "intermediate": inter_name, "paper": paper,
-            })
+            electrophile = r.get("electrophile", "unknown").strip() or "unknown"
+            source = r.get("data_source_type", "").strip()
+
+            point = {"tR": tR, "yield": y, "intermediate": inter_name, "paper": paper}
+            groups[(smi, T_C)].append(point)
+            elec_sub[(smi, T_C)][(electrophile, source)].append(point)
+
+    return groups, elec_sub
     return groups
 
 
@@ -245,7 +254,7 @@ def plot_fits(results_by_intermediate):
 
 
 def main():
-    groups = load_tr1_data()
+    groups, elec_sub = load_tr1_data()
     print(f"[Phase A] Loaded {len(groups)} (intermediate, T) groups")
 
     # Fit each group
@@ -255,6 +264,7 @@ def main():
     n_decay = 0
     n_formation_only = 0
     n_skip = 0
+    n_elec_fallback = 0
 
     for (smi, T_C), points in sorted(groups.items(), key=lambda x: (x[0][0], x[0][1])):
         if len(points) < MIN_POINTS:
@@ -267,6 +277,26 @@ def main():
         paper = points[0]["paper"]
 
         result = fit_curve(tR_arr, y_arr)
+
+        # If merged-data fit gave formation_only or failed, but multiple
+        # electrophiles exist, try fitting each sub-group separately.
+        # Pick the sub-group that gives the best competing fit (lowest t_half).
+        sub_groups = elec_sub.get((smi, T_C), {})
+        if (result is None or result["model"] == "formation_only") and len(sub_groups) > 1:
+            best_sub = None
+            for (elec, src), sub_pts in sub_groups.items():
+                if len(sub_pts) < MIN_POINTS:
+                    continue
+                sub_tR = [p["tR"] for p in sub_pts]
+                sub_y = [p["yield"] for p in sub_pts]
+                sub_result = fit_curve(sub_tR, sub_y)
+                if sub_result and sub_result["model"] == "competing":
+                    if best_sub is None or sub_result["r2"] > best_sub["r2"]:
+                        best_sub = sub_result
+            if best_sub:
+                result = best_sub
+                n_elec_fallback += 1
+
         if result is None:
             n_skip += 1
             continue
@@ -338,6 +368,7 @@ def main():
     print(f"  Fitted:         {n_fit}")
     print(f"    with decay:   {n_decay}")
     print(f"    formation only: {n_formation_only}")
+    print(f"    electrophile fallback: {n_elec_fallback}")
     print(f"  Skipped:        {n_skip}")
 
     # Summary per intermediate

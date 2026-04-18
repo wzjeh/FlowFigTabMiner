@@ -20,7 +20,7 @@ oxiranyllithium,[Li]C1(C)OC1c1ccccc1,0.0,273.15,9,competing,101.783,0.770949,0.8
 oxiranyllithium,[Li]C1(C)OC1c1ccccc1,24.0,297.15,6,competing,86.104,7.83193,0.0885027,0.0306284,114.7,0.9989,OxiranylLi_2010_Nagaki
 1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,-27.0,246.14999999999998,6,formation_only,0.655681,,,,89.6,0.9090,SilyloxiranylLi_2009_Nagaki
 1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,-10.0,263.15,6,formation_only,1.58681,,,,89.5,0.7702,SilyloxiranylLi_2009_Nagaki
-1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,0.0,273.15,12,formation_only,3.10884,,,,77.1,0.4335,SilyloxiranylLi_2009_Nagaki
+1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,0.0,273.15,12,competing,2.78928,0.00601829,115.173,2.20559,70.4,0.5264,SilyloxiranylLi_2009_Nagaki
 1-triphenylsilyloxiranyllithium,[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,24.0,297.15,12,competing,84.4581,0.0855557,8.10171,0.0817191,70.6,0.8461,SilyloxiranylLi_2009_Nagaki
 lithium 4-methylstyrene oxide,[Li]C1(c2ccc(C)cc2)CO1,-78.0,195.14999999999998,7,formation_only,0.242687,,,,62.1,0.9918,OxiranylLi_2010_Nagaki
 lithium 4-methylstyrene oxide,[Li]C1(c2ccc(C)cc2)CO1,-68.0,205.14999999999998,7,competing,0.574445,0.0597066,11.6092,4.39827,70.0,0.9768,OxiranylLi_2010_Nagaki
@@ -47,10 +47,14 @@ lithium oxiranyl anion,[Li]C1OC1c1ccccc1,-38.0,235.14999999999998,21,competing,7
 3-(oxiran-2-yl)propyllithium,[Li]CCCC1CO1,-40.0,233.14999999999998,12,competing,12441.4,0.0657976,10.5345,0.000976578,63.6,0.9108,AlkylLi_2019_Nagaki_Angew
 3-(oxiran-2-yl)propyllithium,[Li]CCCC1CO1,-20.0,253.14999999999998,12,competing,1595.85,0.229639,3.01842,0.00554419,58.4,0.8906,AlkylLi_2019_Nagaki_Angew
 3-(oxiran-2-yl)propyllithium,[Li]CCCC1CO1,0.0,273.15,12,competing,18216.8,0.544003,1.27416,0.000571956,51.7,0.9260,AlkylLi_2019_Nagaki_Angew
+fluoromethyllithium,[Li]CF,-78.0,195.14999999999998,7,competing,142270,0.125852,5.50763,9.79696e-05,81.0,0.8730,CHLiIF_2020_Nagaki
+fluoromethyllithium,[Li]CF,-60.0,213.14999999999998,22,competing,7250.51,1.86759,0.371145,0.0011401,71.6,0.8763,CHLiIF_2020_Nagaki
+fluoromethyllithium,[Li]CF,-40.0,233.14999999999998,16,competing,475.933,3.94647,0.175637,0.0101538,85.8,0.6709,CHLiIF_2020_Nagaki
+fluoromethyllithium,[Li]CF,-20.0,253.14999999999998,7,competing,54010.3,164.082,0.00422438,0.00010765,110.1,0.9915,CHLiIF_2020_Nagaki
 lithium carbenoid,[Li]CSCc1ccccc1,-78.0,195.14999999999998,5,formation_only,555.805,,,,92.7,0.9612,C1Carbenoid_2026_Okamoto
 lithium carbenoid,[Li]CSCc1ccccc1,-60.0,213.14999999999998,5,formation_only,801.58,,,,90.9,0.8623,C1Carbenoid_2026_Okamoto
 lithium carbenoid,[Li]CSCc1ccccc1,-40.0,233.14999999999998,5,competing,1776.41,0.0225487,30.74,0.00634682,89.6,0.9095,C1Carbenoid_2026_Okamoto
-lithium carbenoid,[Li]CSCc1ccccc1,-20.0,253.14999999999998,5,competing,11585.8,0.276831,2.50386,0.000918552,86.7,0.9588,C1Carbenoid_2026_Okamoto
+lithium carbenoid,[Li]CSCc1ccccc1,-20.0,253.14999999999998,5,competing,11585.8,0.276831,2.50386,0.000918553,86.7,0.9588,C1Carbenoid_2026_Okamoto
 p-propanoylbenzyllithium,[Li]Cc1ccc(C(=O)CC)cc1,-78.0,195.14999999999998,5,competing,148517,0.026054,26.6043,0.000104742,73.1,0.8704,BenzylLi_2015_Nagaki
 p-propanoylbenzyllithium,[Li]Cc1ccc(C(=O)CC)cc1,-60.0,213.14999999999998,5,competing,155402,0.0260086,26.6507,0.000100405,69.9,0.8301,BenzylLi_2015_Nagaki
 p-propanoylbenzyllithium,[Li]Cc1ccc(C(=O)CC)cc1,-40.0,233.14999999999998,5,competing,21919.5,0.0269001,25.7674,0.000620943,70.9,0.8420,BenzylLi_2015_Nagaki
@@ -70,9 +74,9 @@ lithiated 1-tert-butylsulfonyl-2-phenylaziridine,[Li][C@]1(c2ccccc2)CN1S(=O)(=O)
 lithiated 1-tert-butylsulfonyl-2-phenylaziridine,[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,-28.0,245.14999999999998,6,competing,2.99278,0.0344326,20.1306,1.50928,88.2,0.9501,AziridinylLi_2009_Nagaki
 lithiated 1-tert-butylsulfonyl-2-phenylaziridine,[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,-18.0,255.14999999999998,6,competing,6.62547,0.0853269,8.12343,0.665457,80.5,0.9162,AziridinylLi_2009_Nagaki
 oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,-48.0,225.14999999999998,13,formation_only,0.642066,,,,62.6,0.5258,OxiranylLi_2010_Nagaki
-oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,-28.0,245.14999999999998,13,formation_only,0.907735,,,,85.0,0.6772,OxiranylLi_2010_Nagaki
-oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,0.0,273.15,13,competing,5.53495,0.00314328,220.517,1.35102,79.9,0.5602,OxiranylLi_2010_Nagaki
-oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,24.0,297.15,13,competing,76.9962,0.0489449,14.1618,0.0956605,67.1,0.5310,OxiranylLi_2010_Nagaki
+oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,-28.0,245.14999999999998,14,formation_only,0.912643,,,,84.8,0.6942,OxiranylLi_2010_Nagaki
+oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,0.0,273.15,14,competing,5.49824,0.00332453,208.495,1.34868,80.1,0.5602,OxiranylLi_2010_Nagaki
+oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,24.0,297.15,14,competing,77.0049,0.0489119,14.1713,0.0956599,67.1,0.6124,OxiranylLi_2010_Nagaki
 2-methylbenzofuran-3-yllithium,[Li]c1c(C)oc2ccccc12,-48.0,225.14999999999998,23,formation_only,21.3554,,,,56.9,0.1113,BenzoThiophenylLi_2011_Asai
 2-methylbenzofuran-3-yllithium,[Li]c1c(C)oc2ccccc12,-28.0,245.14999999999998,24,competing,3.35935,0.0637456,10.8737,1.203,93.9,0.0489,BenzoThiophenylLi_2011_Asai
 2-methylbenzofuran-3-yllithium,[Li]c1c(C)oc2ccccc12,0.0,273.15,23,competing,13.2201,0.858033,0.807833,0.221229,70.1,0.2863,BenzoThiophenylLi_2011_Asai
@@ -89,13 +93,14 @@ oxiranyllithium intermediate,[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,24.0,297.15,13,co
 3-lithio-2-methyl-5-phenylthiophene,[Li]c1cc(-c2ccccc2)sc1C,-28.0,245.14999999999998,15,formation_only,73.1997,,,,71.9,0.0403,Photochromic_2012_Asai
 3-lithio-2-methyl-5-phenylthiophene,[Li]c1cc(-c2ccccc2)sc1C,0.0,273.15,15,formation_only,126.661,,,,79.8,0.0170,Photochromic_2012_Asai
 3-lithio-2-methyl-5-phenylthiophene,[Li]c1cc(-c2ccccc2)sc1C,24.0,297.15,15,formation_only,144.139,,,,82.0,0.0173,Photochromic_2012_Asai
+"3,5-dibromophenyllithium",[Li]c1cc(Br)cc(Br)c1,0.0,273.15,7,competing,9.87069,0.128167,5.40817,0.44588,99.8,0.9480,TAC101_2011_Nagaki
 "monolithiated 4,4'-dibromobiphenyl",[Li]c1ccc(-c2ccc(Br)cc2)cc1,-78.0,195.14999999999998,4,formation_only,4.51385,,,,84.9,0.9178,BiaryLi_2009_Nagaki
 "monolithiated 4,4'-dibromobiphenyl",[Li]c1ccc(-c2ccc(Br)cc2)cc1,-48.0,225.14999999999998,4,formation_only,21.2349,,,,89.9,0.9899,BiaryLi_2009_Nagaki
 "monolithiated 4,4'-dibromobiphenyl",[Li]c1ccc(-c2ccc(Br)cc2)cc1,0.0,273.15,4,formation_only,1055.02,,,,87.5,-0.0000,BiaryLi_2009_Nagaki
 "monolithiated 4,4'-dibromobiphenyl",[Li]c1ccc(-c2ccc(Br)cc2)cc1,24.0,297.15,4,formation_only,66.1892,,,,87.0,0.3333,BiaryLi_2009_Nagaki
 p-bromophenyllithium,[Li]c1ccc(Br)cc1,-78.0,195.14999999999998,7,formation_only,1.44586,,,,61.7,0.9102,DibromoBenzArLi_2007_Nagaki
 p-bromophenyllithium,[Li]c1ccc(Br)cc1,-60.0,213.14999999999998,7,formation_only,8.84034,,,,82.7,0.7078,DibromoBenzArLi_2007_Nagaki
-p-bromophenyllithium,[Li]c1ccc(Br)cc1,-48.0,225.14999999999998,7,formation_only,117080,,,,83.7,-0.0000,DibromoBenzArLi_2007_Nagaki
+p-bromophenyllithium,[Li]c1ccc(Br)cc1,-48.0,225.14999999999998,7,formation_only,117215,,,,83.7,-0.0000,DibromoBenzArLi_2007_Nagaki
 p-bromophenyllithium,[Li]c1ccc(Br)cc1,-28.0,245.14999999999998,7,formation_only,605.855,,,,85.9,-0.0000,DibromoBenzArLi_2007_Nagaki
 p-bromophenyllithium,[Li]c1ccc(Br)cc1,0.0,273.15,7,formation_only,794.343,,,,87.4,-0.0000,DibromoBenzArLi_2007_Nagaki
 p-bromophenyllithium,[Li]c1ccc(Br)cc1,20.0,293.15,7,formation_only,540.53,,,,84.9,-0.0000,DibromoBenzArLi_2007_Nagaki
@@ -103,17 +108,17 @@ p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,-78.0,195.14999999999998,6,formation_only
 p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,-58.0,215.14999999999998,6,formation_only,5.59756,,,,88.3,0.9038,CyanoArLi_2010_Nagaki
 p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,-48.0,225.14999999999998,6,formation_only,27.5549,,,,86.2,0.9769,CyanoArLi_2010_Nagaki
 p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,-28.0,245.14999999999998,7,formation_only,9301.81,,,,85.6,-0.0000,CyanoArLi_2010_Nagaki
-p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,0.0,273.15,6,competing,136305,0.0912415,7.59684,0.000104302,86.3,0.9707,CyanoArLi_2010_Nagaki
+p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,0.0,273.15,10,competing,30237.1,0.0948385,7.30871,0.000419103,87.5,0.9419,CyanoArLi_2010_Nagaki
 p-cyanophenyllithium,[Li]c1ccc(C#N)cc1,20.0,293.15,6,competing,2642.59,0.104605,6.62631,0.00383619,79.7,0.9653,CyanoArLi_2010_Nagaki
 tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,-78.0,195.14999999999998,12,formation_only,136.979,,,,74.2,0.0765,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,-58.0,215.14999999999998,12,formation_only,129.713,,,,91.7,0.2281,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,-48.0,225.14999999999998,12,formation_only,180.989,,,,93.4,0.3464,AlkoxycarbonylFlow_2010_Nagaki
-tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,-28.0,245.14999999999998,12,competing,2054.8,0.0198092,34.9913,0.00562082,94.1,0.4931,AlkoxycarbonylFlow_2010_Nagaki
-tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,0.0,273.15,12,competing,25876.8,0.128615,5.38932,0.000471933,83.8,0.5015,AlkoxycarbonylFlow_2010_Nagaki
+tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,-28.0,245.14999999999998,12,competing,2054.8,0.0198092,34.9913,0.00562081,94.1,0.4931,AlkoxycarbonylFlow_2010_Nagaki
+tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,0.0,273.15,12,competing,25877.6,0.128615,5.38932,0.000471918,83.8,0.5015,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)(C)C)cc1,20.0,293.15,6,competing,3648.4,1.61784,0.428441,0.0021172,77.6,0.9782,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,-78.0,195.14999999999998,12,formation_only,136464,,,,52.2,-0.0000,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,-58.0,215.14999999999998,12,competing,1954.54,0.0744456,9.31079,0.00520634,61.6,0.0688,AlkoxycarbonylFlow_2010_Nagaki
-isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,-48.0,225.14999999999998,12,competing,4125.8,0.17875,3.87775,0.00243522,57.7,0.2267,AlkoxycarbonylFlow_2010_Nagaki
+isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,-48.0,225.14999999999998,12,competing,4125.79,0.17875,3.87775,0.00243522,57.7,0.2267,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,-28.0,245.14999999999998,12,competing,2200.65,1.78929,0.387386,0.00323563,58.8,0.6427,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC(C)C)cc1,0.0,273.15,12,competing,4449.47,5.45253,0.127124,0.00150865,29.7,0.6987,AlkoxycarbonylFlow_2010_Nagaki
 methyl p-lithiobenzoate,[Li]c1ccc(C(=O)OC)cc1,-78.0,195.14999999999998,6,competing,12049.3,0.0389065,17.8157,0.00104931,69.4,0.4822,AlkoxycarbonylFlow_2010_Nagaki
@@ -133,12 +138,12 @@ p-Anisyllithium,[Li]c1ccc(OC)cc1,-48.0,225.14999999999998,6,formation_only,5.166
 p-Anisyllithium,[Li]c1ccc(OC)cc1,-38.0,235.14999999999998,6,formation_only,6.04992,,,,85.3,0.9359,Homocoupling_2011_Nagaki
 p-Anisyllithium,[Li]c1ccc(OC)cc1,-28.0,245.14999999999998,6,formation_only,7.70361,,,,89.6,0.9604,Homocoupling_2011_Nagaki
 p-Anisyllithium,[Li]c1ccc(OC)cc1,-18.0,255.14999999999998,6,formation_only,10.4199,,,,85.4,0.9719,Homocoupling_2011_Nagaki
-p-Anisyllithium,[Li]c1ccc(OC)cc1,0.0,273.15,7,formation_only,30929.7,,,,81.9,-0.0000,Homocoupling_2011_Nagaki
+p-Anisyllithium,[Li]c1ccc(OC)cc1,0.0,273.15,7,formation_only,30918.2,,,,81.9,-0.0000,Homocoupling_2011_Nagaki
 p-Anisyllithium,[Li]c1ccc(OC)cc1,24.0,297.15,7,formation_only,19.6546,,,,83.3,0.0072,Homocoupling_2011_Nagaki
 p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-78.0,195.14999999999998,6,formation_only,90.6124,,,,64.2,0.3079,NitroArLi_2009_Nagaki
 p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-58.0,215.14999999999998,6,competing,36.3133,0.00921657,75.2066,0.228044,85.0,0.5303,NitroArLi_2009_Nagaki
-p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-48.0,225.14999999999998,6,competing,161499,0.0239493,28.9423,9.73634e-05,90.0,0.6952,NitroArLi_2009_Nagaki
-p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-28.0,245.14999999999998,6,competing,18275.2,0.0324761,21.3433,0.000724509,87.6,0.8189,NitroArLi_2009_Nagaki
+p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-48.0,225.14999999999998,6,competing,161499,0.0239492,28.9424,9.73634e-05,90.0,0.6952,NitroArLi_2009_Nagaki
+p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,-28.0,245.14999999999998,6,competing,18275.1,0.0324761,21.3433,0.000724514,87.6,0.8189,NitroArLi_2009_Nagaki
 p-nitrophenyllithium,[Li]c1ccc([N+](=O)[O-])cc1,0.0,273.15,6,competing,133403,0.375302,1.84691,9.58089e-05,84.3,0.9897,NitroArLi_2009_Nagaki
 m-bromophenyllithium,[Li]c1cccc(Br)c1,-78.0,195.14999999999998,7,formation_only,2.99918,,,,69.0,0.8684,DibromoBenzArLi_2007_Nagaki
 m-bromophenyllithium,[Li]c1cccc(Br)c1,-60.0,213.14999999999998,7,formation_only,10.244,,,,78.7,0.9612,DibromoBenzArLi_2007_Nagaki
@@ -150,15 +155,15 @@ m-cyanophenyllithium,[Li]c1cccc(C#N)c1,-78.0,195.14999999999998,6,formation_only
 m-cyanophenyllithium,[Li]c1cccc(C#N)c1,-58.0,215.14999999999998,6,formation_only,11.2711,,,,87.0,0.9939,CyanoArLi_2010_Nagaki
 m-cyanophenyllithium,[Li]c1cccc(C#N)c1,-48.0,225.14999999999998,6,formation_only,34.1683,,,,82.2,0.9883,CyanoArLi_2010_Nagaki
 m-cyanophenyllithium,[Li]c1cccc(C#N)c1,-28.0,245.14999999999998,6,formation_only,352.634,,,,83.6,0.0261,CyanoArLi_2010_Nagaki
-m-cyanophenyllithium,[Li]c1cccc(C#N)c1,0.0,273.15,7,competing,394.836,0.0643208,10.7764,0.0220947,80.4,0.6682,CyanoArLi_2010_Nagaki
-m-cyanophenyllithium,[Li]c1cccc(C#N)c1,20.0,293.15,6,competing,2750.37,0.0879969,7.87695,0.00376323,76.9,0.9837,CyanoArLi_2010_Nagaki
+m-cyanophenyllithium,[Li]c1cccc(C#N)c1,0.0,273.15,11,competing,74918.7,0.0726941,9.53512,0.000184809,83.5,0.5692,CyanoArLi_2010_Nagaki
+m-cyanophenyllithium,[Li]c1cccc(C#N)c1,20.0,293.15,6,competing,2750.37,0.0879969,7.87695,0.00376322,76.9,0.9837,CyanoArLi_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,-78.0,195.14999999999998,12,formation_only,95.9744,,,,78.0,0.3122,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,-58.0,215.14999999999998,12,formation_only,113.403,,,,91.9,0.4948,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,-48.0,225.14999999999998,12,formation_only,170806,,,,93.5,-0.0000,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,-28.0,245.14999999999998,12,competing,201.924,0.0345832,20.0429,0.0429556,92.5,0.7210,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,0.0,273.15,12,competing,83254.1,0.178042,3.89316,0.000156814,83.2,0.8008,AlkoxycarbonylFlow_2010_Nagaki
 tert-butyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)(C)C)c1,20.0,293.15,6,competing,2090.76,0.993715,0.697531,0.00366145,76.7,0.8838,AlkoxycarbonylFlow_2010_Nagaki
-isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,-78.0,195.14999999999998,12,formation_only,257.897,,,,55.5,0.0010,AlkoxycarbonylFlow_2010_Nagaki
+isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,-78.0,195.14999999999998,12,competing,68915.8,0.0888456,7.8017,0.000196784,45.8,0.6267,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,-58.0,215.14999999999998,12,competing,325.842,0.0920333,7.53148,0.0250868,71.8,0.4557,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,-48.0,225.14999999999998,12,competing,3789.53,0.174651,3.96876,0.00263501,66.2,0.5384,AlkoxycarbonylFlow_2010_Nagaki
 isopropyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC(C)C)c1,-28.0,245.14999999999998,12,competing,2401.8,1.7753,0.390439,0.00300414,57.0,0.6136,AlkoxycarbonylFlow_2010_Nagaki
@@ -169,7 +174,7 @@ methyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC)c1,-48.0,225.14999999999998,6,competi
 methyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC)c1,-28.0,245.14999999999998,6,competing,81.3288,6.78312,0.102187,0.0333227,77.7,0.9953,AlkoxycarbonylFlow_2010_Nagaki
 methyl m-lithiobenzoate,[Li]c1cccc(C(=O)OC)c1,0.0,273.15,6,formation_only,26891,,,,2.0,0.0000,AlkoxycarbonylFlow_2010_Nagaki
 ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,-78.0,195.14999999999998,6,formation_only,193.26,,,,75.0,0.2348,AlkoxycarbonylFlow_2010_Nagaki
-ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,-58.0,215.14999999999998,6,competing,60896.7,0.164828,4.20528,0.000210518,78.2,0.8995,AlkoxycarbonylFlow_2010_Nagaki
+ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,-58.0,215.14999999999998,6,competing,60895.3,0.164828,4.20528,0.000210522,78.2,0.8995,AlkoxycarbonylFlow_2010_Nagaki
 ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,-48.0,225.14999999999998,6,competing,138979,1.1074,0.625925,8.44741e-05,83.5,0.9716,AlkoxycarbonylFlow_2010_Nagaki
 ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,-28.0,245.14999999999998,6,competing,119.515,4.94219,0.140251,0.0278045,84.5,0.9892,AlkoxycarbonylFlow_2010_Nagaki
 ethyl m-lithiobenzoate,[Li]c1cccc(C(=O)OCC)c1,0.0,273.15,6,competing,3127.23,19.4602,0.0356187,0.00163446,35.0,0.8306,AlkoxycarbonylFlow_2010_Nagaki
@@ -177,11 +182,11 @@ m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,-78.0,195.14999999999998,6,forma
 m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,-58.0,215.14999999999998,6,formation_only,102.263,,,,79.0,0.4948,NitroArLi_2009_Nagaki
 m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,-48.0,225.14999999999998,6,formation_only,100790,,,,84.2,-0.0000,NitroArLi_2009_Nagaki
 m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,-28.0,245.14999999999998,6,competing,2116.14,0.0437654,15.8378,0.00509724,86.4,0.9254,NitroArLi_2009_Nagaki
-m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,0.0,273.15,6,competing,411.09,0.454079,1.52649,0.0165799,84.8,0.9950,NitroArLi_2009_Nagaki
+m-nitrophenyllithium,[Li]c1cccc([N+](=O)[O-])c1,0.0,273.15,6,competing,411.089,0.454079,1.52649,0.0165799,84.8,0.9950,NitroArLi_2009_Nagaki
 2-bromo-2'-lithiobiphenyl,[Li]c1ccccc1-c1ccccc1Br,-78.0,195.14999999999998,4,formation_only,2.98252,,,,86.2,0.9560,BiaryLi_2009_Nagaki
 2-bromo-2'-lithiobiphenyl,[Li]c1ccccc1-c1ccccc1Br,-48.0,225.14999999999998,4,formation_only,20.1959,,,,87.9,0.9970,BiaryLi_2009_Nagaki
 2-bromo-2'-lithiobiphenyl,[Li]c1ccccc1-c1ccccc1Br,0.0,273.15,4,formation_only,5178.41,,,,86.3,-0.0000,BiaryLi_2009_Nagaki
-2-bromo-2'-lithiobiphenyl,[Li]c1ccccc1-c1ccccc1Br,24.0,297.15,4,competing,700.264,0.0171052,40.5226,0.0151658,84.9,0.9964,BiaryLi_2009_Nagaki
+2-bromo-2'-lithiobiphenyl,[Li]c1ccccc1-c1ccccc1Br,24.0,297.15,4,competing,700.269,0.0171052,40.5226,0.0151657,84.9,0.9964,BiaryLi_2009_Nagaki
 o-bromophenyllithium,[Li]c1ccccc1Br,-85.0,188.14999999999998,10,formation_only,1.81499,,,,53.6,0.6872,DibromoBenzArLi_2007_Nagaki
 o-bromophenyllithium,[Li]c1ccccc1Br,-78.0,195.14999999999998,26,formation_only,6.22436,,,,66.7,-0.0773,DibromoBenzArLi_2007_Nagaki
 o-bromophenyllithium,[Li]c1ccccc1Br,-70.0,203.14999999999998,28,formation_only,177.047,,,,61.2,0.0205,DibromoBenzArLi_2007_Nagaki
@@ -193,26 +198,26 @@ o-cyanophenyllithium,[Li]c1ccccc1C#N,-58.0,215.14999999999998,6,formation_only,7
 o-cyanophenyllithium,[Li]c1ccccc1C#N,-48.0,225.14999999999998,6,formation_only,27.3927,,,,89.3,0.9790,CyanoArLi_2010_Nagaki
 o-cyanophenyllithium,[Li]c1ccccc1C#N,-28.0,245.14999999999998,6,formation_only,1753.72,,,,86.0,-0.0000,CyanoArLi_2010_Nagaki
 o-cyanophenyllithium,[Li]c1ccccc1C#N,0.0,273.15,6,formation_only,2267.21,,,,86.8,-0.0000,CyanoArLi_2010_Nagaki
-o-cyanophenyllithium,[Li]c1ccccc1C#N,20.0,293.15,6,competing,142182,0.0296102,23.4091,0.000108203,84.8,0.7413,CyanoArLi_2010_Nagaki
+o-cyanophenyllithium,[Li]c1ccccc1C#N,20.0,293.15,17,competing,423.606,0.0272479,25.4385,0.0227858,83.8,0.0670,CyanoArLi_2010_Nagaki
 methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,-78.0,195.14999999999998,14,competing,81.257,0.0295692,23.4415,0.0974873,42.2,0.3154,AlkoxycarbonylArLi_2008_Nagaki
 methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,-58.0,215.14999999999998,14,competing,303.041,0.111814,6.19913,0.0260945,62.3,0.7913,AlkoxycarbonylArLi_2008_Nagaki
-methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,-48.0,225.14999999999998,14,competing,1850.89,0.824085,0.841112,0.00417115,69.1,0.8703,AlkoxycarbonylArLi_2008_Nagaki
+methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,-48.0,225.14999999999998,18,competing,473.032,0.965126,0.718193,0.0131224,72.9,0.8526,AlkoxycarbonylArLi_2008_Nagaki
 methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,-28.0,245.14999999999998,14,competing,131.582,2.15982,0.320929,0.0317535,61.5,0.9449,AlkoxycarbonylArLi_2008_Nagaki
 methyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC,0.0,273.15,14,competing,14481.4,30.502,0.0227246,0.000426467,61.4,0.9843,AlkoxycarbonylArLi_2008_Nagaki
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,-78.0,195.14999999999998,12,formation_only,79.2354,,,,67.4,0.2221,AlkoxycarbonylArLi_2008_Nagaki
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,-58.0,215.14999999999998,12,formation_only,54.1413,,,,92.8,0.8770,AlkoxycarbonylArLi_2008_Nagaki
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,-48.0,225.14999999999998,12,formation_only,80.3614,,,,96.1,0.9639,AlkoxycarbonylArLi_2008_Nagaki
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,-28.0,245.14999999999998,12,competing,101.351,0.0187994,36.8707,0.0847956,99.0,0.9969,AlkoxycarbonylArLi_2008_Nagaki
-tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,0.0,273.15,12,competing,2532.32,0.123007,5.63504,0.00392245,93.0,0.9993,AlkoxycarbonylArLi_2008_Nagaki
+tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,0.0,273.15,16,competing,340.406,0.12336,5.6189,0.023283,93.1,0.9712,AlkoxycarbonylArLi_2008_Nagaki
 tert-butyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)(C)C,20.0,293.15,12,competing,122943,0.165541,4.18715,0.000109954,77.8,0.9407,AlkoxycarbonylArLi_2008_Nagaki
 isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,-78.0,195.14999999999998,12,formation_only,124.446,,,,58.9,0.0882,AlkoxycarbonylArLi_2008_Nagaki
 isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,-58.0,215.14999999999998,12,competing,79.9204,0.0211514,32.7708,0.103093,83.1,0.7725,AlkoxycarbonylArLi_2008_Nagaki
 isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,-48.0,225.14999999999998,12,competing,97.9932,0.0357533,19.3869,0.0808107,85.4,0.9493,AlkoxycarbonylArLi_2008_Nagaki
-isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,-28.0,245.14999999999998,12,competing,1817.77,0.253628,2.73293,0.00488428,86.7,0.9979,AlkoxycarbonylArLi_2008_Nagaki
+isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,-28.0,245.14999999999998,17,competing,236.553,0.256316,2.70427,0.0288938,87.1,0.9029,AlkoxycarbonylArLi_2008_Nagaki
 isopropyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OC(C)C,0.0,273.15,12,competing,3748.21,2.31526,0.299382,0.00197269,80.5,0.9568,AlkoxycarbonylArLi_2008_Nagaki
 ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,-78.0,195.14999999999998,12,formation_only,50.5347,,,,55.9,0.6902,AlkoxycarbonylArLi_2008_Nagaki
 ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,-58.0,215.14999999999998,12,competing,82.867,0.0474192,14.6174,0.0901473,82.8,0.9168,AlkoxycarbonylArLi_2008_Nagaki
-ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,-48.0,225.14999999999998,12,competing,96.5755,0.114694,6.04344,0.0698295,86.9,0.9760,AlkoxycarbonylArLi_2008_Nagaki
+ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,-48.0,225.14999999999998,18,competing,134.75,0.0814819,8.50676,0.05503,75.4,0.2263,AlkoxycarbonylArLi_2008_Nagaki
 ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,-28.0,245.14999999999998,12,competing,5524.34,1.03635,0.668834,0.00155364,75.4,0.9091,AlkoxycarbonylArLi_2008_Nagaki
 ethyl o-lithiobenzoate,[Li]c1ccccc1C(=O)OCC,0.0,273.15,12,competing,2133.11,7.4848,0.0926073,0.0026592,67.0,0.9610,AlkoxycarbonylArLi_2008_Nagaki
 2-iodophenyllithium,[Li]c1ccccc1I,-78.0,195.14999999999998,8,competing,417.172,0.482161,1.43758,0.0162302,77.6,0.9777,ThreeComp_2014_Nagaki
