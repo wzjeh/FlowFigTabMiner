@@ -135,6 +135,87 @@ All descriptors computed at GFN2-xTB level on xTB-optimized geometries:
 | σ_hammett | Hammett substituent constant | Literature (Hansch 1991) |
 | HOMO | Highest occupied MO energy (eV) | tblite |
 
+## Reactor Classification Tool: SMILES + T → flash/flow/batch
+
+### Model
+
+**log₁₀(t_max/s) = +10.86×q_C − 13.09×d_LiC + 0.477×L + 336×(1/T) + 21.93**
+
+Then classify:
+- t_max < 0.1 s → **flash** (microsecond mixing required)
+- 0.1 s < t_max < 100 s → **flow** (standard flow reactor)
+- t_max > 100 s → **batch** (stable, conventional operation)
+
+### Performance
+
+- **LOO classification accuracy: 89.3%** (125/140, 42 compounds × multi-temperature)
+- Data: 140 (compound, T) data points with exact t_max from competing kinetics fits
+- Temperature range: −78 to +25°C
+
+| Temperature | Accuracy | n |
+|---|---|---|
+| −78°C | 91% | 11 |
+| −58°C | 87% | 15 |
+| −48°C | 88% | 17 |
+| −40°C | 100% | 7 |
+| −28°C | 89% | 18 |
+| 0°C | 85% | 27 |
+| 20–25°C | 100% | 14 |
+
+### Confusion Matrix
+
+| | Predicted flash | Predicted flow |
+|---|---|---|
+| **Actual flash** | 108 | 3 |
+| **Actual flow** | 12 | 17 |
+
+- Flash precision: 90% (108/120)
+- Flow recall: 59% (17/29) — conservative, tends to recommend flash when flow would work
+- False negatives (predict flash when actually flow): 12 cases → user uses faster mixing than needed (safe)
+- False positives (predict flow when actually flash): 3 cases → user may lose yield (risky)
+
+### Descriptor Physical Interpretation
+
+| Descriptor | Coefficient | Meaning |
+|---|---|---|
+| q(C_ipso) | +10.86 | More positive C charge → longer t_max (more stable C-Li) |
+| d(Li-C) | −13.09 | Longer Li-C bond → shorter t_max (weaker bond, faster decomposition) |
+| Sterimol L | +0.477 | Longer substituent → longer t_max (steric protection) |
+| 1/T | +336 | Lower temperature → longer t_max (Arrhenius effect) |
+
+### Comparison with t½-based approach
+
+| | t½ route | t_max route |
+|---|---|---|
+| Data points | 26 compounds | **140 data points** |
+| Approach | Predict Ea → compensate lnA → compute t½ | **Directly predict log(t_max)** |
+| Ea-lnA problem | Yes (compensation flattens t½) | **No (bypassed)** |
+| Overall accuracy | 76% | **89%** |
+| −40°C accuracy | 69% | **100%** |
+
+### Usage
+
+```python
+# 1. Compute descriptors from SMILES (xTB, seconds)
+q_C = xtb_mulliken_charge_on_C_ipso
+d_LiC = xtb_optimized_LiC_bond_length  # Angstrom
+L = sterimol_L_along_CLi_axis          # Angstrom
+
+# 2. Input temperature
+T_K = T_celsius + 273.15
+
+# 3. Predict t_max
+log_tmax = 10.86*q_C - 13.09*d_LiC + 0.477*L + 336/T_K + 21.93
+t_max = 10**log_tmax  # seconds
+
+# 4. Recommend reactor
+if t_max < 0.1:    reactor = "flash"
+elif t_max < 100:   reactor = "flow"
+else:               reactor = "batch"
+```
+
+---
+
 ## Alternative Descriptors Tested (Not Improving Models)
 
 | Descriptor | Level | Result |
