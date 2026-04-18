@@ -81,8 +81,19 @@ def load_tr1_data():
             groups[(smi, T_C)].append(point)
             elec_sub[(smi, T_C)][(electrophile, source)].append(point)
 
+    # When multiple electrophiles exist at the same (smi, T),
+    # prefer methanol quench data (most reliable, most common).
+    for (smi, T_C), sub_dict in elec_sub.items():
+        if len(sub_dict) <= 1:
+            continue
+        methanol_points = []
+        for (elec, src), pts in sub_dict.items():
+            if 'methanol' in elec.lower():
+                methanol_points.extend(pts)
+        if len(methanol_points) >= MIN_POINTS:
+            groups[(smi, T_C)] = methanol_points
+
     return groups, elec_sub
-    return groups
 
 
 # ── Kinetic models ──
