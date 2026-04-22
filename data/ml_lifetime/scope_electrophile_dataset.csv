@@ -1,0 +1,299 @@
+intermediate_smiles_canonical,electrophile,electrophile_smiles_canonical,T1_C,max_yield,name,product_smiles,n_points
+[Li]/C=C/c1ccccc1,benzaldehyde,O=Cc1ccccc1,0.0,95.0,(E)-β-styryllithium,OC(/C=C/c1ccccc1)c1ccccc1,13
+[Li]/C=C/c1ccccc1,benzaldehyde,O=Cc1ccccc1,20.0,94.0,(E)-β-styryllithium,OC(/C=C/c1ccccc1)c1ccccc1,5
+[Li]C#Cc1c(C)cc(C)cc1C,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,20.0,95.0,lithium acetylide,Cc1cc(C)c(C#CC(=O)OC(C)(C)C)c(C)c1,1
+[Li]C#Cc1ccc(N(C)C)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,20.0,95.0,lithium acetylide,CN(C)c1ccc(C#CC(=O)OC(C)(C)C)cc1,1
+[Li]C#Cc1ccc(OC)c(OC)c1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,20.0,75.0,lithium acetylide,COc1ccc(C#CC(=O)OC(C)(C)C)cc1OC,1
+[Li]C#Cc1ccc(OC)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,70.0,lithium acetylide,COc1ccc(C#CC(=O)OC(C)(C)C)cc1,1
+[Li]C#Cc1ccccc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,50.0,lithium acetylide,CC(C)(C)OC(=O)C#Cc1ccccc1,1
+[Li]C#Cc1cccs1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,87.0,lithium acetylide,CC(C)(C)OC(=O)C#Cc1cccs1,1
+[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-78.0,80.0,tridecafluorohexyllithium,CCCC[Sn](CCCC)(CCCC)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,7
+[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-68.0,87.0,tridecafluorohexyllithium,CCCC[Sn](CCCC)(CCCC)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,7
+[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-58.0,72.0,tridecafluorohexyllithium,CCCC[Sn](CCCC)(CCCC)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,7
+[Li]C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-48.0,47.0,tridecafluorohexyllithium,CCCC[Sn](CCCC)(CCCC)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,7
+[Li]C(F)I,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-78.0,99.0,fluoroiodomethyllithium,CCCC[Sn](CCCC)(CCCC)C(F)I,5
+[Li]C(F)I,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-60.0,91.0,fluoroiodomethyllithium,CCCC[Sn](CCCC)(CCCC)C(F)I,5
+[Li]C(F)I,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-40.0,99.0,fluoroiodomethyllithium,CCCC[Sn](CCCC)(CCCC)C(F)I,5
+[Li]C(F)I,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-20.0,85.0,fluoroiodomethyllithium,CCCC[Sn](CCCC)(CCCC)C(F)I,5
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-78.0,96.0,oxiranyllithium,CC1OC1(C)c1ccccc1,14
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-68.0,67.0,oxiranyllithium,CC1OC1(C)c1ccccc1,7
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-58.0,96.0,oxiranyllithium,CC1OC1(C)c1ccccc1,14
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-48.0,94.0,oxiranyllithium,CC1OC1(C)c1ccccc1,13
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-38.0,96.0,oxiranyllithium,CC1OC1(C)c1ccccc1,14
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-28.0,92.0,oxiranyllithium,CC1OC1(C)c1ccccc1,9
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,-18.0,93.0,oxiranyllithium,CC1OC1(C)c1ccccc1,9
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,0.0,87.0,oxiranyllithium,CC1OC1(C)c1ccccc1,9
+[Li]C1(C)OC1c1ccccc1,iodomethane,CI,24.0,65.0,oxiranyllithium,CC1OC1(C)c1ccccc1,6
+[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,chlorotrimethylsilane,C[Si](C)(C)Cl,-27.0,93.0,1-triphenylsilyloxiranyllithium,C[Si](C)(C)C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,6
+[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,chlorotrimethylsilane,C[Si](C)(C)Cl,-10.0,93.0,1-triphenylsilyloxiranyllithium,C[Si](C)(C)C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,6
+[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,chlorotrimethylsilane,C[Si](C)(C)Cl,0.0,92.0,1-triphenylsilyloxiranyllithium,C[Si](C)(C)C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,12
+[Li]C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,chlorotrimethylsilane,C[Si](C)(C)Cl,24.0,77.0,1-triphenylsilyloxiranyllithium,C[Si](C)(C)C1([Si](c2ccccc2)(c2ccccc2)c2ccccc2)CO1,12
+[Li]C1(c2ccc(C)cc2)CO1,iodomethane,CI,-78.0,63.0,lithium 4-methylstyrene oxide,Cc1ccc(C2(C)CO2)cc1,7
+[Li]C1(c2ccc(C)cc2)CO1,iodomethane,CI,-68.0,49.0,lithium 4-methylstyrene oxide,Cc1ccc(C2(C)CO2)cc1,7
+[Li]C1(c2ccc(C)cc2)CO1,iodomethane,CI,-58.0,35.0,lithium 4-methylstyrene oxide,Cc1ccc(C2(C)CO2)cc1,7
+[Li]C1(c2ccc(C)cc2)CO1,iodomethane,CI,-48.0,23.0,lithium 4-methylstyrene oxide,Cc1ccc(C2(C)CO2)cc1,7
+[Li]C1(c2ccc(C)cc2)CO1,iodomethane,CI,-38.0,12.0,lithium 4-methylstyrene oxide,Cc1ccc(C2(C)CO2)cc1,7
+[Li]C1(c2ccc(Cl)cc2)CO1,iodomethane,CI,-78.0,83.0,lithium oxiranyl anion,CC1(c2ccc(Cl)cc2)CO1,7
+[Li]C1(c2ccc(Cl)cc2)CO1,iodomethane,CI,-68.0,82.0,lithium oxiranyl anion,CC1(c2ccc(Cl)cc2)CO1,7
+[Li]C1(c2ccc(Cl)cc2)CO1,iodomethane,CI,-58.0,84.0,lithium oxiranyl anion,CC1(c2ccc(Cl)cc2)CO1,7
+[Li]C1(c2ccc(Cl)cc2)CO1,iodomethane,CI,-48.0,79.0,lithium oxiranyl anion,CC1(c2ccc(Cl)cc2)CO1,7
+[Li]C1(c2ccc(Cl)cc2)CO1,iodomethane,CI,-38.0,65.0,lithium oxiranyl anion,CC1(c2ccc(Cl)cc2)CO1,7
+[Li]C1(c2ccc3ccccc3c2)CO1,iodomethane,CI,-78.0,92.0,lithiated 2-(2-naphthyl)ethylene oxide,CC1(c2ccc3ccccc3c2)CO1,7
+[Li]C1(c2ccc3ccccc3c2)CO1,iodomethane,CI,-68.0,86.0,lithiated 2-(2-naphthyl)ethylene oxide,CC1(c2ccc3ccccc3c2)CO1,7
+[Li]C1(c2ccc3ccccc3c2)CO1,iodomethane,CI,-58.0,82.0,lithiated 2-(2-naphthyl)ethylene oxide,CC1(c2ccc3ccccc3c2)CO1,7
+[Li]C1(c2ccc3ccccc3c2)CO1,iodomethane,CI,-48.0,69.0,lithiated 2-(2-naphthyl)ethylene oxide,CC1(c2ccc3ccccc3c2)CO1,7
+[Li]C1(c2ccc3ccccc3c2)CO1,iodomethane,CI,-38.0,56.0,lithiated 2-(2-naphthyl)ethylene oxide,CC1(c2ccc3ccccc3c2)CO1,7
+[Li]C1OC1c1ccccc1,iodomethane,CI,-78.0,88.0,lithium oxiranyl anion,CC1(c2ccccc2)CO1,21
+[Li]C1OC1c1ccccc1,iodomethane,CI,-68.0,83.0,lithium oxiranyl anion,CC1(c2ccccc2)CO1,21
+[Li]C1OC1c1ccccc1,iodomethane,CI,-58.0,73.0,lithium oxiranyl anion,CC1(c2ccccc2)CO1,21
+[Li]C1OC1c1ccccc1,iodomethane,CI,-48.0,60.0,lithium oxiranyl anion,CC1(c2ccccc2)CO1,21
+[Li]C1OC1c1ccccc1,iodomethane,CI,-38.0,47.0,lithium oxiranyl anion,CC1(c2ccccc2)CO1,21
+[Li]CCCC1CO1,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-78.0,69.0,3-(oxiran-2-yl)propyllithium,CCCC[Sn](CCCC)(CCCC)CCCC1CO1,12
+[Li]CCCC1CO1,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-60.0,79.0,3-(oxiran-2-yl)propyllithium,CCCC[Sn](CCCC)(CCCC)CCCC1CO1,12
+[Li]CCCC1CO1,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-40.0,69.0,3-(oxiran-2-yl)propyllithium,CCCC[Sn](CCCC)(CCCC)CCCC1CO1,12
+[Li]CCCC1CO1,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,-20.0,62.0,3-(oxiran-2-yl)propyllithium,CCCC[Sn](CCCC)(CCCC)CCCC1CO1,12
+[Li]CCCC1CO1,chlorotributylstannane,CCCC[Sn](Cl)(CCCC)CCCC,0.0,58.0,3-(oxiran-2-yl)propyllithium,CCCC[Sn](CCCC)(CCCC)CCCC1CO1,12
+[Li]CF,3-bromo-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1cccc(Br)c1,-60.0,70.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),O=C(CF)c1cccc(Br)c1,1
+[Li]CF,3-cyano-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1cccc(C#N)c1,-60.0,51.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),N#Cc1cccc(C(=O)CF)c1,1
+[Li]CF,3-fluoro-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1cccc(F)c1,-60.0,80.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)c1cccc(F)c1,1
+[Li]CF,"4,4'-difluorobenzophenone",O=C(c1ccc(F)cc1)c1ccc(F)cc1,-40.0,56.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),Fc1ccc(-c2cc(F)ccc2C2(C(F)I)CO2)cc1,1
+[Li]CF,4-(trifluoromethyl)-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1ccc(C(F)(F)F)cc1,-60.0,75.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)c1ccc(C(F)(F)F)cc1,1
+[Li]CF,4-benzoyl-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1ccc(C(=O)c2ccccc2)cc1,-60.0,60.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),CON(C)C(=O)c1ccc(C(O)(CF)c2ccccc2)cc1,1
+[Li]CF,4-bromo-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1ccc(Br)cc1,-60.0,69.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),O=C(CF)c1ccc(Br)cc1,1
+[Li]CF,4-bromobenzophenone,O=C(c1ccccc1)c1ccc(Br)cc1,-40.0,66.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),FC1OC1(c1ccccc1)c1ccc(Br)cc1,1
+[Li]CF,4-cyano-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1ccc(C#N)cc1,-60.0,58.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),N#Cc1ccc(C(=O)CF)cc1,1
+[Li]CF,4-cyanobenzophenone,N#Cc1ccc(C(=O)c2ccccc2)cc1,-40.0,49.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),N#Cc1ccc(C2(c3ccccc3)OC2F)cc1,1
+[Li]CF,4-fluoro-N-methoxy-N-methylbenzamide,CON(C)C(=O)c1ccc(F)cc1,-60.0,77.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)c1ccc(F)cc1,1
+[Li]CF,4-methoxy-N-methoxy-N-methylbenzamide,COc1ccc(C(=O)N(C)OC)cc1,-60.0,69.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),COc1ccc(C(=O)CF)cc1,1
+[Li]CF,4-vinylbenzophenone,C=Cc1ccc(C(=O)c2ccccc2)cc1,-40.0,90.0,fluoromethyllithium (2) and fluoroiodomethyllithium (3),C=Cc1ccc(C2(c3ccccc3)OC2F)cc1,1
+[Li]CF,N-methoxy-N-methyl-2-(thiophen-2-yl)acetamide,CON(C)C(=O)Cc1cccs1,-60.0,68.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)Cc1cccs1,1
+[Li]CF,N-methoxy-N-methyl-2-phenylacetamide,CON(C)C(=O)Cc1ccccc1,-60.0,66.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)Cc1ccccc1,1
+[Li]CF,N-methoxy-N-methyl-2-phenylbutanamide,CCC(C(=O)N(C)OC)c1ccccc1,-60.0,60.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),CCC(C(=O)F)c1ccccc1,1
+[Li]CF,N-methoxy-N-methyl-3-phenylpropanamide,CON(C)C(=O)CCc1ccccc1,-78.0,87.0,fluoromethyllithium,O=C(CF)CCc1ccccc1,7
+[Li]CF,N-methoxy-N-methyl-3-phenylpropanamide,CON(C)C(=O)CCc1ccccc1,-60.0,84.0,fluoromethyllithium,O=C(CF)CCc1ccccc1,8
+[Li]CF,N-methoxy-N-methyl-3-phenylpropanamide,CON(C)C(=O)CCc1ccccc1,-40.0,71.0,fluoromethyllithium,O=C(CF)CCc1ccccc1,7
+[Li]CF,N-methoxy-N-methyl-3-phenylpropanamide,CON(C)C(=O)CCc1ccccc1,-20.0,60.0,fluoromethyllithium,O=C(CF)CCc1ccccc1,7
+[Li]CF,"N-methoxy-N-methyl-[1,1'-biphenyl]-4-carboxamide",CON(C)C(=O)c1ccc(-c2ccccc2)cc1,-60.0,60.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)c1ccc(-c2ccccc2)cc1,1
+[Li]CF,N-methoxy-N-methylcinnanamide,CON(C)C(=O)/C=C/c1ccccc1,-60.0,80.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),O=C(F)/C=C/c1ccccc1,1
+[Li]CF,benzophenone,O=C(c1ccccc1)c1ccccc1,-40.0,76.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),FC(I)C1(c2ccccc2-c2ccccc2)CO1,1
+[Li]CF,isobutyrophenone,CC(C)C(=O)c1ccccc1,-40.0,85.0,fluoromethyllithium (2) or fluoroiodomethyllithium (3),CC(Cc1ccccc1)C1(C(F)I)CO1,1
+[Li]CSCc1ccccc1,methanol,CO,-78.0,95.0,lithium carbenoid,CSCc1ccccc1,5
+[Li]CSCc1ccccc1,methanol,CO,-60.0,93.0,lithium carbenoid,CSCc1ccccc1,5
+[Li]CSCc1ccccc1,methanol,CO,-40.0,89.0,lithium carbenoid,CSCc1ccccc1,5
+[Li]CSCc1ccccc1,methanol,CO,-20.0,88.0,lithium carbenoid,CSCc1ccccc1,5
+[Li]CSCc1ccccc1,methanol,CO,0.0,52.0,lithium carbenoid,CSCc1ccccc1,1
+[Li]Cc1ccc(C(=O)CC)cc1,methanol,CO,-78.0,80.0,p-propanoylbenzyllithium,CCC(=O)c1ccc(C)cc1,5
+[Li]Cc1ccc(C(=O)CC)cc1,methanol,CO,-60.0,78.0,p-propanoylbenzyllithium,CCC(=O)c1ccc(C)cc1,5
+[Li]Cc1ccc(C(=O)CC)cc1,methanol,CO,-40.0,75.0,p-propanoylbenzyllithium,CCC(=O)c1ccc(C)cc1,5
+[Li]Cc1ccc(C(=O)CC)cc1,methanol,CO,-20.0,71.0,p-propanoylbenzyllithium,CCC(=O)c1ccc(C)cc1,5
+[Li]Cc1ccc(C(=O)CC)cc1,methanol,CO,0.0,66.0,p-propanoylbenzyllithium,CCC(=O)c1ccc(C)cc1,5
+[Li]Cc1ccc(C=O)cc1,methanol,CO,-78.0,68.0,p-formylbenzyllithium,Cc1ccc(C=O)cc1,5
+[Li]Cc1ccc(C=O)cc1,methanol,CO,-60.0,65.0,p-formylbenzyllithium,Cc1ccc(C=O)cc1,5
+[Li]Cc1ccc(C=O)cc1,methanol,CO,-40.0,62.0,p-formylbenzyllithium,Cc1ccc(C=O)cc1,5
+[Li]Cc1ccc(C=O)cc1,methanol,CO,-20.0,60.0,p-formylbenzyllithium,Cc1ccc(C=O)cc1,5
+[Li]Cc1ccc(C=O)cc1,methanol,CO,0.0,52.0,p-formylbenzyllithium,Cc1ccc(C=O)cc1,5
+[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1,iodomethane,CI,-48.0,94.0,"lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide",CC1(c2ccccc2)OC1c1ccccc1,6
+[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1,iodomethane,CI,-28.0,92.0,"lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide",CC1(c2ccccc2)OC1c1ccccc1,6
+[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1,iodomethane,CI,0.0,92.0,"lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide",CC1(c2ccccc2)OC1c1ccccc1,6
+[Li][C@@]1(c2ccccc2)O[C@@H]1c1ccccc1,iodomethane,CI,24.0,89.0,"lithium (2R*,3S*)-2,3-diphenyloxiran-2-ide",CC1(c2ccccc2)OC1c1ccccc1,6
+[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,iodomethane,CI,-48.0,83.0,lithiated 1-tert-butylsulfonyl-2-phenylaziridine,CC1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,6
+[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,iodomethane,CI,-38.0,84.0,lithiated 1-tert-butylsulfonyl-2-phenylaziridine,CC1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,6
+[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,iodomethane,CI,-28.0,83.0,lithiated 1-tert-butylsulfonyl-2-phenylaziridine,CC1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,6
+[Li][C@]1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,iodomethane,CI,-18.0,79.0,lithiated 1-tert-butylsulfonyl-2-phenylaziridine,CC1(c2ccccc2)CN1S(=O)(=O)C(C)(C)C,6
+[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,iodomethane,CI,-48.0,96.0,oxiranyllithium intermediate,CC1(c2ccccc2)OC1(C)c1ccccc1,13
+[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,iodomethane,CI,-28.0,98.0,oxiranyllithium intermediate,CC1(c2ccccc2)OC1(C)c1ccccc1,14
+[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,iodomethane,CI,0.0,94.0,oxiranyllithium intermediate,CC1(c2ccccc2)OC1(C)c1ccccc1,14
+[Li][C@]1(c2ccccc2)OC1(C)c1ccccc1,iodomethane,CI,24.0,91.0,oxiranyllithium intermediate,CC1(c2ccccc2)OC1(C)c1ccccc1,14
+[Li]c1c(C)oc2ccccc12,methanol,CO,-48.0,91.0,2-methylbenzofuran-3-yllithium,Cc1cc2ccccc2o1,18
+[Li]c1c(C)oc2ccccc12,methanol,CO,-28.0,93.0,2-methylbenzofuran-3-yllithium,Cc1cc2ccccc2o1,18
+[Li]c1c(C)oc2ccccc12,methanol,CO,0.0,73.0,2-methylbenzofuran-3-yllithium,Cc1cc2ccccc2o1,18
+[Li]c1c(C)oc2ccccc12,methanol,CO,24.0,81.0,2-methylbenzofuran-3-yllithium,Cc1cc2ccccc2o1,18
+[Li]c1c(C)oc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-48.0,26.0,3-lithio-2-methylbenzofuran,Cc1oc2ccccc2c1C1=C(c2c(C)oc3ccccc23)C(F)(F)C(F)(F)C1(F)F,5
+[Li]c1c(C)oc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-28.0,51.0,3-lithio-2-methylbenzofuran,Cc1oc2ccccc2c1C1=C(c2c(C)oc3ccccc23)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1c(C)oc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,0.0,20.0,3-lithio-2-methylbenzofuran,Cc1oc2ccccc2c1C1=C(c2c(C)oc3ccccc23)C(F)(F)C(F)(F)C1(F)F,5
+[Li]c1c(C)oc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,24.0,7.0,3-lithio-2-methylbenzofuran,Cc1oc2ccccc2c1C1=C(c2c(C)oc3ccccc23)C(F)(F)C(F)(F)C1(F)F,5
+[Li]c1c(C)sc(-c2ccccc2)c1C,methanol,CO,-48.0,85.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1cc(C)c(-c2ccccc2)s1,9
+[Li]c1c(C)sc(-c2ccccc2)c1C,methanol,CO,-28.0,87.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1cc(C)c(-c2ccccc2)s1,9
+[Li]c1c(C)sc(-c2ccccc2)c1C,methanol,CO,0.0,86.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1cc(C)c(-c2ccccc2)s1,9
+[Li]c1c(C)sc(-c2ccccc2)c1C,methanol,CO,24.0,86.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1cc(C)c(-c2ccccc2)s1,9
+[Li]c1c(C)sc(-c2ccccc2)c1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-48.0,36.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1sc(-c2ccccc2)c(C)c1C1=C(c2c(C)sc(-c3ccccc3)c2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1c(C)sc(-c2ccccc2)c1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-28.0,60.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1sc(-c2ccccc2)c(C)c1C1=C(c2c(C)sc(-c3ccccc3)c2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1c(C)sc(-c2ccccc2)c1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,0.0,75.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1sc(-c2ccccc2)c(C)c1C1=C(c2c(C)sc(-c3ccccc3)c2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1c(C)sc(-c2ccccc2)c1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,24.0,75.0,"3-lithio-2,4-dimethyl-5-phenylthiophene",Cc1sc(-c2ccccc2)c(C)c1C1=C(c2c(C)sc(-c3ccccc3)c2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1c(C)sc2ccccc12,iodomethane,CI,-48.0,86.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C,18
+[Li]c1c(C)sc2ccccc12,iodomethane,CI,-28.0,81.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C,18
+[Li]c1c(C)sc2ccccc12,iodomethane,CI,0.0,70.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C,18
+[Li]c1c(C)sc2ccccc12,iodomethane,CI,24.0,59.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C,18
+[Li]c1c(C)sc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-28.0,56.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C1=C(c2c(C)sc3ccccc23)C(F)(F)C(F)(F)C1(F)F,4
+[Li]c1c(C)sc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,0.0,26.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C1=C(c2c(C)sc3ccccc23)C(F)(F)C(F)(F)C1(F)F,3
+[Li]c1c(C)sc2ccccc12,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,24.0,13.0,3-lithio-2-methylbenzothiophene,Cc1sc2ccccc2c1C1=C(c2c(C)sc3ccccc23)C(F)(F)C(F)(F)C1(F)F,3
+[Li]c1cc(-c2ccccc2)sc1C,iodomethane,CI,-48.0,93.0,3-lithio-2-methyl-5-phenylthiophene,Cc1cc(-c2ccccc2)sc1C,9
+[Li]c1cc(-c2ccccc2)sc1C,iodomethane,CI,-28.0,96.0,3-lithio-2-methyl-5-phenylthiophene,Cc1cc(-c2ccccc2)sc1C,9
+[Li]c1cc(-c2ccccc2)sc1C,iodomethane,CI,0.0,97.0,3-lithio-2-methyl-5-phenylthiophene,Cc1cc(-c2ccccc2)sc1C,9
+[Li]c1cc(-c2ccccc2)sc1C,iodomethane,CI,24.0,98.0,3-lithio-2-methyl-5-phenylthiophene,Cc1cc(-c2ccccc2)sc1C,9
+[Li]c1cc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-48.0,87.0,3-lithio-2-methyl-5-phenylthiophene,Cc1sc(-c2ccccc2)cc1C1=C(c2cc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1cc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-28.0,96.0,3-lithio-2-methyl-5-phenylthiophene,Cc1sc(-c2ccccc2)cc1C1=C(c2cc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1cc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,0.0,90.0,3-lithio-2-methyl-5-phenylthiophene,Cc1sc(-c2ccccc2)cc1C1=C(c2cc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1cc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,24.0,88.0,3-lithio-2-methyl-5-phenylthiophene,Cc1sc(-c2ccccc2)cc1C1=C(c2cc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1cc(Br)cc(Br)c1,trimethylsilyl triflate,C[Si](C)(C)OS(=O)(=O)C(F)(F)F,0.0,88.0,"3,5-dibromophenyllithium",C[Si](C)(C)c1cc(Br)cc(Br)c1,7
+[Li]c1cc(C)cc(C)c1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,80.0,aryllithium / heteroaryllithium,Cc1cc(C)cc(C(=O)OC(C)(C)C)c1,1
+[Li]c1ccc(-c2ccc(Br)cc2)cc1,methanol,CO,-78.0,89.0,"monolithiated 4,4'-dibromobiphenyl",Brc1ccc(-c2ccccc2)cc1,4
+[Li]c1ccc(-c2ccc(Br)cc2)cc1,methanol,CO,-48.0,91.0,"monolithiated 4,4'-dibromobiphenyl",Brc1ccc(-c2ccccc2)cc1,4
+[Li]c1ccc(-c2ccc(Br)cc2)cc1,methanol,CO,0.0,88.0,"monolithiated 4,4'-dibromobiphenyl",Brc1ccc(-c2ccccc2)cc1,4
+[Li]c1ccc(-c2ccc(Br)cc2)cc1,methanol,CO,24.0,88.0,"monolithiated 4,4'-dibromobiphenyl",Brc1ccc(-c2ccccc2)cc1,4
+[Li]c1ccc(Br)cc1,methanol,CO,-78.0,71.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(Br)cc1,methanol,CO,-60.0,85.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(Br)cc1,methanol,CO,-48.0,87.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(Br)cc1,methanol,CO,-28.0,88.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(Br)cc1,methanol,CO,0.0,92.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(Br)cc1,methanol,CO,20.0,88.0,p-bromophenyllithium,Brc1ccccc1,7
+[Li]c1ccc(C#N)cc1,methanol,CO,-78.0,92.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C#N)cc1,methanol,CO,-58.0,91.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C#N)cc1,methanol,CO,-48.0,89.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C#N)cc1,methanol,CO,-28.0,89.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C#N)cc1,methanol,CO,0.0,88.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C#N)cc1,methanol,CO,20.0,82.0,p-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,-78.0,98.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,-58.0,99.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,-48.0,98.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,-28.0,97.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,0.0,91.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)(C)C)cc1,tert-butyl alcohol,CC(C)(C)O,20.0,80.0,tert-butyl p-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OC(C)C)cc1,2-propanol,CC(C)O,-78.0,89.0,isopropyl p-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)C)cc1,2-propanol,CC(C)O,-58.0,94.0,isopropyl p-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)C)cc1,2-propanol,CC(C)O,-48.0,89.0,isopropyl p-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)C)cc1,2-propanol,CC(C)O,-28.0,78.0,isopropyl p-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC(C)C)cc1,2-propanol,CC(C)O,0.0,40.0,isopropyl p-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccc(C(=O)OC)cc1,methanol,CO,-78.0,80.0,methyl p-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OC)cc1,methanol,CO,-58.0,81.0,methyl p-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OC)cc1,methanol,CO,-48.0,78.0,methyl p-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OC)cc1,methanol,CO,-28.0,56.0,methyl p-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OC)cc1,methanol,CO,0.0,10.0,methyl p-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OCC)cc1,ethanol,CCO,-78.0,76.0,ethyl p-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OCC)cc1,ethanol,CCO,-58.0,94.0,ethyl p-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OCC)cc1,ethanol,CCO,-48.0,92.0,ethyl p-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OCC)cc1,ethanol,CCO,-28.0,75.0,ethyl p-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1ccc(C(=O)OCC)cc1,ethanol,CCO,0.0,19.0,ethyl p-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1ccc(C(F)(F)F)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,65.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1ccc(C(F)(F)F)cc1,1
+[Li]c1ccc(C(F)(F)F)cc1C,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,60.0,aryllithium / heteroaryllithium,Cc1cc(C(F)(F)F)ccc1C(=O)OC(C)(C)C,1
+[Li]c1ccc(Cl)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,90.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1ccc(Cl)cc1,1
+[Li]c1ccc(Cl)s1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,-40.0,90.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1ccc(Cl)s1,1
+[Li]c1ccc(F)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,75.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1ccc(F)cc1,1
+[Li]c1ccc(OC)cc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,65.0,aryllithium / heteroaryllithium,COc1ccc(C(=O)OC(C)(C)C)cc1,1
+[Li]c1ccc(OC)cc1,methanol,CO,-78.0,84.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-68.0,85.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-58.0,92.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-48.0,90.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-38.0,87.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-28.0,90.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,-18.0,86.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,0.0,88.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc(OC)cc1,methanol,CO,24.0,88.0,p-Anisyllithium,COc1ccccc1,6
+[Li]c1ccc([N+](=O)[O-])cc1,methanol,CO,-78.0,83.0,p-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccc([N+](=O)[O-])cc1,methanol,CO,-58.0,93.0,p-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccc([N+](=O)[O-])cc1,methanol,CO,-48.0,96.0,p-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccc([N+](=O)[O-])cc1,methanol,CO,-28.0,91.0,p-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccc([N+](=O)[O-])cc1,methanol,CO,0.0,87.0,p-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccc2c(ccn2C)c1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,65.0,aryllithium / heteroaryllithium,Cn1ccc2cc(C(=O)OC(C)(C)C)ccc21,1
+[Li]c1cccc(Br)c1,methanol,CO,-78.0,83.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(Br)c1,methanol,CO,-60.0,85.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(Br)c1,methanol,CO,-48.0,88.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(Br)c1,methanol,CO,-28.0,93.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(Br)c1,methanol,CO,0.0,89.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(Br)c1,methanol,CO,20.0,87.0,m-bromophenyllithium,Brc1ccccc1,7
+[Li]c1cccc(C#N)c1,methanol,CO,-78.0,84.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C#N)c1,methanol,CO,-58.0,88.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C#N)c1,methanol,CO,-48.0,83.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C#N)c1,methanol,CO,-28.0,85.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C#N)c1,methanol,CO,0.0,84.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C#N)c1,methanol,CO,20.0,80.0,m-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,-78.0,95.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,-58.0,98.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,-48.0,99.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,-28.0,95.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,0.0,90.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)(C)C)c1,tert-butyl alcohol,CC(C)(C)O,20.0,77.0,tert-butyl m-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OC(C)C)c1,2-propanol,CC(C)O,-78.0,85.0,isopropyl m-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)C)c1,2-propanol,CC(C)O,-58.0,89.0,isopropyl m-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)C)c1,2-propanol,CC(C)O,-48.0,84.0,isopropyl m-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)C)c1,2-propanol,CC(C)O,-28.0,77.0,isopropyl m-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC(C)C)c1,2-propanol,CC(C)O,0.0,39.0,isopropyl m-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1cccc(C(=O)OC)c1,methanol,CO,-78.0,74.0,methyl m-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OC)c1,methanol,CO,-58.0,85.0,methyl m-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OC)c1,methanol,CO,-48.0,87.0,methyl m-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OC)c1,methanol,CO,-28.0,53.0,methyl m-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OC)c1,methanol,CO,0.0,5.0,methyl m-lithiobenzoate,COC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OCC)c1,ethanol,CCO,-78.0,78.0,ethyl m-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OCC)c1,ethanol,CCO,-58.0,81.0,ethyl m-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OCC)c1,ethanol,CCO,-48.0,89.0,ethyl m-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OCC)c1,ethanol,CCO,-28.0,65.0,ethyl m-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1cccc(C(=O)OCC)c1,ethanol,CCO,0.0,27.0,ethyl m-lithiobenzoate,CCOC(=O)c1ccccc1,6
+[Li]c1cccc(Cl)c1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,50.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1cccc(Cl)c1,1
+[Li]c1cccc([N+](=O)[O-])c1,methanol,CO,-78.0,86.0,m-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1cccc([N+](=O)[O-])c1,methanol,CO,-58.0,84.0,m-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1cccc([N+](=O)[O-])c1,methanol,CO,-48.0,90.0,m-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1cccc([N+](=O)[O-])c1,methanol,CO,-28.0,90.0,m-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1cccc([N+](=O)[O-])c1,methanol,CO,0.0,84.0,m-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccccc1-c1ccccc1Br,methanol,CO,-78.0,86.0,2-bromo-2'-lithiobiphenyl,Brc1ccccc1-c1ccccc1,4
+[Li]c1ccccc1-c1ccccc1Br,methanol,CO,-48.0,88.0,2-bromo-2'-lithiobiphenyl,Brc1ccccc1-c1ccccc1,4
+[Li]c1ccccc1-c1ccccc1Br,methanol,CO,0.0,88.0,2-bromo-2'-lithiobiphenyl,Brc1ccccc1-c1ccccc1,4
+[Li]c1ccccc1-c1ccccc1Br,methanol,CO,24.0,85.0,2-bromo-2'-lithiobiphenyl,Brc1ccccc1-c1ccccc1,4
+[Li]c1ccccc1Br,benzaldehyde,O=Cc1ccccc1,-78.0,87.0,2-bromophenyllithium,OC(c1ccccc1)c1ccccc1Br,16
+[Li]c1ccccc1Br,benzaldehyde,O=Cc1ccccc1,-70.0,93.0,2-bromophenyllithium,OC(c1ccccc1)c1ccccc1Br,16
+[Li]c1ccccc1Br,benzaldehyde,O=Cc1ccccc1,-60.0,88.0,2-bromophenyllithium,OC(c1ccccc1)c1ccccc1Br,16
+[Li]c1ccccc1Br,benzaldehyde,O=Cc1ccccc1,-50.0,85.0,2-bromophenyllithium,OC(c1ccccc1)c1ccccc1Br,16
+[Li]c1ccccc1Br,methanol,CO,-85.0,51.0,o-bromophenyllithium,Brc1ccccc1,10
+[Li]c1ccccc1Br,methanol,CO,-78.0,74.0,o-bromophenyllithium,Brc1ccccc1,10
+[Li]c1ccccc1Br,methanol,CO,-70.0,70.0,o-bromophenyllithium,Brc1ccccc1,12
+[Li]c1ccccc1Br,methanol,CO,-65.0,45.0,o-bromophenyllithium,Brc1ccccc1,8
+[Li]c1ccccc1Br,methanol,CO,-60.0,31.0,o-bromophenyllithium,Brc1ccccc1,10
+[Li]c1ccccc1Br,methanol,CO,-50.0,4.0,o-bromophenyllithium,Brc1ccccc1,10
+[Li]c1ccccc1C#N,methanol,CO,-78.0,81.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C#N,methanol,CO,-58.0,89.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C#N,methanol,CO,-48.0,93.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C#N,methanol,CO,-28.0,89.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C#N,methanol,CO,0.0,91.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C#N,methanol,CO,20.0,90.0,o-cyanophenyllithium,N#Cc1ccccc1,6
+[Li]c1ccccc1C(=O)OC,methanol,CO,-78.0,49.0,methyl o-lithiobenzoate,COC(=O)c1ccccc1,14
+[Li]c1ccccc1C(=O)OC,methanol,CO,-58.0,72.0,methyl o-lithiobenzoate,COC(=O)c1ccccc1,14
+[Li]c1ccccc1C(=O)OC,methanol,CO,-48.0,74.0,methyl o-lithiobenzoate,COC(=O)c1ccccc1,14
+[Li]c1ccccc1C(=O)OC,methanol,CO,-28.0,57.0,methyl o-lithiobenzoate,COC(=O)c1ccccc1,14
+[Li]c1ccccc1C(=O)OC,methanol,CO,0.0,41.0,methyl o-lithiobenzoate,COC(=O)c1ccccc1,14
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,-78.0,91.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,-58.0,97.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,-48.0,99.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,-28.0,99.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,0.0,93.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)(C)C,tert-butyl alcohol,CC(C)(C)O,20.0,83.0,tert-butyl o-lithiobenzoate,CC(C)(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)C,2-propanol,CC(C)O,-78.0,78.0,isopropyl o-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)C,2-propanol,CC(C)O,-58.0,91.0,isopropyl o-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)C,2-propanol,CC(C)O,-48.0,87.0,isopropyl o-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)C,2-propanol,CC(C)O,-28.0,87.0,isopropyl o-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OC(C)C,2-propanol,CC(C)O,0.0,81.0,isopropyl o-lithiobenzoate,CC(C)OC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OCC,ethanol,CCO,-78.0,64.0,ethyl o-lithiobenzoate,CCOC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OCC,ethanol,CCO,-58.0,88.0,ethyl o-lithiobenzoate,CCOC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OCC,ethanol,CCO,-48.0,90.0,ethyl o-lithiobenzoate,CCOC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OCC,ethanol,CCO,-28.0,84.0,ethyl o-lithiobenzoate,CCOC(=O)c1ccccc1,12
+[Li]c1ccccc1C(=O)OCC,ethanol,CCO,0.0,65.0,ethyl o-lithiobenzoate,CCOC(=O)c1ccccc1,12
+[Li]c1ccccc1I,benzaldehyde,O=Cc1ccccc1,-78.0,76.0,2-iodophenyllithium,OC(c1ccccc1)c1ccccc1I,8
+[Li]c1ccccc1I,benzaldehyde,O=Cc1ccccc1,-70.0,81.0,2-iodophenyllithium,OC(c1ccccc1)c1ccccc1I,8
+[Li]c1ccccc1I,benzaldehyde,O=Cc1ccccc1,-60.0,80.0,2-iodophenyllithium,OC(c1ccccc1)c1ccccc1I,8
+[Li]c1ccccc1I,benzaldehyde,O=Cc1ccccc1,-50.0,58.0,2-iodophenyllithium,OC(c1ccccc1)c1ccccc1I,8
+[Li]c1ccccc1[N+](=O)[O-],methanol,CO,-78.0,87.0,o-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccccc1[N+](=O)[O-],methanol,CO,-58.0,88.0,o-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccccc1[N+](=O)[O-],methanol,CO,-48.0,95.0,o-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccccc1[N+](=O)[O-],methanol,CO,-28.0,92.0,o-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1ccccc1[N+](=O)[O-],methanol,CO,0.0,87.0,o-nitrophenyllithium,O=[N+]([O-])c1ccccc1,6
+[Li]c1cccnc1,di-tert-butyl dicarbonate,CC(C)(C)OC(=O)OC(=O)OC(C)(C)C,0.0,75.0,aryllithium / heteroaryllithium,CC(C)(C)OC(=O)c1cccnc1,1
+[Li]c1ccnc(Br)c1Br,iodomethane,CI,-78.0,93.0,"2,3-dibromo-4-lithiopyridine",Cc1ccnc(Br)c1Br,6
+[Li]c1ccnc(Br)c1Br,iodomethane,CI,-48.0,91.0,"2,3-dibromo-4-lithiopyridine",Cc1ccnc(Br)c1Br,6
+[Li]c1ccnc(Br)c1Br,iodomethane,CI,-28.0,92.0,"2,3-dibromo-4-lithiopyridine",Cc1ccnc(Br)c1Br,6
+[Li]c1ccnc(Br)c1Br,iodomethane,CI,0.0,87.0,"2,3-dibromo-4-lithiopyridine",Cc1ccnc(Br)c1Br,6
+[Li]c1ccnc(Br)c1Br,iodomethane,CI,25.0,64.0,"2,3-dibromo-4-lithiopyridine",Cc1ccnc(Br)c1Br,6
+[Li]c1nc(-c2ccccc2)sc1C,methanol,CO,-48.0,99.0,4-lithio-5-methyl-2-phenylthiazole,Cc1cnc(-c2ccccc2)s1,9
+[Li]c1nc(-c2ccccc2)sc1C,methanol,CO,-28.0,100.0,4-lithio-5-methyl-2-phenylthiazole,Cc1cnc(-c2ccccc2)s1,9
+[Li]c1nc(-c2ccccc2)sc1C,methanol,CO,0.0,99.0,4-lithio-5-methyl-2-phenylthiazole,Cc1cnc(-c2ccccc2)s1,9
+[Li]c1nc(-c2ccccc2)sc1C,methanol,CO,24.0,99.0,4-lithio-5-methyl-2-phenylthiazole,Cc1cnc(-c2ccccc2)s1,9
+[Li]c1nc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,-28.0,3.0,4-lithio-5-methyl-2-phenylthiazole,Cc1sc(-c2ccccc2)nc1C1=C(c2nc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1nc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,0.0,21.0,4-lithio-5-methyl-2-phenylthiazole,Cc1sc(-c2ccccc2)nc1C1=C(c2nc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
+[Li]c1nc(-c2ccccc2)sc1C,octafluorocyclopentene,FC1=C(F)C(F)(F)C(F)(F)C1(F)F,24.0,67.0,4-lithio-5-methyl-2-phenylthiazole,Cc1sc(-c2ccccc2)nc1C1=C(c2nc(-c3ccccc3)sc2C)C(F)(F)C(F)(F)C1(F)F,6
