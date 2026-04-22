@@ -166,3 +166,75 @@ t_half = ln(2) / k_d
 - Collum 2007, Angew. Chem. — 有机锂溶液动力学框架
 - Bannwarth 2019, J. Chem. Theory Comput. — GFN2-xTB 方法
 - De Gennaro 2014, Lithium Compounds in Organic Synthesis — 数据来源
+
+---
+
+## 更新: 模型诊断与分层建模 (v2)
+
+### 三层动力学模型对比
+
+测试了一级模型是否足够，或需要更复杂的机制：
+
+| 模型 | 参数 | 结果 |
+|---|---|---|
+| **Layer 1: 一级** (基线) | 5 | R² = 0.879, **AIC 最优** |
+| Layer 2: stretched decay (β) | 6 | R² = 0.903, β 中位数 = 0.71 |
+| n 级模型 | 6 | n 收敛到 1.00, 无改善 |
+
+β 显著偏离 1.0 (59% < 0.8)，但 **AIC 不支持全局替换一级模型**。
+
+### Tier 分层
+
+| Tier | 数量 | 标准 | 推荐 |
+|---|---|---|---|
+| **A (强 stretched)** | 6 | ΔAIC>10, β<0.8 | 剔除出主模型，单独报告 |
+| **B (中等)** | 4 | ΔAIC 2-10 | 纳入扩展集 |
+| **C (一级足够)** | 30 | ΔAIC<2 | **主分析集** |
+
+Tier A 化合物: p-formylbenzylLi, 2-pyridylLi, 3-oxiranylpropylLi, o-BrPhLi, 2,3-dibromo-4-lithiopyridine, lithium carbenoid
+
+论文表述: *"Tier A compounds were excluded from the unified first-order modeling set due to strong and stable sub-exponential decay behavior (ΔAIC > 10, β < 0.8), potentially reflecting aggregation-buffered decomposition or complex mechanistic pathways."*
+
+### Core 集 (Tier C, n=30) 类别特异描述符 R²
+
+| 类别 | n | Ea_f | Ea_d | lnA_f | lnA_d |
+|---|---|---|---|---|---|
+| **oxiranylLi** | 6 | **0.983** | **0.998** | **0.974** | **0.995** |
+| **m-ArLi** | 5 | **0.999** | **0.983** | **0.999** | **0.998** |
+| **o-ArLi** | 7 | **0.892** | **0.987** | **0.971** | **0.944** |
+| **p-ArLi** | 7 | -0.501 (均值) | **0.642** | 0.845 (均值) | **0.982** |
+
+p-ArLi 的 Ea_f 不可预测（Hammett σ 也无效），用类别均值代替。
+
+### 端到端反应器分类准确率
+
+#### 按温度范围
+
+| 温度范围 | 准确率 | 说明 |
+|---|---|---|
+| **-20 ~ 25°C** | **81%** | 流动化学常用范围 |
+| 0 ~ 25°C | 81% | |
+| -78 ~ 25°C (全) | 73% | 低温拉低 |
+| -78 ~ -20°C | 68% | 低温区差 |
+
+#### 按类别 @ -20~25°C
+
+| 类别 | 准确率 |
+|---|---|
+| **m-ArLi** | **100%** |
+| **oxiranylLi** | **87%** |
+| **p-ArLi** | **81%** |
+| o-ArLi | 63% |
+
+### 最终推荐的适用范围
+
+**模型最适合**: -20~25°C 范围内的 m-ArLi、oxiranylLi、p-ArLi 三类中间体  
+**准确率**: 81-100%  
+**不适用**: o-ArLi（需要更好的 Ea_f 模型）、极低温（<-20°C）、Tier A 化合物
+
+### 数据文件
+
+| 文件 | 内容 |
+|---|---|
+| `global_arrhenius.csv` | 45 化合物 × 5 Arrhenius 参数 |
+| `model_comparison_L1_L2.csv` | 一级 vs stretched 对比 + Tier 分层 |
