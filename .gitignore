@@ -106,3 +106,45 @@ runs/
 
 # Archived/obsolete files
 废弃/
+
+# ============================================================
+# 2026-06-04 cleanup — exclude paper repo + future analysis results
+# ============================================================
+
+# Paper manuscript (lives in a separate workflow; not for public pipeline repo)
+pub/
+
+# Server pid / log stragglers (server.log already covered by *.log)
+server.pid
+
+# Experimental GC reports (raw analytical PDFs)
+data/ml_lifetime/experiment results/
+
+# xTB / DFT geometry-output folders (regeneratable)
+data/ml_lifetime/agg_geometries/
+data/ml_lifetime/nthf_geometries/
+data/ml_lifetime/hf_xyz/
+data/ml_lifetime/phase_a_curves/
+
+# Future analysis-figure / dataset / PDF / docx outputs (existing tracked
+# files stay; new ones won't be picked up by accident)
+data/ml_lifetime/analysis_figures/*.png
+data/ml_lifetime/analysis_figures/*.pdf
+data/ml_lifetime/analysis_figures/*.tif
+data/ml_lifetime/*.csv
+data/ml_lifetime/*.pdf
+data/ml_lifetime/*.docx
+data/ml_lifetime/*.tif
+data/ml_lifetime/*.numbers
+data/ml_lifetime/*.png
+
+# Python cache locally generated
+data/ml_lifetime/__pycache__/
+
+# Tighter exclusions for analysis_figures sub-files (datasets/captions live here too)
+data/ml_lifetime/analysis_figures/*.csv
+data/ml_lifetime/analysis_figures/*.tex
+data/ml_lifetime/analysis_figures/.DS_Store
+
+# Carthesian Hessian binaries from ORCA scans
+data/ml_lifetime/ts_calc/*.carthess

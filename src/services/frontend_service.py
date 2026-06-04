@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # ── Config ────────────────────────────────────────────────────────────────────
-PASSWORD        = os.environ.get("FRONTEND_PASSWORD", "nagaki2024")
+PASSWORD        = os.environ.get("FRONTEND_PASSWORD", "")  # empty → open access
 SECRET_KEY      = os.environ.get("FRONTEND_SECRET",   "flowfigtabminer-secret-key")
 GCS_DATA_BUCKET = "flowfigtabminer-data"
 FIGURE_URL      = os.environ.get("FIGURE_SERVICE_URL",
@@ -34,6 +34,8 @@ def _make_token(pw: str) -> str:
     return hmac.new(SECRET_KEY.encode(), pw.encode(), hashlib.sha256).hexdigest()
 
 def _authenticated(token: str | None) -> bool:
+    if not PASSWORD:
+        return True   # open access when no password is configured
     if not token:
         return False
     return hmac.compare_digest(token, _make_token(PASSWORD))
@@ -721,7 +723,7 @@ async def index():
 async def login(request: Request):
     body = await request.json()
     pw   = body.get("password", "")
-    if pw != PASSWORD:
+    if PASSWORD and pw != PASSWORD:
         from fastapi import HTTPException
         raise HTTPException(status_code=401, detail="Wrong password")
     return JSONResponse({"token": _make_token(pw)})

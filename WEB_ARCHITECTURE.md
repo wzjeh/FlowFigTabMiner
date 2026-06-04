@@ -74,8 +74,8 @@ CSV output
 | `/examples/*` | GET (static) | 静态文件服务（示例图） |
 
 ### 关键设计
-- **认证**：前端密码 → HMAC-SHA256 token → Cookie（24h）
-- 当前密码：`yuhan2026`（由环境变量 `FRONTEND_PASSWORD` 控制）
+- **认证**：可选密码门（由环境变量 `FRONTEND_PASSWORD` 控制）→ 通过密码后发放 HMAC-SHA256 token → Cookie（24h）
+- 默认 `FRONTEND_PASSWORD` 为空，即**开放访问**；如需限制，部署时通过 Secret Manager 注入该环境变量
 - 图片上传后先存到 `gs://flowfigtabminer-data/frontend/{job_id}/filename`，再传给后端服务
 - 后端服务处理完后返回 `csv_gcs_uri`，前端下载并渲染为表格
 - 后端调用失败时自动重试一次（间隔 5s）
@@ -210,7 +210,7 @@ gs://flowfigtabminer-data/
 
 | 变量 | 服务 | 说明 |
 |------|------|------|
-| `FRONTEND_PASSWORD` | frontend | 网页访问密码（默认 yuhan2026） |
+| `FRONTEND_PASSWORD` | frontend | 可选网页访问密码（默认空 = 开放访问） |
 | `FRONTEND_SECRET` | frontend | HMAC 签名密钥 |
 | `FIGURE_SERVICE_URL` | frontend | figure 服务地址 |
 | `TABLE_SERVICE_URL` | frontend | table 服务地址 |

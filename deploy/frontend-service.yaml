@@ -21,7 +21,5 @@ spec:
           value: "https://figure-service-h6pakhgb2a-uc.a.run.app"
         - name: TABLE_SERVICE_URL
           value: "https://table-service-h6pakhgb2a-uc.a.run.app"
-        - name: FRONTEND_PASSWORD
-          value: "yuhan2026"
         - name: FRONTEND_SECRET
           value: "flowfigtabminer-secret-2024"
