@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 class TablePipeline:
     def __init__(
         self,
+        cell_extractor,
+        header_resolver,
         table_filter=None,
         structure_recognizer=None,
         molecule_processor=None,
@@ -46,6 +48,10 @@ class TablePipeline:
         self.tables_cfg = self.cfg.get("tables", {})
         self.sequential_mode = sequential_mode
         self.post_extract_hooks: list[PipelineHook] = list(post_extract_hooks)
+        # Per-field decisive sources (R1/R4): VLM owns cell text; LLM judge
+        # owns header row count.  Required, no fallback.
+        self.cell_extractor = cell_extractor
+        self.header_resolver = header_resolver
 
         # Initialize placeholders
         self.filter = table_filter
@@ -325,45 +331,81 @@ class TablePipeline:
 
         logger.info(f"   -> {len(cells_with_molecules)} cells contain molecules, {len(cells_for_ocr)} cells need OCR")
 
-        # 5. OCR for non-molecule cells
-        logger.info("   -> Running OCR on text/number cells...")
-
-        extracted_data = []
+        # 5. Cell text via VLM (per-field decisive source).  TATR has
+        # given us (m, n); the VLM transcribes every cell in one call
+        # with R1 circuit-breaker alignment validation.  Molecule cells
+        # subsequently get their text replaced with the MolNexTR SMILES.
         if cell_meta and 'row_index' not in cell_meta[0]:
              self._assign_grid_indices(cell_meta)
 
-        # Run OCR on non-molecule cells (reuse shared_recognizer)
-        for i, cell in enumerate(cell_meta):
+        m_rows = max(c['row_index'] for c in cell_meta) + 1
+        n_cols = max(c['col_index'] for c in cell_meta) + 1
+        logger.info(f"   -> Calling VLM cell extractor: expected {m_rows}×{n_cols} grid")
+
+        cell_result = self.cell_extractor.extract(Path(current_image_path), m_rows, n_cols)
+
+        if not cell_result.aligned:
+            # R1 circuit breaker: alignment failed twice → refuse to emit
+            # mis-positioned cells.  Downstream LocalVarsBuilder reads
+            # parse_status and skips this table.
+            logger.error(
+                "   -> TableCellExtractor alignment failed: %s — marking table_parsing_failed",
+                cell_result.notes,
+            )
+            return {
+                'is_valid': False,
+                'reason': 'alignment_failed',
+                'parse_status': 'alignment_failed',
+                'notes': cell_result.notes,
+            }
+
+        # Build dense grid from VLM cells; SMILES overrides for molecule
+        # cells (per the owner table: Table SMILES → MolNexTR).
+        grid = [["" for _ in range(n_cols)] for _ in range(m_rows)]
+        for tc in cell_result.cells:
+            grid[tc.row][tc.col] = tc.text
+
+        molecule_cells_overridden = 0
+        for cell in cell_meta:
             if cell.get('class') == 'Molecule':
-                content = cell['content']
-                logger.debug(f"      Cell {i} (Molecule): {content[:30]}...")
-            else:
-                content = shared_recognizer.recognize_content(cell_crops[i], 'Text')
-                cell['content'] = content
-                logger.debug(f"      Cell {i} (Text/Number): {content[:30]}...")
+                ri, ci = cell['row_index'], cell['col_index']
+                if 0 <= ri < m_rows and 0 <= ci < n_cols:
+                    grid[ri][ci] = cell.get('content', '')
+                    molecule_cells_overridden += 1
+        logger.info(
+            "   -> VLM cells aligned; %d molecule cells overridden with MolNexTR SMILES",
+            molecule_cells_overridden,
+        )
 
-            extracted_data.append({
-                'row': cell['row_index'],
-                'col': cell['col_index'],
-                'content': content,
-                'type': cell.get('class', 'Text')
-            })
+        # Flatten into extracted_data for the downstream evidence packet.
+        extracted_data = []
+        for ri in range(m_rows):
+            for ci in range(n_cols):
+                extracted_data.append({
+                    'row': ri,
+                    'col': ci,
+                    'content': grid[ri][ci],
+                    'type': 'Molecule' if grid[ri][ci] and any(
+                        c.get('row_index') == ri and c.get('col_index') == ci
+                        and c.get('class') == 'Molecule' for c in cell_meta
+                    ) else 'Text',
+                })
 
-        # 6. Construct DataFrame
-        if not extracted_data:
-             return {'is_valid': False, 'reason': 'No content extracted'}
-
-        max_row = max(d['row'] for d in extracted_data)
-        max_col = max(d['col'] for d in extracted_data)
-
-        grid = [["" for _ in range(max_col + 1)] for _ in range(max_row + 1)]
-        for item in extracted_data:
-            grid[item['row']][item['col']] = item['content']
-
-        # 6b. VLM Header Correction (if enabled and heuristic triggers)
-        if self.header_corrector.enabled and self.header_corrector.needs_correction(grid, struct_res):
-            logger.info("   -> Header quality low, calling VLM for correction...")
-            grid = self.header_corrector.correct(current_image_path, grid, struct_res)
+        # 6. HeaderResolver (R4 LLM judge): tag the evidence packet with
+        # how many header rows the table has.  Used by downstream
+        # LocalVarsBuilder to interpret the CSV correctly.
+        vlm_row0 = grid[0] if m_rows >= 1 else None
+        vlm_row1 = grid[1] if m_rows >= 2 else None
+        header_judgment = self.header_resolver.resolve(
+            paddle_row0=None,  # PaddleOCR cell text retired in favour of VLM
+            vlm_row0=vlm_row0,
+            vlm_row1=vlm_row1,
+        )
+        header_row_count = header_judgment.field_value.value
+        logger.info(
+            "   -> HeaderResolver: header_row_count=%s confidence=%.2f",
+            header_row_count, header_judgment.confidence,
+        )
 
         df = pd.DataFrame(grid)
         
@@ -456,7 +498,11 @@ class TablePipeline:
                  "num_extracted": len(extracted_data),
                  "caption_text": result_packet["caption_text"],
                  "table_note_text": result_packet["table_note_text"],
-                 "is_relevant": is_relevant
+                 "is_relevant": is_relevant,
+                 "header_row_count": header_row_count,
+                 "header_confidence": header_judgment.confidence,
+                 "header_source": header_judgment.field_value.source.value if hasattr(header_judgment.field_value.source, "value") else str(header_judgment.field_value.source),
+                 "parse_status": "ok",
              }
              json_filename = f"{table_basename}_evidence.json"
              json_path = os.path.join(table_output_dir, json_filename)

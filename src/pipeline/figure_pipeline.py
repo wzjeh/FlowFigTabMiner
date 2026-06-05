@@ -15,22 +15,31 @@ from src.parsing.stage2_detector import Stage2Detector
 from src.extraction.figure.legend_matcher import LegendMatcher
 from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.assembly.evidence_assembler import EvidenceAssembler
+from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 from src.utils.config import load_config
 
 class FigurePipeline:
-    def __init__(self, post_extract_hooks: Iterable[PipelineHook] = ()):
+    def __init__(
+        self,
+        metadata_extractor: FigureMetadataExtractor,
+        post_extract_hooks: Iterable[PipelineHook] = (),
+    ):
         """Initialize figure pipeline.
 
         Args:
+            metadata_extractor: Gemini metadata-only extractor — canonical
+                source of axis labels, axis units, legend names, title and
+                footnote.  Injected by ``main.py``.  No default: the
+                pipeline refuses to run without VLM metadata under the
+                per-field decisive-source design.
             post_extract_hooks: zero or more hooks called after each
-                figure's evidence JSON is written.  The default is empty,
-                preserving prior behaviour; ``main.py`` injects VLM
-                inspection hooks here when full Gemini-cross-check is
-                desired.
+                figure's evidence JSON is written.  ``main.py`` injects
+                VLM inspection (audit-only) hooks here.
         """
         print("Initializing Figure Pipeline...")
         self.cfg = load_config()
+        self.metadata_extractor = metadata_extractor
         self.post_extract_hooks: list[PipelineHook] = list(post_extract_hooks)
         
         # Load Configs
@@ -200,8 +209,18 @@ class FigurePipeline:
                         })
                 
                 # Step 4: Assembly & Filtering
-                # Pass pre-computed text_evidence to avoid re-OCR
-                json_path = self.assembler.assemble(figure_id, extraction_data, macro_cleaned_dir, text_evidence=text_evidence)
+                # Per-field decisive source: VLM owns axis/legend/title text.
+                # Call the metadata extractor once on the cleaned plot,
+                # then hand both PaddleOCR caption + VLM metadata to the
+                # assembler.
+                vlm_metadata = self.metadata_extractor.extract(Path(cleaned_plot_path))
+                json_path = self.assembler.assemble(
+                    figure_id,
+                    extraction_data,
+                    macro_cleaned_dir,
+                    vlm_metadata=vlm_metadata,
+                    text_evidence=text_evidence,
+                )
 
                 if json_path:
                     print(f"      -> EVIDENCE SAVED: {json_path}")

@@ -68,9 +68,17 @@ llm:
     provider: "gemini"
     model: "gemini-2.5-flash"     # current stable Gemini Flash; bump to gemini-3.0-flash when GA
     temperature: 0.1
-    max_output_tokens: 8192
+    # GlobalAssembly can emit dozens of full reaction records in one call.
+    # Two failure modes seen on 2026-06 example.pdf spot-check:
+    #   1. 8192 budget → truncated mid-record at row ~10 of Table 1.
+    #   2. 32768 budget + default thinking → Gemini 2.5 spent 31k tokens
+    #      on internal reasoning and only 1.3k on output, also truncated.
+    # Fix: 32k output budget AND thinking_budget=0 (translation task,
+    # no chain-of-thought needed for evidence → record formatting).
+    max_output_tokens: 32768
+    thinking_budget: 0
     max_retries: 3
-    timeout_s: 180.0
+    timeout_s: 300.0
 
 # VLM (text + image) — used by the inspection hooks for paper modules 6 (figure)
 # and 12 (table), plus the table header corrector.  Loaded into a frozen

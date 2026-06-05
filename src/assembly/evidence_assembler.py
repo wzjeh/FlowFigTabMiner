@@ -12,6 +12,7 @@ if os.environ.get('USE_EASYOCR', '0') != '1':
     except Exception:
         pass
 from src.extraction.common.ocr_backend import get_ocr_instance
+from src.extraction.figure.metadata_vlm import FigureMetadata
 
 class EvidenceAssembler:
     def __init__(self):
@@ -44,54 +45,69 @@ class EvidenceAssembler:
         
         return is_relevant, text_evidence
 
-    def assemble(self, figure_id, extraction_data, intermediate_dir, text_evidence=None):
-        """
-        Assembles extraction results (Step 3) and OCR evidence (Step 2/4) into a JSON packet.
-        
+    def assemble(self, figure_id, extraction_data, intermediate_dir, vlm_metadata, text_evidence=None):
+        """Assemble Step 3 extraction + VLM metadata into a JSON packet.
+
+        Per the per-field decisive-source design:
+        - axis labels / units, legend names, title, footnote → VLM (Gemini)
+        - caption text (for relevance filter only) → PaddleOCR
+        - data points (raw_data) → YOLO + RANSAC pipeline
+
+        Downstream LocalVarsBuilder still reads ``text_evidence`` keys
+        (``x_axis_title``, ``y_axis_title``, ``legend_text``,
+        ``chart_text``) — but each value now originates from VLM rather
+        than per-crop PaddleOCR.  PaddleOCR's role is restricted to the
+        relevance gate at the caller.
+
         Args:
-            figure_id (str): Unique ID of the figure
-            extraction_data (list): List of dicts containing extracted data points
-            intermediate_dir (str): Path to directory containing crop images
-            text_evidence (dict, optional): Pre-computed text evidence from check_relevance.
-            
+            figure_id: unique ID of the figure
+            extraction_data: list of dicts with extracted data points
+            intermediate_dir: directory containing crop images
+            vlm_metadata: ``FigureMetadata`` (axis labels, legend, etc.),
+                constructed and injected by ``FigurePipeline``.
+            text_evidence: optional pre-computed PaddleOCR evidence from
+                ``check_relevance``; used only for caption / fallback.
+
         Returns:
-            str: Path to saved JSON, or None if filtered out.
+            Path to saved JSON, or None if filtered out.
         """
         print(f"[Assembler] Assembling evidence for {figure_id}...")
-        
-        # 1. Get Text Evidence (if not provided)
+
+        # 1. PaddleOCR caption (still useful for downstream LLM context)
         if text_evidence is None:
-            # Full check
             is_relevant, text_evidence = self.check_relevance(figure_id, intermediate_dir)
             if not is_relevant:
-                 print(f"      [Filter] Discarding {figure_id} due to lack of result keywords.")
-                 return None
+                print(f"      [Filter] Discarding {figure_id} due to lack of result keywords.")
+                return None
 
-        # [NEW] If caption is empty, try to enrich from shared page context
         if not any(item.get('text') for item in text_evidence.get('chart_text', [])):
             print(f"      [Assembler] Local caption empty for {figure_id}. Checking shared page context...")
             self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
 
-        # 3. Structure the Data
-        # User Request: Aggregate chart_text into a single caption field
         caption_content = ". ".join([item['text'] for item in text_evidence.get('chart_text', [])])
-        
+
+        # 2. VLM-sourced text_evidence: overrides PaddleOCR axis/legend
+        # readings.  Preserves the legacy dict shape so LocalVarsBuilder's
+        # field accessors keep working; provenance rides in each entry.
+        text_ev_vlm = _vlm_text_evidence(vlm_metadata)
+
         evidence_packet = {
-            "is_relevant": True, # If we are assembling, we passed the filter
+            "is_relevant": True,
             "meta": {
                 "figure_id": figure_id,
                 "source_intermediate_dir": intermediate_dir,
-                "caption": caption_content
+                "caption": caption_content,
+                "title": _fv_serialize(vlm_metadata.title),
+                "footnote": _fv_serialize(vlm_metadata.footnote),
             },
-            "text_evidence": text_evidence,
-            "raw_data": extraction_data
+            "text_evidence": text_ev_vlm,
+            "raw_data": extraction_data,
         }
-        
-        # 4. Save JSON
+
         output_path = os.path.join(intermediate_dir, f"{figure_id}_evidence.json")
         with open(output_path, 'w') as f:
             json.dump(evidence_packet, f, indent=2)
-            
+
         return output_path
 
     def _is_relevant_chart(self, text_evidence, figure_id):
@@ -403,3 +419,80 @@ class EvidenceAssembler:
         if len(text) < 2: return False # Skip single chars
         if text.replace('.', '').isdigit(): return False # Skip pure numbers (often axis ticks misdetected as titles)
         return True
+
+
+# ── helpers: serialise VLM FieldValues into the legacy text_evidence shape ──
+
+def _fv_serialize(fv):
+    """Turn a FieldValue into the small dict downstream code reads.
+
+    LocalVarsBuilder only looks at ``item["text"]``; the extra keys are
+    retained so audit tooling and the GlobalAssembly LLM prompt can show
+    provenance.
+    """
+    if fv is None:
+        return {"text": "", "source": "missing"}
+    val = fv.value
+    if val is None:
+        text = ""
+    elif isinstance(val, list):
+        text = "; ".join(str(v) for v in val if v)
+    else:
+        text = str(val)
+    return {
+        "text": text,
+        "source": fv.source.value if hasattr(fv.source, "value") else str(fv.source),
+        "model_id": fv.model_id,
+    }
+
+
+def _vlm_text_evidence(meta):
+    """Pack a ``FigureMetadata`` into a dict matching the legacy
+    ``text_evidence`` schema (``x_axis_title``, ``y_axis_title``,
+    ``legend_text``, ``chart_text``).
+
+    The dict values are single-element lists of small dicts with a
+    ``text`` key — same shape LocalVarsBuilder used to receive from
+    PaddleOCR-per-crop scanning, so no downstream change required.
+    """
+    def _label_with_unit(label_fv, unit_fv):
+        # Combine "Yield" + "%" → "Yield (%)" purely for downstream LLM
+        # readability.  Empty unit is fine; we never invent.
+        label = label_fv.value or ""
+        unit = unit_fv.value or ""
+        if label and unit:
+            return f"{label} ({unit})"
+        return label
+
+    x_text = _label_with_unit(meta.x_axis_label, meta.x_axis_unit)
+    y_text = _label_with_unit(meta.y_axis_label, meta.y_axis_unit)
+
+    def _wrap(text, fv):
+        return [{
+            "text": text,
+            "source": fv.source.value if hasattr(fv.source, "value") else str(fv.source),
+            "model_id": fv.model_id,
+        }] if text else []
+
+    legend_list = meta.legend_series_names.value or []
+
+    return {
+        "x_axis_title": _wrap(x_text, meta.x_axis_label),
+        "y_axis_title": _wrap(y_text, meta.y_axis_label),
+        "legend_text": [
+            {
+                "text": str(name),
+                "source": meta.legend_series_names.source.value if hasattr(meta.legend_series_names.source, "value") else str(meta.legend_series_names.source),
+                "model_id": meta.legend_series_names.model_id,
+            }
+            for name in legend_list if name
+        ],
+        # chart_text now carries title + footnote text concatenated, so
+        # the LLM still sees "free-text context"
+        "chart_text": [
+            x for x in (
+                _fv_serialize(meta.title) if meta.title.value else None,
+                _fv_serialize(meta.footnote) if meta.footnote.value else None,
+            ) if x is not None
+        ],
+    }

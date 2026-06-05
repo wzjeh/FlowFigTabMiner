@@ -178,7 +178,12 @@ def main() -> None:
     # ─── Step 2-4: Figure pipeline (with module-6 hook) ────────────
     print("\n=== Step 2-4: Figure Extraction ===")
     try:
-        fig_pipeline = FigurePipeline(post_extract_hooks=figure_hooks)
+        from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
+        fig_metadata_extractor = FigureMetadataExtractor(vlm=provider, cfg=vlm_cfg)
+        fig_pipeline = FigurePipeline(
+            metadata_extractor=fig_metadata_extractor,
+            post_extract_hooks=figure_hooks,
+        )
         fig_pipeline.process_pdf_figures(pdf_path)
     except Exception as exc:
         print(f"[FigurePipeline] Error: {exc} — continuing to table extraction.")
@@ -192,7 +197,13 @@ def main() -> None:
     # ─── Step Table: Table pipeline (with module-12 hook) ──────────
     print("\n=== Step Table: Table Extraction ===")
     shared_content_rec = ContentRecognizer()
+    from src.extraction.table.cell_vlm import TableCellExtractor
+    from src.extraction.table.header_resolver import HeaderResolver
+    tab_cell_extractor = TableCellExtractor(vlm=provider, cfg=vlm_cfg)
+    tab_header_resolver = HeaderResolver(llm=provider, cfg=llm_cfg)
     tab_pipeline = TablePipeline(
+        cell_extractor=tab_cell_extractor,
+        header_resolver=tab_header_resolver,
         sequential_mode=True,
         content_recognizer=shared_content_rec,
         post_extract_hooks=table_hooks,

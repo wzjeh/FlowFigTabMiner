@@ -28,6 +28,13 @@ class LLMConfig(BaseModel):
     max_output_tokens: int = Field(default=8192, ge=1)
     max_retries: int = Field(default=3, ge=0)
     timeout_s: float = Field(default=120.0, gt=0.0)
+    # Gemini 2.5 thinking budget — number of internal-reasoning tokens
+    # the model may spend before emitting visible output.  Thinking tokens
+    # count against ``max_output_tokens``, so leaving the default
+    # ("dynamic", potentially 30k+) can starve a long structured-output
+    # call like GlobalAssembly.  Set 0 for tasks that are essentially
+    # translation/formatting; raise for tasks needing deep reasoning.
+    thinking_budget: int = Field(default=0, ge=0)
 
 
 class VLMConfig(BaseModel):
@@ -46,6 +53,8 @@ class VLMConfig(BaseModel):
     # Match-rate threshold below which the InspectionReport sets
     # ``review_needed=True``; callers may consult or ignore this flag.
     match_threshold: float = Field(default=0.80, ge=0.0, le=1.0)
+    # See LLMConfig.thinking_budget — same semantics for VLM calls.
+    thinking_budget: int = Field(default=0, ge=0)
 
 
 def _safe_get(d: dict, *keys: str) -> dict | None:
