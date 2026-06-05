@@ -62,15 +62,20 @@ class AppConfig(TypedDict):
 # ── Required key validation ───────────────────────────────────────────────────
 
 _REQUIRED_PATHS = [
-    # (dotted path, error hint)
+    # (dotted path,)
     ("global.output_base_dir",),
     ("global.intermediate_dir",),
     ("figures.step2_macro.model_path",),
     ("figures.step3_micro.model_path",),
     ("tables.segmentation.model_path",),
     ("tables.structure.model_path",),
-    ("llm.default_provider",),
-    ("llm.adjudication.model_name",),
+    # LLM/VLM configuration moved to typed Pydantic models loaded via
+    # src.llm.config.load_llm_config / load_vlm_config; presence is
+    # validated there.
+    ("llm.adjudication.provider",),
+    ("llm.adjudication.model",),
+    ("vlm.inspection.provider",),
+    ("vlm.inspection.model",),
 ]
 
 
