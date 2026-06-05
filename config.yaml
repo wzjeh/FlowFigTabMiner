@@ -59,6 +59,11 @@ tables:
 # LLM (text-in / text-out) — used by Step 5 (Global Assembly) and Step 4.5
 # (Local Vars Builder).  Loaded into a frozen Pydantic ``LLMConfig``.
 llm:
+  # Global concurrency cap on Gemini calls (single semaphore covering
+  # adjudication, inspection, metadata extraction, header judge).
+  # Five is comfortable for the free tier (15 RPM); raise for paid tiers.
+  max_concurrent: 5
+
   adjudication:
     provider: "gemini"
     model: "gemini-2.5-flash"     # current stable Gemini Flash; bump to gemini-3.0-flash when GA

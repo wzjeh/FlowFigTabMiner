@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import abc
+from typing import Optional, Type
+
+from pydantic import BaseModel
 
 from src.llm.config import LLMConfig, VLMConfig
 from src.llm.types import ChatMessage, LLMResponse, VLMImage
@@ -45,12 +48,19 @@ class VLMProvider(abc.ABC):
         system_prompt: str,
         user_prompt: str,
         cfg: VLMConfig,
+        response_schema: Optional[Type[BaseModel]] = None,
     ) -> tuple[LLMResponse, dict]:
         """Send ``image`` + prompts to the VLM and return the parsed JSON.
 
         Returns a tuple of ``(metadata, parsed_json)`` so that callers see
         both the raw transport stats (latency, model id, token counts) and
         the decoded JSON in one round-trip.
+
+        When ``response_schema`` is provided, the provider enables the
+        SDK's structured-output mode (Pydantic model class supplied
+        verbatim).  In that mode the returned ``parsed_json`` is
+        guaranteed to be schema-conformant and callers can immediately
+        call ``response_schema.model_validate(parsed_json)``.
         """
 
     @property

@@ -20,13 +20,17 @@ from __future__ import annotations
 import json
 import logging
 import os
+import random
 import re
 import time
+from typing import Any, Callable, Optional, Type
 
 from google import genai
 from google.genai import types as genai_types
+from pydantic import BaseModel
 
 from src.llm.cache import ResponseCache
+from src.llm.concurrency import acquire_llm_slot
 from src.llm.config import LLMConfig, VLMConfig
 from src.llm.errors import (
     LLMProviderError,
@@ -40,6 +44,38 @@ from src.llm.types import ChatMessage, LLMResponse, Role, VLMImage
 logger = logging.getLogger(__name__)
 
 _ENV_VAR = "GEMINI_API_KEY"
+
+
+def _backoff_call(
+    call: Callable[[], Any],
+    *,
+    max_retries: int,
+    label: str,
+) -> Any:
+    """Run ``call`` with exponential backoff on RateLimitError.
+
+    Delays grow as 1 s, 2 s, 4 s, ... up to ``max_retries`` attempts.
+    Other LLMProviderError types propagate immediately (no retry).
+    """
+    last_exc: Optional[BaseException] = None
+    for attempt in range(max_retries + 1):
+        try:
+            return call()
+        except RateLimitError as exc:
+            last_exc = exc
+            if attempt >= max_retries:
+                break
+            sleep_s = (2 ** attempt) + random.uniform(0, 0.5)
+            logger.warning(
+                "%s rate-limited (attempt %d/%d), sleeping %.1fs before retry",
+                label,
+                attempt + 1,
+                max_retries + 1,
+                sleep_s,
+            )
+            time.sleep(sleep_s)
+    assert last_exc is not None
+    raise last_exc
 
 
 def _strip_json_fence(text: str) -> str:
@@ -127,13 +163,17 @@ class GeminiProvider(LLMProvider, VLMProvider):
             system_instruction="\n\n".join(system_parts) if system_parts else None,
         )
 
+        def _call() -> Any:
+            with acquire_llm_slot():
+                try:
+                    return self._client.models.generate_content(
+                        model=cfg.model, contents=contents, config=config
+                    )
+                except Exception as exc:
+                    self._wrap_and_raise(exc)
+
         t0 = time.perf_counter()
-        try:
-            response = self._client.models.generate_content(
-                model=cfg.model, contents=contents, config=config
-            )
-        except Exception as exc:
-            self._wrap_and_raise(exc)
+        response = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.chat")
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         text = (response.text or "").strip()
@@ -172,13 +212,25 @@ class GeminiProvider(LLMProvider, VLMProvider):
         system_prompt: str,
         user_prompt: str,
         cfg: VLMConfig,
+        response_schema: Optional[Type[BaseModel]] = None,
     ) -> tuple[LLMResponse, dict]:
         """Send ``image`` + prompts, return ``(metadata, parsed_json)``.
 
-        The cache key includes a hash of the image bytes so re-runs over
-        the same crop avoid paying twice.
+        Parameters
+        ----------
+        response_schema:
+            Optional Pydantic model class.  When supplied, switches Gemini
+            into structured-output mode (``response_mime_type="application/json"``
+            + ``response_schema``) so the SDK guarantees the returned text
+            is JSON conforming to the schema.  Callers can then validate
+            with ``Model.model_validate(parsed)`` instead of writing
+            tolerant regex.
+
+        The cache key includes a hash of the image bytes plus the schema
+        name so different schemas don't share entries.
         """
         img_bytes = image.path.read_bytes()
+        schema_tag = response_schema.__name__ if response_schema else "free"
         cache_key = self._cache.key(
             "gemini.inspect",
             cfg.model,
@@ -186,44 +238,65 @@ class GeminiProvider(LLMProvider, VLMProvider):
             system_prompt,
             user_prompt,
             img_bytes,
+            schema_tag,
         )
         if (hit := self._cache.get(cache_key)) is not None:
-            logger.info("gemini.inspect cache hit (%s)", cfg.model)
+            logger.info("gemini.inspect cache hit (%s, schema=%s)", cfg.model, schema_tag)
             meta = LLMResponse(**hit["meta"], cache_hit=True)
             return meta, hit["parsed"]
 
-        config = genai_types.GenerateContentConfig(
+        config_kwargs: dict[str, Any] = dict(
             temperature=cfg.temperature,
             max_output_tokens=cfg.max_output_tokens,
             system_instruction=system_prompt or None,
         )
+        if response_schema is not None:
+            config_kwargs["response_mime_type"] = "application/json"
+            config_kwargs["response_schema"] = response_schema
+
+        config = genai_types.GenerateContentConfig(**config_kwargs)
+
+        contents = [
+            genai_types.Content(
+                role="user",
+                parts=[
+                    genai_types.Part.from_bytes(
+                        data=img_bytes, mime_type=image.mime_type
+                    ),
+                    genai_types.Part.from_text(text=user_prompt),
+                ],
+            )
+        ]
+
+        def _call() -> Any:
+            with acquire_llm_slot():
+                try:
+                    return self._client.models.generate_content(
+                        model=cfg.model, contents=contents, config=config
+                    )
+                except Exception as exc:
+                    self._wrap_and_raise(exc)
 
         t0 = time.perf_counter()
-        try:
-            response = self._client.models.generate_content(
-                model=cfg.model,
-                contents=[
-                    genai_types.Content(
-                        role="user",
-                        parts=[
-                            genai_types.Part.from_bytes(
-                                data=img_bytes, mime_type=image.mime_type
-                            ),
-                            genai_types.Part.from_text(text=user_prompt),
-                        ],
-                    )
-                ],
-                config=config,
-            )
-        except Exception as exc:
-            self._wrap_and_raise(exc)
+        response = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.inspect")
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         raw = (response.text or "").strip()
         if not raw:
             raise LLMProviderError(f"gemini returned empty inspection (model={cfg.model})")
 
-        parsed = self._parse_json(raw)
+        # Structured mode → SDK already guarantees JSON; just json.loads.
+        # Free mode → fall back to the tolerant parser for fences / comments.
+        if response_schema is not None:
+            try:
+                parsed = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                raise ParseError(
+                    f"gemini structured output not parseable as JSON (schema={schema_tag}): {exc}",
+                    raw_text=raw,
+                )
+        else:
+            parsed = self._parse_json(raw)
 
         usage = getattr(response, "usage_metadata", None)
         tokens_in = getattr(usage, "prompt_token_count", None) if usage else None
@@ -242,9 +315,10 @@ class GeminiProvider(LLMProvider, VLMProvider):
             {"meta": meta.model_dump(exclude={"cache_hit"}), "parsed": parsed},
         )
         logger.info(
-            "gemini.inspect model=%s image=%s latency=%.0fms tokens_in=%s tokens_out=%s",
+            "gemini.inspect model=%s image=%s schema=%s latency=%.0fms tokens_in=%s tokens_out=%s",
             cfg.model,
             image.path.name,
+            schema_tag,
             elapsed_ms,
             tokens_in,
             tokens_out,

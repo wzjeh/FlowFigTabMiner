@@ -32,6 +32,7 @@ from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.fusion import PointCountConsistency
 from src.extraction.table.pipeline import TablePipeline
 from src.extraction.table.scheme_seg_parser import SchemeSegParser
+from src.llm.concurrency import configure_concurrency
 from src.llm.config import load_llm_config, load_vlm_config
 from src.llm.fusion import ModalityRoutingPolicy
 from src.llm.hooks import FigureInspectionHook, TableInspectionHook
@@ -65,6 +66,14 @@ def _build_provider_stack(no_vlm_inspection: bool):
     """
     llm_cfg = load_llm_config(CONFIG_PATH)
     vlm_cfg = load_vlm_config(CONFIG_PATH)
+
+    # Set the process-wide LLM concurrency cap.  The value is read from
+    # config.yaml (``llm.max_concurrent``) so a single knob governs every
+    # Gemini call site — adjudication, inspection, metadata, header judge.
+    import yaml
+    raw_cfg = yaml.safe_load(open(CONFIG_PATH))
+    configure_concurrency(int(raw_cfg.get("llm", {}).get("max_concurrent", 5)))
+
     provider = GeminiProvider()   # GEMINI_API_KEY pulled from env
     logger.info(
         "main.providers gemini llm_model=%s vlm_model=%s",
