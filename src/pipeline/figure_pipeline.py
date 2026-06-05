@@ -1,6 +1,9 @@
 import os
 import re
 import glob
+from pathlib import Path
+from typing import Iterable
+
 import pandas as pd
 import json
 
@@ -12,12 +15,23 @@ from src.parsing.stage2_detector import Stage2Detector
 from src.extraction.figure.legend_matcher import LegendMatcher
 from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.assembly.evidence_assembler import EvidenceAssembler
+from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 from src.utils.config import load_config
 
 class FigurePipeline:
-    def __init__(self):
+    def __init__(self, post_extract_hooks: Iterable[PipelineHook] = ()):
+        """Initialize figure pipeline.
+
+        Args:
+            post_extract_hooks: zero or more hooks called after each
+                figure's evidence JSON is written.  The default is empty,
+                preserving prior behaviour; ``main.py`` injects VLM
+                inspection hooks here when full Gemini-cross-check is
+                desired.
+        """
         print("Initializing Figure Pipeline...")
         self.cfg = load_config()
+        self.post_extract_hooks: list[PipelineHook] = list(post_extract_hooks)
         
         # Load Configs
         fig_cfg = self.cfg.get("figures", {})
@@ -188,10 +202,39 @@ class FigurePipeline:
                 # Step 4: Assembly & Filtering
                 # Pass pre-computed text_evidence to avoid re-OCR
                 json_path = self.assembler.assemble(figure_id, extraction_data, macro_cleaned_dir, text_evidence=text_evidence)
-                
+
                 if json_path:
                     print(f"      -> EVIDENCE SAVED: {json_path}")
                     extracted_results.append(json_path)
+                    # Post-extraction hooks (paper module 6 — VLM-driven
+                    # inspection loop).  Pipelines stay decoupled from
+                    # ``src.llm``: if no hooks were injected this is a
+                    # no-op.
+                    if self.post_extract_hooks:
+                        # Count OCR-detected value labels for the Layer-1
+                        # consistency check.  YOLOv11m-DataDet emits a
+                        # ``data_value`` class; ``other_detections`` already
+                        # excludes points/markers so a simple filter on the
+                        # label name is enough.
+                        ocr_value_count = sum(
+                            1 for d in other_detections
+                            if d.get("label") in ("data_value", "value_label")
+                        )
+                        ctx = StageContext(
+                            pdf_basename=os.path.basename(os.path.dirname(macro_cleaned_dir)),
+                            source_id=figure_id,
+                            kind="figure",
+                            artifact_path=Path(cleaned_plot_path),
+                            output_dir=Path(macro_cleaned_dir),
+                            evidence_df=df if not df.empty else pd.DataFrame(extraction_data),
+                            stage_outputs={
+                                "yolo_point_count": len(points),
+                                "ocr_value_count": ocr_value_count,
+                                "is_heatmap": is_heatmap,
+                                "extraction_data_n": len(extraction_data),
+                            },
+                        )
+                        run_hooks(self.post_extract_hooks, ctx)
                 else:
                     print(f"      -> DISCARDED (Irrelevant).")
                     

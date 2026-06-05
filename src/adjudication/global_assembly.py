@@ -1,14 +1,34 @@
 import os
 import json
 import glob
-from src.adjudication.llm_engine import LLMEngine, sanitize_json_text
+
 from src.adjudication.pdf_parser import PDFParser
+from src.llm.config import LLMConfig
+from src.llm.json_utils import sanitize_json_text
+from src.llm.providers.base import LLMProvider
+from src.llm.types import ChatMessage, Role
+
 
 class GlobalAssembly:
-    def __init__(self, output_dir="data/final_output"):
+    """LLM-driven adjudication of figure + table + text evidence.
+
+    The ``LLMProvider`` and ``LLMConfig`` are injected so this class is
+    completely decoupled from any specific vendor SDK.  In production
+    ``main.py`` wires in ``GeminiProvider`` with the model id from
+    ``config.yaml``; tests can pass a stub provider that returns a
+    canned ``LLMResponse``.
+    """
+
+    def __init__(
+        self,
+        llm: LLMProvider,
+        llm_cfg: LLMConfig,
+        output_dir: str = "data/final_output",
+    ):
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
-        self.llm = LLMEngine()
+        self.llm = llm
+        self.llm_cfg = llm_cfg
         self.pdf_parser = PDFParser()
 
     def run(self, pdf_path, intermediate_dir=None, force=False):
@@ -291,7 +311,14 @@ For each reaction record, output one JSON object with these fields:
 Output a JSON array of all extracted reaction records:"""
         
         print("   -> Sending to LLM...")
-        response = self.llm.chat(system_prompt, user_prompt)
+        llm_response = self.llm.chat(
+            [
+                ChatMessage(role=Role.SYSTEM, content=system_prompt),
+                ChatMessage(role=Role.USER, content=user_prompt),
+            ],
+            self.llm_cfg,
+        )
+        response = llm_response.text
 
         # Save raw LLM response for debugging (overwritten each run)
         raw_path = os.path.join(self.output_dir, f"{basename}_final_raw.txt")

@@ -1,9 +1,11 @@
 """
 VLM-assisted table header correction.
 
-Uses TATR's `table column header` bounding boxes (now preserved in structure.py)
-to cheaply estimate the number of header rows, then optionally calls Qwen-VL
-to correct the header row when TATR output looks unreliable.
+Uses TATR's `table column header` bounding boxes (preserved in structure.py)
+to cheaply estimate the number of header rows; when TATR output looks
+unreliable, calls a ``VLMProvider`` (injected from ``main.py``) to re-read
+the header strip.  The provider abstraction means this module does not
+know whether it's talking to Gemini, Qwen-VL, or any other backend.
 """
 
 import json
@@ -12,25 +14,42 @@ import os
 import re
 import shutil
 import tempfile
+from pathlib import Path
 from typing import Optional
 
 from PIL import Image
+
+from src.llm.config import VLMConfig
+from src.llm.providers.base import VLMProvider
+from src.llm.types import VLMImage
 
 logger = logging.getLogger(__name__)
 
 
 class HeaderCorrector:
-    def __init__(self, config: dict):
+    def __init__(
+        self,
+        config: dict,
+        vlm: Optional[VLMProvider] = None,
+        vlm_cfg: Optional[VLMConfig] = None,
+    ):
         """
         Args:
-            config: the `tables.header_correction` section from config.yaml.
-                    Keys: enabled, provider, model_name, trigger_threshold, send_header_crop_only
+            config:  ``tables.header_correction`` block (enabled / trigger_threshold /
+                     send_header_crop_only).
+            vlm:     injected VLM provider; when ``None`` the corrector still
+                     reports whether correction would have been attempted but
+                     skips the actual API call.
+            vlm_cfg: typed config for the VLM call (model id, temperature, …).
+                     Required iff ``vlm`` is given.
         """
         self.enabled = config.get("enabled", False)
-        self.provider = config.get("provider", "dashscope")
-        self.model_name = config.get("model_name", "qwen-vl-plus")
         self.trigger_threshold = float(config.get("trigger_threshold", 0.5))
         self.send_header_crop_only = config.get("send_header_crop_only", True)
+        self.vlm = vlm
+        self.vlm_cfg = vlm_cfg
+        if self.enabled and self.vlm is not None and self.vlm_cfg is None:
+            raise ValueError("HeaderCorrector: vlm provided without vlm_cfg")
 
     # ------------------------------------------------------------------
     # Public API
@@ -120,18 +139,20 @@ class HeaderCorrector:
                 if tmp_crop_path:
                     send_path = tmp_crop_path
 
-            vlm_result = self._call_qwen_vl(send_path, col_count, header_row_count)
+            parsed = self._call_vlm(send_path, col_count, header_row_count)
             if tmp_crop_path and os.path.exists(tmp_crop_path):
                 os.remove(tmp_crop_path)
 
-            if vlm_result is None:
+            if parsed is None:
                 logger.warning("   HeaderCorrector: VLM call failed, keeping original grid")
                 return grid
 
-            parsed = self._parse_and_validate(vlm_result, col_count)
-            if parsed is None:
+            columns = parsed.get("columns", []) if isinstance(parsed, dict) else []
+            if len(columns) != col_count:
                 logger.warning(
-                    "   HeaderCorrector: VLM response invalid or column count mismatch, keeping original"
+                    "   HeaderCorrector: VLM returned %d columns, expected %d — keeping original",
+                    len(columns),
+                    col_count,
                 )
                 return grid
 
@@ -220,31 +241,16 @@ class HeaderCorrector:
             logger.warning(f"   HeaderCorrector: crop failed — {e}")
             return None
 
-    def _call_qwen_vl(self, image_path: str, col_count: int, header_row_count: int) -> Optional[str]:
-        """
-        Call DashScope MultiModalConversation with the table header image.
-        Returns the raw response text, or None on failure.
-        """
-        try:
-            import dashscope
-            from dashscope import MultiModalConversation
-        except ImportError:
-            logger.error("   HeaderCorrector: dashscope package not installed")
-            return None
+    def _call_vlm(self, image_path: str, col_count: int, header_row_count: int) -> Optional[dict]:
+        """Ask the injected VLM provider to read the header strip.
 
-        # Load API key from .env (same pattern as llm_factory.py)
-        if not dashscope.api_key:
-            try:
-                from dotenv import load_dotenv
-                load_dotenv(override=True)
-            except ImportError:
-                pass
-            api_key = os.getenv("QWEN_API_KEY") or os.getenv("DASHSCOPE_API_KEY")
-            if not api_key:
-                logger.error("   HeaderCorrector: QWEN_API_KEY not found in environment")
-                return None
-            dashscope.api_key = api_key
-            dashscope.base_http_api_url = "https://dashscope-intl.aliyuncs.com/api/v1"
+        Returns the parsed ``{"header_row_count": int, "columns": [...]}``
+        dict, or ``None`` on any failure (logged).  The provider returns
+        already-decoded JSON, so we skip the historical regex parsing.
+        """
+        if self.vlm is None or self.vlm_cfg is None:
+            logger.warning("   HeaderCorrector: no VLM provider injected; skip")
+            return None
 
         indices = ", ".join(str(i) for i in range(col_count))
         prompt = (
@@ -262,49 +268,15 @@ class HeaderCorrector:
             f'{{\"header_row_count\": <int>, \"columns\": [{{\"index\": 0, \"header\": \"...\"}}, ...]}}'
         )
 
-        abs_path = os.path.abspath(image_path)
         try:
-            response = MultiModalConversation.call(
-                model=self.model_name,
-                messages=[{
-                    "role": "user",
-                    "content": [
-                        {"image": f"file://{abs_path}"},
-                        {"text": prompt}
-                    ]
-                }]
+            _meta, parsed = self.vlm.inspect(
+                image=VLMImage(path=Path(image_path)),
+                system_prompt="",
+                user_prompt=prompt,
+                cfg=self.vlm_cfg,
             )
-            text = response.output.choices[0].message.content[0]["text"]
-            return text
-        except Exception as e:
-            logger.error(f"   HeaderCorrector: DashScope API error — {e}")
+            return parsed
+        except Exception as exc:
+            logger.error(f"   HeaderCorrector: VLM provider error — {exc}")
             return None
 
-    def _parse_and_validate(self, response_text: str, expected_cols: int) -> Optional[dict]:
-        """
-        Extract JSON from the VLM response and validate column count == expected_cols.
-        Returns parsed dict or None on failure.
-        """
-        # Strip markdown code fences if present
-        text = re.sub(r"```(?:json)?", "", response_text).strip().strip("`")
-
-        # Find the first {...} block
-        match = re.search(r'\{[\s\S]*\}', text)
-        if not match:
-            logger.warning(f"   HeaderCorrector: no JSON object found in response: {text[:200]}")
-            return None
-
-        try:
-            data = json.loads(match.group())
-        except json.JSONDecodeError as e:
-            logger.warning(f"   HeaderCorrector: JSON parse error — {e}")
-            return None
-
-        columns = data.get("columns", [])
-        if len(columns) != expected_cols:
-            logger.warning(
-                f"   HeaderCorrector: VLM returned {len(columns)} columns, expected {expected_cols}"
-            )
-            return None
-
-        return data

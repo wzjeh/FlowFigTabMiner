@@ -1,4 +1,7 @@
 import os
+from pathlib import Path
+from typing import Iterable
+
 import cv2
 import pandas as pd
 from src.parsing.table_filter import TableFilter
@@ -6,6 +9,7 @@ from src.extraction.table.structure import TableStructureRecognizer
 from src.extraction.table.header_corrector import HeaderCorrector
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
+from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 import json
 import glob
 import logging
@@ -13,7 +17,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 class TablePipeline:
-    def __init__(self, table_filter=None, structure_recognizer=None, molecule_processor=None, content_recognizer=None, sequential_mode=False):
+    def __init__(
+        self,
+        table_filter=None,
+        structure_recognizer=None,
+        molecule_processor=None,
+        content_recognizer=None,
+        sequential_mode=False,
+        post_extract_hooks: Iterable[PipelineHook] = (),
+    ):
         """
         Initialize Table Pipeline.
         Args:
@@ -22,12 +34,18 @@ class TablePipeline:
             molecule_processor: Optional pre-loaded MoleculeProcessor instance.
             content_recognizer: Optional pre-loaded ContentRecognizer instance.
             sequential_mode (bool): If True, models are loaded/unloaded on demand to save memory.
+            post_extract_hooks: zero or more hooks called after each
+                table's evidence JSON is written.  Default is empty,
+                preserving the prior behaviour; ``main.py`` injects VLM
+                inspection hooks here when paper module 12 (VLM-driven
+                table inspection) is enabled.
         """
         logger.info(f"Initializing Table Pipeline (Sequential Mode: {sequential_mode})")
         from src.utils.config import load_config
         self.cfg = load_config()
         self.tables_cfg = self.cfg.get("tables", {})
         self.sequential_mode = sequential_mode
+        self.post_extract_hooks: list[PipelineHook] = list(post_extract_hooks)
 
         # Initialize placeholders
         self.filter = table_filter
@@ -446,6 +464,28 @@ class TablePipeline:
                  json.dump(evidence_data, f, indent=2)
              result_packet['json_path'] = json_path
              logger.info(f"   -> Saved Evidence JSON to: {json_path}")
+
+        # Post-extraction hooks (paper module 12 — VLM-driven table
+        # inspection).  Pipelines stay decoupled from ``src.llm``; when
+        # no hooks are injected this is a no-op.  Hooks receive the
+        # masked body crop (current_image_path) so the VLM sees the same
+        # geometry the pipeline OCR'd.
+        if self.post_extract_hooks and table_output_dir:
+            ctx = StageContext(
+                pdf_basename=os.path.basename(os.path.dirname(table_output_dir)),
+                source_id=table_basename,
+                kind="table",
+                artifact_path=Path(current_image_path),
+                output_dir=Path(table_output_dir),
+                evidence_df=df,
+                stage_outputs={
+                    "tatr_cell_count": len(cells),
+                    "ocr_cell_count": len(extracted_data),
+                    "molecule_count": len(mol_meta) if mol_meta else 0,
+                    "is_relevant": is_relevant,
+                },
+            )
+            run_hooks(self.post_extract_hooks, ctx)
 
         # Unload ContentRecognizer once per table (not 3× per table)
         self._unload_model(shared_recognizer)

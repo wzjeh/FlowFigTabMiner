@@ -8,7 +8,6 @@ global:
 figures:
   step1_tfid:
     enabled: true
-    # Add any specific TF-ID parameters here if needed
 
   step2_macro:
     model_path: "models/yolo11m-fig-seg-0207-nobreaknocharttext/runs/detect/train/weights/best.pt"
@@ -24,56 +23,59 @@ figures:
 
   step4_assembly:
     clustering_threshold: 0.5
-    # sorting_method: "top-down" 
 
 # Table Extraction Pipeline
 tables:
   segmentation:
     model_path: "models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/best.pt"
     threshold: 0.8
-  
+
   molecule_detection:
-    model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt" # YOLO for molecules/detect/train/weights/best.pt"
+    model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt"
     confidence_threshold: 0.25
 
   structure:
-    model_path: "microsoft/table-transformer-structure-recognition-v1.1-all" # From src/extraction/table_structure.py
-  
+    model_path: "microsoft/table-transformer-structure-recognition-v1.1-all"
+
   cell_classification:
     model_path: "models/cell_classifier.pt"
 
   content:
     # MolNexTR is auto-loaded from src/extraction/common/molnextr/
-    # No molscribe_path needed - MolScribe has been replaced by MolNexTR
     ocr_engine: "paddle"
-    ocr_rec_model: "PP-OCRv4_server_rec"  # rec-only model for table cell text
+    ocr_rec_model: "PP-OCRv4_server_rec"
 
   scheme_parsing:
-    model_path: "models/tab-scheme-seg/best.pt"   # 训练完成后替换
+    model_path: "models/tab-scheme-seg/best.pt"
     confidence_threshold: 0.3
 
   header_correction:
+    # The VLM provider for header correction is the same one injected for
+    # pipeline modules 6/12; only the trigger heuristic lives here.
     enabled: true
-    provider: "dashscope"        # 与 llm.default_provider 一致，共用 QWEN_API_KEY
-    model_name: "qwen-vl-plus"   # DashScope 视觉模型 ID
-    trigger_threshold: 0.5       # row-0 非空比例低于此值时触发 VLM
-    send_header_crop_only: false  # 发送完整表格图，让 VLM 借助数据行判断列数
+    trigger_threshold: 0.5        # row-0 non-empty ratio below this triggers VLM
+    send_header_crop_only: false  # send the full table so the VLM sees data rows
 
-# LLM & Adjudication
+# LLM (text-in / text-out) — used by Step 5 (Global Assembly) and Step 4.5
+# (Local Vars Builder).  Loaded into a frozen Pydantic ``LLMConfig``.
 llm:
-  # This sets the default provider for generic tasks.
-  # "openai", "gemini", "qwen", "dashscope" - must match keys in .env
-  default_provider: "dashscope" 
-  
-  # Configuration for Step 5: Adjudication
   adjudication:
-    # You can override the provider here if you want adjudication to run on a specific model
-    # provider: "openai" 
-    model_name: "qwen-plus"
+    provider: "gemini"
+    model: "gemini-2.5-flash"     # current stable Gemini Flash; bump to gemini-3.0-flash when GA
     temperature: 0.1
-    prompt_template: "templates/adjudication.txt" # Path relative to project root
+    max_output_tokens: 8192
+    max_retries: 3
+    timeout_s: 180.0
 
-  # Configuration for Data Extraction (if different)
-  extraction:
-    model_name: "qwen-plus"
+# VLM (text + image) — used by the inspection hooks for paper modules 6 (figure)
+# and 12 (table), plus the table header corrector.  Loaded into a frozen
+# Pydantic ``VLMConfig``.
+vlm:
+  inspection:
+    provider: "gemini"
+    model: "gemini-2.5-flash"
     temperature: 0.1
+    max_output_tokens: 8192
+    max_retries: 3
+    timeout_s: 180.0
+    match_threshold: 0.80         # fused report sets review_needed if match_rate falls below

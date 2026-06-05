@@ -132,7 +132,11 @@ VALIDATION = [
          pred={**_anchor("C1", "none"), "sigma": 0.06, "tau_eff": 0.0},
          pred_label="chemistry-only (Da$\\to$0): fixed Charton $k_{chem}$, no $\\tau_{eff}$ layer"),
     dict(key="5Br2FCN", name="5-bromo-2-fluorobenzonitrile", smi="N#Cc1cc(Br)ccc1F",
-         exp_csv="experiment_fbrcn_summary.csv", loader="fbrcn", quench="MeOD",
+         # 2026-06-05: switch experimental source to the D-product-calibrated yields
+         # (purified fluorobenzonitrile-5-d standard, y = 0.9092x − 0.1201). The
+         # original non-D calibration over-counted product mass by a roughly 5 %
+         # systematic offset; the D-cal CSV is the physically correct yield surface.
+         exp_csv="experiment_fbrcn_d_calibrated_summary.csv", loader="fbrcn", quench="MeOD",
          pred={**_bayes_5Br2FCN(), "sigma": 0.62, "tau_eff": _TAU_REF},
          pred_label="strong-EWG: Charton $\\chi$ × Da, viscosity-scaled $\\tau_{eff}(T)$ ($\\tau_{ref}$=15.9 ms@20°C, $E_\\eta$=7.5)"),
 ]

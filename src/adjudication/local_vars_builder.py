@@ -1,11 +1,20 @@
 import os
 import json
-from src.adjudication.llm_engine import LLMEngine
+
+from src.llm.config import LLMConfig
+from src.llm.providers.base import LLMProvider
+from src.llm.types import ChatMessage, Role
 
 
 class LocalVarsBuilder:
-    def __init__(self):
-        self.llm = LLMEngine()
+    """Build per-figure / per-table sub-variable library via the LLM.
+
+    The ``LLMProvider`` is injected (no SDK import inside this module).
+    """
+
+    def __init__(self, llm: LLMProvider, llm_cfg: LLMConfig):
+        self.llm = llm
+        self.llm_cfg = llm_cfg
 
     def build(self, source_id, source_type, evidence_data, paper_text, output_dir, csv_head="", scheme_conditions=""):
         """
@@ -43,8 +52,14 @@ class LocalVarsBuilder:
                 source_id, evidence_data, text_window, csv_head, scheme_conditions
             )
 
-        raw = self.llm.chat(system_prompt, user_prompt)
-        result = self._clean_json(raw, source_id, source_type)
+        llm_response = self.llm.chat(
+            [
+                ChatMessage(role=Role.SYSTEM, content=system_prompt),
+                ChatMessage(role=Role.USER, content=user_prompt),
+            ],
+            self.llm_cfg,
+        )
+        result = self._clean_json(llm_response.text, source_id, source_type)
 
         os.makedirs(output_dir, exist_ok=True)
         with open(out_path, "w") as f:

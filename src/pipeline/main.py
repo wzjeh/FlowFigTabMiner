@@ -1,19 +1,112 @@
+"""Unified pipeline entry point — assembles providers, hooks, and runs.
+
+This is the single place in the codebase that knows about specific LLM /
+VLM providers.  Everything below this file consumes ABCs from
+``src.llm.providers.base`` and ``src.pipeline.hooks``.
+
+Run::
+
+    python -m src.pipeline.main path/to/paper.pdf
+    python -m src.pipeline.main path/to/paper.pdf --skip-tfid
+    python -m src.pipeline.main path/to/paper.pdf --force-assembly
+"""
+
+from __future__ import annotations
+
+import argparse
+import gc
+import glob
+import json
+import logging
 import os
 import sys
-import argparse
-import glob
 
 # Ensure src is importable from project root
 sys.path.insert(0, os.getcwd())
 
-from src.pipeline.figure_pipeline import FigurePipeline
-from src.extraction.table.pipeline import TablePipeline
 from src.adjudication.global_assembly import GlobalAssembly
+from src.adjudication.local_vars_builder import LocalVarsBuilder
+from src.adjudication.pdf_parser import PDFParser
 from src.adjudication.post_processor import PostProcessor
+from src.extraction.common.content_recognizer import ContentRecognizer
+from src.extraction.fusion import PointCountConsistency
+from src.extraction.table.pipeline import TablePipeline
+from src.extraction.table.scheme_seg_parser import SchemeSegParser
+from src.llm.config import load_llm_config, load_vlm_config
+from src.llm.fusion import ModalityRoutingPolicy
+from src.llm.hooks import FigureInspectionHook, TableInspectionHook
+from src.llm.inspectors import (
+    ExactCellMatcher,
+    FigureInspector,
+    NearestPointMatcher,
+    TableInspector,
+)
+from src.llm.providers.gemini import GeminiProvider
 from src.parsing.active_area_detector import ActiveAreaDetector
+from src.pipeline.figure_pipeline import FigurePipeline
 from src.utils.config import load_config
 
-def run_step1_tfid(pdf_path):
+logger = logging.getLogger(__name__)
+
+CONFIG_PATH = "config.yaml"
+
+
+# ───────────────────────────────────────────────────────────────── builders
+
+
+def _build_provider_stack(no_vlm_inspection: bool):
+    """Assemble the LLM/VLM provider and the two inspection hooks.
+
+    Returns ``(provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks)``.
+    The hook lists are empty when ``no_vlm_inspection`` is true, so the
+    pipelines run their classic extraction-only flow without ever
+    contacting Gemini for inspection.  The LLM provider is always
+    constructed (adjudication still needs it).
+    """
+    llm_cfg = load_llm_config(CONFIG_PATH)
+    vlm_cfg = load_vlm_config(CONFIG_PATH)
+    provider = GeminiProvider()   # GEMINI_API_KEY pulled from env
+    logger.info(
+        "main.providers gemini llm_model=%s vlm_model=%s",
+        llm_cfg.model,
+        vlm_cfg.model,
+    )
+
+    if no_vlm_inspection:
+        logger.info("main.providers VLM inspection disabled by --no-vlm")
+        return provider, llm_cfg, vlm_cfg, [], []
+
+    fig_inspector = FigureInspector(
+        vlm=provider,
+        cfg=vlm_cfg,
+        matcher=NearestPointMatcher(tol=0.05),
+        policy=ModalityRoutingPolicy(numeric_tol=0.05),
+    )
+    tab_inspector = TableInspector(
+        vlm=provider,
+        cfg=vlm_cfg,
+        matcher=ExactCellMatcher(),
+        policy=ModalityRoutingPolicy(numeric_tol=0.05),
+    )
+    figure_hooks = [
+        FigureInspectionHook(
+            inspector=fig_inspector,
+            consistency_checks=[PointCountConsistency()],
+        )
+    ]
+    table_hooks = [
+        TableInspectionHook(
+            inspector=tab_inspector,
+            consistency_checks=[],
+        )
+    ]
+    return provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks
+
+
+# ───────────────────────────────────────────────────────────────── steps
+
+
+def run_step1_tfid(pdf_path: str) -> bool:
     print("\n=== Step 1: TF-ID Parsing ===")
     try:
         cfg = load_config()
@@ -25,11 +118,21 @@ def run_step1_tfid(pdf_path):
         saved_paths = detector.save_crops(pdf_path, detections, intermediate_dir)
         print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")
         return True
-    except Exception as e:
-        print(f"Step 1 Failed: {e}")
+    except Exception as exc:
+        print(f"Step 1 Failed: {exc}")
         return False
 
-def main():
+
+# ───────────────────────────────────────────────────────────────── main
+
+
+def main() -> None:
+    logging.basicConfig(
+        level=os.environ.get("LOG_LEVEL", "INFO"),
+        format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
+        stream=sys.stdout,
+    )
+
     parser = argparse.ArgumentParser(description="FlowFigTabMiner Unified Pipeline")
     parser.add_argument("pdf_path", help="Path to input PDF")
     parser.add_argument("--skip-tfid", action="store_true",
@@ -38,6 +141,9 @@ def main():
                         help="Force re-run Step 5 LLM even if _final.json already exists")
     parser.add_argument("--smiles-lookup", action="store_true",
                         help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
+    parser.add_argument("--no-vlm", action="store_true",
+                        help="Skip VLM inspection hooks (paper modules 6 & 12). "
+                             "Adjudication still uses Gemini.")
     args = parser.parse_args()
 
     pdf_path = args.pdf_path
@@ -48,81 +154,68 @@ def main():
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     intermediate_dir = os.path.join("data/intermediate", basename)
 
-    # 1. TF-ID
+    # ─── Provider stack ─────────────────────────────────────────────
+    provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks = _build_provider_stack(
+        no_vlm_inspection=args.no_vlm
+    )
+
+    # ─── Step 1: TF-ID ──────────────────────────────────────────────
     figures_exist = len(glob.glob(os.path.join(intermediate_dir, "figures", "*.png"))) > 0
     if args.skip_tfid and figures_exist:
         print("\n=== Step 1: TF-ID Parsing (SKIPPED - intermediate figures found) ===")
     elif not run_step1_tfid(pdf_path):
         return
 
-    # 2. Figure Pipeline (Path A)
+    # ─── Step 2-4: Figure pipeline (with module-6 hook) ────────────
     print("\n=== Step 2-4: Figure Extraction ===")
     try:
-        fig_pipeline = FigurePipeline()
+        fig_pipeline = FigurePipeline(post_extract_hooks=figure_hooks)
         fig_pipeline.process_pdf_figures(pdf_path)
-    except Exception as e:
-        print(f"[FigurePipeline] Error: {e} — continuing to table extraction.")
+    except Exception as exc:
+        print(f"[FigurePipeline] Error: {exc} — continuing to table extraction.")
     finally:
         try:
             del fig_pipeline
         except NameError:
             pass
-        import gc; gc.collect()
+        gc.collect()
 
-    # 3. Table Pipeline (Path B)
+    # ─── Step Table: Table pipeline (with module-12 hook) ──────────
     print("\n=== Step Table: Table Extraction ===")
-
-    # Pre-create ContentRecognizer once for ALL tables.
-    # Keeps PaddleX workers alive between tables → eliminates per-table
-    # "Python quit unexpectedly" macOS notifications + saves ~N×init time.
-    # Memory impact: +~150MB (PaddleOCR), acceptable since MolNexTR singleton
-    # already stays loaded regardless.
-    from src.extraction.common.content_recognizer import ContentRecognizer
     shared_content_rec = ContentRecognizer()
+    tab_pipeline = TablePipeline(
+        sequential_mode=True,
+        content_recognizer=shared_content_rec,
+        post_extract_hooks=table_hooks,
+    )
 
-    tab_pipeline = TablePipeline(sequential_mode=True, content_recognizer=shared_content_rec)
-    
-    # Needs to find table images extracted by TF-ID
     tables_dir = os.path.join(intermediate_dir, "tables")
     if os.path.exists(tables_dir):
         table_imgs = glob.glob(os.path.join(tables_dir, "*.png"))
-        # Filter out debug crops if any leak in
         table_imgs = [f for f in table_imgs if "_body" not in f and "_crop" not in f]
-        
         print(f"Processing {len(table_imgs)} tables...")
         for t_img in table_imgs:
             try:
-                # Output to a subfolder per table to keep clean
-                t_base = os.path.splitext(os.path.basename(t_img))[0]
-                t_out = os.path.join(tables_dir, t_base)
-                tab_pipeline.process_table(t_img, output_dir=tables_dir) # process_table creates subfolder logic?
-                # Looking at table_pipeline.py:
-                # if output_dir: table_output_dir = os.path.join(output_dir, table_basename)
-                # So yes, we pass tables_dir and it creates the subfolder.
-            except Exception as e:
-                print(f"Error processing table {t_img}: {e}")
+                tab_pipeline.process_table(t_img, output_dir=tables_dir)
+            except Exception as exc:
+                print(f"Error processing table {t_img}: {exc}")
     else:
         print("No tables directory found.")
 
-    # 3.5. Tab-Scheme-Seg
+    # ─── Step 3.5: Tab-Scheme-Seg (unchanged) ──────────────────────
     print("\n=== Step 3.5: Tab-Scheme-Seg (Scheme Parsing) ===")
-    import json as _json
-    from src.utils.config import load_config as _load_config
-
-    reactant_pool = {}
-    product_pool = {}
-    compound_pool = {}
-    scheme_conditions_texts = []
+    reactant_pool: dict = {}
+    product_pool: dict = {}
+    compound_pool: dict = {}
+    scheme_conditions_texts: list[str] = []
 
     if os.path.exists(tables_dir):
         scheme_imgs = glob.glob(os.path.join(tables_dir, "**", "*_table_scheme_*.png"), recursive=True)
         if scheme_imgs:
-            from src.extraction.table.scheme_seg_parser import SchemeSegParser
-            _cfg = _load_config()
-            _scheme_cfg = _cfg.get("tables", {}).get("scheme_parsing", {})
+            scheme_cfg = load_config().get("tables", {}).get("scheme_parsing", {})
             scheme_parser = SchemeSegParser(
-                model_path=_scheme_cfg.get("model_path", "models/tab-scheme-seg/best.pt"),
-                conf_threshold=_scheme_cfg.get("confidence_threshold", 0.3)
+                model_path=scheme_cfg.get("model_path", "models/tab-scheme-seg/best.pt"),
+                conf_threshold=scheme_cfg.get("confidence_threshold", 0.3),
             )
             for sp in scheme_imgs:
                 print(f"   Processing scheme: {os.path.basename(sp)}")
@@ -134,43 +227,37 @@ def main():
                 if ct:
                     scheme_conditions_texts.append(ct)
             del scheme_parser
-            import gc; gc.collect()
-            print(f"   -> reactant_pool: {len(reactant_pool)} entries, product_pool: {len(product_pool)} entries, compound_pool: {len(compound_pool)} entries")
+            gc.collect()
+            print(
+                f"   -> pools: reactant={len(reactant_pool)} product={len(product_pool)} "
+                f"compound={len(compound_pool)}"
+            )
         else:
             print("   No scheme images found.")
-    else:
-        print("   No tables directory found, skipping scheme parsing.")
 
     if reactant_pool or product_pool or compound_pool:
         pool_path = os.path.join(intermediate_dir, "compound_pool.json")
-        pool_to_save = {
-            "reactant_pool": reactant_pool,
-            "product_pool": product_pool,
-            "compound_pool": compound_pool,
-        }
-        with open(pool_path, 'w') as f:
-            _json.dump(pool_to_save, f, indent=2)
+        with open(pool_path, "w") as f:
+            json.dump(
+                {"reactant_pool": reactant_pool, "product_pool": product_pool, "compound_pool": compound_pool},
+                f, indent=2,
+            )
         total = len(reactant_pool) + len(product_pool) + len(compound_pool)
         print(f"   -> Compound pool ({total} total) -> {pool_path}")
     if scheme_conditions_texts:
         cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
-        with open(cond_path, 'w') as f:
+        with open(cond_path, "w") as f:
             f.write("\n".join(scheme_conditions_texts))
         print(f"   -> Scheme conditions saved -> {cond_path}")
 
-    # 4.5. Sub-Variable Libraries
+    # ─── Step 4.5: Sub-Variable Libraries ──────────────────────────
     print("\n=== Step 4.5: Build Sub-Variable Libraries ===")
-    import json as _json2
-    from src.adjudication.local_vars_builder import LocalVarsBuilder
-    from src.adjudication.pdf_parser import PDFParser
-
-    paper_text = PDFParser().extract_text(pdf_path)  # cached by PDFParser
+    paper_text = PDFParser().extract_text(pdf_path)
 
     local_vars_dir = os.path.join(intermediate_dir, "local_vars")
     os.makedirs(local_vars_dir, exist_ok=True)
-    builder = LocalVarsBuilder()
+    builder = LocalVarsBuilder(llm=provider, llm_cfg=llm_cfg)
 
-    # Read scheme_conditions.txt once; shared across all table evidence
     scheme_cond_text = ""
     cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
     if os.path.exists(cond_path):
@@ -178,48 +265,53 @@ def main():
             scheme_cond_text = f.read().strip()
         print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
 
-    # Figure evidence
     macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
     for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
         try:
             with open(jpath) as f:
-                ev = _json2.load(f)
-            src_id = ev.get("meta", {}).get("figure_id", os.path.basename(jpath).replace("_evidence.json", ""))
+                ev = json.load(f)
+            src_id = ev.get("meta", {}).get(
+                "figure_id",
+                os.path.basename(jpath).replace("_evidence.json", ""),
+            )
             builder.build(src_id, "figure", ev, paper_text, local_vars_dir)
-        except Exception as e:
-            print(f"   [LocalVars] Figure error {jpath}: {e}")
+        except Exception as exc:
+            print(f"   [LocalVars] Figure error {jpath}: {exc}")
 
-    # Table evidence
     if os.path.exists(tables_dir):
         for root, _, files in os.walk(tables_dir):
             for fname in files:
-                if fname.endswith("_evidence.json"):
-                    ev_path = os.path.join(root, fname)
-                    try:
-                        with open(ev_path) as f:
-                            ev = _json2.load(f)
-                        src_id = fname.replace("_evidence.json", "")
-                        csv_path = ev.get("csv_path", "")
-                        csv_head = ""
-                        if csv_path and os.path.exists(csv_path):
-                            with open(csv_path) as cf:
-                                csv_head = "".join(cf.readlines()[:6])
-                        builder.build(src_id, "table", ev, paper_text, local_vars_dir,
-                                      csv_head=csv_head, scheme_conditions=scheme_cond_text)
-                    except Exception as e:
-                        print(f"   [LocalVars] Table error {ev_path}: {e}")
+                if not fname.endswith("_evidence.json"):
+                    continue
+                ev_path = os.path.join(root, fname)
+                try:
+                    with open(ev_path) as f:
+                        ev = json.load(f)
+                    src_id = fname.replace("_evidence.json", "")
+                    csv_path = ev.get("csv_path", "")
+                    csv_head = ""
+                    if csv_path and os.path.exists(csv_path):
+                        with open(csv_path) as cf:
+                            csv_head = "".join(cf.readlines()[:6])
+                    builder.build(
+                        src_id, "table", ev, paper_text, local_vars_dir,
+                        csv_head=csv_head, scheme_conditions=scheme_cond_text,
+                    )
+                except Exception as exc:
+                    print(f"   [LocalVars] Table error {ev_path}: {exc}")
 
-    # 4. Global Assembly
+    # ─── Step 5: Global Assembly ───────────────────────────────────
     print("\n=== Step 5: Global Assembly ===")
-    assembler = GlobalAssembly()
+    assembler = GlobalAssembly(llm=provider, llm_cfg=llm_cfg)
     assembler.run(pdf_path, intermediate_dir, force=args.force_assembly)
 
-    # 5. Post-processing / normalisation
+    # ─── Step 6: Post-processing ───────────────────────────────────
     print("\n=== Step 6: Post-Processing (Normalisation) ===")
     post = PostProcessor()
     post.run(pdf_path, intermediate_dir, smiles_lookup=args.smiles_lookup)
 
     print("\n=== Pipeline Complete ===")
+
 
 if __name__ == "__main__":
     main()
