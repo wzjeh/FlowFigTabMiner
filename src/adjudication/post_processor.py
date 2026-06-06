@@ -14,6 +14,7 @@ import os
 import re
 import json
 import glob
+import time
 import unicodedata
 from collections import Counter
 import requests
@@ -206,19 +207,105 @@ def humanise_source(raw: str) -> str:
     return raw
 
 
+# Common OCR confusions in chemical names from figure legends.
+# Conservative: only di/de prefix on halogens (a clear "di"→"de" misread),
+# NOT on legitimate "de" words (dehydro, demethylation, dehalogenation).
+_CHEM_NAME_FIXES = [
+    (re.compile(r'\bdechloro', re.IGNORECASE), 'dichloro'),
+    (re.compile(r'\bdebromo', re.IGNORECASE), 'dibromo'),
+    (re.compile(r'\bdefluoro', re.IGNORECASE), 'difluoro'),
+    (re.compile(r'\bdeiodo', re.IGNORECASE), 'diiodo'),
+]
+
+
+def normalize_chem_name(name: str | None) -> str | None:
+    """Clean common OCR errors in a chemical name.
+
+    Written back to the record so it fixes ``product_name`` AND feeds a
+    clean name to PubChem:
+    - locant separator misread as decimal: ``3.4-`` → ``3,4-``
+    - di/de halogen-prefix confusion: ``dechloro`` → ``dichloro``
+    - truncated common suffixes: ``...benzen`` → ``...benzene``,
+      ``...anilin`` → ``...aniline``
+    """
+    if not name or not name.strip():
+        return name
+    s = name.strip()
+    s = re.sub(r'(\d)\.(\d)', r'\1,\2', s)            # 3.4- → 3,4-
+    for pat, repl in _CHEM_NAME_FIXES:
+        s = pat.sub(repl, s)
+    s = re.sub(r'benzen\b', 'benzene', s)             # truncated suffix
+    s = re.sub(r'anilin\b', 'aniline', s)
+    return s
+
+
+# name→SMILES disk cache: avoids repeat HTTP across the batch and keeps us
+# under PubChem's 5 req/s ceiling.  Loaded lazily, persisted by flush.
+_SMILES_CACHE: dict | None = None
+_SMILES_CACHE_PATH = "data/cache/smiles_lookup.json"
+
+
+def _smiles_cache() -> dict:
+    global _SMILES_CACHE
+    if _SMILES_CACHE is None:
+        try:
+            with open(_SMILES_CACHE_PATH) as f:
+                _SMILES_CACHE = json.load(f)
+        except Exception:
+            _SMILES_CACHE = {}
+    return _SMILES_CACHE
+
+
+def flush_smiles_cache() -> None:
+    """Persist the in-memory name→SMILES cache to disk."""
+    if _SMILES_CACHE is None:
+        return
+    try:
+        os.makedirs(os.path.dirname(_SMILES_CACHE_PATH), exist_ok=True)
+        with open(_SMILES_CACHE_PATH, "w") as f:
+            json.dump(_SMILES_CACHE, f, indent=2, ensure_ascii=False)
+    except Exception as exc:
+        print(f"[PostProcessor] smiles cache save failed: {exc}")
+
+
 def lookup_smiles(name: str) -> str | None:
-    """Query PubChem REST API for SMILES by compound name. Returns None on failure."""
+    """name→SMILES via PubChem REST — cached + rate-limited.
+
+    PubChem's hard limit is 5 req/s, so we sleep 0.25s before each
+    *network* call (cache hits skip it) and retry 503 with exponential
+    backoff.  Results (including None) are cached so the batch never
+    re-queries the same name.
+    """
     if not name or not name.strip():
         return None
-    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{requests.utils.quote(name)}/property/IsomericSMILES/JSON"
-    try:
-        resp = requests.get(url, timeout=5)
-        if resp.status_code == 200:
-            data = resp.json()
-            return data["PropertyTable"]["Properties"][0]["IsomericSMILES"]
-    except Exception:
-        pass
-    return None
+    cache = _smiles_cache()
+    key = name.strip().lower()
+    if key in cache:
+        return cache[key]
+
+    # PubChem (2025) renamed the property field to "SMILES"; older docs use
+    # "IsomericSMILES". Request the new field, read either to be safe.
+    url = (
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
+        f"{requests.utils.quote(name)}/property/SMILES/JSON"
+    )
+    result = None
+    for attempt in range(3):
+        time.sleep(0.25)  # ≤4 req/s, under PubChem's 5/s ceiling
+        try:
+            resp = requests.get(url, timeout=10)
+            if resp.status_code == 200:
+                props = resp.json()["PropertyTable"]["Properties"][0]
+                result = props.get("SMILES") or props.get("IsomericSMILES")
+                break
+            if resp.status_code == 503:
+                time.sleep(2 ** attempt)  # service busy — back off and retry
+                continue
+            break  # 404 / 400 — name not found, don't retry
+        except Exception:
+            time.sleep(2 ** attempt)
+    cache[key] = result
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -799,6 +886,12 @@ class PostProcessor:
             if not nr.get("yield_type"):
                 nr["yield_type"] = infer_yield_type(nr)
 
+            # -- Chemical-name normalization (always — fixes OCR errors in
+            #    product/reactant names AND feeds clean names to PubChem) --
+            for _nk in ("reactant1_name", "reactant2_name", "product_name"):
+                if nr.get(_nk):
+                    nr[_nk] = normalize_chem_name(nr[_nk])
+
             # -- SMILES lookup (optional, slow) --
             if smiles_lookup:
                 if not nr.get("reactant1_smiles") and nr.get("reactant1_name"):
@@ -855,6 +948,7 @@ class PostProcessor:
         with open(norm_json, "w") as f:
             json.dump(normalised, f, indent=2, ensure_ascii=False)
         print(f"[PostProcessor] -> {norm_json}")
+        flush_smiles_cache()  # persist any name→SMILES queries from this PDF
 
         # Save _normalized.xlsx
         try:

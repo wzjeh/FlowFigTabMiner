@@ -335,7 +335,7 @@ def process_one_pdf(
     # ─── Step 6: Post-processing ───────────────────────────────────
     print("\n=== Step 6: Post-Processing (Normalisation) ===")
     post = PostProcessor()
-    post.run(pdf_path, intermediate_dir, smiles_lookup=args.smiles_lookup)
+    post.run(pdf_path, intermediate_dir, smiles_lookup=not args.no_smiles_lookup)
 
     print("\n=== Pipeline Complete ===")
 
@@ -382,8 +382,8 @@ def _run_batch(args) -> None:
         passthrough.append("--skip-tfid")
     if args.force_assembly:
         passthrough.append("--force-assembly")
-    if args.smiles_lookup:
-        passthrough.append("--smiles-lookup")
+    if args.no_smiles_lookup:
+        passthrough.append("--no-smiles-lookup")
     if args.no_vlm:
         passthrough.append("--no-vlm")
 
@@ -410,8 +410,8 @@ def main() -> None:
                         help="Skip Step 1 if intermediate figures already exist")
     parser.add_argument("--force-assembly", action="store_true",
                         help="Force re-run Step 5 LLM even if _final.json already exists")
-    parser.add_argument("--smiles-lookup", action="store_true",
-                        help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
+    parser.add_argument("--no-smiles-lookup", action="store_true",
+                        help="Disable PubChem name→SMILES lookup in Step 6 (default: enabled)")
     parser.add_argument("--no-vlm", action="store_true",
                         help="Skip VLM inspection hooks (paper modules 6 & 12). "
                              "Adjudication still uses Gemini.")

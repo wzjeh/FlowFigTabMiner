@@ -118,7 +118,24 @@ _BASE_RULES = """=== RULES ===
     `--- experimental section ---` or `--- local context ---`.  The experimental segment
     holds paper-wide baselines (catalyst loading, default temperature, solvent, reactor type)
     that are often stated ONCE in Materials-and-Methods.  Use BOTH segments when filling
-    conditions and reaction_class — do not ignore the experimental segment."""
+    conditions and reaction_class — do not ignore the experimental segment.
+17. PRODUCT-COMPOSITION TABLES: If a table's column headers include product
+    names/abbreviations (e.g. columns 'Temperature', 'Catalyst', then product
+    columns like '3,4-DCAN', 'CAN', 'CNB', 'AZO' holding yield/selectivity/
+    composition values), each product column is a distinct product. Keep ONE
+    record per data row (per RULE 3 — do NOT unpivot): set product_name to the
+    MAIN/target product (the primary product column header; expand abbreviations
+    using the caption/footnote, e.g. "3,4-DCAN" → "3,4-dichloroaniline"), set
+    yield_pct (or selectivity_pct/conversion_pct per what the table measures) to
+    that product's cell value, and put the OTHER product columns into
+    other_metrics (e.g. {"CAN_pct": ..., "AZO_pct": ...}). NEVER leave
+    product_name null when product names appear in the column headers.
+18. FIGURE FIXED PRODUCT: If a figure's series encodes a CONDITION (temperature,
+    residence time, pressure) or is unnamed ("Default") rather than a chemical
+    species, the measured product is usually a SINGLE fixed compound named in the
+    caption / local_vars.reaction_context / series_semantics / paper text. Fill
+    product_name with that fixed product — do NOT leave it null just because the
+    series encodes a condition."""
 
 _DOMAIN_KNOWLEDGE = """=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
 - For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,
