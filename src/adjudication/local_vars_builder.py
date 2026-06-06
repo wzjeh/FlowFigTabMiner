@@ -87,7 +87,15 @@ class LocalVarsBuilder:
             "a structured JSON sub-variable library documenting what it measures and how "
             "to interpret each axis and series.\n"
             "Rules:\n"
-            "(1) No SMILES. (2) Only state fixed_conditions explicitly mentioned in the context. "
+            "(1) No SMILES.\n"
+            "(2) For fixed_conditions: search the **entire paper-text context** for "
+            "conditions that apply across ALL data points of this figure. The context window "
+            "may include TWO segments separated by `--- experimental section ---` or "
+            "`--- local context ---` markers: the figure's local prose AND a separate excerpt "
+            "from the paper's Experimental / Materials-and-Methods section. Conditions such as "
+            "temperature, pressure, solvent, catalyst (loading), reactor_type, residence_time often "
+            "appear ONLY in the experimental section — you MUST populate fixed_conditions from there "
+            "too, not only from the figure's surrounding text.\n"
             "(3) Output valid JSON only, no markdown fences.\n"
             "(4) Each text field is suffixed with a source tag in square brackets, e.g. "
             "`Pressure (MPa) [src=vlm_metadata]`. Tag meanings: ``vlm_metadata`` = Gemini vision "
@@ -192,10 +200,13 @@ conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, oth
             "to interpret each column.\n"
             "Rules:\n"
             "(1) No SMILES. "
-            "(2) For fixed_conditions: search BOTH the table caption/note AND the paper text context for "
-            "conditions that apply uniformly to ALL rows of this table (e.g. temperature stated in the caption, "
-            "solvent mentioned in surrounding text, reactor type described in the experimental section). "
-            "Fill fixed_conditions even if the condition is only mentioned in the paper text, not the CSV. "
+            "(2) For fixed_conditions: search the table caption/note AND the **entire paper-text context** "
+            "for conditions that apply uniformly to ALL rows of this table. The context window may include "
+            "TWO segments separated by `--- experimental section ---` or `--- local context ---` markers: "
+            "the table's local prose AND a separate excerpt from the paper's Experimental / "
+            "Materials-and-Methods section. Conditions such as temperature, pressure, solvent, catalyst "
+            "(loading), reactor_type, residence_time often appear ONLY in the experimental section — "
+            "you MUST populate fixed_conditions from there too, not only from the caption or CSV. "
             "(3) Output valid JSON only, no markdown fences.\n"
             f"{self._SOLVENT_ABBREV}"
         )
@@ -258,43 +269,23 @@ If a condition varies row-by-row (i.e. it IS a CSV column), leave it null in fix
     #  Helpers
     # ------------------------------------------------------------------ #
 
-    def _extract_text_window(self, source_id, source_type, paper_text, window_size=4000):
+    def _extract_text_window(self, source_id, source_type, paper_text):
+        """Dual-anchor text window — see ``pdf_parser.extract_text_window``.
+
+        Primary anchor: figure/table number derived from source_id.
+        Experimental anchor: General Procedure / Materials and Methods
+        heading.  Total ≈ 8 KB; paper-wide baselines (catalyst loading,
+        temperature, solvent) reach the prompt even when they live in
+        the experimental section far from the figure citation.
         """
-        Search paper_text for a ~4000-char window relevant to this source.
-        Looks for figure/table number keywords derived from the source_id.
-        Falls back to the first 4000 chars if nothing found.
-        """
-        if not paper_text:
-            return ""
-
-        # Build search keywords from source_id (e.g. "page_2_figure_1_t0" → "figure 1", "figure1")
-        keywords = []
-        parts = source_id.lower().split("_")
-        if source_type == "figure":
-            for i, p in enumerate(parts):
-                if p == "figure" and i + 1 < len(parts):
-                    num = parts[i + 1]
-                    keywords += [f"figure {num}", f"fig. {num}", f"fig {num}", f"figure{num}"]
-        elif source_type == "table":
-            for i, p in enumerate(parts):
-                if p == "table" and i + 1 < len(parts):
-                    num = parts[i + 1]
-                    keywords += [f"table {num}", f"table{num}"]
-
-        text_lower = paper_text.lower()
-        best_pos = -1
-        for kw in keywords:
-            idx = text_lower.find(kw)
-            if idx != -1:
-                if best_pos == -1 or idx < best_pos:
-                    best_pos = idx
-
-        if best_pos == -1:
-            return paper_text[:window_size]
-
-        start = max(0, best_pos - 500)
-        end = min(len(paper_text), start + window_size)
-        return paper_text[start:end]
+        from src.adjudication.pdf_parser import extract_text_window
+        return extract_text_window(
+            paper_text,
+            source_id,
+            source_type,
+            primary_size=6000,
+            experimental_size=2000,
+        )
 
     def _clean_json(self, content, source_id, source_type):
         """Strip markdown fences and parse JSON. Returns a fallback stub on failure."""

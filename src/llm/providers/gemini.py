@@ -51,16 +51,19 @@ def _backoff_call(
     *,
     max_retries: int,
     label: str,
-) -> Any:
+) -> tuple[Any, int]:
     """Run ``call`` with exponential backoff on RateLimitError.
 
     Delays grow as 1 s, 2 s, 4 s, ... up to ``max_retries`` attempts.
     Other LLMProviderError types propagate immediately (no retry).
+
+    Returns ``(result, retry_count)`` so callers can record how often a
+    call was rate-limited.  ``retry_count`` is 0 on first-try success.
     """
     last_exc: Optional[BaseException] = None
     for attempt in range(max_retries + 1):
         try:
-            return call()
+            return call(), attempt
         except RateLimitError as exc:
             last_exc = exc
             if attempt >= max_retries:
@@ -176,7 +179,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
                     self._wrap_and_raise(exc)
 
         t0 = time.perf_counter()
-        response = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.chat")
+        response, retry_count = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.chat")
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         text = (response.text or "").strip()
@@ -200,18 +203,21 @@ class GeminiProvider(LLMProvider, VLMProvider):
             tokens_out=tokens_out,
             latency_ms=elapsed_ms,
             cache_hit=False,
+            finish_reason=finish_reason,
+            retry_count=retry_count,
         )
         # Re-roundtripping LLMResponse → dict drops the cache_hit override,
         # which is what we want: a hit on a subsequent run is still a hit.
         self._cache.set(cache_key, out.model_dump(exclude={"cache_hit"}))
         logger.info(
-            "gemini.chat model=%s latency=%.0fms tokens_in=%s tokens_out=%s thinking=%s finish=%s",
+            "gemini.chat model=%s latency=%.0fms tokens_in=%s tokens_out=%s thinking=%s finish=%s retry=%d",
             cfg.model,
             elapsed_ms,
             tokens_in,
             tokens_out,
             tokens_thinking,
             finish_reason,
+            retry_count,
         )
         return out
 
@@ -292,7 +298,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
                     self._wrap_and_raise(exc)
 
         t0 = time.perf_counter()
-        response = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.inspect")
+        response, retry_count = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.inspect")
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         raw = (response.text or "").strip()
@@ -335,13 +341,16 @@ class GeminiProvider(LLMProvider, VLMProvider):
             {"meta": meta.model_dump(exclude={"cache_hit"}), "parsed": parsed},
         )
         logger.info(
-            "gemini.inspect model=%s image=%s schema=%s latency=%.0fms tokens_in=%s tokens_out=%s",
+            "gemini.inspect model=%s image=%s schema=%s latency=%.0fms tokens_in=%s tokens_out=%s thinking=%s finish=%s retry=%d",
             cfg.model,
             image.path.name,
             schema_tag,
             elapsed_ms,
             tokens_in,
             tokens_out,
+            tokens_thinking,
+            finish_reason,
+            retry_count,
         )
         return meta, parsed
 

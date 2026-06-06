@@ -63,6 +63,10 @@ class LLMResponse(BaseModel):
     latency_ms: float
     cache_hit: bool = False
     finish_reason: str | None = None
+    # Number of times this call was rate-limited and retried before
+    # success.  0 means first-try success.  Populated by GeminiProvider;
+    # other providers may leave default 0.
+    retry_count: int = 0
 
 
 class MatchPair(BaseModel):
