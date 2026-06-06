@@ -50,6 +50,13 @@ class MolNexTRSingleton:
         if cls._instance is None:
             logger.info("Initializing MolNexTR singleton for the first time")
             cls._detect_hardware()
+            # Cap torch intra-op threads: forward over many molecule cells
+            # in a big table otherwise spins one thread per core, spiking
+            # the load average (observed load 30 on a 112-cell table).
+            try:
+                torch.set_num_threads(1)
+            except Exception:
+                pass
             cls._instance = cls._initialize_model()
             logger.info(f"MolNexTR singleton initialized successfully on {cls._device_name}")
         else:

@@ -19,10 +19,16 @@ import glob
 import json
 import logging
 import os
+import subprocess
 import sys
 
 # Ensure src is importable from project root
 sys.path.insert(0, os.getcwd())
+
+# MUST precede any torch / paddle / cv2 import: caps per-backend thread
+# pools so several model libraries don't each spawn one thread per core
+# (the load=30 oversubscription root cause).
+import src.pipeline._threadcaps  # noqa: F401  (import for side effect)
 
 from src.adjudication.global_assembly import GlobalAssembly
 from src.adjudication.local_vars_builder import LocalVarsBuilder
@@ -44,6 +50,7 @@ from src.llm.inspectors import (
 )
 from src.llm.providers.gemini import GeminiProvider
 from src.parsing.active_area_detector import ActiveAreaDetector
+from src.pipeline._memory import release_memory
 from src.pipeline.figure_pipeline import FigurePipeline
 from src.utils.config import load_config
 
@@ -126,6 +133,9 @@ def run_step1_tfid(pdf_path: str) -> bool:
         intermediate_dir = os.path.join(base_intermediate_dir, basename)
         saved_paths = detector.save_crops(pdf_path, detections, intermediate_dir)
         print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")
+        # Release Florence-2 (~2GB) immediately — it is used only here.
+        del detector
+        release_memory()
         return True
     except Exception as exc:
         print(f"Step 1 Failed: {exc}")
@@ -135,38 +145,24 @@ def run_step1_tfid(pdf_path: str) -> bool:
 # ───────────────────────────────────────────────────────────────── main
 
 
-def main() -> None:
-    logging.basicConfig(
-        level=os.environ.get("LOG_LEVEL", "INFO"),
-        format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
-        stream=sys.stdout,
-    )
+def process_one_pdf(
+    pdf_path: str,
+    args,
+    provider,
+    llm_cfg,
+    vlm_cfg,
+    figure_hooks,
+    table_hooks,
+) -> None:
+    """Run Steps 1-6 for ONE PDF.
 
-    parser = argparse.ArgumentParser(description="FlowFigTabMiner Unified Pipeline")
-    parser.add_argument("pdf_path", help="Path to input PDF")
-    parser.add_argument("--skip-tfid", action="store_true",
-                        help="Skip Step 1 if intermediate figures already exist")
-    parser.add_argument("--force-assembly", action="store_true",
-                        help="Force re-run Step 5 LLM even if _final.json already exists")
-    parser.add_argument("--smiles-lookup", action="store_true",
-                        help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
-    parser.add_argument("--no-vlm", action="store_true",
-                        help="Skip VLM inspection hooks (paper modules 6 & 12). "
-                             "Adjudication still uses Gemini.")
-    args = parser.parse_args()
-
-    pdf_path = args.pdf_path
-    if not os.path.exists(pdf_path):
-        print(f"Error: PDF not found at {pdf_path}")
-        return
-
+    Heavy stage models (Florence-2, YOLO, TATR) are loaded and released
+    within this call.  Process-level singletons (MolNexTR, and PaddleOCR
+    via the ocr_backend cache) persist across calls so a ``--dir`` batch
+    reuses them instead of paying MolNexTR's ``torch.load`` per PDF.
+    """
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     intermediate_dir = os.path.join("data/intermediate", basename)
-
-    # ─── Provider stack ─────────────────────────────────────────────
-    provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks = _build_provider_stack(
-        no_vlm_inspection=args.no_vlm
-    )
 
     # ─── Step 1: TF-ID ──────────────────────────────────────────────
     figures_exist = len(glob.glob(os.path.join(intermediate_dir, "figures", "*.png"))) > 0
@@ -192,7 +188,7 @@ def main() -> None:
             del fig_pipeline
         except NameError:
             pass
-        gc.collect()
+        release_memory()
 
     # ─── Step Table: Table pipeline (with module-12 hook) ──────────
     print("\n=== Step Table: Table Extraction ===")
@@ -222,6 +218,17 @@ def main() -> None:
     else:
         print("No tables directory found.")
 
+    # Release the table pipeline + its stage models.  The MolNexTR and
+    # PaddleOCR singletons are NOT freed (they live in module-level
+    # caches for cross-PDF reuse under --dir); this only drops the
+    # TablePipeline container and its YOLO/TATR stage references.
+    try:
+        del tab_pipeline
+        del shared_content_rec
+    except NameError:
+        pass
+    release_memory()
+
     # ─── Step 3.5: Tab-Scheme-Seg (unchanged) ──────────────────────
     print("\n=== Step 3.5: Tab-Scheme-Seg (Scheme Parsing) ===")
     reactant_pool: dict = {}
@@ -247,7 +254,7 @@ def main() -> None:
                 if ct:
                     scheme_conditions_texts.append(ct)
             del scheme_parser
-            gc.collect()
+            release_memory()
             print(
                 f"   -> pools: reactant={len(reactant_pool)} product={len(product_pool)} "
                 f"compound={len(compound_pool)}"
@@ -331,6 +338,95 @@ def main() -> None:
     post.run(pdf_path, intermediate_dir, smiles_lookup=args.smiles_lookup)
 
     print("\n=== Pipeline Complete ===")
+
+
+def _run_single(args) -> None:
+    """Process ONE PDF under the single-instance lock.
+
+    The lock lives here (not in ``main``) so the batch driver can spawn
+    subprocesses that each lock themselves and serialise cleanly.
+    """
+    from src.pipeline.single_instance import single_instance_lock
+
+    with single_instance_lock("flowfigtabminer-pipeline"):
+        provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks = _build_provider_stack(
+            no_vlm_inspection=args.no_vlm
+        )
+        process_one_pdf(
+            args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks
+        )
+
+
+def _run_batch(args) -> None:
+    """Process every PDF in ``args.dir`` in a SEPARATE subprocess, serially.
+
+    Subprocess isolation is the durable fix for cross-PDF thread/memory
+    accumulation: the in-process loop leaked C++ thread pools (paddle /
+    torch / ultralytics) that ``del`` + gc cannot reclaim, pushing the
+    load average from ~10 on the first PDF to 44 on the second.  Running
+    each PDF as its own ``python -m src.pipeline.main <pdf>`` process lets
+    the OS reclaim *everything* on exit — every PDF starts from a clean
+    slate.
+
+    The parent (this driver) does NOT take the lock; each child does, so
+    the children serialise on the lock and two batches can't run heavy
+    work concurrently either.
+    """
+    pdfs = sorted(glob.glob(os.path.join(args.dir, "*.pdf")))
+    if not pdfs:
+        print(f"Error: no *.pdf found in {args.dir}")
+        return
+
+    passthrough = []
+    if args.skip_tfid:
+        passthrough.append("--skip-tfid")
+    if args.force_assembly:
+        passthrough.append("--force-assembly")
+    if args.smiles_lookup:
+        passthrough.append("--smiles-lookup")
+    if args.no_vlm:
+        passthrough.append("--no-vlm")
+
+    for idx, pdf in enumerate(pdfs, 1):
+        print(f"\n########## [{idx}/{len(pdfs)}] {os.path.basename(pdf)} (subprocess) ##########")
+        cmd = [sys.executable, "-m", "src.pipeline.main", pdf] + passthrough
+        result = subprocess.run(cmd)
+        if result.returncode != 0:
+            print(f"[batch] {os.path.basename(pdf)} exited with code {result.returncode}")
+
+
+def main() -> None:
+    logging.basicConfig(
+        level=os.environ.get("LOG_LEVEL", "INFO"),
+        format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
+        stream=sys.stdout,
+    )
+
+    parser = argparse.ArgumentParser(description="FlowFigTabMiner Unified Pipeline")
+    parser.add_argument("pdf_path", nargs="?", help="Path to a single input PDF")
+    parser.add_argument("--dir", help="Process every *.pdf in this directory, "
+                                      "each in its own subprocess (serial)")
+    parser.add_argument("--skip-tfid", action="store_true",
+                        help="Skip Step 1 if intermediate figures already exist")
+    parser.add_argument("--force-assembly", action="store_true",
+                        help="Force re-run Step 5 LLM even if _final.json already exists")
+    parser.add_argument("--smiles-lookup", action="store_true",
+                        help="Query PubChem to fill missing SMILES in Step 6 (slow, optional)")
+    parser.add_argument("--no-vlm", action="store_true",
+                        help="Skip VLM inspection hooks (paper modules 6 & 12). "
+                             "Adjudication still uses Gemini.")
+    args = parser.parse_args()
+
+    if args.dir:
+        # Batch driver: one subprocess per PDF, no lock here (children lock).
+        _run_batch(args)
+    elif args.pdf_path:
+        if not os.path.exists(args.pdf_path):
+            print(f"Error: PDF not found at {args.pdf_path}")
+            return
+        _run_single(args)
+    else:
+        print("Error: provide a PDF path or --dir <directory>")
 
 
 if __name__ == "__main__":

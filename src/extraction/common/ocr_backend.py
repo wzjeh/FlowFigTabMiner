@@ -10,12 +10,35 @@ USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
 import os
 
 
+# Singleton full det+rec instances, keyed by (lang, enable_mkldnn).
+# Without this, every caller (EvidenceAssembler, LegendMatcher,
+# ContentRecognizer) builds its OWN PaddleOCR — 3 per run — each
+# spawning its own thread pool (the load=30 / repeated "No ccache found"
+# culprit).  Memoizing collapses them to one shared instance.  Safe
+# because the pipeline runs single-process (single-instance lock) and
+# OCR calls are sequential, not concurrent.
+_ocr_instances: dict = {}
+
+
 def get_ocr_instance(lang='en', enable_mkldnn=False, **kwargs):
-    """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells)."""
+    """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells).
+
+    Memoized per (lang, enable_mkldnn) — repeat calls return the same
+    instance instead of constructing a fresh PaddleOCR each time.
+    """
+    key = (lang, enable_mkldnn)
+    cached = _ocr_instances.get(key)
+    if cached is not None:
+        return cached
+
     if os.environ.get('USE_EASYOCR', '0') == '1':
-        return _EasyOCRWrapper()
-    from paddleocr import PaddleOCR
-    return PaddleOCR(lang=lang, enable_mkldnn=enable_mkldnn)
+        instance = _EasyOCRWrapper()
+    else:
+        from paddleocr import PaddleOCR
+        instance = PaddleOCR(lang=lang, enable_mkldnn=enable_mkldnn)
+
+    _ocr_instances[key] = instance
+    return instance
 
 
 # Singleton rec-only instance (lazy)

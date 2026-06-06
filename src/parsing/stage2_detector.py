@@ -7,6 +7,10 @@ from torchvision.ops import nms
 class Stage2Detector:
     def __init__(self, model_path="models/bestYOLOm-2-2.pt"):
         print(f"Loading Stage 2 YOLO model from {model_path}...")
+        # Match YoloDetector: cap torch intra-op threads so this YOLO
+        # doesn't add its own per-core thread pool on top of PaddleOCR's.
+        if torch.get_num_threads() > 1:
+            torch.set_num_threads(1)
         self.model = YOLO(model_path)
         _torch_device = 'cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')
         self.model.to(_torch_device)
