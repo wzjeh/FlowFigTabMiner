@@ -54,7 +54,48 @@ def sanitize_json_text(text: str) -> str:
                     if depth == 0 and start != -1:
                         candidates.append(s[start : i + 1])
                         start = -1
-    if candidates:
+    # 3b. recovery for truncated arrays: prefer a reconstructed top-level
+    # array over a single-record dict candidate.  Walk the text once
+    # tracking depth; if an opening `[` is present but never closed
+    # cleanly, harvest every complete top-level object inside it and
+    # wrap them as a fresh array.  Step 3 would otherwise pick the
+    # longest balanced `{...}` (one inner record) — which is wrong when
+    # 65 records were emitted before truncation.
+    depth_arr = 0
+    depth_obj = 0
+    arr_start = -1
+    in_string = False
+    escape = False
+    last_complete_close = -1
+    for i, ch in enumerate(s):
+        if escape:
+            escape = False
+            continue
+        if ch == "\\":
+            escape = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == "[":
+            if depth_arr == 0 and depth_obj == 0:
+                arr_start = i
+            depth_arr += 1
+        elif ch == "]":
+            depth_arr -= 1
+        elif ch == "{":
+            depth_obj += 1
+        elif ch == "}":
+            depth_obj -= 1
+            if depth_arr == 1 and depth_obj == 0:
+                last_complete_close = i
+
+    array_unbalanced = arr_start >= 0 and depth_arr > 0
+    if array_unbalanced and last_complete_close > arr_start:
+        s = s[arr_start : last_complete_close + 1] + "]"
+    elif candidates:
         s = max(candidates, key=len)
 
     # 4. comments

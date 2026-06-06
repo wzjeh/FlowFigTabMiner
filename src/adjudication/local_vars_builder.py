@@ -89,6 +89,12 @@ class LocalVarsBuilder:
             "Rules:\n"
             "(1) No SMILES. (2) Only state fixed_conditions explicitly mentioned in the context. "
             "(3) Output valid JSON only, no markdown fences.\n"
+            "(4) Each text field is suffixed with a source tag in square brackets, e.g. "
+            "`Pressure (MPa) [src=vlm_metadata]`. Tag meanings: ``vlm_metadata`` = Gemini vision "
+            "transcription (high confidence, clean characters); ``paddleocr`` = best-effort OCR "
+            "(may have character drops, word-order issues); ``missing`` = the field was not "
+            "found.  Calibrate your confidence accordingly when interpreting axis labels and "
+            "legend names.\n"
             f"{self._SOLVENT_ABBREV}"
         )
 
@@ -98,11 +104,24 @@ class LocalVarsBuilder:
         figure_type = meta.get("figure_type", "unknown")
 
         def _join_texts(items):
-            """Extract text strings from [{text:..., source_file:...}, ...] or plain list."""
+            """Extract text strings from [{text:..., source:...}, ...] or plain list.
+
+            When a ``source`` key is present (per the per-field decisive
+            source design), annotate the text with it so the LLM can
+            calibrate its trust: ``vlm_metadata`` is Gemini-clean,
+            ``paddleocr`` is best-effort, ``missing`` means absent.
+            """
             if not items:
                 return ""
             if isinstance(items[0], dict):
-                return " | ".join(it.get("text", "") for it in items if it.get("text"))
+                parts = []
+                for it in items:
+                    txt = it.get("text", "")
+                    if not txt:
+                        continue
+                    src = it.get("source")
+                    parts.append(f"{txt} [src={src}]" if src else txt)
+                return " | ".join(parts)
             return " | ".join(str(it) for it in items)
 
         x_title = _join_texts(text_ev.get("x_axis_title", []))

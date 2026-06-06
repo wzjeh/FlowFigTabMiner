@@ -144,6 +144,8 @@ class GeminiProvider(LLMProvider, VLMProvider):
             "gemini.chat",
             cfg.model,
             cfg.temperature,
+            cfg.max_output_tokens,
+            cfg.thinking_budget,
             [m.model_dump() for m in messages],
         )
         if (hit := self._cache.get(cache_key)) is not None:
@@ -161,6 +163,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
             temperature=cfg.temperature,
             max_output_tokens=cfg.max_output_tokens,
             system_instruction="\n\n".join(system_parts) if system_parts else None,
+            thinking_config=genai_types.ThinkingConfig(thinking_budget=cfg.thinking_budget),
         )
 
         def _call() -> Any:
@@ -183,6 +186,12 @@ class GeminiProvider(LLMProvider, VLMProvider):
         usage = getattr(response, "usage_metadata", None)
         tokens_in = getattr(usage, "prompt_token_count", None) if usage else None
         tokens_out = getattr(usage, "candidates_token_count", None) if usage else None
+        tokens_thinking = getattr(usage, "thoughts_token_count", None) if usage else None
+        finish_reason = None
+        try:
+            finish_reason = str(response.candidates[0].finish_reason)
+        except Exception:
+            pass
 
         out = LLMResponse(
             text=text,
@@ -196,11 +205,13 @@ class GeminiProvider(LLMProvider, VLMProvider):
         # which is what we want: a hit on a subsequent run is still a hit.
         self._cache.set(cache_key, out.model_dump(exclude={"cache_hit"}))
         logger.info(
-            "gemini.chat model=%s latency=%.0fms tokens_in=%s tokens_out=%s",
+            "gemini.chat model=%s latency=%.0fms tokens_in=%s tokens_out=%s thinking=%s finish=%s",
             cfg.model,
             elapsed_ms,
             tokens_in,
             tokens_out,
+            tokens_thinking,
+            finish_reason,
         )
         return out
 
@@ -235,6 +246,8 @@ class GeminiProvider(LLMProvider, VLMProvider):
             "gemini.inspect",
             cfg.model,
             cfg.temperature,
+            cfg.max_output_tokens,
+            cfg.thinking_budget,
             system_prompt,
             user_prompt,
             img_bytes,
@@ -249,6 +262,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
             temperature=cfg.temperature,
             max_output_tokens=cfg.max_output_tokens,
             system_instruction=system_prompt or None,
+            thinking_config=genai_types.ThinkingConfig(thinking_budget=cfg.thinking_budget),
         )
         if response_schema is not None:
             config_kwargs["response_mime_type"] = "application/json"
@@ -301,6 +315,12 @@ class GeminiProvider(LLMProvider, VLMProvider):
         usage = getattr(response, "usage_metadata", None)
         tokens_in = getattr(usage, "prompt_token_count", None) if usage else None
         tokens_out = getattr(usage, "candidates_token_count", None) if usage else None
+        tokens_thinking = getattr(usage, "thoughts_token_count", None) if usage else None
+        finish_reason = None
+        try:
+            finish_reason = str(response.candidates[0].finish_reason)
+        except Exception:
+            pass
 
         meta = LLMResponse(
             text=raw,

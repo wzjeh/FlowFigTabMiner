@@ -31,8 +31,14 @@ logger = logging.getLogger(__name__)
 
 
 def _inspection_path(ctx: StageContext) -> Path:
-    """Where to drop the JSON report next to the evidence file."""
-    return ctx.output_dir / f"{ctx.source_id}_vlm_inspection.json"
+    """Where to drop the audit report next to the evidence file.
+
+    Renamed from ``_vlm_inspection.json`` to ``_vlm_audit.json`` once the
+    inspection track was demoted to forensic-only — downstream
+    LocalVarsBuilder / GlobalAssembly no longer read this file; it is
+    written purely for human / regression-tracking review.
+    """
+    return ctx.output_dir / f"{ctx.source_id}_vlm_audit.json"
 
 
 def _write_report(report, dest: Path) -> None:
