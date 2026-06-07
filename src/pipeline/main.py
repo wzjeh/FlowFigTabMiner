@@ -21,6 +21,7 @@ import logging
 import os
 import subprocess
 import sys
+import time
 
 # Ensure src is importable from project root
 sys.path.insert(0, os.getcwd())
@@ -57,6 +58,11 @@ from src.utils.config import load_config
 logger = logging.getLogger(__name__)
 
 CONFIG_PATH = "config.yaml"
+
+# Exit code emitted when a PDF is skipped by the Step 0 pre-filter (review /
+# non-flow paper).  batch_all.py maps this code to the ``skipped`` bucket so
+# a deliberately-skipped paper isn't counted as a success (0) or a crash.
+EXIT_SKIPPED = 3
 
 
 # ───────────────────────────────────────────────────────────────── builders
@@ -153,24 +159,58 @@ def process_one_pdf(
     vlm_cfg,
     figure_hooks,
     table_hooks,
-) -> None:
-    """Run Steps 1-6 for ONE PDF.
+) -> str | None:
+    """Run Steps 0-6 for ONE PDF.
 
     Heavy stage models (Florence-2, YOLO, TATR) are loaded and released
     within this call.  Process-level singletons (MolNexTR, and PaddleOCR
     via the ocr_backend cache) persist across calls so a ``--dir`` batch
     reuses them instead of paying MolNexTR's ``torch.load`` per PDF.
+
+    Returns ``"skipped"`` when the Step 0 pre-filter rejects the paper
+    (caller maps this to ``EXIT_SKIPPED``); ``None`` on a full run.
+    Per-stage wall-clock is written to ``{intermediate_dir}/timing.json``.
     """
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     intermediate_dir = os.path.join("data/intermediate", basename)
 
+    # Per-stage wall-clock (semantic keys, not step numbers — so renaming /
+    # inserting a pipeline stage later doesn't leave cryptic "step4.5" keys).
+    timings: dict[str, float] = {}
+    _last = [time.perf_counter()]
+
+    def _mark(name: str) -> None:
+        now = time.perf_counter()
+        timings[name] = round(now - _last[0], 1)
+        _last[0] = now
+
+    def _write_timing(status: str) -> None:
+        out = {"status": status, **timings}
+        if status == "ok":
+            out["total"] = round(sum(timings.values()), 1)
+        try:
+            os.makedirs(intermediate_dir, exist_ok=True)
+            with open(os.path.join(intermediate_dir, "timing.json"), "w") as f:
+                json.dump(out, f, indent=2)
+        except Exception as exc:
+            print(f"[Timing] write failed: {exc}")
+        line = "  ".join(f"{k}={v}s" for k, v in timings.items())
+        print(f"[Timing] {status}: {line}"
+              + (f"  total={out['total']}s" if "total" in out else ""))
+
     # ─── Step 0: Pre-filter (skip review articles + non-flow papers) ──
+    # This is the EARLY-EXIT gate: it runs before any heavy local weight
+    # (Florence-2 / YOLO / TATR / MolNexTR / PaddleOCR) is loaded, so a
+    # review / non-flow paper costs only a 3-page text scan, not inference.
     if not getattr(args, "no_prefilter", False):
         from src.preprocessing.paper_filter import filter_paper
         pf = filter_paper(pdf_path)
         if not pf["is_relevant"]:
             print(f"[PreFilter] SKIP {basename}: {pf['reason']}")
-            return
+            _mark("filter")
+            _write_timing("skipped")
+            return "skipped"
+    _mark("filter")
 
     # ─── Step 1: TF-ID ──────────────────────────────────────────────
     figures_exist = len(glob.glob(os.path.join(intermediate_dir, "figures", "*.png"))) > 0
@@ -178,6 +218,8 @@ def process_one_pdf(
         print("\n=== Step 1: TF-ID Parsing (SKIPPED - intermediate figures found) ===")
     elif not run_step1_tfid(pdf_path):
         return
+
+    _mark("tfid")
 
     # ─── Step 2-4: Figure pipeline (with module-6 hook) ────────────
     print("\n=== Step 2-4: Figure Extraction ===")
@@ -197,6 +239,8 @@ def process_one_pdf(
         except NameError:
             pass
         release_memory()
+
+    _mark("figure")
 
     # ─── Step Table: Table pipeline (with module-12 hook) ──────────
     print("\n=== Step Table: Table Extraction ===")
@@ -236,6 +280,8 @@ def process_one_pdf(
     except NameError:
         pass
     release_memory()
+
+    _mark("table")
 
     # ─── Step 3.5: Tab-Scheme-Seg (unchanged) ──────────────────────
     print("\n=== Step 3.5: Tab-Scheme-Seg (Scheme Parsing) ===")
@@ -284,6 +330,8 @@ def process_one_pdf(
         with open(cond_path, "w") as f:
             f.write("\n".join(scheme_conditions_texts))
         print(f"   -> Scheme conditions saved -> {cond_path}")
+
+    _mark("scheme")
 
     # ─── Step 4.5: Sub-Variable Libraries ──────────────────────────
     print("\n=== Step 4.5: Build Sub-Variable Libraries ===")
@@ -335,24 +383,31 @@ def process_one_pdf(
                 except Exception as exc:
                     print(f"   [LocalVars] Table error {ev_path}: {exc}")
 
+    _mark("local_vars")
+
     # ─── Step 5: Global Assembly ───────────────────────────────────
     print("\n=== Step 5: Global Assembly ===")
     assembler = GlobalAssembly(llm=provider, llm_cfg=llm_cfg)
     assembler.run(pdf_path, intermediate_dir, force=args.force_assembly)
+    _mark("assembly")
 
     # ─── Step 6: Post-processing ───────────────────────────────────
     print("\n=== Step 6: Post-Processing (Normalisation) ===")
     post = PostProcessor()
     post.run(pdf_path, intermediate_dir, smiles_lookup=not args.no_smiles_lookup)
+    _mark("post")
 
+    _write_timing("ok")
     print("\n=== Pipeline Complete ===")
+    return None
 
 
-def _run_single(args) -> None:
+def _run_single(args) -> str | None:
     """Process ONE PDF under the single-instance lock.
 
     The lock lives here (not in ``main``) so the batch driver can spawn
     subprocesses that each lock themselves and serialise cleanly.
+    Returns ``process_one_pdf``'s status (``"skipped"`` or ``None``).
     """
     from src.pipeline.single_instance import single_instance_lock
 
@@ -360,7 +415,7 @@ def _run_single(args) -> None:
         provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks = _build_provider_stack(
             no_vlm_inspection=args.no_vlm
         )
-        process_one_pdf(
+        return process_one_pdf(
             args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks
         )
 
@@ -401,7 +456,9 @@ def _run_batch(args) -> None:
         print(f"\n########## [{idx}/{len(pdfs)}] {os.path.basename(pdf)} (subprocess) ##########")
         cmd = [sys.executable, "-m", "src.pipeline.main", pdf] + passthrough
         result = subprocess.run(cmd)
-        if result.returncode != 0:
+        if result.returncode == EXIT_SKIPPED:
+            print(f"[batch] {os.path.basename(pdf)} skipped by pre-filter (review/non-flow)")
+        elif result.returncode != 0:
             print(f"[batch] {os.path.basename(pdf)} exited with code {result.returncode}")
 
 
@@ -436,7 +493,8 @@ def main() -> None:
         if not os.path.exists(args.pdf_path):
             print(f"Error: PDF not found at {args.pdf_path}")
             return
-        _run_single(args)
+        if _run_single(args) == "skipped":
+            sys.exit(EXIT_SKIPPED)
     else:
         print("Error: provide a PDF path or --dir <directory>")
 
