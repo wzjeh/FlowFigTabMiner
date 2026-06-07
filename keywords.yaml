@@ -1,9 +1,73 @@
-# Keywords for Relevance Filtering (Figures & Tables)
-# The pipeline checks if VALID text from the figure/table (Caption, Title, Note, Axis, Headers) 
-# contains any of these keywords.
-# Matches are case-insensitive and support partial matches (e.g. 'selectiv' matches 'selectivity').
+# Centralized keyword configuration for FlowFigTabMiner.
+#
+# Two LEVELS of filtering, kept separate (different jobs):
+#   1. paper_filter   — PAPER-level pre-filter (is this a flow-chemistry
+#                       PRIMARY research paper, or a review to skip?).
+#                       Read by src/preprocessing/paper_filter.py.
+#   2. figure_table_keywords — FIGURE/TABLE-level relevance (does this
+#                       chart/table contain result data worth extracting?).
+#                       Read by src/extraction/table/pipeline.py.
+#
+# All matching is case-insensitive substring ("selectiv" matches
+# "selectivity").  Edit here — never hardcode keywords in .py files.
 
-keywords:
+# ── Paper-level pre-filter ───────────────────────────────────────────────
+paper_filter:
+  # WHITELIST: paper must mention at least one of these to be processed.
+  flow_chemistry_include:
+    - flow chemistry
+    - continuous flow
+    - continuous-flow
+    - microreactor
+    - micro-reactor
+    - flow reactor
+    - plug flow
+    - tubular reactor
+    - micropacked
+    - micro-packed
+    - packed bed reactor
+    - coil reactor
+    - microfluidic reactor
+    - flow synthesis
+    - flow process
+
+  # BLACKLIST: review / overview / non-data articles to SKIP.
+  # SPECIFIC phrases only — never bare "review"/"perspective"/"account",
+  # which appear in primary papers ("we review the conditions", "from this
+  # perspective").  Matched against the title/abstract region only.
+  review_exclude:
+    - a review of
+    - this review
+    - in this review
+    - review article
+    - tutorial review
+    - mini-review
+    - mini review
+    - minireview
+    - critical review
+    - comprehensive review
+    - recent advances
+    - recent progress
+    - recent developments
+    - an overview of
+    - modern strategies
+    - "chem. rev."
+    - chem soc rev
+    - "chem. soc. rev."
+    - chemical reviews
+    - chemical society reviews
+    - "annu. rev."
+    - annual review
+    - perspective article
+    - a perspective on
+    - erratum
+    - corrigendum
+    - correction to
+    - retraction
+
+# ── Figure/Table-level relevance (result-data keywords) ──────────────────
+# (was the top-level `keywords:` list; renamed for clarity.)
+figure_table_keywords:
   - yield
   - uiel
   - yeild
