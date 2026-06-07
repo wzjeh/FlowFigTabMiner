@@ -19,6 +19,28 @@ import unicodedata
 from collections import Counter
 import requests
 
+from src.adjudication.entity_pool import (
+    build_global_entity_pool,
+    resolve_record_smiles,
+)
+
+
+def _is_hollow_record(rec: dict) -> bool:
+    """A record carries no reaction information when it has no chemical
+    identity (product or reactant) AND no reaction-outcome metric (yield /
+    conversion / selectivity / ee).  Such shells come from non-reaction
+    figures (e.g. a temperature-vs-time process trace) mis-read as reaction
+    data.  Flagged (``is_hollow``), not dropped, so downstream can filter."""
+    identity = any(rec.get(k) for k in (
+        "product_name", "product_smiles", "product_label",
+        "reactant1_name", "reactant1_smiles",
+        "reactant2_name", "reactant2_smiles",
+    ))
+    metric = any(rec.get(k) for k in (
+        "yield_pct", "conversion_pct", "selectivity_pct", "ee_pct",
+    ))
+    return not (identity or metric)
+
 
 # ---------------------------------------------------------------------------
 # Solvent normalisation dictionary
@@ -888,6 +910,24 @@ class PostProcessor:
         paper_year = extract_year(full_text)
         abbrev_map = build_abbrev_map(full_text)  # "name (ABBR)" → full name
 
+        # Paper-level compound identity pool: merge label/name→SMILES across the
+        # whole paper (scheme pool + every table CSV + records that already
+        # resolved) so a structure recognised once backfills references to the
+        # same compound elsewhere.  Built from the RAW records (pre-normalised)
+        # plus on-disk evidence; used below to backfill before the PubChem step.
+        scheme_pools = {}
+        pool_path = os.path.join(intermediate_dir, "compound_pool.json")
+        if os.path.exists(pool_path):
+            try:
+                pd = json.load(open(pool_path))
+                scheme_pools = pd if isinstance(pd.get("reactant_pool"), dict) else {"compound_pool": pd}
+            except Exception:
+                scheme_pools = {}
+        entity_pool = build_global_entity_pool(intermediate_dir, scheme_pools, records)
+        if entity_pool.size:
+            print(f"[PostProcessor] entity pool: {len(entity_pool.label_to_smiles)} labels, "
+                  f"{len(entity_pool.name_to_smiles)} names")
+
         print(f"[PostProcessor] {basename}: {len(records)} records, DOI={paper_doi}, year={paper_year}")
 
         normalised = []
@@ -937,6 +977,12 @@ class PostProcessor:
                     if nr[_nk] and nr[_nk].lower() in abbrev_map:
                         nr[_nk] = abbrev_map[nr[_nk].lower()]
 
+            # -- Entity-pool SMILES backfill (deterministic, no network) --
+            #    Fills SMILES the per-source LLM left null by matching this
+            #    record's label/name against the paper-level pool.  Runs before
+            #    PubChem so the slow network lookup only handles what's left.
+            resolve_record_smiles(nr, entity_pool)
+
             # -- SMILES lookup (optional, slow) --
             if smiles_lookup:
                 if not nr.get("reactant1_smiles") and nr.get("reactant1_name"):
@@ -983,6 +1029,13 @@ class PostProcessor:
             # -- reaction_smiles (ORD-compatible: reactants>>reagents>>products) --
             if not nr.get("reaction_smiles"):
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
+
+            # -- Hollow-record flag (kept, not dropped) --
+            #    A record with no chemical identity AND no reaction-outcome metric
+            #    carries no reaction information — e.g. a temperature-vs-time
+            #    process-monitoring plot mis-read as a reaction figure emits one
+            #    such shell per point.  Flag for downstream filtering.
+            nr["is_hollow"] = _is_hollow_record(nr)
 
             normalised.append(nr)
 
