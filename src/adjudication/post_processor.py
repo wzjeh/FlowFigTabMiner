@@ -19,6 +19,11 @@ import unicodedata
 from collections import Counter
 import requests
 
+from src.adjudication.entity_pool import (
+    build_global_entity_pool,
+    resolve_record_smiles,
+)
+
 
 # ---------------------------------------------------------------------------
 # Solvent normalisation dictionary
@@ -888,6 +893,24 @@ class PostProcessor:
         paper_year = extract_year(full_text)
         abbrev_map = build_abbrev_map(full_text)  # "name (ABBR)" → full name
 
+        # Paper-level compound identity pool: merge label/name→SMILES across the
+        # whole paper (scheme pool + every table CSV + records that already
+        # resolved) so a structure recognised once backfills references to the
+        # same compound elsewhere.  Built from the RAW records (pre-normalised)
+        # plus on-disk evidence; used below to backfill before the PubChem step.
+        scheme_pools = {}
+        pool_path = os.path.join(intermediate_dir, "compound_pool.json")
+        if os.path.exists(pool_path):
+            try:
+                pd = json.load(open(pool_path))
+                scheme_pools = pd if isinstance(pd.get("reactant_pool"), dict) else {"compound_pool": pd}
+            except Exception:
+                scheme_pools = {}
+        entity_pool = build_global_entity_pool(intermediate_dir, scheme_pools, records)
+        if entity_pool.size:
+            print(f"[PostProcessor] entity pool: {len(entity_pool.label_to_smiles)} labels, "
+                  f"{len(entity_pool.name_to_smiles)} names")
+
         print(f"[PostProcessor] {basename}: {len(records)} records, DOI={paper_doi}, year={paper_year}")
 
         normalised = []
@@ -936,6 +959,12 @@ class PostProcessor:
                     nr[_nk] = normalize_chem_name(nr[_nk])
                     if nr[_nk] and nr[_nk].lower() in abbrev_map:
                         nr[_nk] = abbrev_map[nr[_nk].lower()]
+
+            # -- Entity-pool SMILES backfill (deterministic, no network) --
+            #    Fills SMILES the per-source LLM left null by matching this
+            #    record's label/name against the paper-level pool.  Runs before
+            #    PubChem so the slow network lookup only handles what's left.
+            resolve_record_smiles(nr, entity_pool)
 
             # -- SMILES lookup (optional, slow) --
             if smiles_lookup:
