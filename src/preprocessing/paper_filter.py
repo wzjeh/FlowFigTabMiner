@@ -16,6 +16,20 @@ FLOW_CHEMISTRY_KEYWORDS = [
     "flow synthesis", "flow process",
 ]
 
+# Review / overview articles to EXCLUDE — we only want primary research with
+# extractable reaction data, not literature surveys.  Specific phrases only
+# (not bare "review"/"account") to avoid killing primary papers that merely
+# say "we review the conditions" or "under review".
+REVIEW_KEYWORDS = [
+    "recent advances", "recent progress", "recent developments",
+    "a review of", "this review", "review article", "in this review",
+    "tutorial review", "mini-review", "mini review", "minireview",
+    "critical review", "comprehensive review", "an overview of",
+    "chem. rev.", "chem soc rev", "chem. soc. rev.",
+    "chemical reviews", "chemical society reviews",
+    "annu. rev.", "annual review", "modern strategies",
+]
+
 
 def filter_paper(pdf_path: str, pages_to_check: int = 3) -> dict:
     """
@@ -47,6 +61,16 @@ def filter_paper(pdf_path: str, pages_to_check: int = 3) -> dict:
         logger.warning(f"Failed to extract text from {pdf_path}: {e}; treating as relevant")
         return {"is_relevant": True, "reason": f"Text extraction error: {e}", "matched_keyword": None}
 
+    # 1. Exclude review / overview articles first (no extractable reaction data).
+    # Restrict to the title/abstract region (first ~1500 chars) so a primary
+    # paper citing a review in its intro isn't falsely excluded.
+    head = full_text[:1500]
+    for kw in REVIEW_KEYWORDS:
+        if kw in head:
+            logger.info(f"Paper filter FAIL — review/overview article (matched: '{kw}')")
+            return {"is_relevant": False, "reason": f"review article (matched '{kw}')", "matched_keyword": kw}
+
+    # 2. Flow-chemistry relevance whitelist.
     for kw in FLOW_CHEMISTRY_KEYWORDS:
         if kw in full_text:
             logger.info(f"Paper filter PASS — matched keyword: '{kw}'")
