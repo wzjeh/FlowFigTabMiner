@@ -239,6 +239,47 @@ def normalize_chem_name(name: str | None) -> str | None:
     return s
 
 
+# Abbreviation resolution: chemistry papers define abbreviations inline as
+# "full name (ABBR)", e.g. "3,4-dichloroaniline (3,4-DCAN)".  Extract these
+# so a product_name left as the bare abbreviation ("3,4-DCAN") can be
+# restored to the full name (then resolved to SMILES).
+_ABBREV_RE = re.compile(
+    r'([\w,\-]*[A-Za-z][\w,\-]*)\s*'                  # full name: single no-space token, has a letter
+    r'\(([0-9,\-]*[A-Z]{2,}[A-Z0-9,\-]*)\)'          # (ABBR): >=2 consecutive caps
+)
+
+
+def build_abbrev_map(text) -> dict:
+    """Map ``abbr.lower() -> full name`` from inline "name (ABBR)" defs.
+
+    ABBR requires >=2 consecutive capitals, so units / refs like "(2.0 MPa)"
+    or "(Fig. 1)" are NOT captured.  The full name must contain a lowercase
+    letter (so it's a real name, not another acronym).
+    """
+    out: dict = {}
+    if not text:
+        return out
+    for name, abbr in _ABBREV_RE.findall(text):
+        name = name.strip(" -,")
+        abbr = abbr.strip()
+        # name must look like a chemical name: has a lowercase letter, decent
+        # length, and is not a generic English word (reactant/product/...).
+        if (len(name) >= 4 and any(c.islower() for c in name)
+                and name.lower() not in _NON_CHEM_WORDS):
+            out.setdefault(abbr.lower(), name)
+    return out
+
+
+# Generic words that can sit before "(ABBR)" but are NOT chemical names.
+_NON_CHEM_WORDS = {
+    "reactant", "reactants", "product", "products", "compound", "compounds",
+    "intermediate", "intermediates", "mixture", "solution", "substrate",
+    "substrates", "reagent", "reagents", "catalyst", "material", "materials",
+    "sample", "target", "reaction", "molecule", "species", "derivative",
+    "analogue", "analog", "byproduct", "by-product", "starting",
+}
+
+
 # name→SMILES disk cache: avoids repeat HTTP across the batch and keeps us
 # under PubChem's 5 req/s ceiling.  Loaded lazily, persisted by flush.
 _SMILES_CACHE: dict | None = None
@@ -845,6 +886,7 @@ class PostProcessor:
         full_text = self._load_fulltext(pdf_path, intermediate_dir)
         paper_doi = extract_doi(full_text)
         paper_year = extract_year(full_text)
+        abbrev_map = build_abbrev_map(full_text)  # "name (ABBR)" → full name
 
         print(f"[PostProcessor] {basename}: {len(records)} records, DOI={paper_doi}, year={paper_year}")
 
@@ -886,11 +928,14 @@ class PostProcessor:
             if not nr.get("yield_type"):
                 nr["yield_type"] = infer_yield_type(nr)
 
-            # -- Chemical-name normalization (always — fixes OCR errors in
-            #    product/reactant names AND feeds clean names to PubChem) --
+            # -- Chemical-name normalization + abbreviation resolution
+            #    (always — fixes OCR errors, restores bare abbreviations like
+            #    "3,4-DCAN" → "3,4-dichloroaniline", feeds clean names to PubChem) --
             for _nk in ("reactant1_name", "reactant2_name", "product_name"):
                 if nr.get(_nk):
                     nr[_nk] = normalize_chem_name(nr[_nk])
+                    if nr[_nk] and nr[_nk].lower() in abbrev_map:
+                        nr[_nk] = abbrev_map[nr[_nk].lower()]
 
             # -- SMILES lookup (optional, slow) --
             if smiles_lookup:
