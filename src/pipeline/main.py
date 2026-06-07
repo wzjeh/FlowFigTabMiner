@@ -164,6 +164,14 @@ def process_one_pdf(
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     intermediate_dir = os.path.join("data/intermediate", basename)
 
+    # ─── Step 0: Pre-filter (skip review articles + non-flow papers) ──
+    if not getattr(args, "no_prefilter", False):
+        from src.preprocessing.paper_filter import filter_paper
+        pf = filter_paper(pdf_path)
+        if not pf["is_relevant"]:
+            print(f"[PreFilter] SKIP {basename}: {pf['reason']}")
+            return
+
     # ─── Step 1: TF-ID ──────────────────────────────────────────────
     figures_exist = len(glob.glob(os.path.join(intermediate_dir, "figures", "*.png"))) > 0
     if args.skip_tfid and figures_exist:
@@ -384,6 +392,8 @@ def _run_batch(args) -> None:
         passthrough.append("--force-assembly")
     if args.no_smiles_lookup:
         passthrough.append("--no-smiles-lookup")
+    if args.no_prefilter:
+        passthrough.append("--no-prefilter")
     if args.no_vlm:
         passthrough.append("--no-vlm")
 
@@ -412,6 +422,8 @@ def main() -> None:
                         help="Force re-run Step 5 LLM even if _final.json already exists")
     parser.add_argument("--no-smiles-lookup", action="store_true",
                         help="Disable PubChem name→SMILES lookup in Step 6 (default: enabled)")
+    parser.add_argument("--no-prefilter", action="store_true",
+                        help="Disable Step 0 pre-filter (review/non-flow skip; default: enabled)")
     parser.add_argument("--no-vlm", action="store_true",
                         help="Skip VLM inspection hooks (paper modules 6 & 12). "
                              "Adjudication still uses Gemini.")

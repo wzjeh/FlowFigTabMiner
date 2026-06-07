@@ -464,8 +464,10 @@ class TablePipeline:
             if os.path.exists(kw_path):
                 try:
                     with open(kw_path, 'r') as f:
-                        kw_config = yaml.safe_load(f)
-                        keywords = kw_config.get('keywords', keywords)
+                        kw_config = yaml.safe_load(f) or {}
+                        # New schema: figure_table_keywords.  Fall back to the
+                        # built-in default list if the key is absent.
+                        keywords = kw_config.get('figure_table_keywords', keywords)
                     break
                 except Exception:
                     pass
