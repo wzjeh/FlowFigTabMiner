@@ -167,7 +167,13 @@ def main():
                         help="Skip PDFs already marked done in checkpoint")
     parser.add_argument("--reset",          action="store_true",
                         help="Clear checkpoint and start from scratch")
+    parser.add_argument("--pdf-dir",        default=None,
+                        help="Override the PDF directory (default: data/input/organolithium)")
     args = parser.parse_args()
+
+    if args.pdf_dir:
+        global PDF_DIR
+        PDF_DIR = args.pdf_dir
 
     # ── Checkpoint setup ─────────────────────────────────────────────────────
     cp = _load_checkpoint()
