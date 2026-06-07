@@ -139,7 +139,14 @@ class GlobalAssembly:
             except Exception as exc:
                 logger.warning("global_assembly scheme_conditions load failed: %s", exc)
 
-        preamble = CommonPreamble.build(pools, scheme_conditions)
+        # Abbreviation map extracted from FULL paper text (so every source —
+        # even ones whose 8KB window misses the definition — can expand it).
+        from src.adjudication.post_processor import build_abbrev_map
+        abbrev_map = build_abbrev_map(paper_text)
+        if abbrev_map:
+            print(f"   -> Extracted {len(abbrev_map)} abbreviation definition(s)")
+
+        preamble = CommonPreamble.build(pools, scheme_conditions, abbrev_map=abbrev_map)
 
         # 4. Fan-out per-source LLM calls.
         records = self.assembler.assemble(packets, preamble, basename)
