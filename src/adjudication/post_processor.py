@@ -25,6 +25,23 @@ from src.adjudication.entity_pool import (
 )
 
 
+def _is_hollow_record(rec: dict) -> bool:
+    """A record carries no reaction information when it has no chemical
+    identity (product or reactant) AND no reaction-outcome metric (yield /
+    conversion / selectivity / ee).  Such shells come from non-reaction
+    figures (e.g. a temperature-vs-time process trace) mis-read as reaction
+    data.  Flagged (``is_hollow``), not dropped, so downstream can filter."""
+    identity = any(rec.get(k) for k in (
+        "product_name", "product_smiles", "product_label",
+        "reactant1_name", "reactant1_smiles",
+        "reactant2_name", "reactant2_smiles",
+    ))
+    metric = any(rec.get(k) for k in (
+        "yield_pct", "conversion_pct", "selectivity_pct", "ee_pct",
+    ))
+    return not (identity or metric)
+
+
 # ---------------------------------------------------------------------------
 # Solvent normalisation dictionary
 # ---------------------------------------------------------------------------
@@ -1012,6 +1029,13 @@ class PostProcessor:
             # -- reaction_smiles (ORD-compatible: reactants>>reagents>>products) --
             if not nr.get("reaction_smiles"):
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
+
+            # -- Hollow-record flag (kept, not dropped) --
+            #    A record with no chemical identity AND no reaction-outcome metric
+            #    carries no reaction information — e.g. a temperature-vs-time
+            #    process-monitoring plot mis-read as a reaction figure emits one
+            #    such shell per point.  Flag for downstream filtering.
+            nr["is_hollow"] = _is_hollow_record(nr)
 
             normalised.append(nr)
 
