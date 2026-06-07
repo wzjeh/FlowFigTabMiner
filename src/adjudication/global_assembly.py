@@ -53,6 +53,28 @@ class GlobalAssembly:
             raw_dir=intermediate_root,
         )
 
+    @staticmethod
+    def _evidence_stale(out_file: str, intermediate_dir: str) -> bool:
+        """True if any evidence JSON is newer than the cached _final.json.
+
+        Without this, a re-extraction (newer evidence) would be masked by a
+        stale cached final — the cause of Franklin's 0-records (03-25 final
+        cache-hit over fresh 06-07 evidence).
+        """
+        import glob
+        try:
+            final_mtime = os.path.getmtime(out_file)
+        except OSError:
+            return True
+        for pat in (
+            os.path.join(intermediate_dir, "macro_cleaned", "*_evidence.json"),
+            os.path.join(intermediate_dir, "tables", "**", "*_evidence.json"),
+        ):
+            for e in glob.glob(pat, recursive=True):
+                if os.path.getmtime(e) > final_mtime:
+                    return True
+        return False
+
     def run(self, pdf_path, intermediate_dir=None, force=False):
         """
         Run global assembly for a PDF.
@@ -63,7 +85,11 @@ class GlobalAssembly:
             intermediate_dir = os.path.join("data/intermediate", basename)
 
         out_file = os.path.join(self.output_dir, f"{basename}_final.json")
-        if not force and os.path.exists(out_file):
+        cache_ok = (not force) and os.path.exists(out_file)
+        if cache_ok and self._evidence_stale(out_file, intermediate_dir):
+            cache_ok = False  # evidence re-extracted since last assembly → rerun
+            print("[GlobalAssembly] Evidence newer than cached final — re-running assembly.")
+        if cache_ok:
             print(f"[GlobalAssembly] Cache hit — skipping LLM (use --force-assembly to rerun): {out_file}")
             # Still run Excel export from cached JSON
             try:
@@ -113,7 +139,14 @@ class GlobalAssembly:
             except Exception as exc:
                 logger.warning("global_assembly scheme_conditions load failed: %s", exc)
 
-        preamble = CommonPreamble.build(pools, scheme_conditions)
+        # Abbreviation map extracted from FULL paper text (so every source —
+        # even ones whose 8KB window misses the definition — can expand it).
+        from src.adjudication.post_processor import build_abbrev_map
+        abbrev_map = build_abbrev_map(paper_text)
+        if abbrev_map:
+            print(f"   -> Extracted {len(abbrev_map)} abbreviation definition(s)")
+
+        preamble = CommonPreamble.build(pools, scheme_conditions, abbrev_map=abbrev_map)
 
         # 4. Fan-out per-source LLM calls.
         records = self.assembler.assemble(packets, preamble, basename)

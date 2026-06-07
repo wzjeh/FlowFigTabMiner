@@ -135,7 +135,13 @@ _BASE_RULES = """=== RULES ===
     species, the measured product is usually a SINGLE fixed compound named in the
     caption / local_vars.reaction_context / series_semantics / paper text. Fill
     product_name with that fixed product — do NOT leave it null just because the
-    series encodes a condition."""
+    series encodes a condition.
+19. ABBREVIATIONS: If a product/reactant name is an all-caps abbreviation
+    (e.g. "3,4-DCAN", "DCNB"), you MUST expand it to the full chemical name.
+    Look it up in BOTH the ABBREVIATION DEFINITIONS block AND the paper text
+    for a "full name (ABBR)" definition (e.g. "3,4-dichloroaniline (3,4-DCAN)"
+    → use "3,4-dichloroaniline"). Only keep the bare abbreviation if no
+    definition exists anywhere."""
 
 _DOMAIN_KNOWLEDGE = """=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
 - For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,
@@ -164,15 +170,32 @@ class CommonPreamble:
     product_pool_json: str = ""
     compound_pool_json: str = ""
     scheme_conditions: str = ""
+    abbrev_lines: str = ""   # "ABBR = full name" lines, extracted full-text
 
     @classmethod
-    def build(cls, pools: Dict[str, Any], scheme_conditions: str = "") -> "CommonPreamble":
-        """Build a preamble from a ``compound_pool.json`` dict and scheme text."""
+    def build(cls, pools: Dict[str, Any], scheme_conditions: str = "",
+              abbrev_map: Dict[str, str] = None) -> "CommonPreamble":
+        """Build a preamble from a ``compound_pool.json`` dict, scheme text,
+        and an abbreviation map (extracted from the FULL paper text so every
+        source — even ones whose text window misses the definition — gets it)."""
+        abbrev_lines = ""
+        if abbrev_map:
+            abbrev_lines = "\n".join(f"  {a} = {full}" for a, full in sorted(abbrev_map.items()))
         return cls(
             reactant_pool_json=json.dumps(pools.get("reactant_pool", {}), indent=2) if pools.get("reactant_pool") else "",
             product_pool_json=json.dumps(pools.get("product_pool", {}), indent=2) if pools.get("product_pool") else "",
             compound_pool_json=json.dumps(pools.get("compound_pool", {}), indent=2) if pools.get("compound_pool") else "",
             scheme_conditions=scheme_conditions or "",
+            abbrev_lines=abbrev_lines,
+        )
+
+    def render_abbrev_section(self) -> str:
+        if not self.abbrev_lines:
+            return ""
+        return (
+            "=== ABBREVIATION DEFINITIONS (extracted from full paper text) ===\n"
+            "If a product/reactant name equals one of these abbreviations, "
+            "expand it to the full name:\n" + self.abbrev_lines
         )
 
     def render_pools_section(self) -> str:
@@ -220,11 +243,14 @@ class PerSourcePromptBuilder(ABC):
     def _render_common_blocks(self, preamble: CommonPreamble, packet: SourcePacket) -> str:
         pools = preamble.render_pools_section()
         sch = preamble.render_scheme_conditions_section()
+        abbr = preamble.render_abbrev_section()
         out = [_OUTPUT_SCHEMA, _BASE_RULES, _DOMAIN_KNOWLEDGE]
         if pools:
             out.append(pools)
         if sch:
             out.append(sch)
+        if abbr:
+            out.append(abbr)
         out.append(
             "=== LOCAL VARIABLE LIBRARY FOR THIS SOURCE ===\n"
             "Use it to interpret axis/column meanings, apply fixed_conditions, and pick the\n"
