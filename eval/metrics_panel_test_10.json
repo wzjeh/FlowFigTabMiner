@@ -1,0 +1,152 @@
+{
+  "label": "test_10",
+  "layer": "+post",
+  "input": "data/final_output",
+  "basenames_filter": [
+    "Bohara et al. 2025 - Flow process for production of crisaborole using organolithium chemistry with control over impurity formation",
+    "Franklin et al. 2024 - Pilot-scale operation and characterization of an ... n in flow to form a ketone intermediate on the route to nemtabrutinib",
+    "Fukuyama et al. 2014 - Flow update for the carbonylation of 1-silyl-substituted organolithiums under CO pressure",
+    "Ganiek et al. 2018 - Mild homologation of esters through continuous flow chloroacetate Claisen reactions",
+    "Jørgensen et al. 2013 - 14-step synthesis of (+)-ingenol from (+)-3-carene",
+    "Ketels et al. 2017 - Selective lithiation, magnesiation, and zincation of unsymmetrical azobenzenes using continuous flow",
+    "Kim et al. 2018 - A catalyst-free amination of functional organolithium reagents by flow chemistry",
+    "Sharma et al. 2022 - Cyanide-free cyanation of sp2 and sp-carbon atoms by an oxazole-based masked CN source using flow microreactors",
+    "Thaisrivongs et al. 2016 - Using flow to outpace fast proton transfer in an organometallic reaction for the manufacture of verubecestat (MK-8931)",
+    "Wong et al. 2019 - Batch versus flow lithiation-substitution of 1,3,4-oxadiazoles - Exploitation of unstable intermediates using flow chemistry"
+  ],
+  "scale": {
+    "records": 270,
+    "papers": 8,
+    "is_hollow": 64,
+    "is_hollow_pct": 23.7,
+    "non_hollow_records": 206,
+    "has_is_hollow_field": true
+  },
+  "coverage_all": {
+    "product_smiles": {
+      "filled": 53,
+      "pct": 19.6
+    },
+    "reactant_smiles": {
+      "filled": 85,
+      "pct": 31.5
+    },
+    "product_name": {
+      "filled": 122,
+      "pct": 45.2
+    },
+    "yield": {
+      "filled": 122,
+      "pct": 45.2
+    },
+    "conversion": {
+      "filled": 23,
+      "pct": 8.5
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 245,
+      "pct": 90.7
+    },
+    "residence_time": {
+      "filled": 111,
+      "pct": 41.1
+    },
+    "solvent": {
+      "filled": 257,
+      "pct": 95.2
+    },
+    "reactor_type": {
+      "filled": 197,
+      "pct": 73.0
+    },
+    "flow_rate": {
+      "filled": 21,
+      "pct": 7.8
+    },
+    "reaction_class": {
+      "filled": 270,
+      "pct": 100.0
+    }
+  },
+  "coverage_non_hollow": {
+    "product_smiles": {
+      "filled": 53,
+      "pct": 25.7
+    },
+    "reactant_smiles": {
+      "filled": 85,
+      "pct": 41.3
+    },
+    "product_name": {
+      "filled": 122,
+      "pct": 59.2
+    },
+    "yield": {
+      "filled": 122,
+      "pct": 59.2
+    },
+    "conversion": {
+      "filled": 23,
+      "pct": 11.2
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 181,
+      "pct": 87.9
+    },
+    "residence_time": {
+      "filled": 111,
+      "pct": 53.9
+    },
+    "solvent": {
+      "filled": 193,
+      "pct": 93.7
+    },
+    "reactor_type": {
+      "filled": 197,
+      "pct": 95.6
+    },
+    "flow_rate": {
+      "filled": 21,
+      "pct": 10.2
+    },
+    "reaction_class": {
+      "filled": 206,
+      "pct": 100.0
+    }
+  },
+  "smiles_sources": {
+    "inline_or_unknown": 53
+  },
+  "timing": {
+    "papers_with_timing": 10,
+    "total_wall_s": 3201.7,
+    "mean_wall_s_per_paper": 320.2,
+    "stage_seconds_total": {
+      "filter": 1.6,
+      "tfid": 49.0,
+      "figure": 115.1,
+      "table": 2491.2,
+      "scheme": 227.4,
+      "local_vars": 0.0,
+      "assembly": 270.4,
+      "post": 47.2
+    }
+  },
+  "token_cost": "N/A (not persisted historically; capture on re-run from per_source logs)"
+}

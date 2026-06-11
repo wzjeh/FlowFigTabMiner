@@ -1,0 +1,150 @@
+{
+  "label": "clean_organolithium",
+  "layer": "+post",
+  "input": "data/final_output",
+  "basenames_filter": [
+    "Asai et al. 2011 - Switching reaction pathways of Benzo[b]thiophen-3-yll ... olution residence-time and temperature control in a flow microreactor",
+    "Kim et al. 2011 - A flow-microreactor approach to protecting-group-free synthesis using organolithium compounds",
+    "Nagaki et al. 2007 - Integrated micro flow synthesis based on sequential Br-Li exchange reactions of p-, m-, and o-dibromobenzenes",
+    "Nagaki et al. 2008 - Aryllithium compounds bearing alkoxycarbonyl groups - generation and reactions using a microflow system",
+    "Nagaki et al. 2009 - Generation and reactions of α-silyloxiranyllithium in a microreactor",
+    "Nagaki et al. 2009 - Generations and reactions ofN-(t-butylsulfonyl)aziridinyllithiums using microreactors",
+    "Nagaki et al. 2009 - Nitro-substituted aryl lithium compounds in microreactor synthesis - switch between kinetic and thermodynamic control",
+    "Nagaki et al. 2009 - Synthesis of unsymmetrically substituted biaryls vi ... ntial lithiation of dibromobiaryls using integrated microflow systems",
+    "Nagaki et al. 2010 - A flow microreactor system enables organolithium reactions without protecting alkoxycarbonyl groups",
+    "Nagaki et al. 2010 - Cross-coupling in a flow microreactor - space integration of lithiation and Murahashi coupling",
+    "Nagaki et al. 2010 - Generation and reaction of cyano-substituted aryllithium compounds using microreactors",
+    "Nagaki et al. 2010 - Generation and reactions of oxiranyllithiums by use of a flow microreactor system",
+    "Nagaki et al. 2011 - Flash synthesis of TAC-101 and its analogues from 1,3,5-tribromobenzene using integrated flow microreactor systems",
+    "Nagaki et al. 2011 - Flow microreactor synthesis of disubstituted pyridi ... romopyridines via Br - Li exchange without using cryogenic conditions",
+    "Nagaki et al. 2011 - Homocoupling of aryl halides in flow - Space integration of lithiation and FeCl(3) promoted homocoupling",
+    "Nagaki et al. 2011 - Perfluoroalkylation in flow microreactors - generation of perfluoroalkyllithiums in the presence and absence of electrophiles",
+    "Nagaki et al. 2012 - Generation and reactions of vinyllithiums using flow microreactor systems",
+    "Nagaki et al. 2013 - Generation and reactions of pyridyllithiums via Br - Li exchange reactions using continuous flow microreactor systems",
+    "Nagaki et al. 2014 - Three-component coupling based on flash chemistry. ... functionalized aryllithiums followed by reactions with electrophiles",
+    "Usutani et al. 2007 - Generation and reactions of o-bromophenyllithium without benzyne formation using a microreactor"
+  ],
+  "scale": {
+    "records": 1921,
+    "papers": 16,
+    "is_hollow": 429,
+    "is_hollow_pct": 22.3,
+    "non_hollow_records": 1492,
+    "has_is_hollow_field": true
+  },
+  "coverage_all": {
+    "product_smiles": {
+      "filled": 407,
+      "pct": 21.2
+    },
+    "reactant_smiles": {
+      "filled": 581,
+      "pct": 30.2
+    },
+    "product_name": {
+      "filled": 1056,
+      "pct": 55.0
+    },
+    "yield": {
+      "filled": 1285,
+      "pct": 66.9
+    },
+    "conversion": {
+      "filled": 26,
+      "pct": 1.4
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 1121,
+      "pct": 58.4
+    },
+    "residence_time": {
+      "filled": 1538,
+      "pct": 80.1
+    },
+    "solvent": {
+      "filled": 788,
+      "pct": 41.0
+    },
+    "reactor_type": {
+      "filled": 1902,
+      "pct": 99.0
+    },
+    "flow_rate": {
+      "filled": 307,
+      "pct": 16.0
+    },
+    "reaction_class": {
+      "filled": 1921,
+      "pct": 100.0
+    }
+  },
+  "coverage_non_hollow": {
+    "product_smiles": {
+      "filled": 407,
+      "pct": 27.3
+    },
+    "reactant_smiles": {
+      "filled": 581,
+      "pct": 38.9
+    },
+    "product_name": {
+      "filled": 1056,
+      "pct": 70.8
+    },
+    "yield": {
+      "filled": 1259,
+      "pct": 84.4
+    },
+    "conversion": {
+      "filled": 26,
+      "pct": 1.7
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 992,
+      "pct": 66.5
+    },
+    "residence_time": {
+      "filled": 1313,
+      "pct": 88.0
+    },
+    "solvent": {
+      "filled": 768,
+      "pct": 51.5
+    },
+    "reactor_type": {
+      "filled": 1473,
+      "pct": 98.7
+    },
+    "flow_rate": {
+      "filled": 307,
+      "pct": 20.6
+    },
+    "reaction_class": {
+      "filled": 1492,
+      "pct": 100.0
+    }
+  },
+  "smiles_sources": {
+    "entity_pool:reactant2": 25,
+    "inline_or_unknown": 292,
+    "entity_pool:product": 90
+  },
+  "timing": {},
+  "token_cost": "N/A (not persisted historically; capture on re-run from per_source logs)"
+}
