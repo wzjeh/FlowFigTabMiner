@@ -468,6 +468,7 @@ HTML_PAGE = """<!DOCTYPE html>
 </footer>
 
 <script>
+const REQUIRE_AUTH = __REQUIRE_AUTH__;
 let currentMode  = 'figure';
 let currentFile  = null;   // File object from upload
 let exampleMode  = null;   // 'figure' | 'table' if using built-in example
@@ -480,7 +481,7 @@ function getCookie(name) {
   return v ? decodeURIComponent(v.trim().split('=')[1]) : null;
 }
 function checkAuth() {
-  if (getCookie('auth_token')) {
+  if (!REQUIRE_AUTH || getCookie('auth_token')) {
     document.getElementById('login-overlay').style.display = 'none';
   }
 }
@@ -576,8 +577,8 @@ function stopTimer() {
 
 // ── Extract ───────────────────────────────────────────────────────────────
 async function doExtract() {
-  const token = getCookie('auth_token');
-  if (!token) { document.getElementById('login-overlay').style.display = 'flex'; return; }
+  const token = getCookie('auth_token') || '';
+  if (REQUIRE_AUTH && !token) { document.getElementById('login-overlay').style.display = 'flex'; return; }
 
   document.getElementById('submit-btn').disabled = true;
   setStatus('running', 'Processing…');
@@ -691,8 +692,8 @@ function downloadCSV() {
 
 // ── Feedback ──────────────────────────────────────────────────────────────
 async function doFeedback(label) {
-  const token = getCookie('auth_token');
-  if (!token || !currentGcsUri) return;
+  const token = getCookie('auth_token') || '';
+  if ((REQUIRE_AUTH && !token) || !currentGcsUri) return;
   document.getElementById('fb-error').disabled = true;
   document.getElementById('feedback-msg').textContent = 'Saving…';
   try {
@@ -717,7 +718,7 @@ checkAuth();
 # ── Routes ────────────────────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return HTML_PAGE
+    return HTML_PAGE.replace("__REQUIRE_AUTH__", "true" if PASSWORD else "false")
 
 @app.post("/login")
 async def login(request: Request):
