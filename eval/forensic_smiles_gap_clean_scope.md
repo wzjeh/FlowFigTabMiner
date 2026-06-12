@@ -1,4 +1,4 @@
-# SMILES-gap forensic
+# SMILES-gap forensic — clean_scope
 
 Corpus: `data/input/Clean organolithium` (20 papers)
 Total gap records (non-hollow, has identity, no product_smiles): **710**
@@ -20,6 +20,21 @@ Total gap records (non-hollow, has identity, no product_smiles): **710**
 | NO_STRUCT_SOURCE | 2 | 5.7% |
 | NAME_ONLY_STRUCT | 15 | 42.9% |
 | NAME_ONLY_NO_STRUCT | 4 | 11.4% |
+
+## Linking-gap deterministic fixability
+
+Of the 463 linking-gap records (29 unique compounds), how many could a DETERMINISTIC fix (wildcard-`*` / label-is-SMILES / table-harvest) resolve vs HARD (figure fixed-product / descriptive name → needs scheme-pool or semantic linking):
+
+| Fixability | Records | % | Unique | % |
+|---|---|---|---|---|
+| **Deterministic** | 3 | 0.6% | 2 | 6.9% |
+| **HARD_no_anchor** | 460 | 99.4% | 27 | 93.1% |
+
+Fix breakdown (records / unique):
+- FIX_label_is_smiles: 2 / 1
+- FIX_name_is_smiles: 0 / 0
+- FIX_table_harvest: 1 / 1
+- HARD_no_anchor: 460 / 27
 
 ## Samples (up to 3 per bucket)
 
