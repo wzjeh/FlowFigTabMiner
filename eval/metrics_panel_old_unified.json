@@ -1,0 +1,127 @@
+{
+  "label": "old_unified_csv",
+  "layer": "+manual_or_vlm",
+  "input": "data/ml_lifetime/clean_organolithium_unified.csv",
+  "basenames_filter": null,
+  "scale": {
+    "records": 2609,
+    "papers": 26,
+    "is_hollow": 0,
+    "is_hollow_pct": 0.0,
+    "non_hollow_records": 2609,
+    "has_is_hollow_field": false
+  },
+  "coverage_all": {
+    "product_smiles": {
+      "filled": 2609,
+      "pct": 100.0
+    },
+    "reactant_smiles": {
+      "filled": 2511,
+      "pct": 96.2
+    },
+    "product_name": {
+      "filled": 2516,
+      "pct": 96.4
+    },
+    "yield": {
+      "filled": 2576,
+      "pct": 98.7
+    },
+    "conversion": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 2339,
+      "pct": 89.7
+    },
+    "residence_time": {
+      "filled": 2353,
+      "pct": 90.2
+    },
+    "solvent": {
+      "filled": 2609,
+      "pct": 100.0
+    },
+    "reactor_type": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "flow_rate": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "reaction_class": {
+      "filled": 2609,
+      "pct": 100.0
+    }
+  },
+  "coverage_non_hollow": {
+    "product_smiles": {
+      "filled": 2609,
+      "pct": 100.0
+    },
+    "reactant_smiles": {
+      "filled": 2511,
+      "pct": 96.2
+    },
+    "product_name": {
+      "filled": 2516,
+      "pct": 96.4
+    },
+    "yield": {
+      "filled": 2576,
+      "pct": 98.7
+    },
+    "conversion": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "selectivity": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "ee": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "temperature": {
+      "filled": 2339,
+      "pct": 89.7
+    },
+    "residence_time": {
+      "filled": 2353,
+      "pct": 90.2
+    },
+    "solvent": {
+      "filled": 2609,
+      "pct": 100.0
+    },
+    "reactor_type": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "flow_rate": {
+      "filled": 0,
+      "pct": 0.0
+    },
+    "reaction_class": {
+      "filled": 2609,
+      "pct": 100.0
+    }
+  },
+  "smiles_sources": {
+    "inline_or_unknown": 2609
+  },
+  "timing": {},
+  "token_cost": "N/A (not persisted historically; capture on re-run from per_source logs)"
+}

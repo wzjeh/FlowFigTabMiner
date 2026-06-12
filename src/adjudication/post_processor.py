@@ -775,6 +775,51 @@ def _parse_value_and_unit(s: str | None) -> tuple[float | None, str | None]:
     return value, unit
 
 
+def _clean_metric_value(raw) -> tuple[float | None, str | None]:
+    """Normalise an outcome metric (yield/conversion/selectivity/ee) to a float
+    in [0, 100], returning ``(value, note)``.
+
+    The LLM sometimes emits a string range ("60-80%"), a bounded value (">99"),
+    or an out-of-range number.  We coerce to a single number and reject values
+    outside [0, 100] (chemically impossible for a percentage).  ``note`` is set
+    only when a non-trivial transformation happened, so the caller can stash the
+    original in a ``*_raw`` field and leave a data_correction_note.  Returns
+    ``(value, None)`` for already-clean numbers and ``(None, note)`` on reject.
+    """
+    if raw is None:
+        return None, None
+    if isinstance(raw, bool):
+        return None, None
+    if isinstance(raw, (int, float)):
+        v = float(raw)
+        if v != v:  # NaN
+            return None, None
+        return (v, None) if 0.0 <= v <= 100.0 else (None, f"out-of-range {v} dropped")
+
+    s = str(raw).strip()
+    if not s or s.lower() in ("null", "nan", "none", "na"):
+        return None, None
+
+    # Range "a-b" / "a–b" / "a~b", optional trailing %.
+    m = re.match(r"^\s*(\d+\.?\d*)\s*[-–~]\s*(\d+\.?\d*)\s*%?\s*$", s)
+    if m:
+        a, b = float(m.group(1)), float(m.group(2))
+        mid = round((a + b) / 2.0, 2)
+        if 0.0 <= mid <= 100.0:
+            return mid, f"range '{s}' -> midpoint {mid}"
+        return None, f"range '{s}' out of [0,100], dropped"
+
+    # Bounded / decorated single value (">99", "<5", "85%", "~70").
+    m2 = re.search(r"\d+\.?\d*", s)
+    if m2:
+        v = float(m2.group(0))
+        if 0.0 <= v <= 100.0:
+            note = None if s == str(v) or s == str(int(v)) else f"parsed '{s}' -> {v}"
+            return v, note
+        return None, f"'{s}' -> {v} out of [0,100], dropped"
+    return None, f"unparseable '{s}', dropped"
+
+
 def build_reaction_smiles(record: dict) -> str | None:
     """
     Build a reaction SMILES string in ORD-compatible format:
@@ -842,6 +887,22 @@ def _parse_catalyst_fields(record: dict) -> dict:
 
 
 # Fixed Excel column order
+def _safe_sheet_name(raw: str, used: set) -> str:
+    """openpyxl forbids : \\ / ? * [ ] in sheet titles and caps length at 31.
+    Replace forbidden chars, truncate, and de-duplicate against ``used``."""
+    name = re.sub(r'[:\\/?*\[\]]', '_', str(raw)).strip() or "sheet"
+    name = name[:31]
+    if name in used:
+        for i in range(2, 1000):
+            suffix = f"_{i}"
+            candidate = name[:31 - len(suffix)] + suffix
+            if candidate not in used:
+                name = candidate
+                break
+    used.add(name)
+    return name
+
+
 PREFERRED_COLUMNS = [
     "entry_number",
     "reactant1_name", "reactant1_smiles",
@@ -1026,6 +1087,23 @@ class PostProcessor:
                 conds.update(cat_updates)
                 nr["conditions"] = conds
 
+            # -- Outcome-metric hygiene (preserve raw, see B2) --
+            #    Coerce yield/conversion/selectivity/ee to a [0,100] float; on a
+            #    non-trivial transform (range→midpoint, decorated value, reject)
+            #    stash the original in <field>_raw and note it.  Runs before
+            #    is_hollow so a record whose only metric was rejected reads hollow.
+            for _mf in ("yield_pct", "conversion_pct", "selectivity_pct", "ee_pct"):
+                if _mf not in nr or nr.get(_mf) is None:
+                    continue
+                _orig = nr[_mf]
+                _val, _note = _clean_metric_value(_orig)
+                nr[_mf] = _val
+                if _note:
+                    nr[f"{_mf}_raw"] = _orig
+                    _ex = nr.get("data_correction_note")
+                    _msg = f"{_mf}: {_note}"
+                    nr["data_correction_note"] = f"{_ex}; {_msg}" if _ex else _msg
+
             # -- reaction_smiles (ORD-compatible: reactants>>reagents>>products) --
             if not nr.get("reaction_smiles"):
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
@@ -1116,7 +1194,8 @@ class PostProcessor:
             # All Records sheet
             df.to_excel(writer, sheet_name="All Records", index=False)
             # Per-source sheets
+            used_sheets = {"All Records"}
             for src, grp in df.groupby(src_col, sort=False):
-                sheet = str(src)[:31]
+                sheet = _safe_sheet_name(src, used_sheets)
                 grp.to_excel(writer, sheet_name=sheet, index=False)
         print(f"[PostProcessor] -> Excel: {out_path}")

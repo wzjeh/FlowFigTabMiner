@@ -197,6 +197,17 @@ HTML_PAGE = """<!DOCTYPE html>
   }
   #submit-btn:hover:not(:disabled) { background: #1d4ed8; }
   #submit-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+  .coldstart-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-left: 4px solid #f59e0b;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #92400e;
+    line-height: 1.5;
+  }
 
   /* ── Status ── */
   #status-wrap { display: none; margin-top: 18px; }
@@ -428,9 +439,9 @@ HTML_PAGE = """<!DOCTYPE html>
 
     <!-- Submit -->
     <button id="submit-btn" onclick="doExtract()" disabled>Extract Data</button>
-    <p style="margin-top:10px;font-size:11px;color:#94a3b8;">
-      ⏱ First request may take 2–3 minutes while the extraction service initialises. Subsequent requests are faster.
-    </p>
+    <div class="coldstart-note">
+      ⏱ <strong>Please note:</strong> due to cold-start model loading, the <strong>first</strong> extraction may take several minutes. Subsequent requests are much faster.
+    </div>
 
     <!-- Status -->
     <div id="status-wrap">
@@ -468,6 +479,7 @@ HTML_PAGE = """<!DOCTYPE html>
 </footer>
 
 <script>
+const REQUIRE_AUTH = __REQUIRE_AUTH__;
 let currentMode  = 'figure';
 let currentFile  = null;   // File object from upload
 let exampleMode  = null;   // 'figure' | 'table' if using built-in example
@@ -480,7 +492,7 @@ function getCookie(name) {
   return v ? decodeURIComponent(v.trim().split('=')[1]) : null;
 }
 function checkAuth() {
-  if (getCookie('auth_token')) {
+  if (!REQUIRE_AUTH || getCookie('auth_token')) {
     document.getElementById('login-overlay').style.display = 'none';
   }
 }
@@ -576,8 +588,8 @@ function stopTimer() {
 
 // ── Extract ───────────────────────────────────────────────────────────────
 async function doExtract() {
-  const token = getCookie('auth_token');
-  if (!token) { document.getElementById('login-overlay').style.display = 'flex'; return; }
+  const token = getCookie('auth_token') || '';
+  if (REQUIRE_AUTH && !token) { document.getElementById('login-overlay').style.display = 'flex'; return; }
 
   document.getElementById('submit-btn').disabled = true;
   setStatus('running', 'Processing…');
@@ -691,8 +703,8 @@ function downloadCSV() {
 
 // ── Feedback ──────────────────────────────────────────────────────────────
 async function doFeedback(label) {
-  const token = getCookie('auth_token');
-  if (!token || !currentGcsUri) return;
+  const token = getCookie('auth_token') || '';
+  if ((REQUIRE_AUTH && !token) || !currentGcsUri) return;
   document.getElementById('fb-error').disabled = true;
   document.getElementById('feedback-msg').textContent = 'Saving…';
   try {
@@ -717,7 +729,7 @@ checkAuth();
 # ── Routes ────────────────────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return HTML_PAGE
+    return HTML_PAGE.replace("__REQUIRE_AUTH__", "true" if PASSWORD else "false")
 
 @app.post("/login")
 async def login(request: Request):
