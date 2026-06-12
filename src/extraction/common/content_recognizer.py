@@ -51,22 +51,29 @@ class ContentRecognizer:
             return self._recognize_text(image_input)
 
     def _recognize_text(self, image_input):
+        # issue #17 Phase 1: split timing into inference (the det+rec model call)
+        # vs postprocess (text assembly + rec-only fallback).  No-op unless
+        # OCR_PROFILE=1; never alters control flow or output.
+        from src.extraction.common.ocr_profile import profiler
+
         text = ""
         # Try full det+rec pipeline first — better for headers and complex cells
         try:
-            result = self.ocr.ocr(image_input)
-            if result and result[0]:
-                lines = result[0]
-                if isinstance(lines, dict):
-                    texts = lines.get('rec_texts', [])
-                    text = ' '.join(texts)
-                else:
-                    parts = []
-                    for line in lines:
-                        if isinstance(line, (list, tuple)) and len(line) >= 2:
-                            t = line[1]
-                            parts.append(str(t[0]) if isinstance(t, (list, tuple)) else str(t))
-                    text = ' '.join(parts)
+            with profiler.ocr_phase("ocr_inference"):
+                result = self.ocr.ocr(image_input)
+            with profiler.ocr_phase("ocr_postprocess"):
+                if result and result[0]:
+                    lines = result[0]
+                    if isinstance(lines, dict):
+                        texts = lines.get('rec_texts', [])
+                        text = ' '.join(texts)
+                    else:
+                        parts = []
+                        for line in lines:
+                            if isinstance(line, (list, tuple)) and len(line) >= 2:
+                                t = line[1]
+                                parts.append(str(t[0]) if isinstance(t, (list, tuple)) else str(t))
+                        text = ' '.join(parts)
         except Exception as e:
             pass  # fall through to rec-only
 
@@ -74,7 +81,8 @@ class ContentRecognizer:
         # (small cells where detector can't find text regions)
         if not text.strip():
             try:
-                text, _conf = self.rec.recognize(image_input)
+                with profiler.ocr_phase("ocr_postprocess"):
+                    text, _conf = self.rec.recognize(image_input)
             except Exception as e:
                 print(f"OCR Error on {image_input if isinstance(image_input, str) else 'Image Array'}: {e}")
 
