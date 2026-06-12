@@ -95,6 +95,7 @@ class molnextr:
         return encoder, decoder
 
     def predict_images(self, input_images: List, return_atoms_bonds=False, return_confidence=False, batch_size=16):
+        import os
         device = self.device
         predictions = []
         self.decoder.compute_confidence = return_confidence
@@ -112,8 +113,16 @@ class molnextr:
         node_symbols = [pred['chartok_coords']['symbols'] for pred in predictions]
         edges = [pred['edges'] for pred in predictions]
 
+        # num_workers=1 takes the serial itertools.starmap path in
+        # convert_graph_to_smiles — no multiprocessing.Pool at all.  The
+        # default (16) spawns 16 child processes per call: on macOS spawn
+        # re-imports the calling module (guard-less scripts then re-load
+        # every model, issue #14 kernel panic), and 16 workers oversubscribe
+        # a 10-core machine for a graph->SMILES step that is cheap anyway.
+        # MOLNEXTR_NUM_WORKERS overrides (>1 only safe under a __main__ guard).
+        num_workers = int(os.environ.get("MOLNEXTR_NUM_WORKERS", "1"))
         smiles_list, molblock_list, r_success = convert_graph_to_smiles(
-            node_coords, node_symbols, edges, images=input_images)
+            node_coords, node_symbols, edges, images=input_images, num_workers=num_workers)
 
         outputs = []
         for smiles, molfile, pred in zip(smiles_list, molblock_list, predictions):

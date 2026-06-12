@@ -39,8 +39,13 @@ PDF_DIR        = "data/input/organolithium"
 CHECKPOINT     = "data/batch_progress.json"
 VENV_PYTHON    = "flowfigtabminer/bin/python"
 PIPELINE       = "src/pipeline/main.py"
-PER_PDF_TIMEOUT = 1200  # seconds (20 min) — kill subprocess if it exceeds this
+PER_PDF_TIMEOUT = 2400  # seconds (40 min) — kill subprocess if it exceeds this
                         # (guards against malformed / huge-SI PDFs hanging the batch)
+                        # Raised 1200->2400 (issue #14): table-stage MolNexTR runs
+                        # ~22s per molecule box serially, so structure-dense tables
+                        # (Nagaki 84 boxes = 50 min) legitimately exceed 20 min.
+                        # SHORT-TERM guard so research runs don't get killed mid-paper;
+                        # LONG-TERM = dynamic budget scaled by detected molecule_boxes.
 EXIT_SKIPPED    = 3     # main.py exit code for a pre-filter skip (review/non-flow)
 
 # ─────────────────────────────────────────────────────────────────────────────
