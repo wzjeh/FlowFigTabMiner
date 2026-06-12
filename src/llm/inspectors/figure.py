@@ -145,9 +145,16 @@ class FigureInspector:
         return report
 
 
-def _extract_points(payload: dict) -> list[dict]:
+def _extract_points(payload: dict | list) -> list[dict]:
     """Pull a flat list of points out of the VLM JSON schema."""
-    pts = payload.get("points") or []
+    if isinstance(payload, list):
+        logger.debug("_extract_points payload_type=list items=%d", len(payload))
+        pts = payload
+    elif isinstance(payload, dict):
+        pts = payload.get("points") or []
+    else:
+        logger.warning("_extract_points unexpected payload type=%s", type(payload).__name__)
+        return []
     if not isinstance(pts, list):
         return []
     out: list[dict] = []
