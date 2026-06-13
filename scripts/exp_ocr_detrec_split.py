@@ -32,15 +32,22 @@ os.environ.setdefault("DISABLE_MODEL_SOURCE_CHECK", "True")
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import cv2  # noqa: E402
-from src.extraction.common.ocr_backend import get_ocr_instance  # noqa: E402
+# Use the SAME helper the table pipeline uses, so the probe measures the exact
+# (now capped) caption/note preprocessing. OCR_UPSCALE_MAX_SIDE tunes the cap.
+from src.extraction.common.ocr_backend import (  # noqa: E402
+    get_ocr_instance, upscale_for_ocr, OCR_UPSCALE_MAX_SIDE,
+)
 
 
-def upscale_pad(img):
-    """Replicate the pipeline's caption/note preprocessing (pipeline.py step 7)."""
-    img = cv2.resize(img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-    pad = 50
-    img = cv2.copyMakeBorder(img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-    return img
+def _ocr_text(ocr_result):
+    """Pull recognized text out of a PaddleOCR 3.x .ocr() result (best-effort)."""
+    try:
+        r = ocr_result[0]
+        if isinstance(r, dict):
+            return " ".join(r.get("rec_texts", []))
+    except Exception:
+        pass
+    return "<unparsed>"
 
 
 def count_boxes(det_results):
@@ -62,11 +69,12 @@ def main():
     ocr = get_ocr_instance(lang="en", enable_mkldnn=False)
     det_model = ocr.paddlex_pipeline.text_det_model
     print(f"[omp] OMP_NUM_THREADS={os.environ.get('OMP_NUM_THREADS')}", flush=True)
+    print(f"[cap] OCR_UPSCALE_MAX_SIDE={OCR_UPSCALE_MAX_SIDE}", flush=True)
 
     # Warmup so lazy init / first-call cost is excluded from the timings.
     w = cv2.imread(crops[0])
     if w is not None:
-        _ = list(det_model(cv2.cvtColor(upscale_pad(w), cv2.COLOR_BGR2RGB)))
+        _ = list(det_model(cv2.cvtColor(upscale_for_ocr(w), cv2.COLOR_BGR2RGB)))
 
     for path in crops:
         img0 = cv2.imread(path)
@@ -74,7 +82,7 @@ def main():
             print(f"\n{os.path.basename(path)}: <unreadable>")
             continue
         h0, w0 = img0.shape[:2]
-        rgb = cv2.cvtColor(upscale_pad(img0), cv2.COLOR_BGR2RGB)
+        rgb = cv2.cvtColor(upscale_for_ocr(img0), cv2.COLOR_BGR2RGB)
         h1, w1 = rgb.shape[:2]
 
         # det alone (boxes + det time)
@@ -83,17 +91,18 @@ def main():
         det_t = time.perf_counter() - t
         boxes = count_boxes(det_res)
 
-        # total: the exact full det+rec call the pipeline makes
+        # total: the exact full det+rec call the pipeline makes (capture text too)
         t = time.perf_counter()
-        _ = ocr.ocr(rgb)
+        ocr_res = ocr.ocr(rgb)
         total_t = time.perf_counter() - t
 
         rec_t = max(0.0, total_t - det_t)
         print(
             f"\n{os.path.basename(path)}\n"
-            f"  input={w0}x{h0}  resized(3x+pad)={w1}x{h1}\n"
+            f"  input={w0}x{h0}  resized(capped+pad)={w1}x{h1}\n"
             f"  boxes={boxes}\n"
-            f"  total={total_t:.1f}s  det={det_t:.1f}s  rec≈{rec_t:.1f}s",
+            f"  total={total_t:.1f}s  det={det_t:.1f}s  rec≈{rec_t:.1f}s\n"
+            f"  text={_ocr_text(ocr_res)!r}",
             flush=True,
         )
 

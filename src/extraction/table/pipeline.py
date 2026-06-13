@@ -10,6 +10,7 @@ from src.extraction.table.header_corrector import HeaderCorrector
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
 from src.extraction.common.ocr_profile import profiler as _ocr_profiler  # issue #17 Phase 1 (no-op unless OCR_PROFILE=1)
+from src.extraction.common.ocr_backend import upscale_for_ocr  # issue #17 Phase 2: capped caption/note upscale
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 import json
 import glob
@@ -441,9 +442,9 @@ class TablePipeline:
                 c_img = cv2.imread(c_path)
                 if c_img is not None:
                     _in_h, _in_w = c_img.shape[:2]
-                    c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                    pad = 50
-                    c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    # 3x upscale capped at OCR_UPSCALE_MAX_SIDE (issue #17): keeps det
+                    # input out of the ~4000px superlinear regime for tall notes.
+                    c_img = upscale_for_ocr(c_img)
                     _rz_h, _rz_w = c_img.shape[:2]
                     _ocr_profiler.record_crop("caption", (_in_w, _in_h), (_rz_w, _rz_h))
                     c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
@@ -456,9 +457,8 @@ class TablePipeline:
                 n_img = cv2.imread(n_path)
                 if n_img is not None:
                     _in_h, _in_w = n_img.shape[:2]
-                    n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                    pad = 50
-                    n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    # 3x upscale capped at OCR_UPSCALE_MAX_SIDE (issue #17).
+                    n_img = upscale_for_ocr(n_img)
                     _rz_h, _rz_w = n_img.shape[:2]
                     _ocr_profiler.record_crop("note", (_in_w, _in_h), (_rz_w, _rz_h))
                     n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
