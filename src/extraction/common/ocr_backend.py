@@ -9,6 +9,48 @@ USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
 """
 import os
 
+import cv2
+
+
+# Cap on the LONGEST side (px) of a caption/note crop AFTER the OCR upscale.
+# issue #17 Phase 1.5: the unconditional 3x upscale blew a multi-line note up to
+# ~4000px wide, hitting PaddleOCR's max_side_limit=4000, where the CPU DB text
+# detector is superlinear in area (det=287s, plus an OOM on the largest crop).
+# Capping the longest side keeps det input small. Env-overridable.
+# Default 1600 (issue #17 Phase 2 verify on Nagaki page_3 note): vs the uncapped
+# 3x it cut det 287s->2.4s / total 394s->5.1s and peak mem 15.1GB->9.7GB, with
+# text strictly better than the (truncated) baseline. 1600 over 2000 for the
+# wider memory margin on 16GB machines; text only feeds LLM context + keywords.
+OCR_UPSCALE_MAX_SIDE = int(os.environ.get("OCR_UPSCALE_MAX_SIDE", "1600"))
+
+
+def upscale_for_ocr(img, pad=50, max_factor=3.0, max_side=None):
+    """Upscale a small-text crop for OCR, capping the post-resize longest side.
+
+    Keeps the existing behaviour for already-small crops (up to ``max_factor``x,
+    INTER_CUBIC, then a white border) but never blows the longest side past
+    ``max_side`` — so a multi-line note is not inflated to the ~4000px regime
+    where the PaddleOCR DB detector explodes on CPU (issue #17).
+
+    Args:
+        img: BGR crop (numpy array).
+        pad: white border added on every side after resizing.
+        max_factor: maximum upscale factor (the prior hard-coded 3x).
+        max_side: cap on the longest side before padding; defaults to
+            ``OCR_UPSCALE_MAX_SIDE`` (env ``OCR_UPSCALE_MAX_SIDE``).
+    Returns:
+        Padded BGR image (caller converts to RGB), longest side
+        ``<= max_side + 2*pad``.
+    """
+    if max_side is None:
+        max_side = OCR_UPSCALE_MAX_SIDE
+    h, w = img.shape[:2]
+    # Never downscale below 1x, never upscale beyond max_factor, never exceed max_side.
+    scale = max(1.0, min(max_factor, max_side / max(h, w)))
+    img = cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    return cv2.copyMakeBorder(img, pad, pad, pad, pad,
+                              cv2.BORDER_CONSTANT, value=(255, 255, 255))
+
 
 # Singleton full det+rec instances, keyed by (lang, enable_mkldnn).
 # Without this, every caller (EvidenceAssembler, LegendMatcher,

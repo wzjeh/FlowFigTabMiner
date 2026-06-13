@@ -9,6 +9,8 @@ from src.extraction.table.structure import TableStructureRecognizer
 from src.extraction.table.header_corrector import HeaderCorrector
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
+from src.extraction.common.ocr_profile import profiler as _ocr_profiler  # issue #17 Phase 1 (no-op unless OCR_PROFILE=1)
+from src.extraction.common.ocr_backend import upscale_for_ocr  # issue #17 Phase 2: capped caption/note upscale
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 import json
 import glob
@@ -145,6 +147,8 @@ class TablePipeline:
         """
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
+
+        _ocr_profiler.reset()  # issue #17 Phase 1: fresh per-table OCR timing
 
         logger.info(f"Processing Table: {image_path}")
         
@@ -342,7 +346,8 @@ class TablePipeline:
         n_cols = max(c['col_index'] for c in cell_meta) + 1
         logger.info(f"   -> Calling VLM cell extractor: expected {m_rows}×{n_cols} grid")
 
-        cell_result = self.cell_extractor.extract(Path(current_image_path), m_rows, n_cols)
+        with _ocr_profiler.bucket("vlm"):
+            cell_result = self.cell_extractor.extract(Path(current_image_path), m_rows, n_cols)
 
         if not cell_result.aligned:
             # R1 circuit breaker: alignment failed twice → refuse to emit
@@ -432,25 +437,34 @@ class TablePipeline:
             note_pattern = os.path.join(table_output_dir, f"{table_basename}_table_note_*.png")
             
             # Reuse shared_recognizer for caption/note OCR
+            _ocr_profiler.start_loop("caption")
             for c_path in sorted(glob.glob(cap_pattern)):
                 c_img = cv2.imread(c_path)
                 if c_img is not None:
-                    c_img = cv2.resize(c_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                    pad = 50
-                    c_img = cv2.copyMakeBorder(c_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    _in_h, _in_w = c_img.shape[:2]
+                    # 3x upscale capped at OCR_UPSCALE_MAX_SIDE (issue #17): keeps det
+                    # input out of the ~4000px superlinear regime for tall notes.
+                    c_img = upscale_for_ocr(c_img)
+                    _rz_h, _rz_w = c_img.shape[:2]
+                    _ocr_profiler.record_crop("caption", (_in_w, _in_h), (_rz_w, _rz_h))
                     c_rgb = cv2.cvtColor(c_img, cv2.COLOR_BGR2RGB)
                     txt = shared_recognizer._recognize_text(c_rgb)
                     if txt.strip(): context_data["caption"].append(txt)
+            _ocr_profiler.end_loop()
 
+            _ocr_profiler.start_loop("note")
             for n_path in sorted(glob.glob(note_pattern)):
                 n_img = cv2.imread(n_path)
                 if n_img is not None:
-                    n_img = cv2.resize(n_img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-                    pad = 50
-                    n_img = cv2.copyMakeBorder(n_img, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                    _in_h, _in_w = n_img.shape[:2]
+                    # 3x upscale capped at OCR_UPSCALE_MAX_SIDE (issue #17).
+                    n_img = upscale_for_ocr(n_img)
+                    _rz_h, _rz_w = n_img.shape[:2]
+                    _ocr_profiler.record_crop("note", (_in_w, _in_h), (_rz_w, _rz_h))
                     n_rgb = cv2.cvtColor(n_img, cv2.COLOR_BGR2RGB)
                     txt = shared_recognizer._recognize_text(n_rgb)
                     if txt.strip(): context_data["table_note"].append(txt)
+            _ocr_profiler.end_loop()
 
         # 8. Check Relevance
         import yaml
@@ -495,6 +509,7 @@ class TablePipeline:
         }
 
         if table_output_dir:
+           with _ocr_profiler.bucket("serialize"):
              evidence_data = {
                  "csv_path": csv_path,
                  "num_extracted": len(extracted_data),
@@ -537,6 +552,8 @@ class TablePipeline:
 
         # Unload ContentRecognizer once per table (not 3× per table)
         self._unload_model(shared_recognizer)
+
+        _ocr_profiler.report(table=table_basename)  # issue #17 Phase 1 (no-op unless OCR_PROFILE=1)
 
         return result_packet
 
