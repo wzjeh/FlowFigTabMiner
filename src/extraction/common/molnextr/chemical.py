@@ -1,6 +1,7 @@
 """ chemical rules"""
 import copy
 import traceback
+import itertools  # used by convert_graph_to_smiles' serial (num_workers<=1) path
 import numpy as np
 import multiprocessing
 import rdkit

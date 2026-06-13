@@ -104,119 +104,117 @@ class MoleculeProcessor:
                  cv2.imwrite(debug_path, debug_viz)
                  print(f"   -> Saved Molecule YOLO debug viz to {debug_path}")
             
+            # DEBUG: Save failures (prepare) — once for the whole table.
+            fail_dir = os.path.join(os.path.dirname(image_path_or_array) if isinstance(image_path_or_array, str) else ".", "mol_debug_crops")
+            os.makedirs(fail_dir, exist_ok=True)
+
+            # ── Phase 1: crop every molecule box (geometry unchanged) ──
+            box_crops = []  # (i, x1, y1, x2, y2, conf, mol_crop)
             for i, box in enumerate(results.boxes):
                 # Get Box
                 x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
                 conf = float(box.conf[0])
-                
+
                 # Boundary checks
                 x1, y1 = max(0, x1), max(0, y1)
                 x2, y2 = min(w, x2), min(h, y2)
-                
-                # Crop Molecule with Padding logic
-                # PREVIOUS: Tight crop + Synthetic White Padding (Clean isolation)
-                # NEW: Tight + Safety Margin + Synthetic White Padding (Prevents bond cut-off)
-                
-                # 1. Tight Crop with Safety Margin (10px) (Original: 5px)
-                # Extra margin ensures we don't cut off dangling bonds/labels
-                # MolNexTR is robust to white space but sensitive to cut-offs.
-                margin = 10 
+
+                # Tight Crop with Safety Margin (10px) + Synthetic White Padding.
+                # Margin prevents cut-off bonds/labels; MolNexTR is robust to
+                # white space but sensitive to cut-offs.
+                margin = 10
                 tc_x1 = max(0, x1 - margin)
                 tc_y1 = max(0, y1 - margin)
                 tc_x2 = min(w, x2 + margin)
                 tc_y2 = min(h, y2 + margin)
-                
                 tc_crop = original_img[tc_y1:tc_y2, tc_x1:tc_x2].copy()
-                
-                # 2. White Padding
-                # Pad value 30 is good.
+
                 pad_val = 30
                 try:
                     mol_crop = cv2.copyMakeBorder(tc_crop, pad_val, pad_val, pad_val, pad_val, cv2.BORDER_CONSTANT, value=[255, 255, 255])
                 except Exception as e:
                     print(f"Warning: Padding failed for box {i}: {e}")
                     mol_crop = tc_crop
-                
-                # DEBUG: Save failures (prepare)
-                fail_dir = os.path.join(os.path.dirname(image_path_or_array) if isinstance(image_path_or_array, str) else ".", "mol_debug_crops")
-                os.makedirs(fail_dir, exist_ok=True)
 
-                # 3. Resolution Upscaling (Refined)
-                # Only upscale if significantly small (< 192px).
-                # MolNexTR handles ~200-300px fine naturally.
-                # If we upscale 230px -> 400px using Cubic, we might add ringing that confuses it.
+                # Resolution upscaling: only if short side < 192px (MolNexTR
+                # handles ~200-300px naturally; over-upscaling adds ringing).
                 h_crop, w_crop = mol_crop.shape[:2]
                 target_upscale_h = 300
-                
                 if h_crop < 192:
-                    scale_factor = target_upscale_h / h_crop
-                    # Limit scale factor to avoid excessive blur (max 3x)
-                    scale_factor = min(scale_factor, 3.0)
+                    scale_factor = min(target_upscale_h / h_crop, 3.0)
                     if scale_factor > 1.0:
                         new_w = int(w_crop * scale_factor)
                         new_h = int(h_crop * scale_factor)
                         mol_crop = cv2.resize(mol_crop, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
                         print(f"   -> [Debug] Upscaled TINY box {i} by {scale_factor:.1f}x ({w_crop}x{h_crop} -> {new_w}x{new_h})")
                 else:
-                    # No upscaling for sufficient resolution
                     print(f"   -> [Debug] Box {i} sufficient size ({w_crop}x{h_crop}). Skipped Upscaling.")
-                
-                # 2. Convert to SMILES
-                # MolNexTR expects numpy array. ContentRecognizer now supports array.
-                smiles = ""
-                try:
-                    # We use 'Structure' type to trigger _recognize_structure
-                    smiles = content_recognizer.recognize_content(mol_crop, "Structure")
-                except Exception as e:
-                    print(f"Structure Rec Error: {e}")
-                
+
+                box_crops.append((i, x1, y1, x2, y2, conf, mol_crop))
+
+            # ── Phase 2: structure recognition — micro-batch (issue #14) ──
+            # Optional local optimization, NOT the headline fix.  SMILES are
+            # byte-identical to per-box (deterministic greedy decode); ~2x faster
+            # in isolation on MPS once MOLNEXTR_NUM_WORKERS=1 removes the per-box
+            # Pool overhead.  Default bs=4 keeps the MPS unified-memory peak safe
+            # on 16GB machines.  The real table-stage bottleneck is downstream
+            # caption/note OCR, not this step (issue #14 follow-up), so don't
+            # expect a full-pipeline speedup here.  MOLNEXTR_BATCH=0 → per-box.
+            use_microbatch = os.environ.get("MOLNEXTR_BATCH", "1") != "0"
+            batch_size = int(os.environ.get("MOLNEXTR_BATCH_SIZE", "4"))
+            crops_only = [bc[6] for bc in box_crops]
+            if use_microbatch:
+                smiles_list = content_recognizer.recognize_structures_batch(crops_only, batch_size=batch_size)
+            else:
+                smiles_list = []
+                for c in crops_only:
+                    try:
+                        smiles_list.append(content_recognizer.recognize_content(c, "Structure"))
+                    except Exception as e:
+                        print(f"Structure Rec Error: {e}")
+                        smiles_list.append("")
+
+            # ── Phase 3: per-box OCR fallback + mask + metrics (unchanged) ──
+            for (i, x1, y1, x2, y2, conf, mol_crop), smiles in zip(box_crops, smiles_list):
                 logging_smiles = smiles if smiles else "[NoSMILES]"
-                
+
                 if not smiles or smiles == "<invalid>":
                      print(f"   -> [Debug] MolNexTR failed or returned <invalid>. Attempting OCR Fallback...", flush=True)
-                     # Fallback to OCR
+                     # Fallback to OCR (per-box, intentionally kept serial)
                      ocr_text = content_recognizer.recognize_content(mol_crop, "Text")
                      if ocr_text and len(ocr_text.strip()) > 0:
                          smiles = ocr_text.strip()
                          print(f"   -> [Debug] OCR Fallback Successful: '{smiles}'")
                      else:
-                         # Still failed
                          fail_fname = f"fail_box_{i}_{logging_smiles}.png"
                          fail_path = os.path.join(fail_dir, fail_fname)
                          cv2.imwrite(fail_path, mol_crop)
                          print(f"   -> [Debug] OCR also failed. Saved failed crop to {fail_path}")
-                
-                # 3. Replace in Image
-                # A. Fill White
+
+                # Replace in image: fill white box
                 cv2.rectangle(processed_img, (x1, y1), (x2, y2), (255, 255, 255), -1)
-                
-                # B. Put Text (Centered) - Only if not mask_only
+
+                # Put text (centered) — only if not mask_only
                 if not mask_only:
                     text_to_draw = smiles if smiles else "Structure"
-                    print(f"   -> Box {i}: SMILES='{smiles}' | Drawing Text='{text_to_draw}'", flush=True) # DEBUG
-                    
+                    print(f"   -> Box {i}: SMILES='{smiles}' | Drawing Text='{text_to_draw}'", flush=True)
                     font_scale = 0.5
                     thickness = 1
                     font = cv2.FONT_HERSHEY_SIMPLEX
-                    
-                    # Calculate size
                     (tw, th), _ = cv2.getTextSize(text_to_draw, font, font_scale, thickness)
-                    
-                    # Center
                     cx = (x1 + x2) // 2
                     cy = (y1 + y2) // 2
                     tx = max(x1, cx - tw // 2)
                     ty = cy + th // 2
-                    
                     cv2.putText(processed_img, text_to_draw, (tx, ty), font, font_scale, (0, 0, 0), thickness)
                 else:
                     print(f"   -> Box {i}: SMILES='{smiles}' | Masked (White Box)", flush=True)
-                
+
                 # Store metadata
                 metrics.append({
                     'box': [x1, y1, x2, y2],
                     'conf': conf,
                     'smiles': smiles
                 })
-                
+
         return processed_img, metrics

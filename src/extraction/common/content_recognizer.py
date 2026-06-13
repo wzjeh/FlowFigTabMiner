@@ -124,3 +124,84 @@ class ContentRecognizer:
         except Exception as e:
             print(f"MolNexTR Error: {e}")
             return "[Error]"
+
+    def _to_rgb(self, image_input):
+        """Load (if path) and convert BGR->RGB for MolNexTR; None on read fail."""
+        import cv2
+        img = image_input
+        if isinstance(image_input, str):
+            img = cv2.imread(image_input)
+            if img is None:
+                return None
+        if len(img.shape) == 3 and img.shape[2] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
+
+    def _mps_empty_cache(self):
+        """Return the MPS allocator cache to the OS (no-op off MPS).
+
+        Apple Silicon MPS uses UNIFIED memory and never frees its allocator
+        cache on its own — leaving it to accumulate across batches exhausted
+        16GB RAM and triggered a kernel panic (WindowServer watchdog reboot,
+        issue #14).  Call this after every batch.
+        """
+        try:
+            import torch
+            if torch.backends.mps.is_available():
+                torch.mps.empty_cache()
+        except Exception:
+            pass
+
+    def recognize_structures_batch(self, image_inputs, batch_size=4):
+        """Batch MolNexTR structure recognition (issue #14, optional optimization).
+
+        Runs all crops through ``predict_images`` in one native batch
+        (torch.stack + single forward per ``batch_size`` chunk).  SMILES are
+        byte-identical to per-box (deterministic greedy decode, no sampling).
+        Measured speedup is ~2x in isolation on MPS once MOLNEXTR_NUM_WORKERS=1
+        removes the per-box multiprocessing.Pool overhead — NOT the headline
+        fix.  At the full-pipeline level the gain is masked by the downstream
+        caption/note OCR + evidence step, which dominates table-stage wall time
+        (see issue #14 follow-up).  This is a low-risk local optimization, not a
+        promised pipeline speedup; MOLNEXTR_BATCH=0 disables it.
+
+        Returns a list of SMILES strings aligned 1:1 with ``image_inputs``.
+        A box that the model leaves empty/invalid stays "" so the caller can do
+        its per-box OCR fallback unchanged.  If the whole batch raises (e.g. a
+        single malformed crop), we retry per-box so one bad crop can't blank the
+        whole table.
+        """
+        if self.molnextr is None:
+            return ["[MolNexTR Missing]"] * len(image_inputs)
+
+        rgb = [self._to_rgb(im) for im in image_inputs]
+        valid_idx = [i for i, im in enumerate(rgb) if im is not None]
+        valid = [rgb[i] for i in valid_idx]
+        out = [""] * len(image_inputs)
+        if not valid:
+            return out
+
+        # Process in chunks of batch_size, freeing the MPS cache after EACH
+        # chunk so peak memory stays bounded regardless of table size (a
+        # structure-dense 84-box table otherwise accumulates until 16GB RAM is
+        # exhausted — issue #14 kernel panic).  Chunking here (not relying on
+        # predict_images' internal loop) is what lets us empty_cache per chunk.
+        smis = []
+        for k in range(0, len(valid), batch_size):
+            chunk = valid[k:k + batch_size]
+            try:
+                res = self.molnextr.predict_images(chunk, batch_size=batch_size)
+                smis += [r.get("predicted_smiles", "") for r in res]
+            except Exception as e:
+                print(f"MolNexTR batch chunk failed ({e}); retrying per-box", flush=True)
+                for im in chunk:
+                    try:
+                        smis.append(self.molnextr.predict_images([im])[0].get("predicted_smiles", ""))
+                    except Exception as e2:
+                        print(f"MolNexTR per-box retry failed: {e2}", flush=True)
+                        smis.append("")
+            self._mps_empty_cache()
+
+        for j, i in enumerate(valid_idx):
+            out[i] = smis[j]
+        return out
