@@ -10,6 +10,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
+
+# Packaging build artifacts (pip install -e .)
+*.egg-info/
+*.egg
+build/
+dist/
 .venv/
 env/
 

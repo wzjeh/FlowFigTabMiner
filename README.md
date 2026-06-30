@@ -1,235 +1,137 @@
 # FlowFigTabMiner
 
-Multimodal pipeline for extracting structured reaction data from flow chemistry literature PDFs. Processes figures (scatter plots, heatmaps), tables (with embedded molecular structures), and text into normalized reaction databases.
+**Automated multimodal mining of structured data locked in chemistry-literature figures and tables.**
 
-**Paper**: *FlowFigTabMiner: Multimodal Extraction of Structured Flow Chemistry Data from Figures, Tables, and Text Enables Organolithium Lifetime Prediction*
+Chemistry papers hide much of their quantitative process data — including the low-yield and
+failed reactions ML most needs — inside *figures* and *tables* that render molecular structures
+as images. Plain text mining can't read these; general-purpose vision–language models read them
+inaccurately and at a per-image cost. FlowFigTabMiner mines them into structured reaction records
+by chaining **five custom-trained YOLO models** with chemistry-specific tools (Florence-2/TF-ID,
+TATR, MolNexTR, PaddleOCR) and a **lightweight Gemini adjudication step**. On a 10-figure /
+10-table benchmark it reaches an extraction **F1 of 0.838**, with a decisive lead on figures.
 
-## Pipeline Overview
+> 📄 *Automated multimodal mining of structured data locked in chemistry literature figures and
+> tables* — Zhao et al., 2025 (manuscript submitted; preprint on ChemRxiv).
+
+## How it works
 
 ```
-PDF ──→ TF-ID (Florence-2) ──→ Figure crops + Table crops + Text
-              │                        │                │
-              │                ┌───────┴────────┐       │
-              │                │                │       │
-         FigureDataMiner  TableDataMiner    PyMuPDF
-         (YOLO + OCR +    (YOLO + TATR +   (full text)
-          coord mapping)   MolNexTR + OCR)      │
-              │                │                │
-              │                │       LLM: Global/Local
-              │                │       Parameters Pool
-              └────────┬───────┘                │
-                       │                        │
-                  LLM Adjudication (Qwen-3.5-Plus)
-                       │
-                  JSON Records → Manual Inspection → Dataset
+PDF → [0] flow-chem pre-filter → [1] TF-ID detect figures/tables
+    → figures: YOLO segment → YOLO detect points → RANSAC axis mapping → legend match
+    → tables:  YOLO segment → TATR structure → Gemini cells + MolNexTR + PaddleOCR
+    → [3.5] scheme parsing → compound pool   → [4.5] per-source variable libraries
+    → [5] per-source Gemini assembly → JSON records → [6] normalize + validate → dataset
 ```
 
-### Six-Step Pipeline
+The figure coordinate track is intentionally **non-VLM** (RANSAC + YOLO) — it beats VLMs on
+figure extraction (F1 0.892 vs ~0.57). Gemini is used only for table cells, optional inspection,
+and the final record assembly.
 
-| Step | Name | Method |
-|------|------|--------|
-| 1 | TF-ID Detection | Florence-2 detects figures/tables in PDF pages |
-| 2 | Macro Segmentation | YOLOv11m isolates chart regions from captions/legends |
-| 3 | Micro Detection | YOLOv11m detects data points, tick labels |
-| 3T | Table Extraction | YOLO seg → TATR structure → PaddleOCR + MolNexTR |
-| 3.5 | Scheme Parsing | YOLOv11n parses reaction schemes → compound pool |
-| 4 | Coordinate Mapping | RANSAC pixel→physical transform, legend matching |
-| 4.5 | Local Variables | LLM builds axis semantics + fixed conditions per source |
-| 5 | Global Assembly | LLM merges all evidence → structured JSON records |
-| 6 | Post-Processing | Unit normalization, SMILES validation, deduplication |
+## Install
 
-## Quick Start
-
-### 1. Clone and Install
+Python **3.9**. Run everything from the project root.
 
 ```bash
 git clone https://github.com/wzjeh/FlowFigTabMiner.git
 cd FlowFigTabMiner
-python -m venv flowfigtabminer
-source flowfigtabminer/bin/activate  # Linux/macOS
-pip install -r requirements.txt
+python3.9 -m venv flowfigtabminer && source flowfigtabminer/bin/activate
+pip install -e .                       # installs deps (requirements.txt) + the CLI
 ```
 
-### 2. Download Models
-
-Download the following models and place them in the `models/` directory:
-
-**Custom YOLO Models** (from [HuggingFace](https://huggingface.co/wyzhaoc/YOLO11)):
+**Models** (git-ignored, place under `models/`):
 
 ```bash
-# Install huggingface-cli if needed: pip install huggingface_hub
-huggingface-cli download wyzhaoc/YOLO11 --local-dir models/hf_yolo11
-
-# Copy to expected paths:
-mkdir -p models/yolo11m-fig-seg-0207-nobreaknocharttext/runs/detect/train/weights/
-mkdir -p models/yolo11m-fig-scatter-0208/runs/detect/train/weights/
-mkdir -p models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/
-mkdir -p models/yolo11s-tab-molecule-0207/runs/detect/train/weights/
-mkdir -p models/tab-scheme-seg/
-
-cp models/hf_yolo11/fig-seg/best.pt models/yolo11m-fig-seg-0207-nobreaknocharttext/runs/detect/train/weights/best.pt
-cp models/hf_yolo11/fig-sca/best.pt models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt
-cp models/hf_yolo11/tab-seg/best.pt models/yolo11m-tab-seg-0209-white/runs/detect/train/weights/best.pt
-cp models/hf_yolo11/tab-mol/best.pt models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt
-cp models/hf_yolo11/tab-scheme-seg/best.pt models/tab-scheme-seg/best.pt
-```
-
-**Third-Party Models** (auto-downloaded on first run):
-
-| Model | Source | Purpose | Auto-download |
-|-------|--------|---------|---------------|
-| TF-ID (Florence-2) | [yifeihu/TF-ID-base](https://huggingface.co/yifeihu/TF-ID-base) | PDF figure/table detection | Yes (HuggingFace) |
-| TATR | [microsoft/table-transformer-structure-recognition-v1.1-all](https://huggingface.co/microsoft/table-transformer-structure-recognition-v1.1-all) | Table structure recognition | Yes (HuggingFace) |
-| MolNexTR | [CYF200127/MolNexTR](https://huggingface.co/datasets/CYF200127/MolNexTR) | Molecular image → SMILES | See above |
-| PaddleOCR | [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) | Text recognition (PP-OCRv4) | Yes (PaddleX) |
-
-**MolNexTR** (molecular structure → SMILES, 1.06 GB):
-
-```bash
-# Download from the official HuggingFace dataset
 pip install huggingface_hub
+# 5 custom YOLO models — download, then copy each best.pt to the path in config.yaml
+huggingface-cli download wyzhaoc/YOLO11 --local-dir models/hf_yolo11
+# MolNexTR (1.06 GB)
 huggingface-cli download CYF200127/MolNexTR molnextr_best.pth --local-dir models/ --repo-type dataset
 mv models/molnextr_best.pth models/molnextr_model_best.pth
 ```
 
-Source: [Chen et al., J. Cheminf. 2024](https://doi.org/10.1186/s13321-024-00926-w) | [HuggingFace](https://huggingface.co/datasets/CYF200127/MolNexTR)
+TF-ID, TATR and PaddleOCR weights auto-download on first run.
 
-### 3. Set Up API Key
-
-The LLM adjudication step (Step 5) requires a Qwen API key:
+**API key** — the LLM steps use Google Gemini:
 
 ```bash
-cp .env.example .env
-# Edit .env and add your key:
-# QWEN_API_KEY=your_dashscope_api_key
+echo "GEMINI_API_KEY=your_key" > .env     # key from https://aistudio.google.com/apikey
 ```
 
-Get a key at [DashScope Console](https://dashscope.console.aliyun.com/).
-
-### 4. Run the Pipeline
+## Usage
 
 ```bash
-# Process a single PDF
-python -m src.pipeline.main path/to/paper.pdf
+set -a; source .env; set +a               # load GEMINI_API_KEY
 
-# Skip TF-ID if intermediate crops already exist
-python -m src.pipeline.main path/to/paper.pdf --skip-tfid
+flowfigtabminer path/to/paper.pdf         # single PDF, full pipeline
+flowfigtabminer paper.pdf --skip-tfid     # reuse existing crops
+flowfigtabminer paper.pdf --force-assembly# re-run only the LLM assembly
 
-# Force re-run LLM assembly
-python -m src.pipeline.main path/to/paper.pdf --force-assembly
+python scripts/batch_all.py --pdf-dir data/input/corpus   # batch (resumable)
 ```
 
-Output is saved to:
-- `data/intermediate/{paper_name}/` — cropped figures, tables, evidence JSONs
-- `data/final_output/{paper_name}_final.json` — LLM-assembled records
-- `data/final_output/{paper_name}_normalized.json` — post-processed records
+Flags: `--dir` (batch a folder) · `--skip-tfid` · `--force-assembly` ·
+`--no-prefilter` · `--no-smiles-lookup` · `--no-vlm`.
+(Equivalent module form: `python -m src.pipeline.main paper.pdf`.)
 
-## Project Structure
+## Output
 
 ```
-FlowFigTabMiner/
-├── src/
-│   ├── pipeline/           # Main pipeline orchestration
-│   │   ├── main.py          # Entry point (6-step pipeline)
-│   │   └── figure_pipeline.py
-│   ├── parsing/             # Step 1-2: PDF parsing & YOLO detection
-│   │   ├── active_area_detector.py  # TF-ID (Florence-2)
-│   │   ├── yolo_detector.py         # Macro segmentation
-│   │   └── stage2_detector.py       # Micro detection
-│   ├── extraction/
-│   │   ├── figure/          # Step 3-4: Figure coordinate extraction
-│   │   │   ├── coordinate_mapper.py  # RANSAC axis transform
-│   │   │   └── legend_matcher.py     # Series-to-legend matching
-│   │   ├── table/           # Step 3T: Table structure extraction
-│   │   │   ├── pipeline.py           # Table extraction workflow
-│   │   │   ├── structure.py          # TATR cell detection
-│   │   │   └── scheme_seg_parser.py  # Reaction scheme → compound pool
-│   │   └── common/          # Shared: OCR, MolNexTR
-│   │       ├── ocr_backend.py        # PaddleOCR rec-only wrapper
-│   │       ├── content_recognizer.py # Cell text/molecule recognition
-│   │       └── molnextr/             # MolNexTR submodule
-│   ├── adjudication/        # Step 4.5-6: LLM assembly & post-processing
-│   │   ├── global_assembly.py    # Step 5: Evidence fusion
-│   │   ├── local_vars_builder.py # Step 4.5: Sub-variable libraries
-│   │   ├── post_processor.py     # Step 6: Normalization
-│   │   └── llm_engine.py         # LLM API wrapper
-│   ├── assembly/             # Evidence JSON construction
-│   ├── services/             # Cloud Run FastAPI services
-│   └── utils/                # Config loader
-├── models/                   # Model weights (not in git, see setup)
-├── config.yaml               # Pipeline configuration
-├── deploy/                   # Cloud Run deployment configs
-├── eval/                     # Evaluation scripts & benchmarks
-├── data/
-│   ├── input/                # Input PDFs
-│   ├── intermediate/         # Extracted crops & evidence (runtime)
-│   ├── final_output/         # Output JSON/CSV datasets
-│   └── ml_lifetime/          # Kinetics analysis data
-├── pub/                      # Paper & Supporting Information
-├── requirements.txt          # Python dependencies
-└── .env                      # API keys (not in git)
+data/intermediate/<paper>/   crops, evidence JSONs, compound_pool.json, timing.json
+data/final_output/<paper>_normalized.json   ← primary result (also .xlsx)
 ```
 
-## Datasets
+Each record is one reaction observation: `reactant1/2_smiles+name`, `product_smiles+name+label`,
+`yield_pct`/`conversion_pct`/`ee_pct`, a nested `conditions` block (temperature, residence time,
+solvent, reactor type, …), and `reaction_class`. **SMILES are never guessed** — they come from
+MolNexTR or a deterministic label/name backfill. Records with neither identity nor outcome are
+flagged `is_hollow` (kept, not dropped) for explicit downstream filtering.
 
-The extracted organolithium datasets are deposited on Zenodo:
+## Configuration
 
-**[DOI: 10.5281/zenodo.19436601](https://doi.org/10.5281/zenodo.19436601)**
+`config.yaml` holds model paths, detection thresholds, and LLM/VLM settings
+(`llm.adjudication.model: gemini-2.5-flash`, `llm.max_concurrent: 5`, …) — each key is
+documented inline. `keywords.yaml` lists table-relevance keywords. A few runtime knobs are
+environment variables: `OCR_UPSCALE_MAX_SIDE` (default 1600), `MOLNEXTR_NUM_WORKERS` (default 1),
+`OCR_PROFILE=1` (timing), `USE_EASYOCR=1` (OCR fallback).
 
-| Dataset | Rows | Description |
-|---------|------|-------------|
-| `organolithium_tr_subdataset_vlm_enriched.csv` | 1,470 | Kinetics data from yield-vs-tR heatmaps (14 intermediates, 20 papers) |
-| `organolithium_scope_table_dataset.csv` | 1,267 | Scope table data (97 papers, reaction conditions + yields) |
-| `corpus_dois.csv` | 93 | DOI list of all source papers |
+## Datasets & models
 
-## Trained Models
+Extracted organolithium datasets — Zenodo **[10.5281/zenodo.19436601](https://doi.org/10.5281/zenodo.19436601)**:
+`organolithium_tr_subdataset_vlm_enriched.csv` (1,470 rows, yield-vs-tR kinetics),
+`organolithium_scope_table_dataset.csv` (1,267 rows, scope tables), `corpus_dois.csv` (93 DOIs).
 
-Custom YOLO models are available on HuggingFace:
+Custom YOLO weights — **[wyzhaoc/YOLO11](https://huggingface.co/wyzhaoc/YOLO11)**:
 
-**[wyzhaoc/YOLO11](https://huggingface.co/wyzhaoc/YOLO11)**
+| Model | Task | mAP50 |
+|-------|------|-------|
+| fig-seg (YOLOv11m) | figure macro segmentation | 91.7% |
+| fig-sca (YOLOv11m) | figure micro detection | 92.5% |
+| tab-seg (YOLOv11m) | table segmentation | 94.8% |
+| tab-mol (YOLOv11s) | molecule detection | 95.6% |
+| tab-scheme-seg (YOLOv11n) | reaction-scheme parsing | 96.5% |
 
-| Model | Backbone | Task | mAP50 |
-|-------|----------|------|-------|
-| fig-seg | YOLOv11m | Figure macro segmentation (6 classes) | 91.7% |
-| fig-sca | YOLOv11m | Figure micro detection (4 classes) | 92.5% |
-| tab-seg | YOLOv11m | Table segmentation (4 classes) | 94.8% |
-| tab-mol | YOLOv11s | Molecular structure detection (1 class) | 95.6% |
-| tab-scheme-seg | YOLOv11n | Reaction scheme parsing (4 classes) | 96.5% |
+## Benchmark (10 figures + 10 tables)
 
-## Cloud Deployment
-
-The pipeline is deployed as 4 microservices on Google Cloud Run:
-
-```bash
-cd deploy
-./deploy_all.sh  # Build & deploy all services
-```
-
-| Service | Purpose | Memory |
-|---------|---------|--------|
-| tfid-service | PDF → figure/table crops | 16 GiB (GPU) |
-| figure-service | Figure → coordinate CSV | 8 GiB |
-| table-service | Table → structured CSV + SMILES | 16 GiB |
-| frontend-service | Web UI | 512 MiB |
-
-## Benchmark Results
-
-Three-way comparison on 5 figures + 5 tables:
-
-| Task | FlowFigTabMiner | Gemini 3.1 Pro | Claude Sonnet 4.6 |
-|------|-----------------|----------------|-------------------|
+| | FlowFigTabMiner | Gemini 3.1 Pro | Claude Sonnet 4.6 |
+|---|---|---|---|
 | Figure F1 | **0.892** | 0.575 | 0.561 |
 | Table F1 | 0.827 | 0.98 | **0.99** |
 | SMILES F1 | 0.795 | **0.944** | 0.867 |
-| **Overall F1** | **0.838** | 0.833 | 0.806 |
+| **Overall** | **0.838** | 0.833 | 0.806 |
+
+A four-service Cloud Run deployment is in `deploy/` (`./deploy_all.sh`).
 
 ## Citation
 
 ```bibtex
-@article{zhao2025flowfigtabminer,
-  title={FlowFigTabMiner: Multimodal Extraction of Structured Flow Chemistry Data from Figures, Tables, and Text Enables Organolithium Lifetime Prediction},
-  author={Zhao, Wenyuan and Zhong, Xianzhu and Ashikari, Yosuke and Miyagishi, Hiromichi V. and Qenawy, Mohmmad S. and Wang, Simeng and Xiaer, Jouffery and Peng, Yirui and Nagaki, Aiichiro},
-  year={2025}
+@misc{zhao2025flowfigtabminer,
+  title  = {Automated multimodal mining of structured data locked in
+            chemistry literature figures and tables},
+  author = {Zhao, Wenyuan and Zhong, Xianzhu and Jouffroy, Xavier and
+            Ashikari, Yosuke and Miyagishi, Hiromichi V. and Qenawy, Mohmmad S. and
+            Wang, Simeng and Peng, Yirui and Nagaki, Aiichiro},
+  year   = {2025},
+  note   = {Manuscript submitted; preprint on ChemRxiv}
 }
 ```
 

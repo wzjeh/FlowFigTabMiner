@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowfigtabminer"
+version = "0.1.0"
+description = "Automated multimodal mining of structured reaction data from chemistry-literature figures and tables."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Wenyuan Zhao" },
+    { name = "Aiichiro Nagaki", email = "nagaki@sci.hokudai.ac.jp" },
+]
+# Dependencies are pinned in requirements.txt (heavy, version-fragile stack:
+# torch / paddlepaddle / transformers / rdkit). Kept there as the single source
+# of truth rather than duplicated here.
+dynamic = ["dependencies"]
+
+[project.scripts]
+# Editable install (`pip install -e .`) exposes the pipeline CLI:
+#   flowfigtabminer paper.pdf
+flowfigtabminer = "src.pipeline.main:main"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+namespaces = true
