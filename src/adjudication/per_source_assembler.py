@@ -26,8 +26,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Mapping
 
+from src.adjudication.figure_synthesis import synthesize_records, validate_template
 from src.adjudication.per_source_prompts import (
     CommonPreamble,
+    FigureTemplateBuilder,
     PerSourcePromptBuilder,
 )
 from src.adjudication.source_discovery import SourcePacket
@@ -50,12 +52,17 @@ class PerSourceAssembler:
         prompt_builders: Mapping[str, PerSourcePromptBuilder],
         max_workers: int = 10,
         raw_dir: str = "data/intermediate",
+        figure_synthesis: bool = True,
     ):
         self.llm = llm
         self.llm_cfg = llm_cfg
         self.prompt_builders = dict(prompt_builders)
         self.max_workers = max_workers
         self.raw_dir = raw_dir
+        # Design step D: figures go through ONE template call + code synthesis;
+        # the legacy N-record transcription remains as the fallback.
+        self.figure_synthesis = figure_synthesis
+        self.template_builder = FigureTemplateBuilder()
 
     def assemble(
         self,
@@ -120,6 +127,55 @@ class PerSourceAssembler:
 
     # ── internals ──────────────────────────────────────────────────────
 
+    def _run_figure_template(self, packet, preamble, raw_dir, order_idx):
+        """One template call + deterministic synthesis.  Returns
+        ``(records, retries)`` or ``(None, 0)`` when the template is unusable
+        (caller falls back to the legacy path)."""
+        raw_data = packet.evidence.get("raw_data", []) or []
+        if not raw_data:
+            return [], 0
+        try:
+            system_prompt, user_prompt = self.template_builder.build(packet, preamble)
+            response = self.llm.chat(
+                [ChatMessage(role=Role.SYSTEM, content=system_prompt),
+                 ChatMessage(role=Role.USER, content=user_prompt)],
+                self.llm_cfg,
+            )
+        except Exception as exc:
+            logger.error("per_source.template_llm_fail source=%s exc=%s", packet.source_id, exc)
+            return None, 0
+        raw_text = response.text or ""
+        try:
+            with open(os.path.join(raw_dir, f"{packet.source_id}_template_raw.txt"), "w") as f:
+                f.write(raw_text)
+        except Exception:
+            pass
+        try:
+            tpl = json.loads(sanitize_json_text(raw_text))
+        except Exception as exc:
+            logger.error("per_source.template_parse_fail source=%s exc=%s", packet.source_id, exc)
+            return None, 0
+        if isinstance(tpl, list) and len(tpl) == 1 and isinstance(tpl[0], dict):
+            tpl = tpl[0]
+        err = validate_template(tpl)
+        if err:
+            logger.error("per_source.template_invalid source=%s err=%s", packet.source_id, err)
+            return None, 0
+        facts = (packet.evidence.get("meta", {}) or {}).get("facts") or {}
+        records = synthesize_records(tpl, raw_data, packet.human_label, facts)
+        for j, rec in enumerate(records):
+            rec["__source_id"] = packet.source_id
+            rec["__assembly_order"] = order_idx * 1000 + j
+        retry_count = getattr(response, "retry_count", 0) or 0
+        write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "ok", "template+synthesis",
+                     records=len(records), synthesized=True)
+        logger.info(
+            "per_source.template_ok source=%s records=%d latency_ms=%.0f tokens_out=%s axis_map=%s",
+            packet.source_id, len(records), response.latency_ms, response.tokens_out,
+            json.dumps(tpl.get("axis_map")),
+        )
+        return records, retry_count
+
     def _run_one(
         self,
         packet: SourcePacket,
@@ -139,6 +195,12 @@ class PerSourceAssembler:
                 packet.source_id, packet.source_type,
             )
             return [], 0
+
+        if packet.source_type == "figure" and self.figure_synthesis:
+            recs, retries = self._run_figure_template(packet, preamble, raw_dir, order_idx)
+            if recs is not None:
+                return recs, retries
+            logger.warning("per_source.template_fallback source=%s — using legacy transcription", packet.source_id)
 
         try:
             system_prompt, user_prompt = builder.build(packet, preamble)

@@ -100,3 +100,7 @@ adjudication:
   # ``is_relevant=false`` on their evidence packet.  Set true to drop them
   # from Step 5 entirely (the historical hard-filter behaviour).
   skip_irrelevant_figures: false
+  # Design step D: figure records are synthesised by code from raw_data after
+  # ONE template call (axis map + series map + shared fields) instead of asking
+  # the LLM to transcribe every point.  Set false to restore N-record transcription.
+  figure_record_synthesis: true

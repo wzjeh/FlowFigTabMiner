@@ -576,7 +576,18 @@ class CoordinateMapper:
                 log("Right Axis Model Fit Success -> Forcing Dual Axis Mode")
             
             log(f"Models Fit: X={'OK' if model_x else 'FAIL'}, YL={'OK' if model_yl else 'FAIL'}")
+            def _tick_vals(cands):
+                out = []
+                for c in cands:
+                    try:
+                        out.append(float(c[1]))
+                    except Exception:
+                        pass
+                return sorted(set(out))
             self.last_facts.update({
+                "x_ticks": _tick_vals(x_candidates),
+                "y_left_ticks": _tick_vals(y_left_candidates),
+                "y_right_ticks": _tick_vals(y_right_candidates),
                 "x_scale": "log" if is_x_log else "linear",
                 "y_left_scale": "log" if is_yl_log else "linear",
                 "y_right_scale": "log" if is_yr_log else "linear",
