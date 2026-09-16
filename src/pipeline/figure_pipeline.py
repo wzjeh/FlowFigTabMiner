@@ -210,8 +210,14 @@ class FigurePipeline:
                 # Deterministic chart facts for downstream stages (C1).
                 mapper_facts = dict(getattr(self.coord_mapper, "last_facts", {}) or {})
                 n_series_matched = sum(1 for p in matched_points if p.get('series') not in (None, '', 'Default'))
+                # Heatmap = legend %-bins detected OR most points carry an
+                # OCR'd cell label (the label path only fires on value-map
+                # charts) — same rule as source_discovery.infer_legacy_facts.
+                n_labels = int(mapper_facts.get("n_point_labels", 0) or 0)
+                label_heavy = bool(points) and n_labels / len(points) >= 0.5
                 facts = {
-                    "chart_type": "heatmap" if is_heatmap else "xy",
+                    "chart_type": "heatmap" if (is_heatmap or label_heavy) else "xy",
+                    "heatmap_signal": ("legend_bins" if is_heatmap else ("point_labels" if label_heavy else None)),
                     "x_scale": mapper_facts.get("x_scale"),
                     "y_left_scale": mapper_facts.get("y_left_scale"),
                     "y_right_scale": mapper_facts.get("y_right_scale"),
