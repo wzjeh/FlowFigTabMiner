@@ -51,7 +51,18 @@ class GlobalAssembly:
             },
             max_workers=10,
             raw_dir=intermediate_root,
+            figure_synthesis=self._figure_synthesis_enabled(),
         )
+
+    @staticmethod
+    def _figure_synthesis_enabled() -> bool:
+        """``adjudication.figure_record_synthesis`` (default true): figures are
+        assembled from ONE LLM template + code, not N transcribed records."""
+        try:
+            from src.utils.config import load_config
+            return bool(load_config().get("adjudication", {}).get("figure_record_synthesis", True))
+        except Exception:
+            return True
 
     @staticmethod
     def _evidence_stale(out_file: str, intermediate_dir: str) -> bool:

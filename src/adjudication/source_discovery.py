@@ -190,9 +190,20 @@ def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:
     is populated only by the point-label OCR path).
     """
     meta = dict(evidence.get("meta", {}) or {})
-    if meta.get("facts"):
-        return evidence
     raw = evidence.get("raw_data", []) or []
+    if meta.get("facts"):
+        # Facts exist but may predate the point-label heatmap signal: a chart
+        # whose points mostly carry OCR'd labels is a value map regardless of
+        # what the legend OCR said.
+        f = dict(meta["facts"])
+        n = len(raw)
+        n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
+        if f.get("chart_type") != "heatmap" and n and n_dv / n >= 0.5:
+            f["chart_type"] = "heatmap"; f["heatmap_signal"] = "point_labels(reclassified)"
+            meta["facts"] = f; meta["figure_type"] = "heatmap"
+            ev = dict(evidence); ev["meta"] = meta
+            return ev
+        return evidence
     n = len(raw)
     n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
     facts: Dict[str, Any] = {"legacy_inferred": True, "n_points": n, "n_point_labels": n_dv,

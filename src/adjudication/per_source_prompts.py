@@ -373,6 +373,74 @@ class FigurePromptBuilder(PerSourcePromptBuilder):
         return _SYSTEM_PROMPT, user_prompt
 
 
+class FigureTemplateBuilder(FigurePromptBuilder):
+    """Design step D: ask for ONE figure template instead of N transcribed
+    records.  The per-point numbers are then copied by
+    ``figure_synthesis.synthesize_records`` — the LLM only decides semantics
+    (which raw column is which field, what each legend series means, what
+    the fixed product / reactants / conditions are)."""
+
+    _TEMPLATE_SCHEMA = """=== FIGURE TEMPLATE OUTPUT (ONE JSON object, not an array) ===
+{
+  "record_template": { <every field of the record schema above, filled with everything that is SHARED
+                        by all points of this figure: reactant1/2, product (name/label/SMILES — per RULE 18
+                        the fixed product named in the caption / reaction_context), reaction_class, paper_doi,
+                        yield_type, and EVERY condition that is constant for the figure (temperature_C,
+                        solvent, residence_time_s, flow rates, catalyst, reactor_type … from the caption,
+                        footnote, local_vars.fixed_conditions, paper text or PAPER-LEVEL defaults).
+                        Leave null ONLY the fields that vary point-to-point, i.e. the fields named in
+                        axis_map / series_map below.> },
+  "axis_map": {
+    "X": "<field path or null>",
+    "Y_Left": "<field path or null>",
+    "Y_Right/Data_Value": "<field path or null>"
+  },
+  "axis_transforms": { "X": {"scale": 1, "offset": 0} },   // only when a unit conversion is needed
+                                                            // (e.g. minutes → seconds: scale 60); else omit
+  "series_map": {
+    "<legend series name exactly as in raw_data>": { "<field path>": <value>, ... }
+  },
+  "notes": "<one line on how the mapping was decided>"
+}
+Field paths: conditions.temperature_C, conditions.residence_time_s, conditions.flow_rate_mL_min,
+conditions.pressure_bar, conditions.solvent, conditions.catalyst, yield_pct, conversion_pct,
+selectivity_pct, ee_pct, product_name, product_label, product_smiles, reactant1_name, reactant2_name,
+other_metrics.<name>.
+Rules for the template:
+- axis_map MUST follow local_vars.axis_semantics (and the CHART FACTS / HEATMAP RULE when present).
+  X values are already physical units; do not add transforms unless the axis label proves a unit mismatch.
+- series_map: when a legend series encodes a condition ("-78 °C", "tR = 2 s"), map it to that condition
+  field with a NUMERIC value; when it encodes a product/substrate ("3a", "Ar = Ph"), map it to
+  product_label / product_name / reactant fields.  Every series in raw_data must appear.
+- Do NOT copy any per-point numbers into record_template; the code copies them from raw_data.
+- A condition that is fixed for the whole figure (e.g. "at -78 °C" in the caption while X is residence
+  time) belongs in record_template.conditions — do not leave it null just because it is a number.
+- product_name / reactant names must be filled whenever the caption, local_vars.reaction_context or the
+  paper-level context names them (RULE 18); never leave the product null on a yield figure.
+- Output the JSON object only."""
+
+    def build(self, packet: SourcePacket, preamble: CommonPreamble) -> Tuple[str, str]:
+        _, legacy_prompt = super().build(packet, preamble)
+        # Strip the legacy "emit EXACTLY N records" task block and the raw
+        # point dump; the code does the per-point work now.
+        head = legacy_prompt.split("=== RAW DATA (", 1)[0]
+        common = legacy_prompt.split("\n\n", 1)[1]
+        common = common.split("=== THIS SOURCE:", 1)[1]
+        common = "=== THIS SOURCE:" + common.split("=== RAW DATA (", 1)[0] + self._render_common_blocks(preamble, packet)
+        raw_data = packet.evidence.get("raw_data", []) or []
+        series = sorted({str(p.get("Series")) for p in raw_data if isinstance(p, dict) and p.get("Series") is not None})
+        sample = json.dumps(raw_data[:8], indent=None)
+        user_prompt = (
+            "You are describing how to turn the data points of a SINGLE FIGURE of a flow chemistry paper "
+            "into reaction records. Do NOT transcribe points; produce ONE template.\n\n"
+            + common
+            + f"\n\n=== RAW DATA SUMMARY ({len(raw_data)} points; first 8 shown verbatim) ===\n"
+            f"Series present: {series}\n{sample}\n\n"
+            + self._TEMPLATE_SCHEMA
+        )
+        return _SYSTEM_PROMPT, user_prompt
+
+
 class TablePromptBuilder(PerSourcePromptBuilder):
     def build(self, packet: SourcePacket, preamble: CommonPreamble) -> Tuple[str, str]:
         ev = packet.evidence
