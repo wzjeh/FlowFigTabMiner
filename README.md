@@ -77,6 +77,10 @@ Flags: `--dir` (batch a folder) · `--skip-tfid` · `--force-assembly` ·
 
 ```
 data/intermediate/<paper>/   crops, evidence JSONs, compound_pool.json, timing.json
+  layout.json, context/      crop geometry + real figure/table labels, verbatim captions,
+                             footnotes and in-box PDF text (deterministic, from the PDF text layer)
+  global_vars.json           paper-level defaults (each value with a verbatim quote + scope)
+  local_vars/, status/       per-source semantics; per-source outcome (ok / filtered / failed + reason)
 data/final_output/<paper>_normalized.json   ← primary result (also .xlsx)
 ```
 
@@ -84,7 +88,15 @@ Each record is one reaction observation: `reactant1/2_smiles+name`, `product_smi
 `yield_pct`/`conversion_pct`/`ee_pct`, a nested `conditions` block (temperature, residence time,
 solvent, reactor type, …), and `reaction_class`. **SMILES are never guessed** — they come from
 MolNexTR or a deterministic label/name backfill. Records with neither identity nor outcome are
-flagged `is_hollow` (kept, not dropped) for explicit downstream filtering.
+flagged `is_hollow` (kept, not dropped) for explicit downstream filtering; `has_outcome` marks records
+that carry a measured yield/conversion/selectivity/ee. Figure records are synthesised by code from the
+extracted data points after a single per-figure LLM template call (`adjudication.figure_record_synthesis`),
+so numbers are copied, never re-typed; empty condition fields are inherited from the paper-level pool and
+tagged in `conditions_provenance` (`llm_source` / `source_local` / `paper_global`).
+
+To re-run only the adjudication stages on existing crops (e.g. after a prompt change):
+`python scripts/reassemble.py [--rebuild-vars] paper.pdf`. Intermediates produced by older versions can be
+upgraded without re-running TF-ID with `python scripts/backfill_layout.py "data/input/corpus/*.pdf"`.
 
 ## Configuration
 
