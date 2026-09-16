@@ -686,10 +686,12 @@ class CoordinateMapper:
                             if crop.shape[0] < 60 or crop.shape[1] < 60:
                                 scale = 4
                                 crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
+                            val = None  # never inherit the previous point's label
                             try:
                                 txt, _conf = self.rec.recognize(crop)
                                 val = parse_val(txt)
-                            except Exception: pass
+                            except Exception:
+                                pass
                             if val is not None:
                                 point_labels[idx] = val
             

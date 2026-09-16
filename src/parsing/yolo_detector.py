@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import glob
 from ultralytics import YOLO
+from src.pipeline.status import write_status
 
 class YoloDetector:
     def __init__(self, model_path="models/bestYOLOn-2-1.pt"):
@@ -86,6 +87,8 @@ class YoloDetector:
             if not target_boxes:
                 # If no target, skip for now to follow 'target_image' rule strictly.
                 print(f"      -> No target_image detected. Skipping.")
+                write_status(output_base_dir, basename, "macro_clean", "filtered",
+                             "no target_image detected by macro YOLO")
                 continue
 
             # 2. Process each target

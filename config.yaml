@@ -92,3 +92,11 @@ vlm:
     max_retries: 3
     timeout_s: 180.0
     match_threshold: 0.80         # fused report sets review_needed if match_rate falls below
+
+# Adjudication-stage policy knobs (Step 5 source discovery).
+adjudication:
+  # Figure keyword relevance filter is SOFT: figures lacking result keywords
+  # (yield / conversion / selectivity …) are still assembled and only carry
+  # ``is_relevant=false`` on their evidence packet.  Set true to drop them
+  # from Step 5 entirely (the historical hard-filter behaviour).
+  skip_irrelevant_figures: false

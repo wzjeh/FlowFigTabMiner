@@ -17,6 +17,7 @@ from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.assembly.evidence_assembler import EvidenceAssembler
 from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
+from src.pipeline.status import write_status
 from src.utils.config import load_config
 
 class FigurePipeline:
@@ -121,7 +122,9 @@ class FigurePipeline:
         Process a list of figure images (crops from Step 1).
         """
         extracted_results = []
-        
+        # Per-PDF intermediate dir (status records live under it).
+        intermediate_dir = output_base_dir
+
         # Step 2: Macro Cleaning
         print("\nStep 2: Macro Cleaning...")
         # output_base_dir is typically data/intermediate/{pdf_name}
@@ -155,12 +158,12 @@ class FigurePipeline:
                 
                 print("      [Pipeline] Checking Relevance (OCR Captions)...")
                 is_relevant, text_evidence = self.assembler.check_relevance(figure_id, macro_cleaned_dir)
-                
+
                 if not is_relevant:
-                    print(f"      [Pipeline] SKIPPING Step 3. Chart '{figure_id}' is not relevant (no keywords).")
-                    continue
-                
-                # If we are here, it's relevant! Proceed to Step 3.
+                    # Soft flag only (same policy as the table keyword filter):
+                    # extraction continues, ``is_relevant`` rides on the
+                    # evidence packet, and Step 5 decides whether to skip it.
+                    print(f"      [Pipeline] Chart '{figure_id}' has no result keywords — flagged, continuing.")
                 
                 # 3A: Micro Detection
                 # 3A: Micro Detection
@@ -199,9 +202,14 @@ class FigurePipeline:
                 if not df.empty:
                     extraction_data = df.to_dict(orient='records')
                 else:
+                    write_status(
+                        intermediate_dir, figure_id, "coord_map", "failed",
+                        "axis fit failed — no physical coordinates",
+                        yolo_points=len(points),
+                    )
                     # Fallback: Just points
-                     for p in matched_points:
-                         extraction_data.append({
+                    for p in matched_points:
+                        extraction_data.append({
                             "series": p.get('series', 'Unknown'),
                             "x_pixel": p['center'][0],
                             "y_pixel": p['center'][1],
@@ -220,10 +228,16 @@ class FigurePipeline:
                     macro_cleaned_dir,
                     vlm_metadata=vlm_metadata,
                     text_evidence=text_evidence,
+                    is_relevant=is_relevant,
                 )
 
                 if json_path:
                     print(f"      -> EVIDENCE SAVED: {json_path}")
+                    if not df.empty:
+                        write_status(
+                            intermediate_dir, figure_id, "evidence", "ok", "",
+                            points=len(extraction_data), is_relevant=bool(is_relevant),
+                        )
                     extracted_results.append(json_path)
                     # Post-extraction hooks (paper module 6 — VLM-driven
                     # inspection loop).  Pipelines stay decoupled from
@@ -261,6 +275,7 @@ class FigurePipeline:
                 print(f"      ! Error processing chart {figure_id}: {e}")
                 import traceback
                 traceback.print_exc()
+                write_status(intermediate_dir, figure_id, "figure", "failed", f"{type(e).__name__}: {e}")
 
         return extracted_results
 

@@ -92,6 +92,19 @@ def _load_local_vars(out_dir: str, source_id: str) -> Tuple[Optional[Dict[str, A
         return None, path
 
 
+def _skip_irrelevant_figures() -> bool:
+    """Config gate for the figure keyword filter (``adjudication.skip_irrelevant_figures``).
+
+    The filter is SOFT by default: a figure whose OCR text lacks result
+    keywords is still assembled, it just carries ``is_relevant=False``.
+    """
+    try:
+        from src.utils.config import load_config
+        return bool(load_config().get("adjudication", {}).get("skip_irrelevant_figures", False))
+    except Exception:
+        return False
+
+
 def _read_csv(csv_path: Optional[str]) -> str:
     if not csv_path or not os.path.exists(csv_path):
         return ""
@@ -171,8 +184,10 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
             continue
         source_id = os.path.basename(ev_path).replace("_evidence.json", "")
         if not evidence.get("is_relevant", True):
-            logger.info("source_discovery skip irrelevant figure source=%s", source_id)
-            continue
+            if _skip_irrelevant_figures():
+                logger.info("source_discovery skip irrelevant figure source=%s", source_id)
+                continue
+            logger.info("source_discovery keep irrelevant figure (soft flag) source=%s", source_id)
         local_vars, lv_path = _load_local_vars(local_vars_dir, source_id)
         text_window = extract_text_window(
             paper_text, source_id, "figure",

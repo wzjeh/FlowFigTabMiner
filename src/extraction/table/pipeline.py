@@ -15,6 +15,7 @@ from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 import json
 import glob
 import logging
+from src.pipeline.status import write_status
 
 logger = logging.getLogger(__name__)
 
@@ -130,6 +131,18 @@ class TablePipeline:
         import gc
         gc.collect()
 
+    @staticmethod
+    def _status(image_path, output_dir, stage, outcome, reason="", **extra):
+        """Per-source outcome record (``{intermediate}/status/{table}.json``).
+
+        ``output_dir`` is ``{intermediate}/tables``; its parent is the
+        per-PDF intermediate dir.  No-op when the caller gave no output dir.
+        """
+        if not output_dir:
+            return
+        source_id = os.path.splitext(os.path.basename(image_path))[0]
+        write_status(os.path.dirname(os.path.abspath(output_dir)), source_id, stage, outcome, reason, **extra)
+
     def process_table(self, image_path, output_dir=None):
         """
         Process a single table image.
@@ -161,6 +174,8 @@ class TablePipeline:
 
         if not filter_res['is_table']:
             logger.info(f"   -> Rejected by Table Filter (Conf: {filter_res.get('conf')})")
+            self._status(image_path, output_dir, "table_filter", "filtered",
+                         f"rejected by TabSeg YOLO (conf={filter_res.get('conf')})")
             return {'is_valid': False, 'reason': 'Filtered by YOLO'}
 
         # Prepare output structure: data/intermediate/{pdf_name}/tables/{table_basename}/
@@ -240,6 +255,7 @@ class TablePipeline:
 
         if not cells:
             logger.warning("   -> No cells detected by TATR")
+            self._status(image_path, output_dir, "tatr", "failed", "no cells detected by TATR")
             return {'is_valid': False, 'reason': 'No cells detected'}
 
         logger.info(f"   -> Detected {len(cells)} cells via TATR")
@@ -247,6 +263,7 @@ class TablePipeline:
         # 3. Process Cells (Crop -> Classify -> Recognize)
         original_img = cv2.imread(current_image_path)
         if original_img is None:
+             self._status(image_path, output_dir, "cells", "failed", "image read error")
              return {'is_valid': False, 'reason': 'Image read error'}
              
         cell_crops = []
@@ -357,6 +374,8 @@ class TablePipeline:
                 "   -> TableCellExtractor alignment failed: %s — marking table_parsing_failed",
                 cell_result.notes,
             )
+            self._status(image_path, output_dir, "cell_vlm", "failed",
+                         f"VLM cell alignment failed: {cell_result.notes}")
             return {
                 'is_valid': False,
                 'reason': 'alignment_failed',
@@ -527,6 +546,8 @@ class TablePipeline:
                  json.dump(evidence_data, f, indent=2)
              result_packet['json_path'] = json_path
              logger.info(f"   -> Saved Evidence JSON to: {json_path}")
+             self._status(image_path, output_dir, "evidence", "ok", "",
+                          rows=int(len(df)) if df is not None else 0, is_relevant=bool(is_relevant))
 
         # Post-extraction hooks (paper module 12 — VLM-driven table
         # inspection).  Pipelines stay decoupled from ``src.llm``; when

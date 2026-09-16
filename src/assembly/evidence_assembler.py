@@ -28,16 +28,18 @@ class EvidenceAssembler:
         # 1. Collect and OCR Text Crops
         text_evidence = self._process_text_crops(figure_id, intermediate_dir)
         
-        # 2. Semantic Filtering
-        is_relevant = self._is_relevant_chart(text_evidence, figure_id)
-        
+        # 2. Semantic Filtering.  ``_is_relevant_chart`` returns a
+        # (bool, evidence) tuple — unpack it, otherwise the non-empty tuple
+        # is always truthy and the gate never fires.
+        is_relevant, _ = self._is_relevant_chart(text_evidence, figure_id)
+
         if not is_relevant:
             # [RETRY] Try to enrich with Shared Captions
             print(f"      [Filter] Local check failed. Trying Context Expansion (Shared Caption)...")
             enriched = self._try_enrich_with_shared_caption(figure_id, intermediate_dir, text_evidence)
             
             if enriched:
-                is_relevant = self._is_relevant_chart(text_evidence, figure_id)
+                is_relevant, _ = self._is_relevant_chart(text_evidence, figure_id)
                 if is_relevant:
                      print(f"      [Filter] SUCCESS! Saved by Shared Caption.")
                 else:
@@ -45,7 +47,8 @@ class EvidenceAssembler:
         
         return is_relevant, text_evidence
 
-    def assemble(self, figure_id, extraction_data, intermediate_dir, vlm_metadata, text_evidence=None):
+    def assemble(self, figure_id, extraction_data, intermediate_dir, vlm_metadata, text_evidence=None,
+                 is_relevant=True):
         """Assemble Step 3 extraction + VLM metadata into a JSON packet.
 
         Per the per-field decisive-source design:
@@ -73,12 +76,13 @@ class EvidenceAssembler:
         """
         print(f"[Assembler] Assembling evidence for {figure_id}...")
 
-        # 1. PaddleOCR caption (still useful for downstream LLM context)
+        # 1. PaddleOCR caption (still useful for downstream LLM context).
+        # Relevance is a SOFT flag: it is recorded on the packet, never used
+        # to discard the figure here (mirrors the table keyword filter).
         if text_evidence is None:
             is_relevant, text_evidence = self.check_relevance(figure_id, intermediate_dir)
-            if not is_relevant:
-                print(f"      [Filter] Discarding {figure_id} due to lack of result keywords.")
-                return None
+        if not is_relevant:
+            print(f"      [Filter] {figure_id} lacks result keywords — flagged is_relevant=False (kept).")
 
         if not any(item.get('text') for item in text_evidence.get('chart_text', [])):
             print(f"      [Assembler] Local caption empty for {figure_id}. Checking shared page context...")
@@ -92,7 +96,7 @@ class EvidenceAssembler:
         text_ev_vlm = _vlm_text_evidence(vlm_metadata)
 
         evidence_packet = {
-            "is_relevant": True,
+            "is_relevant": bool(is_relevant),
             "meta": {
                 "figure_id": figure_id,
                 "source_intermediate_dir": intermediate_dir,

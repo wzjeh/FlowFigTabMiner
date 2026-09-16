@@ -35,6 +35,7 @@ from src.llm.config import LLMConfig
 from src.llm.json_utils import sanitize_json_text
 from src.llm.providers.base import LLMProvider
 from src.llm.types import ChatMessage, Role
+from src.pipeline.status import write_status
 
 logger = logging.getLogger(__name__)
 
@@ -155,6 +156,7 @@ class PerSourceAssembler:
             )
         except Exception as exc:
             logger.error("per_source.llm_fail source=%s exc=%s", packet.source_id, exc)
+            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"LLM call failed: {exc}")
             return [], 0
 
         raw_text = response.text or ""
@@ -175,6 +177,7 @@ class PerSourceAssembler:
                 "per_source.parse_fail source=%s exc=%s raw=%s",
                 packet.source_id, exc, raw_path,
             )
+            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"JSON parse failed: {exc}")
             return [], 0
 
         if not isinstance(parsed, list):
@@ -194,6 +197,7 @@ class PerSourceAssembler:
             records.append(rec)
 
         retry_count = getattr(response, "retry_count", 0) or 0
+        write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "ok", "", records=len(records))
         logger.info(
             "per_source.ok source=%s type=%s records=%d latency_ms=%.0f tokens_out=%s retry=%d",
             packet.source_id, packet.source_type, len(records),
