@@ -210,15 +210,38 @@ INHERITABLE_CONDITION_FIELDS = (
 )
 
 
+_PLACEHOLDER_STRINGS = {
+    "missing", "none", "n/a", "na", "null", "unknown", "not stated", "not specified",
+    "not reported", "not given", "unspecified", "-", "--", "?", "tbd",
+}
+_SRC_TAG_RE = re.compile(r"\s*\[src=[^\]]*\]")
+
+
+def clean_condition_string(v):
+    """Strip provenance tags the LocalVars prompt asks for (``THF [src=paddleocr]``)
+    and turn placeholder strings ("missing", "n/a" …) into None."""
+    if not isinstance(v, str):
+        return v
+    s = _SRC_TAG_RE.sub("", v).strip()
+    if not s or s.lower() in _PLACEHOLDER_STRINGS:
+        return None
+    return s
+
+
 def _scalar(v):
-    """Only plain scalars are inheritable (LocalVars sometimes emits per-step dicts)."""
+    """Only plain, non-placeholder scalars are inheritable (LocalVars
+    sometimes emits per-step dicts or the literal string "missing")."""
     if isinstance(v, bool):
         return None
     if isinstance(v, (int, float)):
         return v
-    if isinstance(v, str) and v.strip():
-        return v.strip()
+    if isinstance(v, str):
+        return clean_condition_string(v)
     return None
+
+
+def _has_outcome(rec: dict) -> bool:
+    return any(rec.get(k) is not None for k in ("yield_pct", "conversion_pct", "selectivity_pct", "ee_pct"))
 
 
 def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: dict = None) -> dict:
@@ -234,6 +257,10 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
     prov = dict(rec.get("conditions_provenance") or {})
     fixed = (local_vars or {}).get("fixed_conditions") or {}
     defaults = (global_vars or {}).get("default_conditions") or {}
+    # Hygiene first: the per-source LLM may itself echo "missing" / src tags.
+    for field, v in list(conds.items()):
+        if isinstance(v, str):
+            conds[field] = clean_condition_string(v)
     for field in INHERITABLE_CONDITION_FIELDS:
         cur = conds.get(field)
         if cur not in (None, "", [], {}):
@@ -1053,7 +1080,10 @@ class PostProcessor:
         gv_path = os.path.join(intermediate_dir, "global_vars.json")
         if os.path.exists(gv_path):
             try:
-                global_vars = json.load(open(gv_path))
+                from src.adjudication.global_vars_builder import GlobalVarsBuilder
+                # Re-validate on load so the quote-supports-value rule applies
+                # even to pools written by an older builder.
+                global_vars = GlobalVarsBuilder._validate(json.load(open(gv_path)))
             except Exception:
                 global_vars = {}
         local_vars_cache: dict = {}
@@ -1194,6 +1224,11 @@ class PostProcessor:
             #    process-monitoring plot mis-read as a reaction figure emits one
             #    such shell per point.  Flag for downstream filtering.
             nr["is_hollow"] = _is_hollow_record(nr)
+            # has_outcome: any of yield / conversion / selectivity / ee present.
+            # A record can be non-hollow (product named from the caption) yet
+            # carry no measured outcome (e.g. a heatmap cell whose label OCR
+            # missed); downstream consumers filter on this, nothing is dropped.
+            nr["has_outcome"] = _has_outcome(nr)
 
             normalised.append(nr)
 

@@ -141,3 +141,31 @@ def test_write_status_creates_record(tmp_path):
     write_status(str(tmp_path), "page_1_table_0", "table_filter", "filtered", "rejected", conf=0.1)
     rec = json.load(open(tmp_path / "status" / "page_1_table_0.json"))
     assert rec["outcome"] == "filtered" and rec["conf"] == 0.1 and rec["stage"] == "table_filter"
+
+
+# ── hygiene + quote validation ──────────────────────────────────────────────
+def test_inherit_rejects_placeholders_and_strips_src_tags():
+    rec = {"conditions": {"solvent": "THF [src=paddleocr]", "catalyst": "missing", "temperature_C": None}}
+    local = {"fixed_conditions": {"temperature_C": "missing", "catalyst": "n/a"}}
+    out = inherit_conditions(rec, local, {}, None)
+    c = out["conditions"]
+    assert c["solvent"] == "THF" and c["catalyst"] is None and c["temperature_C"] is None
+    assert "temperature_C" not in out["conditions_provenance"]
+
+
+def test_global_vars_quote_must_support_value():
+    from src.adjudication.global_vars_builder import GlobalVarsBuilder
+    res = GlobalVarsBuilder._validate({"default_conditions": {
+        "temperature_C": {"value": -60, "quote": "reduced the residence time dramatically", "scope": "paper"},
+        "solvent": {"value": "tetrahydrofuran", "quote": "0.10 M in THF", "scope": "paper"},
+        "flow_rate_mL_min": {"value": 6.0, "quote": "flow rate: 6.0 mL min-1", "scope": "paper"},
+        "residence_time_s": {"value": 94, "quote": "at 50 \u00b0C (tR2 = 94 s)", "scope": "paper"},
+        "reactor_type": {"value": "flow microreactor", "quote": "using the integrated flow microreactor system", "scope": "paper"},
+        "pressure_bar": {"value": 5, "quote": "", "scope": "paper"},
+    }})
+    dc = res["default_conditions"]
+    assert dc["temperature_C"]["scope"] == "partial"          # quote does not state -60
+    assert dc["solvent"]["scope"] == "paper"                  # alias THF accepted
+    assert dc["flow_rate_mL_min"]["scope"] == "paper" and dc["residence_time_s"]["scope"] == "paper"
+    assert dc["reactor_type"]["scope"] == "paper"
+    assert dc["pressure_bar"]["value"] is None                # no quote -> no value

@@ -35,6 +35,17 @@ from src.adjudication.pdf_parser import _EXPERIMENTAL_ANCHORS
 from src.llm.json_utils import sanitize_json_text
 from src.llm.types import ChatMessage, Role
 
+# Solvent / reagent aliases accepted when checking that a quote states a value.
+_ALIASES = {
+    "tetrahydrofuran": {"thf"}, "thf": {"tetrahydrofuran"},
+    "diethyl ether": {"et2o", "ether"}, "et2o": {"diethyl ether", "ether"},
+    "dichloromethane": {"dcm", "ch2cl2"}, "dcm": {"dichloromethane", "ch2cl2"},
+    "toluene": {"phme"}, "acetonitrile": {"mecn", "ch3cn"}, "methanol": {"meoh"},
+    "hexane": {"n-hexane", "hexanes"}, "cyclopentyl methyl ether": {"cpme"}, "cpme": {"cyclopentyl methyl ether"},
+    "methyl tert-butyl ether": {"mtbe"}, "2-methyltetrahydrofuran": {"2-methf", "2-me-thf", "2-methyl-thf"},
+    "dimethylformamide": {"dmf"}, "dimethyl sulfoxide": {"dmso"}, "1,4-dioxane": {"dioxane"},
+}
+
 CONDITION_FIELDS = (
     "temperature_C", "residence_time_s", "flow_rate_mL_min", "solvent",
     "reactor_type", "pressure_bar", "catalyst", "additive",
@@ -143,8 +154,36 @@ class GlobalVarsBuilder:
 
     # ------------------------------------------------------------------ #
     @staticmethod
-    def _validate(result: Dict[str, Any]) -> Dict[str, Any]:
-        """Enforce the no-quote-no-value rule deterministically."""
+    def _quote_supports(field: str, value: Any, quote: str) -> bool:
+        """Deterministic check that the verbatim quote actually states the value.
+
+        Numeric fields: the number (integer or decimal form) must occur in the
+        quote.  String fields: the value or a known alias (THF ↔
+        tetrahydrofuran …) must occur, case-insensitively.  A quote that merely
+        talks about the topic ("reduced the residence time …") does NOT
+        license a paper-wide default.
+        """
+        q = (quote or "").lower().replace("\u2212", "-").replace("\u2013", "-").replace("\u2014", "-")
+        q = re.sub(r"\s+", " ", q)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            forms = {f"{value:g}", f"{value:.1f}", f"{value:.2f}"}
+            if float(value).is_integer():
+                forms.add(str(int(value)))
+            return any(re.search(rf"(?<![\d.]){re.escape(f)}(?![\d])", q) for f in forms)
+        if isinstance(value, str) and value.strip():
+            v = value.strip().lower()
+            cands = {v} | _ALIASES.get(v, set())
+            if field == "reactor_type":
+                cands |= {"microreactor", "micro reactor", "flow reactor", "micromixer", "microflow",
+                          "flow system", "tube reactor", "batch"}
+            return any(c in q for c in cands if len(c) >= 3)
+        return False
+
+    @classmethod
+    def _validate(cls, result: Dict[str, Any]) -> Dict[str, Any]:
+        """Enforce no-quote-no-value and quote-supports-value deterministically.
+        A value whose quote does not contain it is demoted to scope=partial
+        (kept as a hint for the LLM, never inherited by PostProcessor)."""
         dc = result.get("default_conditions") or {}
         clean: Dict[str, Any] = {}
         for field in CONDITION_FIELDS:
@@ -156,6 +195,8 @@ class GlobalVarsBuilder:
             scope = v.get("scope") if v.get("scope") in ("paper", "partial") else None
             if value in (None, "", []) or not quote:
                 value, scope = None, None
+            elif scope == "paper" and not cls._quote_supports(field, value, quote):
+                scope = "partial"
             clean[field] = {"value": value, "quote": quote or None, "scope": scope}
         result["default_conditions"] = clean
         result.setdefault("reaction_context", {})
