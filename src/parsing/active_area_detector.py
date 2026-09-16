@@ -133,11 +133,17 @@ class ActiveAreaDetector:
         os.makedirs(output_dir, exist_ok=True)
         
         saved_paths = []
+        # Geometry sidecar: one entry per crop, in PDF points, so later
+        # stages can find the crop's caption / footnote in the PDF text
+        # layer (see ``src.parsing.caption_locator``).  Without it the only
+        # surviving metadata is the page number in the filename.
+        layout = {"pdf": os.path.abspath(pdf_path), "detect_scale": 2, "crop_scale": 4, "sources": []}
         
         try:
             for page_key, detections in all_detections.items():
                 page_idx = int(page_key.split("_")[1]) - 1
                 page = pdf[page_idx]
+                page_w_pt, page_h_pt = page.get_size()
                 # Render page to image at high resolution for cropping
                 bitmap = page.render(scale=4) # 4x scale (approx 300 DPI) for better crop quality
                 pil_image = bitmap.to_pil()
@@ -161,9 +167,25 @@ class ActiveAreaDetector:
                     filepath = os.path.join(label_dir, filename)
                     crop.save(filepath)
                     saved_paths.append(filepath)
+                    layout["sources"].append({
+                        "source_id": f"{page_key}_{label}_{idx}",
+                        "kind": label,
+                        "page": page_idx + 1,
+                        "page_size_pt": [round(page_w_pt, 2), round(page_h_pt, 2)],
+                        "bbox_px": [round(c, 1) for c in crop_box],          # in the 4x crop render
+                        "bbox_pt": [round(c / 2.0, 2) for c in box],          # detection was at 2 px/pt
+                        "crop_path": filepath,
+                        "geometry_source": "tfid",
+                    })
         finally:
             if pdf:
                 pdf.close()
+
+        try:
+            with open(os.path.join(output_dir, "layout.json"), "w") as f:
+                json.dump(layout, f, indent=2)
+        except Exception as exc:
+            print(f"[ActiveAreaDetector] layout.json write failed: {exc}")
                 
         return saved_paths
 

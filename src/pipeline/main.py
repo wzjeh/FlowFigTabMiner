@@ -139,6 +139,14 @@ def run_step1_tfid(pdf_path: str) -> bool:
         intermediate_dir = os.path.join(base_intermediate_dir, basename)
         saved_paths = detector.save_crops(pdf_path, detections, intermediate_dir)
         print(f"Saved {len(saved_paths)} crops (figures/tables) to {intermediate_dir}")
+        # Resolve each crop to its real caption / label / footnote from the
+        # PDF text layer (deterministic; feeds the text-window anchors and
+        # both adjudication prompts).
+        try:
+            from src.parsing.caption_locator import write_contexts
+            write_contexts(pdf_path, intermediate_dir)
+        except Exception as exc:
+            print(f"[CaptionLocator] failed (non-fatal): {exc}")
         # Release Florence-2 (~2GB) immediately — it is used only here.
         del detector
         release_memory()
@@ -146,6 +154,101 @@ def run_step1_tfid(pdf_path: str) -> bool:
     except Exception as exc:
         print(f"Step 1 Failed: {exc}")
         return False
+
+
+def run_step44_global_vars(pdf_path: str, intermediate_dir: str, provider, llm_cfg, rebuild: bool = False) -> dict:
+    """Step 4.4 — one LLM call per paper: paper-level reaction context and
+    default conditions (each value with a verbatim quote and a scope), written
+    to ``{intermediate_dir}/global_vars.json``.  See ``GlobalVarsBuilder``."""
+    from src.adjudication.global_vars_builder import GlobalVarsBuilder
+    from src.adjudication.post_processor import build_abbrev_map
+
+    paper_text = PDFParser().extract_text(pdf_path)
+    scheme_cond_text = ""
+    cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+    if os.path.exists(cond_path):
+        with open(cond_path) as f:
+            scheme_cond_text = f.read().strip()
+    try:
+        return GlobalVarsBuilder(llm=provider, llm_cfg=llm_cfg).build(
+            pdf_path, intermediate_dir, paper_text,
+            scheme_conditions=scheme_cond_text, abbrev_map=build_abbrev_map(paper_text), rebuild=rebuild,
+        )
+    except Exception as exc:
+        print(f"   [GlobalVars] failed (non-fatal): {exc}")
+        return {}
+
+
+def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cfg, rebuild: bool = False,
+                          global_vars: dict = None) -> None:
+    """Step 4.5 — one LocalVarsBuilder call per figure / table source.
+
+    Each source gets its CaptionLocator context (real label, verbatim
+    caption, footnote) so the LLM sees the figure's identity and the text
+    window is anchored on the paper's own figure number.  ``rebuild=True``
+    discards cached ``local_vars/*.json`` first (the cache has no staleness
+    check of its own) — used by ``scripts/reassemble.py --rebuild-vars``.
+    """
+    from src.parsing.caption_locator import load_context
+    from src.adjudication.source_discovery import apply_context_to_evidence
+
+    paper_text = PDFParser().extract_text(pdf_path)
+    local_vars_dir = os.path.join(intermediate_dir, "local_vars")
+    if rebuild and os.path.isdir(local_vars_dir):
+        for fn in glob.glob(os.path.join(local_vars_dir, "*_local_vars.json")):
+            os.remove(fn)
+        print(f"   [LocalVars] rebuild: cleared cached local_vars in {local_vars_dir}")
+    os.makedirs(local_vars_dir, exist_ok=True)
+    builder = LocalVarsBuilder(llm=provider, llm_cfg=llm_cfg)
+
+    scheme_cond_text = ""
+    cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
+    if os.path.exists(cond_path):
+        with open(cond_path) as f:
+            scheme_cond_text = f.read().strip()
+        print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
+
+    macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
+    for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
+        try:
+            with open(jpath) as f:
+                ev = json.load(f)
+            src_id = ev.get("meta", {}).get(
+                "figure_id",
+                os.path.basename(jpath).replace("_evidence.json", ""),
+            )
+            ctx = load_context(intermediate_dir, src_id)
+            builder.build(
+                src_id, "figure", apply_context_to_evidence(ev, ctx, "figure"), paper_text, local_vars_dir,
+                scheme_conditions=scheme_cond_text, context=ctx, global_vars=global_vars,
+            )
+        except Exception as exc:
+            print(f"   [LocalVars] Figure error {jpath}: {exc}")
+
+    tables_dir = os.path.join(intermediate_dir, "tables")
+    if os.path.exists(tables_dir):
+        for root, _, files in os.walk(tables_dir):
+            for fname in files:
+                if not fname.endswith("_evidence.json"):
+                    continue
+                ev_path = os.path.join(root, fname)
+                try:
+                    with open(ev_path) as f:
+                        ev = json.load(f)
+                    src_id = fname.replace("_evidence.json", "")
+                    csv_path = ev.get("csv_path", "")
+                    csv_head = ""
+                    if csv_path and os.path.exists(csv_path):
+                        with open(csv_path) as cf:
+                            csv_head = "".join(cf.readlines()[:6])
+                    ctx = load_context(intermediate_dir, src_id)
+                    builder.build(
+                        src_id, "table", apply_context_to_evidence(ev, ctx, "table"), paper_text, local_vars_dir,
+                        csv_head=csv_head, scheme_conditions=scheme_cond_text, context=ctx, global_vars=global_vars,
+                    )
+                except Exception as exc:
+                    print(f"   [LocalVars] Table error {ev_path}: {exc}")
+
 
 
 # ───────────────────────────────────────────────────────────────── main
@@ -333,55 +436,14 @@ def process_one_pdf(
 
     _mark("scheme")
 
+    # ─── Step 4.4: Paper-level pool ────────────────────────────────
+    print("\n=== Step 4.4: Build Paper-Level Global Vars ===")
+    global_vars = run_step44_global_vars(pdf_path, intermediate_dir, provider, llm_cfg)
+    _mark("global_vars")
+
     # ─── Step 4.5: Sub-Variable Libraries ──────────────────────────
     print("\n=== Step 4.5: Build Sub-Variable Libraries ===")
-    paper_text = PDFParser().extract_text(pdf_path)
-
-    local_vars_dir = os.path.join(intermediate_dir, "local_vars")
-    os.makedirs(local_vars_dir, exist_ok=True)
-    builder = LocalVarsBuilder(llm=provider, llm_cfg=llm_cfg)
-
-    scheme_cond_text = ""
-    cond_path = os.path.join(intermediate_dir, "scheme_conditions.txt")
-    if os.path.exists(cond_path):
-        with open(cond_path) as f:
-            scheme_cond_text = f.read().strip()
-        print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
-
-    macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
-    for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
-        try:
-            with open(jpath) as f:
-                ev = json.load(f)
-            src_id = ev.get("meta", {}).get(
-                "figure_id",
-                os.path.basename(jpath).replace("_evidence.json", ""),
-            )
-            builder.build(src_id, "figure", ev, paper_text, local_vars_dir)
-        except Exception as exc:
-            print(f"   [LocalVars] Figure error {jpath}: {exc}")
-
-    if os.path.exists(tables_dir):
-        for root, _, files in os.walk(tables_dir):
-            for fname in files:
-                if not fname.endswith("_evidence.json"):
-                    continue
-                ev_path = os.path.join(root, fname)
-                try:
-                    with open(ev_path) as f:
-                        ev = json.load(f)
-                    src_id = fname.replace("_evidence.json", "")
-                    csv_path = ev.get("csv_path", "")
-                    csv_head = ""
-                    if csv_path and os.path.exists(csv_path):
-                        with open(csv_path) as cf:
-                            csv_head = "".join(cf.readlines()[:6])
-                    builder.build(
-                        src_id, "table", ev, paper_text, local_vars_dir,
-                        csv_head=csv_head, scheme_conditions=scheme_cond_text,
-                    )
-                except Exception as exc:
-                    print(f"   [LocalVars] Table error {ev_path}: {exc}")
+    run_step45_local_vars(pdf_path, intermediate_dir, provider, llm_cfg, global_vars=global_vars)
 
     _mark("local_vars")
 

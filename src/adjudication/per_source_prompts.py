@@ -141,7 +141,15 @@ _BASE_RULES = """=== RULES ===
     Look it up in BOTH the ABBREVIATION DEFINITIONS block AND the paper text
     for a "full name (ABBR)" definition (e.g. "3,4-dichloroaniline (3,4-DCAN)"
     → use "3,4-dichloroaniline"). Only keep the bare abbreviation if no
-    definition exists anywhere."""
+    definition exists anywhere.
+20. PAPER-LEVEL DEFAULTS: The PAPER-LEVEL block lists conditions the authors state for the
+    whole paper (scope=paper, each with a verbatim quote). Precedence for every condition
+    field: (a) this source's own data / caption / footnote / local_vars.fixed_conditions,
+    then (b) scope=paper defaults, then (c) scope=partial values ONLY if the paper text
+    for this source confirms them. When you fill a field from (b) or (c), list that field
+    name in the record's "conditions_provenance" object as {"<field>": "paper_global"}.
+    reaction_context (main product, reagent, electrophile) may fill product/reactant NAMES
+    that this source leaves implicit (e.g. a figure that only shows yield vs conditions)."""
 
 _DOMAIN_KNOWLEDGE = """=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
 - For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,
@@ -171,10 +179,11 @@ class CommonPreamble:
     compound_pool_json: str = ""
     scheme_conditions: str = ""
     abbrev_lines: str = ""   # "ABBR = full name" lines, extracted full-text
+    global_vars_json: str = ""   # paper-level pool (Step 4.4), rendered once per paper
 
     @classmethod
     def build(cls, pools: Dict[str, Any], scheme_conditions: str = "",
-              abbrev_map: Dict[str, str] = None) -> "CommonPreamble":
+              abbrev_map: Dict[str, str] = None, global_vars: Dict[str, Any] = None) -> "CommonPreamble":
         """Build a preamble from a ``compound_pool.json`` dict, scheme text,
         and an abbreviation map (extracted from the FULL paper text so every
         source — even ones whose text window misses the definition — gets it)."""
@@ -187,6 +196,26 @@ class CommonPreamble:
             compound_pool_json=json.dumps(pools.get("compound_pool", {}), indent=2) if pools.get("compound_pool") else "",
             scheme_conditions=scheme_conditions or "",
             abbrev_lines=abbrev_lines,
+            global_vars_json=cls._render_global_vars(global_vars),
+        )
+
+    @staticmethod
+    def _render_global_vars(gv: Dict[str, Any] = None) -> str:
+        if not isinstance(gv, dict):
+            return ""
+        rc = gv.get("reaction_context") or {}
+        dc = {k: v for k, v in (gv.get("default_conditions") or {}).items()
+              if isinstance(v, dict) and v.get("value") is not None}
+        if not rc and not dc:
+            return ""
+        return json.dumps({"reaction_context": rc, "default_conditions": dc}, indent=2, ensure_ascii=False)
+
+    def render_global_vars_section(self) -> str:
+        if not self.global_vars_json:
+            return ""
+        return (
+            "=== PAPER-LEVEL CONTEXT AND DEFAULT CONDITIONS (whole paper; see RULES §20) ===\n"
+            + self.global_vars_json
         )
 
     def render_abbrev_section(self) -> str:
@@ -245,6 +274,9 @@ class PerSourcePromptBuilder(ABC):
         sch = preamble.render_scheme_conditions_section()
         abbr = preamble.render_abbrev_section()
         out = [_OUTPUT_SCHEMA, _BASE_RULES, _DOMAIN_KNOWLEDGE]
+        gv = preamble.render_global_vars_section()
+        if gv:
+            out.append(gv)
         if pools:
             out.append(pools)
         if sch:
@@ -283,13 +315,39 @@ class FigurePromptBuilder(PerSourcePromptBuilder):
             return " | ".join(parts) if parts else "(none)"
 
         raw_data = ev.get("raw_data", []) or []
-        figure_type = ev.get("meta", {}).get("figure_type", "unknown")
-        title = ev.get("meta", {}).get("title", "")
+        meta = ev.get("meta", {}) or {}
+        figure_type = meta.get("figure_type", "unknown")
+        title = meta.get("title", "")
         title_text = title.get("text") if isinstance(title, dict) else (title or "")
+        ctx = packet.context or {}
+        label = ctx.get("label") or meta.get("label") or "(unresolved)"
+        caption = ctx.get("caption") or meta.get("caption_pdf") or meta.get("caption") or ""
+        footnote = ctx.get("footnote") or meta.get("footnote_pdf") or ""
+        caption_src = ctx.get("caption_source") or meta.get("caption_source") or "missing"
+        inner_text = (ctx.get("inner_text") or meta.get("inner_text") or "").strip()
+        inner_block = (f"In-figure text (PDF text layer, verbatim — tick labels / legend / annotations):\n{inner_text}\n"
+                       if inner_text else "")
+
+        facts = meta.get("facts") or {}
+        facts_lines = ""
+        if facts:
+            facts_lines = "Chart facts (measured, treat as given): " + json.dumps(
+                {k: facts.get(k) for k in ("chart_type", "x_scale", "y_left_scale", "axis_fit",
+                                           "n_point_labels", "series_matched_ratio") if k in facts}) + "\n"
+            if facts.get("chart_type") == "heatmap":
+                facts_lines += (
+                    "HEATMAP RULE: X and Y_Left are CONDITION axes (residence_time_s / temperature_C as the\n"
+                    "local_vars axis_semantics say); the outcome of each point is Y_Right/Data_Value → yield_pct.\n"
+                    "Never put a Y_Left value into yield_pct.  X values are already physical (seconds).\n"
+                )
 
         figure_block = (
             f"=== THIS SOURCE: {packet.human_label} ({packet.source_id}) ===\n"
+            f"Paper label: {label}\n"
+            f"Caption [src={caption_src}]: {caption or '(none)'}\n"
+            f"Footnote: {footnote or '(none)'}\n"
             f"Figure type: {figure_type}\n"
+            + facts_lines + inner_block +
             f"Title: {title_text or '(none)'}\n"
             f"Axis labels (with [src=…] provenance tags):\n"
             f"  X-axis title: {_join('x_axis_title')}\n"
@@ -324,6 +382,16 @@ class TablePromptBuilder(PerSourcePromptBuilder):
         num_extracted = ev.get("num_extracted", 0)
         csv_lines = (packet.csv_content or "").splitlines()
         data_row_count = max(0, len(csv_lines) - int(header_row_count or 0))
+        ctx = packet.context or {}
+        inner_text = (ctx.get("inner_text") or ev.get("inner_text") or "").strip()
+        inner_block = ""
+        if inner_text:
+            inner_block = (
+                "\n\n=== TABLE TEXT LAYER (verbatim from the PDF, row order) ===\n"
+                "Authoritative for entry numbers and numeric cells (yields, temperatures, times) when the CSV\n"
+                "is incomplete or garbled; align its rows with the CSV rows by order / entry number.\n"
+                + inner_text
+            )
 
         table_block = (
             f"=== THIS SOURCE: {packet.human_label} ({packet.source_id}) ===\n"
@@ -333,6 +401,7 @@ class TablePromptBuilder(PerSourcePromptBuilder):
             f"Cells extracted: {num_extracted}\n\n"
             f"=== CSV CONTENT ({len(csv_lines)} total rows; {data_row_count} data rows after header) ===\n"
             + (packet.csv_content or "(empty)")
+            + inner_block
         )
 
         user_prompt = (

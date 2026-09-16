@@ -193,6 +193,7 @@ class PerSourceAssembler:
             if not isinstance(rec, dict):
                 continue  # skip non-object entries
             rec.setdefault("source_table_or_figure", packet.human_label)
+            rec["__source_id"] = packet.source_id
             rec["__assembly_order"] = order_idx * 1000 + j
             records.append(rec)
 

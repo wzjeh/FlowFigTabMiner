@@ -18,6 +18,7 @@ from src.assembly.evidence_assembler import EvidenceAssembler
 from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 from src.pipeline.status import write_status
+from src.parsing.caption_locator import load_context
 from src.utils.config import load_config
 
 class FigurePipeline:
@@ -188,8 +189,9 @@ class FigurePipeline:
                 if is_heatmap:
                     print(f"      [Heatmap] Detected heatmap-style legend → enabling extract_point_labels + log_x")
 
+                coord_log = []
                 try:
-                    df, _ = self.coord_mapper.map_coordinates(
+                    df, coord_log = self.coord_mapper.map_coordinates(
                         full_detections, cleaned_plot_path,
                         force_log_x=is_heatmap,
                         extract_point_labels=is_heatmap,
@@ -197,6 +199,29 @@ class FigurePipeline:
                 except Exception as e:
                     print(f"      [Mapper Warning] {e}")
                     df = pd.DataFrame()
+                # Persist the mapper's diagnostic log (axis bounds, tick OCR
+                # samples, fit OK/FAIL …) — previously discarded.
+                try:
+                    with open(os.path.join(macro_cleaned_dir, f"{figure_id}_coordmap_log.txt"), "w") as lf:
+                        lf.write("\n".join(str(m) for m in coord_log))
+                except Exception:
+                    pass
+
+                # Deterministic chart facts for downstream stages (C1).
+                mapper_facts = dict(getattr(self.coord_mapper, "last_facts", {}) or {})
+                n_series_matched = sum(1 for p in matched_points if p.get('series') not in (None, '', 'Default'))
+                facts = {
+                    "chart_type": "heatmap" if is_heatmap else "xy",
+                    "x_scale": mapper_facts.get("x_scale"),
+                    "y_left_scale": mapper_facts.get("y_left_scale"),
+                    "y_right_scale": mapper_facts.get("y_right_scale"),
+                    "axis_fit": mapper_facts.get("axis_fit"),
+                    "n_points": len(points),
+                    "n_point_labels": mapper_facts.get("n_point_labels", 0),
+                    "has_point_labels": bool(mapper_facts.get("n_point_labels", 0)),
+                    "n_series_legend": len(prototypes),
+                    "series_matched_ratio": round(n_series_matched / len(points), 3) if points else 0.0,
+                }
                 
                 extraction_data = []
                 if not df.empty:
@@ -229,6 +254,8 @@ class FigurePipeline:
                     vlm_metadata=vlm_metadata,
                     text_evidence=text_evidence,
                     is_relevant=is_relevant,
+                    context=load_context(intermediate_dir, figure_id),
+                    facts=facts,
                 )
 
                 if json_path:

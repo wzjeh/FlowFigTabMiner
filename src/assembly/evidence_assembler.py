@@ -48,7 +48,7 @@ class EvidenceAssembler:
         return is_relevant, text_evidence
 
     def assemble(self, figure_id, extraction_data, intermediate_dir, vlm_metadata, text_evidence=None,
-                 is_relevant=True):
+                 is_relevant=True, context=None, facts=None):
         """Assemble Step 3 extraction + VLM metadata into a JSON packet.
 
         Per the per-field decisive-source design:
@@ -95,12 +95,24 @@ class EvidenceAssembler:
         # field accessors keep working; provenance rides in each entry.
         text_ev_vlm = _vlm_text_evidence(vlm_metadata)
 
+        # PDF-text-layer identity (CaptionLocator): real label, verbatim
+        # caption/footnote.  ``caption`` stays the PaddleOCR reading for
+        # backward compatibility; ``caption_pdf`` is the authoritative one.
+        context = context or {}
+        facts = dict(facts or {})
         evidence_packet = {
             "is_relevant": bool(is_relevant),
             "meta": {
                 "figure_id": figure_id,
                 "source_intermediate_dir": intermediate_dir,
+                "figure_type": facts.get("chart_type", "unknown"),
+                "facts": facts,
                 "caption": caption_content,
+                "label": context.get("label"),
+                "caption_pdf": context.get("caption", ""),
+                "footnote_pdf": context.get("footnote", ""),
+                "caption_source": context.get("caption_source", "missing") if context else "missing",
+                "page": context.get("page"),
                 "title": _fv_serialize(vlm_metadata.title),
                 "footnote": _fv_serialize(vlm_metadata.footnote),
             },
