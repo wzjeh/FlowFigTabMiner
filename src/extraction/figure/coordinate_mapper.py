@@ -29,6 +29,16 @@ class CoordinateMapper:
         """
         debug_log = []
         def log(msg): debug_log.append(msg)
+        # Deterministic facts about this mapping (scale types, fit outcome,
+        # point-label count).  Read by FigurePipeline after the call and
+        # persisted into the evidence packet so downstream stages never
+        # have to re-guess them.  Reset per call.
+        self.last_facts = {
+            "x_scale": None, "y_left_scale": None, "y_right_scale": None,
+            "axis_fit": {"x": None, "y_left": None, "y_right": None},
+            "n_point_labels": 0, "forced_log_x": bool(force_log_x),
+            "point_labels_requested": bool(extract_point_labels),
+        }
         
         import traceback
         try:
@@ -566,6 +576,12 @@ class CoordinateMapper:
                 log("Right Axis Model Fit Success -> Forcing Dual Axis Mode")
             
             log(f"Models Fit: X={'OK' if model_x else 'FAIL'}, YL={'OK' if model_yl else 'FAIL'}")
+            self.last_facts.update({
+                "x_scale": "log" if is_x_log else "linear",
+                "y_left_scale": "log" if is_yl_log else "linear",
+                "y_right_scale": "log" if is_yr_log else "linear",
+                "axis_fit": {"x": bool(model_x), "y_left": bool(model_yl), "y_right": bool(model_yr)},
+            })
             
             # 3. Data Point Cleaning & Transform
             data_rows = []
@@ -686,14 +702,17 @@ class CoordinateMapper:
                             if crop.shape[0] < 60 or crop.shape[1] < 60:
                                 scale = 4
                                 crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
+                            val = None  # never inherit the previous point's label
                             try:
                                 txt, _conf = self.rec.recognize(crop)
                                 val = parse_val(txt)
-                            except Exception: pass
+                            except Exception:
+                                pass
                             if val is not None:
                                 point_labels[idx] = val
             
             log(f"Point Labels Extracted: {len(point_labels)}")
+            self.last_facts["n_point_labels"] = len(point_labels)
 
             # 5. Prediction
             for idx, p in enumerate(points):

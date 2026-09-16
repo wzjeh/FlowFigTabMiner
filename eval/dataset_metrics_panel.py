@@ -182,6 +182,39 @@ def _smiles_sources(records: List[Dict[str, Any]]) -> Dict[str, int]:
     return dict(c)
 
 
+def _source_kind(r: Dict[str, Any]) -> str:
+    src = str(r.get("source_table_or_figure") or "").lower()
+    if src.startswith(("figure", "fig", "scheme")):
+        return "figure"
+    if src.startswith("table"):
+        return "table"
+    return "other"
+
+
+def _by_source_kind(records: List[Dict[str, Any]], metrics: List[str]) -> Dict[str, Any]:
+    """Non-hollow coverage split by source kind (figure / table).  Figure
+    records dominate the corpus (~84 %), so an overall number hides where a
+    condition gap actually lives."""
+    out = {}
+    for kind in ("figure", "table"):
+        rs = [r for r in records if _source_kind(r) == kind and r.get("is_hollow") is not True]
+        n_all = sum(1 for r in records if _source_kind(r) == kind)
+        out[kind] = {"records": n_all, "non_hollow": len(rs),
+                     "coverage_non_hollow": _coverage(rs, metrics) if rs else {}}
+    return out
+
+
+def _condition_provenance(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
+    """Per condition field: where the value came from (llm_source /
+    source_local / paper_global), from ``conditions_provenance``."""
+    out: Dict[str, Counter] = {}
+    for r in records:
+        prov = r.get("conditions_provenance") or {}
+        for field, src in prov.items():
+            out.setdefault(field, Counter())[str(src)] += 1
+    return {f: dict(c) for f, c in out.items()}
+
+
 def _timing(basenames: Optional[set], intermediate_dir: str, attributable: bool) -> Dict[str, Any]:
     # Timing is only meaningful when we can map records to specific intermediate
     # dirs. A tabular dataset with no --basenames-from cannot be attributed to
@@ -244,6 +277,8 @@ def build_panel(args) -> Dict[str, Any]:
         "coverage_all": _coverage(records, all_metrics),
         "coverage_non_hollow": _coverage(non_hollow, all_metrics) if non_hollow else {},
         "smiles_sources": _smiles_sources(records),
+        "by_source_kind": _by_source_kind(records, all_metrics),
+        "condition_provenance": _condition_provenance(records),
         "timing": _timing(basenames, args.intermediate_dir, timing_attributable),
         "token_cost": "N/A (not persisted historically; capture on re-run from per_source logs)",
     }
@@ -286,6 +321,28 @@ def _md_table(panel: Dict[str, Any]) -> str:
         lines.append("_(no product_smiles in dataset)_")
 
     t = panel["timing"]
+    bsk = panel.get("by_source_kind") or {}
+    if bsk:
+        lines += ["", "## Coverage by source kind (non-hollow, % non-null)", "",
+                  "| Field | figure | table |", "|---|---|---|"]
+        for _, ms in GROUPS:
+            for m in ms:
+                cells = []
+                for kind in ("figure", "table"):
+                    cov = (bsk.get(kind) or {}).get("coverage_non_hollow") or {}
+                    c = cov.get(m)
+                    cells.append(f"{c['pct']}% ({c['filled']})" if c else "-")
+                lines.append(f"| {m} | {cells[0]} | {cells[1]} |")
+        lines.append("")
+        lines.append("- figure records: {} (non-hollow {}); table records: {} (non-hollow {})".format(
+            (bsk.get("figure") or {}).get("records", 0), (bsk.get("figure") or {}).get("non_hollow", 0),
+            (bsk.get("table") or {}).get("records", 0), (bsk.get("table") or {}).get("non_hollow", 0)))
+    prov = panel.get("condition_provenance") or {}
+    if prov:
+        lines += ["", "## Condition provenance (records with a value, by origin)", "",
+                  "| Field | llm_source | source_local | paper_global |", "|---|---|---|---|"]
+        for field, c in prov.items():
+            lines.append(f"| {field} | {c.get('llm_source', 0)} | {c.get('source_local', 0)} | {c.get('paper_global', 0)} |")
     lines += ["", "## Cost / latency", ""]
     if t:
         lines.append(f"- Papers with timing: {t['papers_with_timing']}")

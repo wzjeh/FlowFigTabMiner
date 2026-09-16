@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 import fitz  # PyMuPDF
 
 
@@ -179,6 +179,32 @@ def _slice_around(text: str, center: int, size: int) -> Tuple[int, int]:
     return start, end
 
 
+def _label_patterns(label: str) -> List[str]:
+    """Regexes matching in-text citations of a resolved label.
+
+    ``"Figure 2"`` → ``\bfig(?:ure|\.)?\s*2(?![0-9])`` (also matches "Fig. 2",
+    "Fig 2", "Figure2" but not "Figure 20"); ``"Table 1"`` / ``"Scheme 3"``
+    analogously.  Supplementary labels ("Figure S3") keep the S.
+    """
+    m = re.match(r"\s*(figure|fig\.?|table|scheme|chart)\s*(S?\d+)", label or "", re.I)
+    if not m:
+        return []
+    kind, num = m.group(1).lower().rstrip("."), re.escape(m.group(2))
+    if kind in ("figure", "fig"):
+        return [rf"\bfig(?:ure|\.)?\s*{num}(?![0-9])"]
+    return [rf"\b{kind}\s*{num}(?![0-9])"]
+
+
+def _merge_spans(spans: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+    out: List[Tuple[int, int]] = []
+    for a, b in sorted(spans):
+        if out and a <= out[-1][1]:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
+
+
 def extract_text_window(
     paper_text: str,
     source_id: str,
@@ -186,15 +212,23 @@ def extract_text_window(
     primary_size: int = 6000,
     experimental_size: int = 2000,
     extra_anchor_keywords: Optional[Tuple[str, ...]] = None,
+    label: Optional[str] = None,
+    mention_radius: int = 800,
 ) -> str:
     """Extract a dual-anchor window relevant to a single source.
 
     Two anchors are scanned independently:
 
-    1. **Primary anchor** — the figure/table number ("Figure 3", "Table 1")
-       derived from ``source_id``.  This window carries the local context
-       (caption mentions, immediate prose around the result).  Falls back
-       to ``paper_text[:primary_size]`` if no keyword matches.
+    1. **Primary anchor(s)** — when ``label`` (the source's real caption
+       label, e.g. ``"Figure 2"``, resolved by ``CaptionLocator``) is given,
+       EVERY in-text mention of it ("Fig. 2", "Figure 2a" …) plus the
+       caption fragments in ``extra_anchor_keywords`` become anchors; a
+       ±``mention_radius`` slice is taken around each, overlapping slices
+       are merged, and slices are kept in document order until
+       ``primary_size`` is exhausted.  Without ``label`` the legacy
+       behaviour applies: the first hit of the source_id-derived
+       "figure N" keyword (N = crop index on the page — usually NOT the
+       paper's figure number) or ``paper_text[:primary_size]``.
 
     2. **Experimental anchor** — the first occurrence of a General
        Procedure / Materials-and-Methods heading.  Captures paper-wide
@@ -202,73 +236,77 @@ def extract_text_window(
        authors typically state once in the Experimental section.  Skipped
        if no heading is found.
 
-    The two slices are concatenated with a clear ``--- experimental
-    section ---`` separator so downstream LLM prompts can tell them
-    apart.  If the two windows overlap (e.g. experimental section is
-    next to the figure citation), the larger contiguous range is used
-    once — never duplicated.
-
-    Total output length is bounded by ``primary_size +
-    experimental_size``; in practice the LLM sees ~8KB for a
-    ``(6000, 2000)`` call.
+    Slices are concatenated in document order with ``--- experimental
+    section ---`` / ``--- local context ---`` / ``--- … ---`` separators so
+    downstream LLM prompts can tell them apart.  Overlapping slices are
+    merged, never duplicated.  Total length ≤ ``primary_size +
+    experimental_size``.
     """
     if not paper_text:
         return ""
 
-    # Normalise NBSP and other Unicode whitespace before lowercase
-    # find().  Without this, "Materials and\xa0methods" (paper PDF
-    # extraction often leaves NBSPs) never matches our anchor list.
-    text_lower = re.sub(r"\s+", " ", paper_text.lower())
+    # Lower-case and map every whitespace char (NBSP included) to ONE space
+    # WITHOUT changing string length, so match offsets index ``paper_text``.
+    text_lower = re.sub(r"\s", " ", paper_text.lower())
 
-    # 1. Primary anchor — earliest match wins.  Search both the
-    # source_id-derived "figure N" / "table N" keywords AND any
-    # extra keywords the caller passed (typically a caption fragment
-    # like "Fig. 3 Yield of …").
-    primary_pos = -1
-    anchor_keywords = list(_source_id_keywords(source_id, source_type))
+    primary_slices: List[Tuple[int, int]] = []
+    patterns = _label_patterns(label) if label else []
     if extra_anchor_keywords:
-        anchor_keywords += [k.lower() for k in extra_anchor_keywords if k]
-    for kw in anchor_keywords:
-        idx = text_lower.find(kw)
-        if idx != -1 and (primary_pos == -1 or idx < primary_pos):
-            primary_pos = idx
+        patterns += [re.escape(k.lower()) for k in extra_anchor_keywords if k and len(k) >= 5]
 
-    if primary_pos == -1:
-        primary_slice = (0, min(len(paper_text), primary_size))
-    else:
-        primary_slice = _slice_around(paper_text, primary_pos, primary_size)
+    if patterns:
+        hits = sorted({m.start() for pat in patterns for m in re.finditer(pat, text_lower)})
+        spans = [(max(0, h - mention_radius), min(len(paper_text), h + mention_radius)) for h in hits]
+        budget = primary_size
+        for a, b in _merge_spans(spans):
+            if budget <= 0:
+                break
+            b = min(b, a + budget)
+            primary_slices.append((a, b))
+            budget -= (b - a)
+
+    if not primary_slices:
+        # Legacy path: source_id-derived keyword, first hit wins.
+        primary_pos = -1
+        for kw in _source_id_keywords(source_id, source_type):
+            idx = text_lower.find(kw)
+            if idx != -1 and (primary_pos == -1 or idx < primary_pos):
+                primary_pos = idx
+        if primary_pos == -1:
+            primary_slices = [(0, min(len(paper_text), primary_size))]
+        else:
+            primary_slices = [_slice_around(paper_text, primary_pos, primary_size)]
 
     # 2. Experimental anchor — first occurrence wins.
-    exp_pos = -1
-    for anchor in _EXPERIMENTAL_ANCHORS:
-        idx = text_lower.find(anchor)
-        if idx != -1:
-            exp_pos = idx
-            break
+    exp_slice: Optional[Tuple[int, int]] = None
+    if experimental_size > 0:
+        for anchor in _EXPERIMENTAL_ANCHORS:
+            idx = text_lower.find(anchor)
+            if idx != -1:
+                exp_slice = _slice_around(paper_text, idx, experimental_size)
+                break
 
-    if exp_pos == -1 or experimental_size <= 0:
-        return paper_text[primary_slice[0] : primary_slice[1]]
+    # 3. Merge everything in document order, labelling each disjoint piece.
+    tagged = [(a, b, "local") for a, b in primary_slices]
+    if exp_slice:
+        tagged.append((exp_slice[0], exp_slice[1], "experimental"))
+    tagged.sort()
+    pieces: List[Tuple[int, int, str]] = []
+    for a, b, tag in tagged:
+        if pieces and a <= pieces[-1][1]:
+            pa, pb, ptag = pieces[-1]
+            pieces[-1] = (pa, max(pb, b), ptag if ptag == tag else "local+experimental")
+        else:
+            pieces.append((a, b, tag))
 
-    exp_slice = _slice_around(paper_text, exp_pos, experimental_size)
-
-    # 3. Merge — if the two windows overlap, return the contiguous span
-    # once; otherwise concatenate with a labelled separator.
-    p_start, p_end = primary_slice
-    e_start, e_end = exp_slice
-    if not (p_end < e_start or e_end < p_start):
-        merged_start = min(p_start, e_start)
-        merged_end = max(p_end, e_end)
-        return paper_text[merged_start:merged_end]
-
-    # Disjoint — keep both, in document order, with separator.
-    if p_start < e_start:
-        return (
-            paper_text[p_start:p_end]
-            + "\n\n--- experimental section ---\n\n"
-            + paper_text[e_start:e_end]
-        )
-    return (
-        paper_text[e_start:e_end]
-        + "\n\n--- local context ---\n\n"
-        + paper_text[p_start:p_end]
-    )
+    if len(pieces) == 1:
+        a, b, _ = pieces[0]
+        return paper_text[a:b]
+    # First piece verbatim; every later piece is introduced by a separator
+    # naming what it is (the legacy two-piece shape, generalised to N).
+    out = [paper_text[pieces[0][0]:pieces[0][1]]]
+    for a, b, tag in pieces[1:]:
+        sep = {"local": "--- local context ---", "experimental": "--- experimental section ---"}.get(
+            tag, "--- local context + experimental section ---")
+        out.append(f"{sep}\n\n{paper_text[a:b]}")
+    return "\n\n".join(out)

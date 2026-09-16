@@ -146,7 +146,16 @@ class GlobalAssembly:
         if abbrev_map:
             print(f"   -> Extracted {len(abbrev_map)} abbreviation definition(s)")
 
-        preamble = CommonPreamble.build(pools, scheme_conditions, abbrev_map=abbrev_map)
+        global_vars = None
+        gv_path = os.path.join(intermediate_dir, "global_vars.json")
+        if os.path.exists(gv_path):
+            try:
+                global_vars = json.load(open(gv_path))
+                print("   -> Loaded paper-level global_vars.json")
+            except Exception as exc:
+                logger.warning("global_assembly global_vars load failed: %s", exc)
+
+        preamble = CommonPreamble.build(pools, scheme_conditions, abbrev_map=abbrev_map, global_vars=global_vars)
 
         # 4. Fan-out per-source LLM calls.
         records = self.assembler.assemble(packets, preamble, basename)

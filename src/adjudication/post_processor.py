@@ -204,6 +204,88 @@ def infer_yield_type(record: dict) -> str | None:
     return None
 
 
+INHERITABLE_CONDITION_FIELDS = (
+    "temperature_C", "residence_time_s", "flow_rate_mL_min", "solvent",
+    "reactor_type", "pressure_bar", "catalyst", "additive",
+)
+
+
+_PLACEHOLDER_STRINGS = {
+    "missing", "none", "n/a", "na", "null", "unknown", "not stated", "not specified",
+    "not reported", "not given", "unspecified", "-", "--", "?", "tbd",
+}
+_SRC_TAG_RE = re.compile(r"\s*\[src=[^\]]*\]")
+
+
+def clean_condition_string(v):
+    """Strip provenance tags the LocalVars prompt asks for (``THF [src=paddleocr]``)
+    and turn placeholder strings ("missing", "n/a" …) into None."""
+    if not isinstance(v, str):
+        return v
+    s = _SRC_TAG_RE.sub("", v).strip()
+    if not s or s.lower() in _PLACEHOLDER_STRINGS:
+        return None
+    return s
+
+
+def _scalar(v):
+    """Only plain, non-placeholder scalars are inheritable (LocalVars
+    sometimes emits per-step dicts or the literal string "missing")."""
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return v
+    if isinstance(v, str):
+        return clean_condition_string(v)
+    return None
+
+
+def _has_outcome(rec: dict) -> bool:
+    return any(rec.get(k) is not None for k in ("yield_pct", "conversion_pct", "selectivity_pct", "ee_pct"))
+
+
+def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: dict = None) -> dict:
+    """Fill EMPTY condition fields from the two-level pool, never overwrite.
+
+    Precedence: value already on the record (``llm_source``) → this source's
+    ``local_vars.fixed_conditions`` (``source_local``) → paper-level
+    ``global_vars.default_conditions`` with ``scope == "paper"``
+    (``paper_global``).  The origin of every filled field is recorded in
+    ``rec["conditions_provenance"]`` so downstream consumers can filter on it.
+    """
+    conds = dict(rec.get("conditions") or {})
+    prov = dict(rec.get("conditions_provenance") or {})
+    fixed = (local_vars or {}).get("fixed_conditions") or {}
+    defaults = (global_vars or {}).get("default_conditions") or {}
+    # Hygiene first: the per-source LLM may itself echo "missing" / src tags.
+    for field, v in list(conds.items()):
+        if isinstance(v, str):
+            conds[field] = clean_condition_string(v)
+    for field in INHERITABLE_CONDITION_FIELDS:
+        cur = conds.get(field)
+        if cur not in (None, "", [], {}):
+            prov.setdefault(field, "llm_source")
+            continue
+        lv_val = _scalar(fixed.get(field))
+        if lv_val is not None:
+            conds[field] = lv_val
+            prov[field] = "source_local"
+            if stats is not None:
+                stats["source_local"] += 1
+            continue
+        g = defaults.get(field)
+        if isinstance(g, dict) and g.get("scope") == "paper" and g.get("quote"):
+            g_val = _scalar(g.get("value"))
+            if g_val is not None:
+                conds[field] = g_val
+                prov[field] = "paper_global"
+                if stats is not None:
+                    stats["paper_global"] += 1
+    rec["conditions"] = conds
+    rec["conditions_provenance"] = prov
+    return rec
+
+
 def humanise_source(raw: str) -> str:
     """
     Convert file-path-style source name to human-readable label.
@@ -991,9 +1073,37 @@ class PostProcessor:
 
         print(f"[PostProcessor] {basename}: {len(records)} records, DOI={paper_doi}, year={paper_year}")
 
+        # Two-level condition pool for deterministic inheritance (B3):
+        # per-source local_vars.fixed_conditions, then paper-level
+        # global_vars.default_conditions with scope=paper.
+        global_vars = {}
+        gv_path = os.path.join(intermediate_dir, "global_vars.json")
+        if os.path.exists(gv_path):
+            try:
+                from src.adjudication.global_vars_builder import GlobalVarsBuilder
+                # Re-validate on load so the quote-supports-value rule applies
+                # even to pools written by an older builder.
+                global_vars = GlobalVarsBuilder._validate(json.load(open(gv_path)))
+            except Exception:
+                global_vars = {}
+        local_vars_cache: dict = {}
+
+        def _local_vars_for(source_id):
+            if source_id not in local_vars_cache:
+                lv_path = os.path.join(intermediate_dir, "local_vars", f"{source_id}_local_vars.json")
+                try:
+                    local_vars_cache[source_id] = json.load(open(lv_path)) if os.path.exists(lv_path) else {}
+                except Exception:
+                    local_vars_cache[source_id] = {}
+            return local_vars_cache[source_id]
+
+        inherit_stats = {"source_local": 0, "paper_global": 0}
         normalised = []
         for rec in records:
             nr = dict(rec)
+
+            # -- Condition inheritance (fill empties only; provenance kept) --
+            nr = inherit_conditions(nr, _local_vars_for(nr.get("__source_id", "")), global_vars, inherit_stats)
 
             # -- Solvent --
             conds = dict(nr.get("conditions") or {})
@@ -1114,6 +1224,11 @@ class PostProcessor:
             #    process-monitoring plot mis-read as a reaction figure emits one
             #    such shell per point.  Flag for downstream filtering.
             nr["is_hollow"] = _is_hollow_record(nr)
+            # has_outcome: any of yield / conversion / selectivity / ee present.
+            # A record can be non-hollow (product named from the caption) yet
+            # carry no measured outcome (e.g. a heatmap cell whose label OCR
+            # missed); downstream consumers filter on this, nothing is dropped.
+            nr["has_outcome"] = _has_outcome(nr)
 
             normalised.append(nr)
 
@@ -1124,6 +1239,8 @@ class PostProcessor:
         with open(norm_json, "w") as f:
             json.dump(normalised, f, indent=2, ensure_ascii=False)
         print(f"[PostProcessor] -> {norm_json}")
+        print(f"[PostProcessor] condition inheritance: source_local={inherit_stats['source_local']} "
+              f"paper_global={inherit_stats['paper_global']}")
         flush_smiles_cache()  # persist any name→SMILES queries from this PDF
 
         # Save _normalized.xlsx

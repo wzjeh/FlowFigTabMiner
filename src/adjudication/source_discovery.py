@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.adjudication.pdf_parser import extract_text_window
+from src.parsing.caption_locator import load_context
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class SourcePacket(BaseModel):
     local_vars: Optional[Dict[str, Any]] = None
     csv_content: str = ""          # table only — full CSV text
     text_window: str = ""          # dual-anchor 8KB paper excerpt
+    context: Optional[Dict[str, Any]] = None   # CaptionLocator: label / caption / footnote (PDF text layer)
     # Provenance / debug aids:
     evidence_path: str = ""
     local_vars_path: str = ""
@@ -56,12 +58,17 @@ def _instance_index(source_id: str) -> int:
     return int(m.group(1)) if m else 0
 
 
-def _human_label_for_figure(source_id: str, evidence: Dict[str, Any], local_vars: Optional[Dict[str, Any]]) -> str:
+def _human_label_for_figure(source_id: str, evidence: Dict[str, Any], local_vars: Optional[Dict[str, Any]],
+                            context: Optional[Dict[str, Any]] = None) -> str:
     """Best-effort human label for a figure source.
 
-    Order: local_vars reaction_context (first 80 chars) → first chart_text →
-    fallback "Figure (page {N}, instance {M})".
+    Order: CaptionLocator label ("Figure 2 (p.2) — caption…") → local_vars
+    reaction_context (first 80 chars) → first chart_text → fallback
+    "Figure (page {N}, instance {M})".
     """
+    if context and context.get("label"):
+        cap = (context.get("caption") or "")[:80].strip()
+        return f"{context['label']} (p.{_page_index(source_id)})" + (f" — {cap}" if cap else "")
     if local_vars:
         ctx = local_vars.get("reaction_context") or ""
         if ctx:
@@ -74,7 +81,11 @@ def _human_label_for_figure(source_id: str, evidence: Dict[str, Any], local_vars
     return f"Figure (page {_page_index(source_id)}, instance {_instance_index(source_id)})"
 
 
-def _human_label_for_table(source_id: str, evidence: Dict[str, Any]) -> str:
+def _human_label_for_table(source_id: str, evidence: Dict[str, Any],
+                           context: Optional[Dict[str, Any]] = None) -> str:
+    if context and context.get("label"):
+        cap = (context.get("caption") or "")[:80].strip()
+        return f"{context['label']} (p.{_page_index(source_id)})" + (f" — {cap}" if cap else "")
     caption = evidence.get("caption_text", "") or ""
     if caption:
         return f"Table (page {_page_index(source_id)}) — {caption[:80].strip()}"
@@ -90,6 +101,19 @@ def _load_local_vars(out_dir: str, source_id: str) -> Tuple[Optional[Dict[str, A
     except Exception as exc:
         logger.warning("source_discovery local_vars load failed source=%s exc=%s", source_id, exc)
         return None, path
+
+
+def _skip_irrelevant_figures() -> bool:
+    """Config gate for the figure keyword filter (``adjudication.skip_irrelevant_figures``).
+
+    The filter is SOFT by default: a figure whose OCR text lacks result
+    keywords is still assembled, it just carries ``is_relevant=False``.
+    """
+    try:
+        from src.utils.config import load_config
+        return bool(load_config().get("adjudication", {}).get("skip_irrelevant_figures", False))
+    except Exception:
+        return False
 
 
 def _read_csv(csv_path: Optional[str]) -> str:
@@ -117,6 +141,78 @@ def _figure_anchor_keywords(evidence: Dict[str, Any]) -> Tuple[str, ...]:
                 # Use the first 60 chars as one anchor — captions are usually short.
                 out.append(t[:60].lower())
     return tuple(out[:3])
+
+
+def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[str, Any]], source_type: str) -> Dict[str, Any]:
+    """Return a copy of ``evidence`` with PDF-text caption/footnote applied.
+
+    Tables: ``caption_text`` is replaced when the PDF text layer resolved a
+    caption (the YOLO-crop OCR is typically truncated: "ble 2: …");
+    ``table_note_text`` is replaced by the located footnote when non-empty.
+    Figures: ``meta.label/caption_pdf/footnote_pdf`` are filled in when the
+    evidence predates the CaptionLocator.  Provenance is kept in
+    ``caption_source`` / ``note_source``.
+    """
+    if not context:
+        return infer_legacy_facts(evidence) if source_type == "figure" else evidence
+    ev = dict(evidence)
+    if source_type == "table":
+        if context.get("caption_source") == "pdf_text" and context.get("caption"):
+            ev["caption_text_ocr"] = evidence.get("caption_text", "")
+            ev["caption_text"] = context["caption"]
+            ev["caption_source"] = "pdf_text"
+        if context.get("footnote"):
+            ev["table_note_text_ocr"] = evidence.get("table_note_text", "")
+            ev["table_note_text"] = context["footnote"]
+            ev["note_source"] = "pdf_text"
+        ev["label"] = context.get("label")
+        if context.get("inner_text"):
+            ev["inner_text"] = context["inner_text"]
+    else:
+        meta = dict(ev.get("meta", {}) or {})
+        if context.get("inner_text"):
+            meta["inner_text"] = context["inner_text"]
+        if not meta.get("label"):
+            meta["label"] = context.get("label")
+            meta["caption_pdf"] = context.get("caption", "")
+            meta["footnote_pdf"] = context.get("footnote", "")
+            meta["caption_source"] = context.get("caption_source", "missing")
+        ev["meta"] = meta
+    return infer_legacy_facts(ev) if source_type == "figure" else ev
+
+
+def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy of a FIGURE evidence dict with ``meta.facts`` /
+    ``meta.figure_type`` filled in when the packet predates the facts field.
+
+    Only deterministic inferences: a chart whose points mostly carry a
+    ``Y_Right/Data_Value`` label was processed in heatmap mode (that column
+    is populated only by the point-label OCR path).
+    """
+    meta = dict(evidence.get("meta", {}) or {})
+    if meta.get("facts"):
+        return evidence
+    raw = evidence.get("raw_data", []) or []
+    n = len(raw)
+    n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
+    facts: Dict[str, Any] = {"legacy_inferred": True, "n_points": n, "n_point_labels": n_dv,
+                             "has_point_labels": n_dv > 0}
+    if n and n_dv / n >= 0.5:
+        facts["chart_type"] = "heatmap"
+        facts["x_scale"] = "log"
+    series = {r.get("Series") for r in raw if isinstance(r, dict)}
+    facts["series_matched_ratio"] = 0.0 if series <= {None, "", "Default"} else None
+    meta["facts"] = facts
+    if facts.get("chart_type"):
+        meta["figure_type"] = facts["chart_type"]
+    ev = dict(evidence)
+    ev["meta"] = meta
+    return ev
+
+
+def _context_anchor_keywords(context: Optional[Dict[str, Any]]) -> Tuple[str, ...]:
+    cap = (context or {}).get("caption") or ""
+    return (cap[:60].lower(),) if len(cap) >= 5 else ()
 
 
 def _table_anchor_keywords(evidence: Dict[str, Any]) -> Tuple[str, ...]:
@@ -148,18 +244,21 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
             logger.info("source_discovery skip irrelevant table source=%s", source_id)
             continue
         local_vars, lv_path = _load_local_vars(local_vars_dir, source_id)
+        context = load_context(pdf_root, source_id)
+        evidence = apply_context_to_evidence(evidence, context, "table")
         csv_content = _read_csv(evidence.get("csv_path"))
         text_window = extract_text_window(
             paper_text, source_id, "table",
             primary_size=6000, experimental_size=2000,
-            extra_anchor_keywords=_table_anchor_keywords(evidence),
+            extra_anchor_keywords=_context_anchor_keywords(context) or _table_anchor_keywords(evidence),
+            label=(context or {}).get("label"),
         )
         packets.append(SourcePacket(
             source_id=source_id, source_type="table",
-            human_label=_human_label_for_table(source_id, evidence),
+            human_label=_human_label_for_table(source_id, evidence, context),
             evidence=evidence, local_vars=local_vars,
             csv_content=csv_content, text_window=text_window,
-            evidence_path=ev_path, local_vars_path=lv_path,
+            evidence_path=ev_path, local_vars_path=lv_path, context=context,
         ))
 
     # --- Figures: flat layout ``macro_cleaned/{figure_id}_evidence.json``
@@ -171,20 +270,25 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
             continue
         source_id = os.path.basename(ev_path).replace("_evidence.json", "")
         if not evidence.get("is_relevant", True):
-            logger.info("source_discovery skip irrelevant figure source=%s", source_id)
-            continue
+            if _skip_irrelevant_figures():
+                logger.info("source_discovery skip irrelevant figure source=%s", source_id)
+                continue
+            logger.info("source_discovery keep irrelevant figure (soft flag) source=%s", source_id)
         local_vars, lv_path = _load_local_vars(local_vars_dir, source_id)
+        context = load_context(pdf_root, source_id)
+        evidence = apply_context_to_evidence(evidence, context, "figure")
         text_window = extract_text_window(
             paper_text, source_id, "figure",
             primary_size=6000, experimental_size=2000,
-            extra_anchor_keywords=_figure_anchor_keywords(evidence),
+            extra_anchor_keywords=_context_anchor_keywords(context) or _figure_anchor_keywords(evidence),
+            label=(context or {}).get("label"),
         )
         packets.append(SourcePacket(
             source_id=source_id, source_type="figure",
-            human_label=_human_label_for_figure(source_id, evidence, local_vars),
+            human_label=_human_label_for_figure(source_id, evidence, local_vars, context),
             evidence=evidence, local_vars=local_vars,
             csv_content="", text_window=text_window,
-            evidence_path=ev_path, local_vars_path=lv_path,
+            evidence_path=ev_path, local_vars_path=lv_path, context=context,
         ))
 
     # Deterministic order: tables first (already by glob sort), then figures by page+instance.

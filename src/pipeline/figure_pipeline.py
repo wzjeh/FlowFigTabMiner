@@ -17,6 +17,8 @@ from src.extraction.figure.coordinate_mapper import CoordinateMapper
 from src.assembly.evidence_assembler import EvidenceAssembler
 from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
+from src.pipeline.status import write_status
+from src.parsing.caption_locator import load_context
 from src.utils.config import load_config
 
 class FigurePipeline:
@@ -121,7 +123,9 @@ class FigurePipeline:
         Process a list of figure images (crops from Step 1).
         """
         extracted_results = []
-        
+        # Per-PDF intermediate dir (status records live under it).
+        intermediate_dir = output_base_dir
+
         # Step 2: Macro Cleaning
         print("\nStep 2: Macro Cleaning...")
         # output_base_dir is typically data/intermediate/{pdf_name}
@@ -155,12 +159,12 @@ class FigurePipeline:
                 
                 print("      [Pipeline] Checking Relevance (OCR Captions)...")
                 is_relevant, text_evidence = self.assembler.check_relevance(figure_id, macro_cleaned_dir)
-                
+
                 if not is_relevant:
-                    print(f"      [Pipeline] SKIPPING Step 3. Chart '{figure_id}' is not relevant (no keywords).")
-                    continue
-                
-                # If we are here, it's relevant! Proceed to Step 3.
+                    # Soft flag only (same policy as the table keyword filter):
+                    # extraction continues, ``is_relevant`` rides on the
+                    # evidence packet, and Step 5 decides whether to skip it.
+                    print(f"      [Pipeline] Chart '{figure_id}' has no result keywords — flagged, continuing.")
                 
                 # 3A: Micro Detection
                 # 3A: Micro Detection
@@ -185,8 +189,9 @@ class FigurePipeline:
                 if is_heatmap:
                     print(f"      [Heatmap] Detected heatmap-style legend → enabling extract_point_labels + log_x")
 
+                coord_log = []
                 try:
-                    df, _ = self.coord_mapper.map_coordinates(
+                    df, coord_log = self.coord_mapper.map_coordinates(
                         full_detections, cleaned_plot_path,
                         force_log_x=is_heatmap,
                         extract_point_labels=is_heatmap,
@@ -194,14 +199,48 @@ class FigurePipeline:
                 except Exception as e:
                     print(f"      [Mapper Warning] {e}")
                     df = pd.DataFrame()
+                # Persist the mapper's diagnostic log (axis bounds, tick OCR
+                # samples, fit OK/FAIL …) — previously discarded.
+                try:
+                    with open(os.path.join(macro_cleaned_dir, f"{figure_id}_coordmap_log.txt"), "w") as lf:
+                        lf.write("\n".join(str(m) for m in coord_log))
+                except Exception:
+                    pass
+
+                # Deterministic chart facts for downstream stages (C1).
+                mapper_facts = dict(getattr(self.coord_mapper, "last_facts", {}) or {})
+                n_series_matched = sum(1 for p in matched_points if p.get('series') not in (None, '', 'Default'))
+                # Heatmap = legend %-bins detected OR most points carry an
+                # OCR'd cell label (the label path only fires on value-map
+                # charts) — same rule as source_discovery.infer_legacy_facts.
+                n_labels = int(mapper_facts.get("n_point_labels", 0) or 0)
+                label_heavy = bool(points) and n_labels / len(points) >= 0.5
+                facts = {
+                    "chart_type": "heatmap" if (is_heatmap or label_heavy) else "xy",
+                    "heatmap_signal": ("legend_bins" if is_heatmap else ("point_labels" if label_heavy else None)),
+                    "x_scale": mapper_facts.get("x_scale"),
+                    "y_left_scale": mapper_facts.get("y_left_scale"),
+                    "y_right_scale": mapper_facts.get("y_right_scale"),
+                    "axis_fit": mapper_facts.get("axis_fit"),
+                    "n_points": len(points),
+                    "n_point_labels": mapper_facts.get("n_point_labels", 0),
+                    "has_point_labels": bool(mapper_facts.get("n_point_labels", 0)),
+                    "n_series_legend": len(prototypes),
+                    "series_matched_ratio": round(n_series_matched / len(points), 3) if points else 0.0,
+                }
                 
                 extraction_data = []
                 if not df.empty:
                     extraction_data = df.to_dict(orient='records')
                 else:
+                    write_status(
+                        intermediate_dir, figure_id, "coord_map", "failed",
+                        "axis fit failed — no physical coordinates",
+                        yolo_points=len(points),
+                    )
                     # Fallback: Just points
-                     for p in matched_points:
-                         extraction_data.append({
+                    for p in matched_points:
+                        extraction_data.append({
                             "series": p.get('series', 'Unknown'),
                             "x_pixel": p['center'][0],
                             "y_pixel": p['center'][1],
@@ -220,10 +259,18 @@ class FigurePipeline:
                     macro_cleaned_dir,
                     vlm_metadata=vlm_metadata,
                     text_evidence=text_evidence,
+                    is_relevant=is_relevant,
+                    context=load_context(intermediate_dir, figure_id),
+                    facts=facts,
                 )
 
                 if json_path:
                     print(f"      -> EVIDENCE SAVED: {json_path}")
+                    if not df.empty:
+                        write_status(
+                            intermediate_dir, figure_id, "evidence", "ok", "",
+                            points=len(extraction_data), is_relevant=bool(is_relevant),
+                        )
                     extracted_results.append(json_path)
                     # Post-extraction hooks (paper module 6 — VLM-driven
                     # inspection loop).  Pipelines stay decoupled from
@@ -261,6 +308,7 @@ class FigurePipeline:
                 print(f"      ! Error processing chart {figure_id}: {e}")
                 import traceback
                 traceback.print_exc()
+                write_status(intermediate_dir, figure_id, "figure", "failed", f"{type(e).__name__}: {e}")
 
         return extracted_results
 

@@ -16,7 +16,8 @@ class LocalVarsBuilder:
         self.llm = llm
         self.llm_cfg = llm_cfg
 
-    def build(self, source_id, source_type, evidence_data, paper_text, output_dir, csv_head="", scheme_conditions=""):
+    def build(self, source_id, source_type, evidence_data, paper_text, output_dir, csv_head="",
+              scheme_conditions="", context=None, global_vars=None):
         """
         Build a sub-variable library JSON for a single figure or table.
 
@@ -27,6 +28,8 @@ class LocalVarsBuilder:
             paper_text:    full PDF text (cached by PDFParser)
             output_dir:    directory to write {source_id}_local_vars.json
             csv_head:      first 6 rows of the table CSV (table only)
+            context:       CaptionLocator context dict (label / caption /
+                           footnote from the PDF text layer), or None
 
         Returns:
             dict — parsed local vars JSON (from cache or freshly built)
@@ -41,16 +44,20 @@ class LocalVarsBuilder:
 
         print(f"[LocalVarsBuilder] Building local vars for {source_id} ({source_type})...")
 
-        text_window = self._extract_text_window(source_id, source_type, paper_text)
+        context = context or {}
+        text_window = self._extract_text_window(source_id, source_type, paper_text, context)
+        global_block = self._render_global_vars(global_vars)
 
         if source_type == "figure":
             system_prompt, user_prompt = self._build_figure_prompts(
-                source_id, evidence_data, text_window
+                source_id, evidence_data, text_window, context
             )
         else:
             system_prompt, user_prompt = self._build_table_prompts(
-                source_id, evidence_data, text_window, csv_head, scheme_conditions
+                source_id, evidence_data, text_window, csv_head, scheme_conditions, context
             )
+        if global_block:
+            user_prompt = user_prompt.replace("=== OUTPUT SCHEMA ===", global_block + "\n=== OUTPUT SCHEMA ===", 1)
 
         llm_response = self.llm.chat(
             [
@@ -60,6 +67,8 @@ class LocalVarsBuilder:
             self.llm_cfg,
         )
         result = self._clean_json(llm_response.text, source_id, source_type)
+        if source_type == "figure":
+            result = self._enforce_chart_facts(result, evidence_data)
 
         os.makedirs(output_dir, exist_ok=True)
         with open(out_path, "w") as f:
@@ -80,7 +89,7 @@ class LocalVarsBuilder:
         "If you see these abbreviations in the context, treat them as valid solvent names."
     )
 
-    def _build_figure_prompts(self, source_id, ev, text_window):
+    def _build_figure_prompts(self, source_id, ev, text_window, context=None):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
             "Analyze a single extracted figure from a flow chemistry paper and produce "
@@ -110,6 +119,14 @@ class LocalVarsBuilder:
         raw_data = ev.get("raw_data", [])
         text_ev = ev.get("text_evidence", {})
         figure_type = meta.get("figure_type", "unknown")
+        context = context or {}
+        label = context.get("label") or meta.get("label") or "(unresolved)"
+        caption = context.get("caption") or meta.get("caption_pdf") or meta.get("caption") or ""
+        footnote = context.get("footnote") or meta.get("footnote_pdf") or ""
+        caption_src = context.get("caption_source") or meta.get("caption_source") or "missing"
+        inner_text = (context.get("inner_text") or meta.get("inner_text") or "").strip()
+        inner_block = (f"In-figure text from the PDF text layer (tick labels / legend / annotations, verbatim):\n{inner_text}\n"
+                       if inner_text else "")
 
         def _join_texts(items):
             """Extract text strings from [{text:..., source:...}, ...] or plain list.
@@ -145,10 +162,16 @@ class LocalVarsBuilder:
 
         x_range = f"{min(x_vals):.3g} to {max(x_vals):.3g}" if x_vals else "N/A"
         yl_range = f"{min(yl_vals):.3g} to {max(yl_vals):.3g}" if yl_vals else "N/A"
+        dv_vals = [pt.get("Y_Right/Data_Value") for pt in raw_data if pt.get("Y_Right/Data_Value") is not None]
+        dv_range = f"{min(dv_vals):.3g} to {max(dv_vals):.3g}" if dv_vals else "N/A"
+        facts_block = self._render_chart_facts(meta.get("facts") or {}, len(dv_vals), len(raw_data))
 
         user_prompt = f"""=== FIGURE EVIDENCE ===
 Source ID: {source_id}
-Figure type: {figure_type}
+Paper label: {label}
+Caption [src={caption_src}]: {caption or '(none)'}
+Footnote: {footnote or '(none)'}
+{inner_block}Figure type: {figure_type}
 X-axis label: {x_title}
 Y-left-axis label: {yl_title}
 Y-right-axis label: {yr_title}
@@ -157,7 +180,9 @@ Chart text: {chart_texts}
 Data point count: {len(raw_data)}
 X range: {x_range}
 Y_Left range: {yl_range}
+Y_Right/Data_Value range: {dv_range} ({len(dv_vals)} of {len(raw_data)} points carry a value)
 Unique series: {unique_series}
+{facts_block}
 
 === RELEVANT PAPER TEXT CONTEXT (4000 chars) ===
 {text_window}
@@ -172,7 +197,8 @@ Output a single valid JSON object (no markdown):
   "axis_semantics": {{
     "x_axis": {{"raw_label": "...", "semantic_meaning": "...", "maps_to_field": "..."}},
     "y_left_axis": {{"raw_label": "...", "semantic_meaning": "...", "maps_to_field": "..."}},
-    "y_right_axis": null
+    "y_right_axis": null,
+    "data_value": null
   }},
   "series_semantics": {{
     "<series_name>": {{"role": "...", "metric": "...", "description": "..."}}
@@ -188,11 +214,116 @@ Output a single valid JSON object (no markdown):
 }}
 maps_to_field must be one of: conditions.temperature_C, conditions.residence_time_s,
 conditions.flow_rate_mL_min, conditions.solvent, conditions.catalyst, conditions.pressure_bar,
-conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, other_metrics.<name>"""
+conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, other_metrics.<name>
+"data_value" describes the per-point "Y_Right/Data_Value" column when it is populated (same shape as
+the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point labels were read)."""
 
         return system_prompt, user_prompt
 
-    def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions=""):
+    @staticmethod
+    def _render_global_vars(gv):
+        """Paper-level pool (Step 4.4) as a prompt block.  Values with
+        scope=paper are defaults for fixed_conditions unless THIS source's
+        caption / footnote / CSV / text says otherwise."""
+        if not isinstance(gv, dict):
+            return ""
+        rc = gv.get("reaction_context") or {}
+        dc = gv.get("default_conditions") or {}
+        lines = ["=== PAPER-LEVEL CONTEXT AND DEFAULT CONDITIONS (from the whole paper; Step 4.4) ===",
+                 "Use scope=paper values as fixed_conditions defaults when this source does not state its own;",
+                 "scope=partial values are hints only. Never override a value stated by this source."]
+        for k in ("main_transformation", "substrate_class", "main_product_name", "organometallic_reagent",
+                  "electrophile", "reactor_description"):
+            if rc.get(k):
+                lines.append(f"  {k}: {rc[k]}")
+        for field, v in dc.items():
+            if isinstance(v, dict) and v.get("value") is not None:
+                q = (v.get("quote") or "")[:140]
+                lines.append(f"  {field} = {v['value']!r}  [scope={v.get('scope')}]  quote: \"{q}\"")
+        return "\n".join(lines) + "\n"
+
+    @staticmethod
+    def _enforce_chart_facts(result, ev):
+        """Deterministic guard: the pipeline's measured chart facts outrank
+        the LLM's guess.  For a heatmap the axis roles are fixed by
+        construction (X = residence time on the converted log axis, Y_Left =
+        temperature, Y_Right/Data_Value = the yield read from the cell
+        label), so a swapped / missing mapping is corrected here rather
+        than propagated into every record."""
+        meta = (ev or {}).get("meta", {}) or {}
+        facts = meta.get("facts") or {}
+        if not isinstance(result, dict) or facts.get("chart_type") != "heatmap":
+            return result
+        ax = result.get("axis_semantics")
+        if not isinstance(ax, dict):
+            ax = {}
+        raw = (ev or {}).get("raw_data", []) or []
+        yl = [r.get("Y_Left") for r in raw if isinstance(r, dict) and r.get("Y_Left") is not None]
+        y_is_temp = bool(yl) and (min(yl) < 0 or max(yl) <= 400)
+        fixes = []
+
+        def _set(key, field, meaning):
+            cur = ax.get(key) if isinstance(ax.get(key), dict) else {}
+            if cur.get("maps_to_field") != field:
+                fixes.append(f"{key}: {cur.get('maps_to_field')!r} -> {field!r}")
+            ax[key] = {"raw_label": cur.get("raw_label", ""), "semantic_meaning": cur.get("semantic_meaning") or meaning,
+                       "maps_to_field": field}
+
+        _set("x_axis", "conditions.residence_time_s", "residence time (log axis converted to seconds)")
+        if y_is_temp:
+            _set("y_left_axis", "conditions.temperature_C", "reaction temperature (°C)")
+        dv = ax.get("data_value") if isinstance(ax.get("data_value"), dict) else {}
+        dv_field = dv.get("maps_to_field")
+        if dv_field not in ("yield_pct", "conversion_pct", "selectivity_pct"):
+            _set("data_value", "yield_pct", "yield (%) read from the heatmap cell label")
+        result["axis_semantics"] = ax
+        if result.get("figure_type") != "heatmap":
+            fixes.append(f"figure_type: {result.get('figure_type')!r} -> 'heatmap'")
+            result["figure_type"] = "heatmap"
+        if fixes:
+            note = "Axis roles enforced from measured chart facts (heatmap): " + "; ".join(fixes)
+            result["data_interpretation_notes"] = (note + " | " + (result.get("data_interpretation_notes") or "")).strip(" |")
+            print(f"[LocalVarsBuilder] heatmap guard applied: {fixes}")
+        return result
+
+    @staticmethod
+    def _render_chart_facts(facts, n_dv, n_points):
+        """Deterministic facts from the figure pipeline, stated as givens so
+        the LLM does not re-guess chart type / axis scale from raw numbers."""
+        if not facts:
+            return ""
+        lines = ["=== CHART FACTS (measured by the extraction pipeline — treat as given) ==="]
+        ct = facts.get("chart_type")
+        if ct == "heatmap":
+            lines.append(
+                "This chart is a HEATMAP (colour-binned yield map). Interpretation is FIXED:\n"
+                "  - X = a condition axis, almost always residence time; values are already in physical\n"
+                "    units (the log axis has been converted, so 0.01–100 means seconds, NOT exponents).\n"
+                "  - Y_Left = the other condition axis, almost always temperature in °C.\n"
+                "  - Y_Right/Data_Value = the measured outcome (yield %) read from the cell label.\n"
+                "  Set figure_type=\"heatmap\", map x_axis and y_left_axis to condition fields, map\n"
+                "  data_value to yield_pct (or conversion_pct if the caption says conversion)."
+            )
+        elif ct:
+            lines.append(f"Chart type: {ct} (xy plot: X is the independent variable, Y_Left the plotted outcome/response).")
+        if facts.get("x_scale"):
+            lines.append(f"X axis scale: {facts['x_scale']}; Y_Left scale: {facts.get('y_left_scale')}")
+        fit = facts.get("axis_fit") or {}
+        if fit:
+            lines.append(f"Axis calibration: X={'ok' if fit.get('x') else 'FAILED'}, "
+                         f"Y_Left={'ok' if fit.get('y_left') else 'FAILED'}"
+                         + (" — a FAILED axis means its values are unreliable; say so in data_interpretation_notes." if not (fit.get('x') and fit.get('y_left')) else ""))
+        if n_dv:
+            lines.append(f"Per-point value labels were read for {n_dv}/{n_points} points (Y_Right/Data_Value column).")
+        smr = facts.get("series_matched_ratio")
+        if smr is not None and smr == 0 and facts.get("n_series_legend", 0) > 0:
+            lines.append("Legend-to-point colour matching FAILED: every point carries Series='Default'; "
+                         "do NOT infer per-point conditions from the series name.")
+        elif smr == 0:
+            lines.append("No legend detected: series labels are not available for this chart.")
+        return "\n".join(lines) + "\n"
+
+    def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions="", context=None):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
             "Analyze a single extracted table from a flow chemistry paper and produce "
@@ -211,9 +342,16 @@ conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, oth
             f"{self._SOLVENT_ABBREV}"
         )
 
-        caption = ev.get("caption_text", "") or ""
-        note = ev.get("table_note_text", "") or ""
+        context = context or {}
+        # PDF text layer beats the YOLO-crop OCR ("ble 2: …") whenever available.
+        caption = (context.get("caption") if context.get("caption_source") == "pdf_text" else None) \
+            or ev.get("caption_text", "") or ""
+        note = context.get("footnote") or ev.get("table_note_text", "") or ""
+        label = context.get("label") or "(unresolved)"
         num_extracted = ev.get("num_extracted", 0)
+        inner_text = (context.get("inner_text") or ev.get("inner_text") or "").strip()
+        inner_block = (f"\n=== TABLE TEXT LAYER (verbatim from the PDF, row order; authoritative for numbers) ===\n{inner_text}\n"
+                       if inner_text else "")
 
         scheme_cond_block = ""
         if scheme_conditions:
@@ -224,12 +362,13 @@ conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, oth
 
         user_prompt = f"""=== TABLE EVIDENCE ===
 Source ID: {source_id}
+Paper label: {label}
 Caption: {caption}
 Table note: {note}
 Extracted cell count: {num_extracted}
 CSV preview (first 6 rows):
 {csv_head}
-
+{inner_block}
 === RELEVANT PAPER TEXT CONTEXT (4000 chars) ===
 {text_window}
 {scheme_cond_block}
@@ -269,22 +408,27 @@ If a condition varies row-by-row (i.e. it IS a CSV column), leave it null in fix
     #  Helpers
     # ------------------------------------------------------------------ #
 
-    def _extract_text_window(self, source_id, source_type, paper_text):
+    def _extract_text_window(self, source_id, source_type, paper_text, context=None):
         """Dual-anchor text window — see ``pdf_parser.extract_text_window``.
 
-        Primary anchor: figure/table number derived from source_id.
-        Experimental anchor: General Procedure / Materials and Methods
-        heading.  Total ≈ 8 KB; paper-wide baselines (catalyst loading,
-        temperature, solvent) reach the prompt even when they live in
-        the experimental section far from the figure citation.
+        Primary anchor: the source's REAL paper label ("Figure 2") from the
+        CaptionLocator context (every in-text mention), plus the caption's
+        first words; falls back to the source_id-derived keyword when no
+        context exists.  Experimental anchor: General Procedure / Materials
+        and Methods heading.  Total ≈ 8 KB.
         """
         from src.adjudication.pdf_parser import extract_text_window
+        context = context or {}
+        caption = context.get("caption") or ""
+        extra = (caption[:60],) if len(caption) >= 5 else None
         return extract_text_window(
             paper_text,
             source_id,
             source_type,
             primary_size=6000,
             experimental_size=2000,
+            extra_anchor_keywords=extra,
+            label=context.get("label"),
         )
 
     def _clean_json(self, content, source_id, source_type):
