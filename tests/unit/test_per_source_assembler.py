@@ -115,6 +115,7 @@ def test_fanout_reaches_every_packet(tmp_path):
     }
     llm = _StubLLM(canned)
     asm = PerSourceAssembler(
+        figure_synthesis=False,  # legacy transcription path under test
         llm=llm, llm_cfg=_DummyCfg(),  # type: ignore[arg-type]
         prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
         max_workers=4, raw_dir=str(tmp_path),
@@ -144,6 +145,7 @@ def test_parse_failure_isolates_one_source(tmp_path):
     }
     llm = _StubLLM(canned)
     asm = PerSourceAssembler(
+        figure_synthesis=False,  # legacy transcription path under test
         llm=llm, llm_cfg=_DummyCfg(),  # type: ignore[arg-type]
         prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
         max_workers=4, raw_dir=str(tmp_path),
@@ -161,6 +163,7 @@ def test_parse_failure_isolates_one_source(tmp_path):
 def test_empty_discovery_no_llm_calls(tmp_path):
     llm = _StubLLM({})
     asm = PerSourceAssembler(
+        figure_synthesis=False,  # legacy transcription path under test
         llm=llm, llm_cfg=_DummyCfg(),  # type: ignore[arg-type]
         prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
         max_workers=4, raw_dir=str(tmp_path),
@@ -184,6 +187,7 @@ def test_order_deterministic_under_completion_jitter(tmp_path):
     }
     llm = _StubLLM(canned)
     asm = PerSourceAssembler(
+        figure_synthesis=False,  # legacy transcription path under test
         llm=llm, llm_cfg=_DummyCfg(),  # type: ignore[arg-type]
         prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
         max_workers=4, raw_dir=str(tmp_path),
