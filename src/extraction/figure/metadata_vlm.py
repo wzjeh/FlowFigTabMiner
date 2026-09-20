@@ -30,6 +30,15 @@ _PROMPT_PATH = Path(__file__).parent / "prompts" / "metadata.md"
 _PROMPT = _PROMPT_PATH.read_text()
 
 
+class LegendMarker(BaseModel):
+    """How one legend entry is printed (used only to recover series when the
+    macro detector found no legend box; never for positions)."""
+
+    name: str
+    color: Optional[str] = None      # colour word as printed: red / blue / black / open / filled …
+    marker: Optional[str] = None     # shape word: circle / square / triangle / line …
+
+
 class FigureMetadataResponse(BaseModel):
     """Schema enforced on the VLM response."""
 
@@ -39,6 +48,7 @@ class FigureMetadataResponse(BaseModel):
     y_axis_label: Optional[str] = None
     y_axis_unit: Optional[str] = None
     legend_series_names: list[Optional[str]] = []
+    legend_markers: list[LegendMarker] = []
     footnote: Optional[str] = None
 
 
@@ -51,6 +61,7 @@ class FigureMetadata(BaseModel):
     x_axis_unit: FieldValue
     y_axis_unit: FieldValue
     legend_series_names: FieldValue
+    legend_markers: FieldValue
     footnote: FieldValue
 
 
@@ -64,6 +75,7 @@ def _wrap_missing(notes: str | None = None) -> FigureMetadata:
         x_axis_unit=miss(),
         y_axis_unit=miss(),
         legend_series_names=FieldValue(value=[], source=FieldSource.MISSING, notes=notes),
+        legend_markers=FieldValue(value=[], source=FieldSource.MISSING, notes=notes),
         footnote=miss(),
     )
 
@@ -123,6 +135,12 @@ class FigureMetadataExtractor:
             legend_series_names=FieldValue(
                 value=[s for s in resp.legend_series_names if s],
                 source=FieldSource.VLM_METADATA if any(resp.legend_series_names) else FieldSource.MISSING,
+                model_id=model_id,
+                latency_ms=latency_ms,
+            ),
+            legend_markers=FieldValue(
+                value=[m.model_dump() for m in resp.legend_markers if m.name],
+                source=FieldSource.VLM_METADATA if resp.legend_markers else FieldSource.MISSING,
                 model_id=model_id,
                 latency_ms=latency_ms,
             ),

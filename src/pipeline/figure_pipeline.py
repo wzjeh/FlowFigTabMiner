@@ -19,6 +19,7 @@ from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 from src.pipeline.status import write_status
 from src.parsing.caption_locator import load_context
+from src.extraction.figure.series_recovery import recover_series_prototypes
 from src.extraction.figure.axis_fit import is_grid_like
 from src.utils.config import load_config
 
@@ -180,9 +181,27 @@ class FigurePipeline:
                 points = [d for d in micro_detections if d['label'] in ['data_point', 'marker']]
                 print(f"      [Step 3a] Detected {len(points)} data points.")
                 
+                # VLM metadata (axis/legend/title text) — one call per chart.
+                # Made before 3B so the legend names / marker colours can
+                # drive series recovery when no legend crop exists.
+                vlm_metadata = self.metadata_extractor.extract(Path(cleaned_plot_path))
+                context = load_context(intermediate_dir, figure_id)
+
                 # 3B: Legend Matching
                 legend_crops = elements.get('legend', [])
                 prototypes = self.legend_matcher.parse_legend_crops(legend_crops)
+                series_source = "yolo_legend" if prototypes else "none"
+                if not prototypes:
+                    # No legend box from the macro detector: rebuild colour
+                    # prototypes from the PDF text-layer swatches or the VLM's
+                    # printed-colour words, then reuse the same matcher.
+                    rec = recover_series_prototypes(
+                        vlm_metadata.legend_series_names.value or [],
+                        vlm_metadata.legend_markers.value or [],
+                        original_source, context,
+                    )
+                    if rec:
+                        prototypes, series_source = rec.prototypes, rec.source
                 matched_points = self.legend_matcher.match_points(points, prototypes, cleaned_plot_path)
                 
                 # 3C: Coordinate Mapping
@@ -240,6 +259,8 @@ class FigurePipeline:
                     "n_point_labels": mapper_facts.get("n_point_labels", 0),
                     "has_point_labels": bool(mapper_facts.get("n_point_labels", 0)),
                     "n_series_legend": len(prototypes),
+                    "series_source": series_source,
+                    "n_stray_labels": mapper_facts.get("n_stray_labels", 0),
                     "series_matched_ratio": round(n_series_matched / len(points), 3) if points else 0.0,
                 }
                 
@@ -255,18 +276,15 @@ class FigurePipeline:
                     # Fallback: Just points
                     for p in matched_points:
                         extraction_data.append({
-                            "series": p.get('series', 'Unknown'),
+                            "Series": p.get('series', 'Default'),
                             "x_pixel": p['center'][0],
                             "y_pixel": p['center'][1],
                             "note": "CoordMapping Failed"
                         })
                 
                 # Step 4: Assembly & Filtering
-                # Per-field decisive source: VLM owns axis/legend/title text.
-                # Call the metadata extractor once on the cleaned plot,
-                # then hand both PaddleOCR caption + VLM metadata to the
-                # assembler.
-                vlm_metadata = self.metadata_extractor.extract(Path(cleaned_plot_path))
+                # Per-field decisive source: VLM owns axis/legend/title text
+                # (extracted above, before 3B).
                 json_path = self.assembler.assemble(
                     figure_id,
                     extraction_data,
@@ -274,7 +292,7 @@ class FigurePipeline:
                     vlm_metadata=vlm_metadata,
                     text_evidence=text_evidence,
                     is_relevant=is_relevant,
-                    context=load_context(intermediate_dir, figure_id),
+                    context=context,
                     facts=facts,
                 )
 

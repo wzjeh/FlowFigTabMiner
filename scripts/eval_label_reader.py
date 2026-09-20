@@ -89,6 +89,14 @@ def collect(paths: list[str]) -> dict:
                     cost_in += callmeta.get("tokens_in") or 0; cost_out += callmeta.get("tokens_out") or 0
             m["points"] += len(ev.get("raw_data") or [])
             m["points_with_label"] += sum(1 for r in ev.get("raw_data") or [] if _num(r.get("Y_Right/Data_Value")) is not None)
+            # Series recovery (xy plots only): how many points still carry no series.
+            if f.get("chart_type") == "xy":
+                raw = ev.get("raw_data") or []
+                m["xy_points"] += len(raw)
+                m["xy_points_default"] += sum(1 for r in raw if (r.get("Series") or "Default") == "Default")
+                n_names = len((ev.get("text_evidence") or {}).get("legend_text") or [])
+                m["xy_figs_multi_series"] += int(n_names >= 2)
+                m[f"series_source_{f.get('series_source') or 'na'}"] += 1
         fin = f"data/final_output/{base}_normalized.json"
         if os.path.exists(fin):
             recs = json.load(open(fin))
@@ -106,8 +114,11 @@ def collect(paths: list[str]) -> dict:
                     x, yl, dv = _num(pt.get("X")), _num(pt.get("Y_Left")), _num(pt.get("Y_Right/Data_Value"))
                     vals = [c.get("temperature_C"), c.get("residence_time_s"), r.get("yield_pct")] + list((r.get("other_metrics") or {}).values())
                     has = lambda v, tol: v is None or any(isinstance(w, (int, float)) and abs(w - v) <= tol for w in vals)
+                    # X of heatmap columns is clustered in log space (snap_levels_log) → log tolerance.
+                    has_x = lambda v: v is None or has(v, 1e-6) or (v > 0 and any(
+                        isinstance(w, (int, float)) and w > 0 and abs(math.log10(w) - math.log10(v)) <= 0.15 for w in vals))
                     y_ok = dv is None or dv > 100 or dv < 0 or any(isinstance(w, (int, float)) and abs(w - dv) < 1e-6 for w in vals)
-                    fidelity_ok += bool(has(x, 1e-6) and has(yl, 2.5) and y_ok)
+                    fidelity_ok += bool(has_x(x) and has(yl, 2.5) and y_ok)
     model = models.most_common(1)[0][0] if models else None
     pin, pout = PRICE_PER_M.get(model or "", (0, 0))
     return {**m, "fit_inlier_ratio": round(fit_inl / fit_tot, 3) if fit_tot else None,

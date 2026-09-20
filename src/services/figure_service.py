@@ -149,6 +149,8 @@ def extract(req: ExtractRequest):
 
         legend_crops = elements.get("legend", [])
         prototypes = p["legend_matcher"].parse_legend_crops(legend_crops)
+        # TODO: mirror FigurePipeline's series recovery (series_recovery.recover_series_prototypes)
+        # once the service has VLM metadata + PDF context available at this point.
         matched_points = p["legend_matcher"].match_points(points, prototypes, cleaned_plot_path)
 
         other_detections = [d for d in micro_detections if d["label"] not in ["data_point", "marker"]]

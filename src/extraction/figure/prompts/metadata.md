@@ -28,3 +28,12 @@ Rules:
    a separate pipeline that reads pixel coordinates directly.
 6. **Footnote** is any small text below the chart explaining symbols /
    conditions; transcribe verbatim if present, else ``null``.
+7. **``legend_markers``**: for EVERY entry of ``legend_series_names`` give
+   one object ``{name, color, marker}`` describing how that entry's marker
+   is *printed*: ``color`` is a single plain colour word (red, blue, green,
+   black, orange, purple, brown, pink, gray, cyan, yellow, magenta); for a
+   monochrome legend that differs only by fill use ``open`` / ``filled``;
+   ``marker`` is the shape word (circle, square, triangle, diamond, line,
+   bar).  ``name`` must repeat the series name exactly.  If you are not
+   sure of the colour, set ``color`` to ``null`` — never guess.  Leave the
+   list empty when there is no legend.

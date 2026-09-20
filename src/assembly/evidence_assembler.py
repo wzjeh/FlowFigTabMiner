@@ -491,8 +491,16 @@ def _vlm_text_evidence(meta):
         }] if text else []
 
     legend_list = meta.legend_series_names.value or []
+    marker_list = getattr(meta, "legend_markers", None)
+    marker_list = (marker_list.value or []) if marker_list is not None else []
 
     return {
+        # Printed marker colour/shape per legend entry (VLM); consumed by
+        # series recovery when the macro detector found no legend crop.
+        "legend_markers": [
+            {"name": str(m.get("name")), "color": m.get("color"), "marker": m.get("marker")}
+            for m in marker_list if isinstance(m, dict) and m.get("name")
+        ],
         "x_axis_title": _wrap(x_text, meta.x_axis_label),
         "y_axis_title": _wrap(y_text, meta.y_axis_label),
         "legend_text": [

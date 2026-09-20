@@ -174,6 +174,34 @@ def _pick_footnote(blocks: List[Dict[str, Any]], bbox: List[float], skip_idx: Op
 _INNER_TEXT_MAX_CHARS = 4000
 
 
+def _inner_lines(page: fitz.Page, bbox: List[float], exclude_boxes: List[List[float]]) -> List[Dict[str, Any]]:
+    """Text-layer lines inside the crop bbox, each with its page-space bbox
+    (``{"text", "bbox_pt"}``), reading order.  Lines whose centre falls inside
+    an ``exclude_boxes`` entry (caption / footnote blocks) are dropped."""
+    x0, y0, x1, y1 = bbox
+    out: List[Dict[str, Any]] = []
+    try:
+        d = page.get_text("dict")
+    except Exception:
+        return out
+    for blk in d.get("blocks", []):
+        if blk.get("type", 0) != 0:
+            continue
+        for ln in blk.get("lines", []):
+            lb = ln.get("bbox")
+            if not lb:
+                continue
+            cx, cy = (lb[0] + lb[2]) / 2.0, (lb[1] + lb[3]) / 2.0
+            if not (x0 <= cx <= x1 and y0 <= cy <= y1):
+                continue
+            if any(eb[0] <= cx <= eb[2] and eb[1] <= cy <= eb[3] for eb in exclude_boxes):
+                continue
+            txt = _normalize_text(" ".join(sp.get("text", "") for sp in ln.get("spans", [])))
+            if txt:
+                out.append({"text": txt, "bbox_pt": [round(float(v), 2) for v in lb]})
+    return out
+
+
 def _inner_text(page: fitz.Page, bbox: List[float], exclude_boxes: List[List[float]]) -> str:
     """Verbatim PDF text layer inside the crop bbox, grouped into rows.
 
@@ -230,7 +258,7 @@ def locate_contexts(pdf_path: str, layout: Dict[str, Any]) -> Dict[str, Dict[str
                 "source_id": sid, "kind": kind, "page": page_no, "bbox_pt": bbox,
                 "label_kind": None, "label_num": None, "label": None,
                 "caption": "", "footnote": "", "caption_source": "missing",
-                "inner_text": "",
+                "inner_text": "", "inner_lines": [],
                 "geometry_source": src.get("geometry_source", "unknown"),
             }
             if 1 <= page_no <= len(doc):
@@ -251,6 +279,7 @@ def locate_contexts(pdf_path: str, layout: Dict[str, Any]) -> Dict[str, Dict[str
                 if pick:
                     excl.append(blocks[pick["idx"]]["bbox"])
                 ctx["inner_text"] = _inner_text(doc[page_no - 1], bbox, excl)
+                ctx["inner_lines"] = _inner_lines(doc[page_no - 1], bbox, excl)
             out[sid] = ctx
     finally:
         doc.close()
