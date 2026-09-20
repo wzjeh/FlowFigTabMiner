@@ -332,7 +332,39 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
         report["status"] = "anchored" if report["unplaced"] == 0 and len(pairs) == n_tokens else "anchored_partial"
     else:
         box_rows = cluster_rows(boxes)
-        if len(box_rows) == len(slots_by_row):
+        # Column-sequence fallback: assign every box to a token column by
+        # x-cluster, then match boxes and token slots top-to-bottom within
+        # each column (boxes on one line inside a column collapse to the
+        # leftmost).  Independent of the row clustering.
+        token_cols = sorted({sl[1] for row in slots_by_row for sl in row})
+        xc = _x_clusters(boxes)
+        if len(xc) >= len(token_cols) >= 1:
+            xc = _merge_to(xc, len(token_cols))
+            med_h = max(1.0, statistics.median(b[3] - b[1] for b in boxes))
+            col_boxes: Dict[int, List[int]] = {c: [] for c in token_cols}
+            for bi, b in enumerate(boxes):
+                col_boxes[token_cols[_nearest(xc, (b[0] + b[2]) / 2)]].append(bi)
+            col_pairs: List[Tuple[Tuple[int, int, int], int]] = []; cols_ok = 0
+            for c in token_cols:
+                slots = [sl for row in slots_by_row for sl in row if sl[1] == c]
+                bis = sorted(col_boxes[c], key=lambda i: (boxes[i][1] + boxes[i][3]) / 2)
+                lines_: List[List[int]] = []
+                for bi in bis:                                   # collapse same-line boxes
+                    cy = (boxes[bi][1] + boxes[bi][3]) / 2
+                    if lines_ and abs(cy - (boxes[lines_[-1][0]][1] + boxes[lines_[-1][0]][3]) / 2) < 0.5 * med_h:
+                        lines_[-1].append(bi)
+                    else:
+                        lines_.append([bi])
+                picked = [min(l, key=lambda i: boxes[i][0]) for l in lines_]
+                if len(picked) == len(slots):
+                    col_pairs.extend(zip(slots, picked)); cols_ok += 1
+            if col_pairs:
+                pairs = col_pairs
+                report["anchors"] = "box_cols"
+                report["status"] = "columns" if cols_ok == len(token_cols) else "columns_partial"
+        if pairs:
+            pass
+        elif len(box_rows) == len(slots_by_row):
             matched_rows = [i for i in range(len(box_rows)) if len(box_rows[i]) == len(slots_by_row[i])]
             for i in matched_rows:
                 pairs.extend(zip(slots_by_row[i], box_rows[i]))

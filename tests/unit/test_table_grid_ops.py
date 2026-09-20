@@ -160,3 +160,17 @@ def test_box_row_clusters_become_anchors_without_text_layer():
     out, rep = align_structures(grid, _meta(boxes, ["S1", "P1", "P1iso", "S2", "P2", "S3", "P3", "P3dup"]))
     assert rep["anchors"] == "box_rows+box_cols" and rep["assigned"] == 6
     assert [r[0] for r in out[1:]] == ["S1", "S2", "S3"] and [r[2] for r in out[1:]] == ["P1", "P2", "P3"]
+
+
+def test_column_sequence_fallback_when_rows_do_not_cluster():
+    # 4 token rows; substrate drawings are tall and overlap the next row's product drawings vertically,
+    # so vertical clustering yields the wrong row count — per-column ordering still works.
+    grid = [["S", "E", "P", "Y"]] + [[T, "MeI", T, "9"] for _ in range(4)]
+    boxes = [_box(100, 40, h=220), _box(700, 100),
+             _box(100, 180, h=220), _box(700, 240), _box(760, 244),     # isomer beside the product
+             _box(100, 320, h=220), _box(700, 380),
+             _box(100, 460, h=220), _box(700, 520)]
+    names = ["S1", "P1", "S2", "P2", "P2iso", "S3", "P3", "S4", "P4"]
+    out, rep = align_structures(grid, _meta(boxes, names))
+    assert rep["status"] == "columns" and rep["assigned"] == 8
+    assert [r[0] for r in out[1:]] == ["S1", "S2", "S3", "S4"] and [r[2] for r in out[1:]] == ["P1", "P2", "P3", "P4"]
