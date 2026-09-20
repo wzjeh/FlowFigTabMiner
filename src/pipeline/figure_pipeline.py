@@ -227,6 +227,7 @@ class FigurePipeline:
                     "y_left_scale": mapper_facts.get("y_left_scale"),
                     "y_right_scale": mapper_facts.get("y_right_scale"),
                     "axis_fit": mapper_facts.get("axis_fit"),
+                    "fit_quality": mapper_facts.get("fit_quality"),
                     "x_ticks": mapper_facts.get("x_ticks"),
                     "y_left_ticks": mapper_facts.get("y_left_ticks"),
                     "n_points": len(points),

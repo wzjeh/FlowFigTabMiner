@@ -56,3 +56,29 @@ def test_inheritance_blocked_by_source_text():
     assert c["solvent"] == "tetrahydrofuran"                                     # caption silent → inherited
     assert source_blocks_inheritance("temperature_C", "Effects of temperature and residence time")
     assert source_blocks_inheritance("temperature_C", "Scope of electrophiles") is None
+
+
+def test_flow_rate_not_inherited_when_residence_time_varies():
+    gv = {"default_conditions": {"flow_rate_mL_min": {"value": 6.0, "quote": "flow rate: 6.0 mL/min", "scope": "paper"}}}
+    rec = {"__synthesized": True, "conditions": {"residence_time_s": 0.3, "flow_rate_mL_min": None}}
+    out = inherit_conditions(dict(rec), {}, gv, None, source_text="Figure 2. Yield of 3")
+    assert out["conditions"]["flow_rate_mL_min"] is None
+    rec2 = {"conditions": {"residence_time_s": None, "flow_rate_mL_min": None}}
+    assert inherit_conditions(dict(rec2), {}, gv, None, source_text="Table 3. Scope of electrophiles")["conditions"]["flow_rate_mL_min"] == 6.0
+
+
+def test_llm_copied_global_flow_rate_removed_on_tr_scan():
+    gv = {"default_conditions": {"flow_rate_mL_min": {"value": 6.0, "quote": "flow rate: 6.0 mL/min", "scope": "paper"}}}
+    rec = {"__synthesized": True, "conditions": {"residence_time_s": 0.3, "flow_rate_mL_min": 6.0}}
+    out = inherit_conditions(dict(rec), {}, gv, None, source_text="Figure 2. Effect of residence time")
+    assert out["conditions"]["flow_rate_mL_min"] is None and out["conditions_provenance"]["flow_rate_mL_min"] == "removed_global_default"
+    rec2 = {"__synthesized": True, "conditions": {"residence_time_s": 0.3, "flow_rate_mL_min": 2.5}}   # source-specific value stays
+    assert inherit_conditions(dict(rec2), {}, gv, None, source_text="Figure 2")["conditions"]["flow_rate_mL_min"] == 2.5
+
+
+def test_llm_value_kept_when_source_mentions_it():
+    gv = {"default_conditions": {"solvent": {"value": "tetrahydrofuran", "quote": "in THF", "scope": "paper"},
+                                 "temperature_C": {"value": -78, "quote": "at -78 °C", "scope": "paper"}}}
+    rec = {"conditions": {"solvent": "tetrahydrofuran", "temperature_C": -78}}
+    out = inherit_conditions(dict(rec), {}, gv, None, source_text="[a] Reactions run in THF at -78 °C")
+    assert out["conditions"]["solvent"] == "tetrahydrofuran" and out["conditions"]["temperature_C"] == -78

@@ -258,7 +258,18 @@ _BATCH_RE = re.compile(r"macrobatch|\bbatch\b|round-bottom|\bflask\b", re.I)
 _FLOW_ONLY_FIELDS = ("flow_rate_mL_min", "residence_time_s")
 
 
-def source_blocks_inheritance(field: str, source_text: str) -> Optional[str]:
+_TR_RE = _FIELD_MENTION["residence_time_s"]
+
+
+def _same_value(a, b) -> bool:
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool):
+        return abs(float(a) - float(b)) <= 1e-9 * max(1.0, abs(float(b)))
+    if isinstance(a, str) and isinstance(b, str):
+        return a.strip().lower() == b.strip().lower()
+    return False
+
+
+def source_blocks_inheritance(field: str, source_text: str, rec: dict = None) -> Optional[str]:
     """Why a paper-level default must NOT be applied to this source, or None.
 
     Precedence rule (Zhao, 2026-09-20 audit): a figure/table's own caption,
@@ -268,6 +279,12 @@ def source_blocks_inheritance(field: str, source_text: str) -> Optional[str]:
     the paper-wide default would silently override what the source says.
     Batch / flask sources never receive flow-only defaults.
     """
+    # Flow rate is coupled to residence time (fixed reactor volume): a source
+    # that scans residence time cannot share the paper-wide flow rate.
+    if field == "flow_rate_mL_min" and rec is not None:
+        tr_varies = bool(rec.get("__synthesized")) and (rec.get("conditions") or {}).get("residence_time_s") is not None
+        if tr_varies or (source_text and _TR_RE.search(source_text)):
+            return "source varies residence time (flow rate coupled)"
     if not source_text:
         return None
     if field in _FLOW_ONLY_FIELDS and _BATCH_RE.search(source_text):
@@ -299,6 +316,22 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
     for field in INHERITABLE_CONDITION_FIELDS:
         cur = conds.get(field)
         if cur not in (None, "", [], {}):
+            # The per-source LLM may itself have copied the paper-wide default
+            # (Rule 20).  If that default is provably inapplicable to this
+            # source (e.g. a fixed flow rate on a residence-time scan), drop it.
+            # Only PHYSICAL contradictions justify removing a value the LLM
+            # wrote (batch source with a flow default; a residence-time scan
+            # with the paper-wide flow rate).  A caption that merely mentions
+            # the quantity supports the value rather than contradicting it.
+            g = defaults.get(field)
+            reason = source_blocks_inheritance(field, source_text, rec) if isinstance(g, dict) else None
+            if isinstance(g, dict) and g.get("scope") == "paper" and _same_value(cur, g.get("value")) \
+                    and reason and reason != "source caption/footnote addresses this field":
+                conds[field] = None
+                prov[field] = "removed_global_default"
+                if stats is not None:
+                    stats["removed_global_default"] = stats.get("removed_global_default", 0) + 1
+                continue
             prov.setdefault(field, "llm_source")
             continue
         lv_val = _scalar(fixed.get(field))
@@ -310,7 +343,7 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
             continue
         g = defaults.get(field)
         if isinstance(g, dict) and g.get("scope") == "paper" and g.get("quote"):
-            if source_blocks_inheritance(field, source_text):
+            if source_blocks_inheritance(field, source_text, rec):
                 if stats is not None:
                     stats["blocked_by_source"] = stats.get("blocked_by_source", 0) + 1
                 continue

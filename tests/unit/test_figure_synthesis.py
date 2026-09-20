@@ -68,3 +68,11 @@ def test_series_map_cannot_fabricate_outcomes():
     raw = [{"Series": "<20%", "X": 1.0, "Y_Left": -78.0, "Y_Right/Data_Value": None}]
     rec = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap"})[0]
     assert rec.get("yield_pct") is None and rec["conditions"]["catalyst"] == "Pd"
+
+
+def test_rows_between_ticks_snap_to_cluster_levels():
+    tpl = {"record_template": {"conditions": {}, "other_metrics": {}},
+           "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "conditions.temperature_C", "Y_Right/Data_Value": "yield_pct"}}
+    raw = [{"Series": "Default", "X": 1.0, "Y_Left": v, "Y_Right/Data_Value": 1.0} for v in (-27.7, -27.5, -28.1, -0.3, 0.2)]
+    recs = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap", "y_left_ticks": [0, -20, -40, -60]})
+    assert [r["conditions"]["temperature_C"] for r in recs] == [-28.0, -28.0, -28.0, 0.0, 0.0]

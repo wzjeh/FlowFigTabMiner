@@ -163,7 +163,9 @@ def synthesize_records(
     y_left = [_num(p.get("Y_Left")) if isinstance(p, dict) else None for p in raw_data]
     if facts.get("chart_type") == "heatmap" and (axis_map.get("Y_Left") or "").startswith("conditions."):
         ticks = [t for t in (facts.get("y_left_ticks") or []) if isinstance(t, (int, float))]
-        y_left = snap_to_ticks(y_left, ticks) if ticks else snap_levels(y_left)
+        # Heatmap rows often sit BETWEEN axis ticks (-28 °C on a 0/-20/-40 axis):
+        # snap to a tick when one is close, otherwise to the clustered row level.
+        y_left = snap_levels(snap_to_ticks(y_left, ticks) if ticks else y_left)
 
     records: List[Dict[str, Any]] = []
     for i, pt in enumerate(raw_data):
