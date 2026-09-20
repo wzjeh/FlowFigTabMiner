@@ -105,3 +105,26 @@ def test_best_monotonic_keeps_increasing_axis():
 def test_decide_dual_axis_needs_three_right_ticks():
     from src.extraction.figure.axis_fit import decide_dual_axis
     assert decide_dual_axis(4, 3) and not decide_dual_axis(4, 2) and not decide_dual_axis(0, 5)
+
+
+def test_value_boxes_label_at_most_one_point():
+    from src.extraction.figure.axis_fit import match_labels_to_points
+    pts = [(100, 100), (130, 100), (160, 100), (400, 400)]
+    boxes = [(112, 90), (500, 500)]           # one stray legend number near three points
+    out = match_labels_to_points(pts, boxes, radius=120.0)
+    assert out == {0: 0}                      # nearest point only; box 1 is too far from everything
+    # Dense heatmap cells: every point keeps its own label.
+    pts = [(x, 50) for x in range(0, 500, 50)]
+    boxes = [(x + 5, 40) for x in range(0, 500, 50)]
+    out = match_labels_to_points(pts, boxes)
+    assert out == {i: i for i in range(10)}
+
+
+def test_value_boxes_follow_the_figure_offset_convention():
+    from src.extraction.figure.axis_fit import match_labels_to_points
+    # 3 rows of markers 40 px apart; labels printed 22 px below each marker
+    # (i.e. nearer to the marker BELOW than to their own marker).
+    pts = [(x, y) for y in (100, 140, 180) for x in (100, 150, 200)]
+    boxes = [(x + 6, y + 22) for (x, y) in pts if y < 180] + [(x + 6, 202) for x in (100, 150, 200)]
+    out = match_labels_to_points(pts, boxes)
+    assert out == {i: i for i in range(9)}

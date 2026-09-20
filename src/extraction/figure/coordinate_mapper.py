@@ -15,6 +15,7 @@ from src.extraction.figure.axis_fit import (
     best_monotonic_subsequence, decide_dual_axis, fuse_tick_readings, fuse_value_readings,
     is_scientific_text, monotonic_subsequence, parse_tick_text, parse_value_text, robust_fit,
     tick_text_is_ambiguous,
+    match_labels_to_points,
 )
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pandas as pd
@@ -750,21 +751,13 @@ class CoordinateMapper:
                     log(f"LABELS(VLM) VALUE@{v['center'][0]:.0f},{v['center'][1]:.0f} ocr='{ocr_txt}' vlm='{vtext}' -> {fused_v} ({src})")
                     lr_rows.append({"kind": "value", "box": [float(b) for b in v['box']], "ocr": ocr_txt, "vlm": vtext,
                                     "used": fused_v, "source": src})
-                for idx, p in enumerate(points):
-                        px, py = p['center']
-                        best_det = None
-                        min_dist = float('inf')
-                        search_radius = 120.0 
-                        for v in value_dets:
-                            vx, vy = v['center']
-                            dist = np.sqrt((vx - px)**2 + (vy - py)**2)
-                            if dist < search_radius and dist < min_dist:
-                                min_dist = dist
-                                best_det = v
-                        if best_det:
-                            val = box_value.get(id(best_det), (None, "none"))[0]
-                            if val is not None:
-                                point_labels[idx] = val
+                # 1:1 greedy nearest-pair assignment (a box labels one point).
+                assign = match_labels_to_points([p['center'] for p in points],
+                                                [v['center'] for v in value_dets], radius=120.0)
+                for idx, j in assign.items():
+                    val = box_value.get(id(value_dets[j]), (None, "none"))[0]
+                    if val is not None:
+                        point_labels[idx] = val
             
             log(f"Point Labels Extracted: {len(point_labels)}")
             self.last_facts["n_point_labels"] = len(point_labels)

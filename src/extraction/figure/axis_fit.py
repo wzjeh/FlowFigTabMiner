@@ -16,6 +16,7 @@ Fixes, all deterministic:
 
 from __future__ import annotations
 
+import math
 import re
 import unicodedata
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -301,3 +302,56 @@ def fuse_value_readings(ocr_val: Optional[float], vlm_val: Optional[float],
     if o_ok:
         return float(ocr_val), "ocr"
     return None, "none"
+
+
+def _greedy_pairs(point_centers, box_centers, radius, shift=(0.0, 0.0)):
+    """Greedy nearest-pair 1:1 assignment on offset-corrected distances.
+    Returns ({point_idx: box_idx}, total_distance)."""
+    pairs = []
+    for i, (px, py) in enumerate(point_centers):
+        for j, (bx, by) in enumerate(box_centers):
+            d = math.hypot(bx - shift[0] - px, by - shift[1] - py)
+            if d < radius:
+                pairs.append((d, i, j))
+    pairs.sort()
+    used_p, used_b, out, total = set(), set(), {}, 0.0
+    for d, i, j in pairs:
+        if i in used_p or j in used_b:
+            continue
+        out[i] = j; used_p.add(i); used_b.add(j); total += d
+    return out, total
+
+
+def match_labels_to_points(point_centers, box_centers, radius: float = 120.0) -> dict:
+    """One value box labels at most ONE point (and vice versa).
+
+    The figure's label convention ("value printed below-right of the
+    marker") is an offset vector.  Candidate offsets are the most frequent
+    (box - point) vectors over each point's two nearest boxes (10 px grid);
+    each candidate is scored by the size of the 1:1 assignment it yields on
+    offset-corrected distances, then by total distance.  So a label lying
+    between two marker rows goes to the marker it belongs to, not to
+    whichever is a few pixels nearer.  Returns {point_idx: box_idx}.
+
+    Without the 1:1 rule a lone stray box (a legend number such as "6" on an
+    xy plot) is copied onto every point within the search radius, and on
+    heatmaps points whose own label YOLO missed inherit a neighbour's value.
+    """
+    if not point_centers or not box_centers:
+        return {}
+    best, total = _greedy_pairs(point_centers, box_centers, radius)
+    if len(best) < 3:
+        return best
+    best_key = (len(best), -total)
+    votes: Dict[Tuple[int, int], int] = {}
+    for px, py in point_centers:
+        near = sorted(((math.hypot(bx - px, by - py), bx - px, by - py) for bx, by in box_centers))[:2]
+        for d, ox, oy in near:
+            if d < radius:
+                key = (int(round(ox / 10.0)), int(round(oy / 10.0)))
+                votes[key] = votes.get(key, 0) + 1
+    for (gx, gy), _ in sorted(votes.items(), key=lambda kv: -kv[1])[:3]:
+        out, t = _greedy_pairs(point_centers, box_centers, radius, (gx * 10.0, gy * 10.0))
+        if (len(out), -t) > best_key:
+            best, best_key = out, (len(out), -t)
+    return best
