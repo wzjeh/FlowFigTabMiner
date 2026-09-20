@@ -404,6 +404,11 @@ def normalize_chem_name(name: str | None) -> str | None:
     - truncated common suffixes: ``...benzen`` → ``...benzene``,
       ``...anilin`` → ``...aniline``
     """
+    if isinstance(name, bool) or name is None:
+        return None
+    if not isinstance(name, str):
+        # A synthesized template / series_map can put a number in a name field.
+        name = str(name) if isinstance(name, (int, float)) else None
     if not name or not name.strip():
         return name
     s = name.strip()

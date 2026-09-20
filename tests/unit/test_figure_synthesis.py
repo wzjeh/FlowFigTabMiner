@@ -76,3 +76,13 @@ def test_rows_between_ticks_snap_to_cluster_levels():
     raw = [{"Series": "Default", "X": 1.0, "Y_Left": v, "Y_Right/Data_Value": 1.0} for v in (-27.7, -27.5, -28.1, -0.3, 0.2)]
     recs = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap", "y_left_ticks": [0, -20, -40, -60]})
     assert [r["conditions"]["temperature_C"] for r in recs] == [-28.0, -28.0, -28.0, 0.0, 0.0]
+
+
+def test_numeric_identity_from_series_map_becomes_string():
+    from src.adjudication.post_processor import normalize_chem_name
+    tpl = {"record_template": {"conditions": {}, "other_metrics": {}},
+           "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "yield_pct", "Y_Right/Data_Value": None},
+           "series_map": {"3": {"product_label": 3}}}
+    rec = synthesize_records(tpl, [{"Series": "3", "X": 1.0, "Y_Left": 5.0}], "Figure 1", {"chart_type": "xy"})[0]
+    assert rec["product_label"] == "3"
+    assert isinstance(normalize_chem_name(3.0), str) and normalize_chem_name(None) is None and normalize_chem_name({"a": 1}) is None

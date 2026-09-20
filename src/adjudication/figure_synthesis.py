@@ -187,6 +187,8 @@ def synthesize_records(
                 # outcome constant: "<20%" → yield_pct=10 would fabricate a
                 # measurement for every point whose cell label was not read.
                 if _valid_path(path) and path not in OUTCOME_FIELDS:
+                    if path.endswith(("_name", "_label", "_smiles")) and isinstance(val, (int, float)) and not isinstance(val, bool):
+                        val = str(val)          # identities are strings
                     _set_path(rec, path, val)
         elif series and series != "Default":
             rec["other_metrics"]["series"] = series
