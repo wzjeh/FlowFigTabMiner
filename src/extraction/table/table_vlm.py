@@ -123,14 +123,19 @@ class TableTranscriber:
     def transcribe(self, image: Path) -> TableTranscription:
         image = Path(image)
         last_exc = None
-        for attempt in (1, 2):          # a truncated / malformed structured reply is rare and not cached → one retry
+        for attempt in (1, 2):
+            # Attempt 2 samples at a higher temperature: a malformed structured
+            # reply at temperature 0 is usually a degenerate repetition loop
+            # (observed: thousands of "\n" after a superscript unit), and greedy
+            # decoding would reproduce it exactly.
+            cfg = self.cfg if attempt == 1 else self.cfg.model_copy(update={"temperature": max(0.4, self.cfg.temperature)})
             try:
                 t0 = time.perf_counter()
                 meta, parsed = self.vlm.inspect(
                     image=VLMImage(path=image, mime_type=_mime_for(image)),
                     system_prompt="",
                     user_prompt=_PROMPT,
-                    cfg=self.cfg,
+                    cfg=cfg,
                     response_schema=TableTranscriptionResponse,
                 )
                 elapsed = (time.perf_counter() - t0) * 1000.0

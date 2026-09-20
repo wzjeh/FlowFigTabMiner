@@ -26,8 +26,10 @@ Rules:
    column, in left-to-right order. Never merge or split columns.
 5. A cell that spans several rows is repeated in each spanned data row; a
    header spanning several columns is repeated in each spanned column.
-6. Tables printed as two side-by-side halves (folded tables) are transcribed
-   as printed — one wide row per printed line — not unfolded.
+6. Tables printed as two side-by-side halves that repeat the same columns
+   (folded tables, e.g. entries 1–12 on the left and 13–24 on the right) are
+   UNFOLDED: give the column set once in `header_rows` and list the left
+   half's rows first, then the right half's rows, one entry per row.
 7. `caption`: the table title text if visible ("Table 2. …"), else null.
    `footnotes`: all footnote text below the table verbatim, else null.
    `scheme_conditions`: any reaction conditions printed inside a scheme

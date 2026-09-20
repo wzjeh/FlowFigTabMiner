@@ -30,7 +30,18 @@ INPUT_ROOTS = ["data/input"]
 def _resolve_pdf(name: str) -> str | None:
     if os.path.exists(name):
         return name
-    base = os.path.splitext(os.path.basename(name))[0]
+    base = os.path.basename(name)
+    if base.lower().endswith(".pdf"):
+        base = base[:-4]
+    # Intermediate dir names are shortened for long titles; layout.json keeps the real PDF path.
+    layout = os.path.join("data/intermediate", base, "layout.json")
+    if os.path.exists(layout):
+        try:
+            pdf = json.load(open(layout)).get("pdf")
+            if pdf and os.path.exists(pdf):
+                return pdf
+        except Exception:
+            pass
     for root in INPUT_ROOTS:
         hits = glob.glob(os.path.join(glob.escape(root), "**", glob.escape(base) + ".pdf"), recursive=True)
         if hits:

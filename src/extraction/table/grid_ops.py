@@ -91,7 +91,7 @@ def _strip_atom_labels(cell: str, anchors: Sequence[str]) -> str:
             continue
         if part in anchors or not _ATOM_LABEL_RE.match(part):
             keep.append(part)
-    return re.sub(r"\s+", " ", "".join(keep)).strip()
+    return re.sub(r"\s+([;,])", r"\1", re.sub(r"\s+", " ", "".join(keep))).strip()
 
 
 def _put(grid: List[List[str]], slot: Tuple[int, int, int], smiles: str, token: str) -> None:
@@ -102,7 +102,7 @@ def _put(grid: List[List[str]], slot: Tuple[int, int, int], smiles: str, token: 
     idx = 0
     rebuilt = parts[0]
     for i in range(1, len(parts)):
-        rebuilt += (smiles if idx == k else token) + parts[i]
+        rebuilt += (f" {smiles} " if idx == k else token) + parts[i]   # keep a compound label ("3a") separate
         idx += 1
     grid[r][c] = _strip_atom_labels(rebuilt, [token, smiles])
 
@@ -118,10 +118,11 @@ def text_layer_anchors(grid: Sequence[Sequence[str]], n_header: int, inner_lines
                        img_w: float) -> Tuple[Optional[List[Optional[float]]], Optional[List[float]]]:
     """Row / column anchors (body-crop pixels) from the PDF text layer.
 
-    * row centres: one per grid row (``None`` for header rows) — the y centre
-      of the text-layer line whose text equals the row's first non-empty cell
-      (the entry label) and lies in the left fifth of the crop.  Returned only
-      when every data row is anchored and the anchors increase monotonically.
+    * row centres: one per grid row (``None`` for header rows) — the median y
+      of the text-layer lines whose text equals one of the row's text cells,
+      consumed in reading order.  Returned when at least 60 % of the data rows
+      are anchored and the anchors increase monotonically; unanchored rows are
+      interpolated between their neighbours.
     * column centres: x centre of the line matching each header cell of the
       first header row.  Returned only when every column is anchored.
     """
@@ -135,21 +136,39 @@ def text_layer_anchors(grid: Sequence[Sequence[str]], n_header: int, inner_lines
             continue
         x0, y0, x1, y1 = [(float(v) - (ox if k % 2 == 0 else oy)) * scale for k, v in enumerate(b)]
         lines.append((_norm_cell(ln.get("text", "")), (x0 + x1) / 2 - offset_px[0], (y0 + y1) / 2 - offset_px[1]))
-    # rows
+    # rows: every non-token cell of a data row may anchor it (entry numbers,
+    # electrophile names, yields …); matches are consumed top-to-bottom so
+    # repeated values ("0", "MeI") stay in reading order.
     row_centres: List[Optional[float]] = [None] * len(grid)
-    used = set(); ok_rows = True
+    used = set(); last_y = -1e9
     for r in range(n_header, len(grid)):
-        label = next((c for c in grid[r] if str(c).strip()), "")
-        key = _norm_cell(label)
-        if not key or len(key) > 6:
-            ok_rows = False; break
-        cands = [(cy, i) for i, (t, cx, cy) in enumerate(lines) if t == key and cx <= 0.2 * img_w and i not in used]
-        if not cands:
-            ok_rows = False; break
-        cy, i = min(cands)                          # topmost unused match keeps reading order
-        row_centres[r] = cy; used.add(i)
-    data = [c for c in row_centres if c is not None]
-    if not ok_rows or len(data) < 2 or any(b <= a for a, b in zip(data, data[1:])):
+        ys = []
+        for cell in grid[r]:
+            key = _norm_cell(cell)
+            if not key or "[structure" in key or len(key) > 40:
+                continue
+            cands = sorted((cy, i) for i, (t, cx, cy) in enumerate(lines) if t == key and i not in used and cy >= last_y - 2)
+            if cands:
+                cy, i = cands[0]; ys.append(cy); used.add(i)
+        if ys:
+            row_centres[r] = statistics.median(ys); last_y = row_centres[r]
+    anchored = [(r, c) for r, c in enumerate(row_centres) if c is not None]
+    n_data = len(grid) - n_header
+    if n_data >= 1 and len(anchored) >= max(2, int(0.6 * n_data + 0.999)) and \
+            all(b[1] > a[1] for a, b in zip(anchored, anchored[1:])):
+        # interpolate rows without an anchor between their neighbours
+        pitch = statistics.median([b[1] - a[1] for a, b in zip(anchored, anchored[1:])]) if len(anchored) > 1 else 0.0
+        for r in range(n_header, len(grid)):
+            if row_centres[r] is None:
+                prev = next(((rr, c) for rr, c in reversed(anchored) if rr < r), None)
+                nxt = next(((rr, c) for rr, c in anchored if rr > r), None)
+                if prev and nxt:
+                    row_centres[r] = prev[1] + (nxt[1] - prev[1]) * (r - prev[0]) / (nxt[0] - prev[0])
+                elif prev:
+                    row_centres[r] = prev[1] + pitch * (r - prev[0])
+                elif nxt:
+                    row_centres[r] = nxt[1] - pitch * (nxt[0] - r)
+    else:
         row_centres = None
     # columns
     col_centres: Optional[List[float]] = None
@@ -181,6 +200,32 @@ def _x_clusters(boxes: Sequence[Tuple[float, float, float, float]], gap_factor: 
     return [sum(c) / len(c) for c in clusters]
 
 
+def _dedupe_boxes(metas: List[Dict[str, Any]], iou_thr: float = 0.5) -> List[Dict[str, Any]]:
+    """Drop duplicate molecule detections (IoU ≥ ``iou_thr``); the higher
+    confidence (then the earlier) detection survives."""
+    def iou(a, b):
+        ax1, ay1, ax2, ay2 = _box_xyxy(a); bx1, by1, bx2, by2 = _box_xyxy(b)
+        ix = max(0.0, min(ax2, bx2) - max(ax1, bx1)); iy = max(0.0, min(ay2, by2) - max(ay1, by1))
+        inter = ix * iy; ua = (ax2 - ax1) * (ay2 - ay1) + (bx2 - bx1) * (by2 - by1) - inter
+        return inter / ua if ua > 0 else 0.0
+    order = sorted(range(len(metas)), key=lambda i: (-(metas[i].get("conf") or 0), i))
+    order = [metas[i] for i in order]
+    keep: List[Dict[str, Any]] = []
+    for m in order:
+        if all(iou(m["box"], k["box"]) < iou_thr for k in keep):
+            keep.append(m)
+    return keep
+
+
+def _merge_to(centres: List[float], n: int) -> List[float]:
+    """Merge the closest adjacent cluster centres until ``n`` remain."""
+    cs = sorted(centres)
+    while len(cs) > n and len(cs) > 1:
+        i = min(range(len(cs) - 1), key=lambda k: cs[k + 1] - cs[k])
+        cs[i:i + 2] = [(cs[i] + cs[i + 1]) / 2]
+    return cs
+
+
 def _nearest(centres: Sequence[Optional[float]], v: float) -> Optional[int]:
     best, bd = None, None
     for i, c in enumerate(centres):
@@ -207,13 +252,13 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
     Boxes whose SMILES is empty / invalid keep the token (``unresolved``).
     """
     out = [list(map(lambda v: "" if v is None else str(v), row)) for row in grid]
-    metas = [m for m in mol_meta if m.get("box") is not None]
+    metas = _dedupe_boxes([m for m in mol_meta if m.get("box") is not None])
     boxes = [_box_xyxy(m["box"]) for m in metas]
     slots_by_row = _token_slots(out, token)
     n_tokens = sum(len(s) for s in slots_by_row)
     report: Dict[str, Any] = {"status": "none", "n_boxes": len(boxes), "n_tokens": n_tokens,
                               "n_box_rows": 0, "n_token_rows": len(slots_by_row), "assigned": 0, "unresolved": 0,
-                              "unplaced": 0, "anchors": "none"}
+                              "unplaced": 0, "anchors": "none", "n_duplicates": len(mol_meta) - len(metas)}
     if not boxes:
         return out, report
     if n_tokens == 0:
@@ -221,18 +266,33 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
         return out, report
 
     pairs: List[Tuple[Tuple[int, int, int], int]] = []
+    if not (row_centres is not None and any(c is not None for c in row_centres)):
+        # No text-layer anchors: when the box rows (vertical clustering) map
+        # 1:1 onto the token rows, use the cluster centres as row anchors so
+        # the per-cell logic (column clusters, duplicate handling) still applies.
+        box_rows = cluster_rows(boxes)
+        report["n_box_rows"] = len(box_rows)
+        if len(box_rows) == len(slots_by_row):
+            row_centres = [None] * len(out)
+            for slots, bis in zip(slots_by_row, box_rows):
+                row_centres[slots[0][0]] = sum((boxes[i][1] + boxes[i][3]) / 2 for i in bis) / len(bis)
+            report["anchors"] = "box_rows"
     if row_centres is not None and any(c is not None for c in row_centres):
-        report["anchors"] = "rows+cols" if col_centres else "rows"
+        if report["anchors"] != "box_rows":
+            report["anchors"] = "rows+cols" if col_centres else "rows"
         token_cols = sorted({s[1] for row in slots_by_row for s in row})
         if not col_centres:
             # Column anchors from the boxes themselves: x-clusters (gap > half
             # the median box width) that map 1:1 onto the token columns.
             xc = _x_clusters(boxes)
-            if len(xc) == len(token_cols):
+            if len(xc) >= len(token_cols) >= 1:
+                # More clusters than token columns = several drawings side by
+                # side in one column; merge the closest clusters.
+                xc = _merge_to(xc, len(token_cols))
                 col_centres = [None] * (max(token_cols) + 1)
                 for c, x in zip(token_cols, xc):
                     col_centres[c] = x
-                report["anchors"] = "rows+box_cols"
+                report["anchors"] = "box_rows+box_cols" if report["anchors"] == "box_rows" else "rows+box_cols"
         data_c = [c for c in row_centres if c is not None]
         pitch = statistics.median([b - a for a, b in zip(data_c, data_c[1:])]) if len(data_c) > 1 else None
         by_row: Dict[int, List[int]] = {}
@@ -260,7 +320,10 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
                         report["unplaced"] += 1; continue
                     claims.setdefault(slot, []).append(bi)
                 for slot, cands in claims.items():
-                    best = min(cands, key=lambda i: abs((boxes[i][1] + boxes[i][3]) / 2 - row_centres[r]))
+                    dy = {i: abs((boxes[i][1] + boxes[i][3]) / 2 - row_centres[r]) for i in cands}
+                    tol = 0.25 * pitch if pitch else 0.0
+                    near = [i for i in cands if dy[i] <= min(dy.values()) + tol]
+                    best = min(near, key=lambda i: (boxes[i][0], dy[i]))   # same line → the leftmost drawing is the cell's
                     pairs.append((slot, best)); report["unplaced"] += len(cands) - 1
             elif len(bis) == len(slots):
                 pairs.extend(zip(slots, bis))
@@ -269,7 +332,6 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
         report["status"] = "anchored" if report["unplaced"] == 0 and len(pairs) == n_tokens else "anchored_partial"
     else:
         box_rows = cluster_rows(boxes)
-        report["n_box_rows"] = len(box_rows)
         if len(box_rows) == len(slots_by_row):
             matched_rows = [i for i in range(len(box_rows)) if len(box_rows[i]) == len(slots_by_row[i])]
             for i in matched_rows:

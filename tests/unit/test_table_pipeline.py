@@ -86,7 +86,7 @@ def test_happy_path_aligns_smiles_and_cross_checks(paper):
     assert list(df.iloc[0]) == ["Entry", "Product", "Yield [%]"]
     assert list(df.iloc[1]) == ["1", "CCO", "93"] and df.iloc[2, 1] == "[STRUCTURE]" and df.iloc[3, 1] == "c1ccccc1"
     ev = json.load(open(res["json_path"]))
-    assert ev["structure_alignment"]["status"] == "ok" and ev["structure_alignment"]["assigned"] == 2
+    assert ev["structure_alignment"]["status"] in ("ok", "anchored", "anchored_partial") and ev["structure_alignment"]["assigned"] == 2
     assert ev["structure_alignment"]["unresolved"] == 1                  # RDKit-invalid SMILES stays a token
     assert ev["grid_text_agreement"] == 1.0 and ev["header_row_count"] == 1 and ev["n_rows"] == 3
     assert ev["caption_text"] == "Table 1. Scope." and ev["table_note_text"] == "[a] GC yield."
@@ -112,5 +112,5 @@ def test_scheme_boxes_are_dropped_before_alignment(paper):
             {"box": [100, 170, 140, 199], "smiles": "CCCCC", "conf": 0.9}]
     res = _pipe(_filter(scheme=scheme), _mols(meta), _TR).process_table(img, tables)
     ev = json.load(open(res["json_path"]))
-    assert ev["n_molecules"] == 3 and ev["structure_alignment"]["status"] == "ok" and ev["structure_alignment"]["assigned"] == 3
+    assert ev["n_molecules"] == 3 and ev["structure_alignment"]["status"] in ("ok", "anchored") and ev["structure_alignment"]["assigned"] == 3
     assert os.path.exists(inter / "tables" / "page_1_table_0" / "page_1_table_0_table_scheme_0.png")

@@ -26,7 +26,7 @@ def test_align_ok_row_by_row():
              _box(200, 60), _box(300, 60),
              _box(100, 110), _box(200, 110), _box(300, 110)]
     out, rep = align_structures(grid, _meta(boxes))
-    assert rep["status"] == "ok" and rep["assigned"] == 8 and rep["unresolved"] == 0
+    assert rep["status"] == "anchored" and rep["assigned"] == 8 and rep["unresolved"] == 0
     assert out[1][1:4] == ["C0", "C1", "C2"] and out[2][1:4] == ["", "C3", "C4"] and out[3][1:4] == ["C5", "C6", "C7"]
     assert out[0] == grid[0] and out[2][4] == "20"
 
@@ -35,15 +35,15 @@ def test_align_partial_when_one_row_short():
     grid = [["1", T, T], ["2", T, T]]
     boxes = [_box(100, 10), _box(200, 10), _box(100, 60)]        # row 2 lost a box
     out, rep = align_structures(grid, _meta(boxes))
-    assert rep["status"] == "partial" and rep["assigned"] == 2
-    assert out[0] == ["1", "C0", "C1"] and out[1] == ["2", T, T]
+    assert rep["status"] == "anchored_partial" and rep["assigned"] == 3
+    assert out[0] == ["1", "C0", "C1"] and out[1] == ["2", "C2", T]      # per-cell: the surviving box still lands
 
 
 def test_align_global_when_rows_split_but_totals_match():
     grid = [["1", T], ["2", T], ["3", T]]
     boxes = [_box(100, 10, h=20), _box(100, 60, h=200), _box(100, 400, h=20)]   # tall middle box breaks the gap rule
     out, rep = align_structures(grid, _meta(boxes))
-    assert rep["status"] in ("ok", "global") and [r[1] for r in out] == ["C0", "C1", "C2"]
+    assert rep["status"] in ("ok", "global", "anchored") and [r[1] for r in out] == ["C0", "C1", "C2"]
 
 
 def test_align_failed_keeps_tokens():
@@ -57,7 +57,7 @@ def test_align_multi_token_cell_and_invalid_smiles():
     grid = [["1", f"{T}; {T}", "50"]]
     boxes = [_box(100, 10), _box(160, 10)]
     out, rep = align_structures(grid, _meta(boxes, ["CCO", ""]))
-    assert out[0][1] == f"CCO; {T}" and rep["assigned"] == 1 and rep["unresolved"] == 1 and rep["status"] == "ok"
+    assert out[0][1] == f"CCO; {T}" and rep["assigned"] == 1 and rep["unresolved"] == 1 and rep["status"] == "anchored"
 
 
 def test_align_no_boxes():
@@ -87,7 +87,7 @@ def test_anchored_alignment_places_boxes_by_row_and_column():
              {"text": "3", "bbox_pt": [102, 160, 104, 163]}, {"text": "1", "bbox_pt": [205, 120, 207, 123]}]
     grid[0][3] = "Ar1–Ar2"
     rows, cols = text_layer_anchors(grid, 1, lines, [100, 100, 220, 170], 4.0, (0.0, 40.0), 480.0)
-    assert rows == [None, 46.0, 126.0, 206.0] and cols and len(cols) == 5
+    assert rows == [None, 46.0, 126.0, 206.0] and cols and len(cols) == 5   # entry numbers + yields
     # boxes: row 1 has all three, row 2 misses Ar1Br (ditto) plus a stray extra box in the Yield column, row 3 complete
     boxes = [(90, 40), (190, 40), (290, 40), (190, 120), (290, 120), (420, 120), (90, 200), (190, 200), (290, 200)]
     meta = _meta([_box(x, y) for x, y in boxes])
@@ -96,12 +96,24 @@ def test_anchored_alignment_places_boxes_by_row_and_column():
     assert out[1][1:4] == ["C0", "C1", "C2"] and out[2][1:4] == ["", "C3", "C4"] and out[3][1:4] == ["C6", "C7", "C8"]
 
 
-def test_anchors_refuse_when_entry_labels_missing():
+def test_anchors_refuse_when_too_few_rows_match():
     from src.extraction.table.grid_ops import text_layer_anchors
-    grid = [["Entry", "P"], ["1", T], ["2", T]]
-    lines = [{"text": "1", "bbox_pt": [102, 120, 104, 123]}]          # row 2 has no anchor
+    grid = [["Entry", "P"], ["1", T], ["2", T], ["3", T], ["4", T]]
+    lines = [{"text": "1", "bbox_pt": [102, 120, 104, 123]}]          # only 1 of 4 rows anchored
     rows, cols = text_layer_anchors(grid, 1, lines, [100, 100, 220, 170], 4.0, (0.0, 0.0), 480.0)
     assert rows is None and cols is None
+
+
+def test_anchors_from_any_text_cell_with_interpolation():
+    from src.extraction.table.grid_ops import text_layer_anchors
+    grid = [["Substrate", "E", "Product", "Yield"],
+            [T, "MeI", T, "87"], [T, "MeOTf", T, "82"], [T, "MeI", T, "36"], [T, "PhCHO", T, "93"]]
+    # rows 1,2,4 anchored by electrophile / yield lines; row 3 has none → interpolated
+    lines = [{"text": "MeI", "bbox_pt": [130, 120, 136, 123]}, {"text": "87", "bbox_pt": [200, 120, 204, 123]},
+             {"text": "MeOTf", "bbox_pt": [130, 140, 138, 143]}, {"text": "82", "bbox_pt": [200, 140, 204, 143]},
+             {"text": "PhCHO", "bbox_pt": [130, 180, 138, 183]}, {"text": "93", "bbox_pt": [200, 180, 204, 183]}]
+    rows, cols = text_layer_anchors(grid, 1, lines, [100, 100, 220, 200], 4.0, (0.0, 0.0), 480.0)
+    assert rows == [None, 86.0, 166.0, 246.0, 326.0] and cols is None
 
 
 def test_anchored_rows_only_uses_box_x_clusters_and_drops_header_band_boxes():
@@ -127,3 +139,24 @@ def test_atom_label_fragments_are_stripped_when_token_is_filled():
     grid = [["1", f"MeO-{T}", "93"]]
     out, rep = align_structures(grid, _meta([_box(100, 10)], ["COc1ccc(Br)cc1"]))
     assert out[0][1] == "COc1ccc(Br)cc1"
+
+
+def test_duplicates_and_side_by_side_drawings_do_not_block_anchored_alignment():
+    grid = [["Substrate", "E", "Product", "Yield"], [T, "MeI", T, "92"], [T, "MeOTf", T, "88"]]
+    rows = [None, 100.0, 300.0]
+    boxes = [_box(100, 80), _box(102, 82),                    # duplicate detection of the substrate
+             _box(700, 80), _box(900, 85),                     # product + its isomer drawn side by side
+             _box(100, 280), _box(700, 280)]
+    out, rep = align_structures(grid, _meta(boxes, ["S1", "S1dup", "P1", "P1iso", "S2", "P2"]), row_centres=rows)
+    assert rep["n_duplicates"] == 1 and rep["assigned"] == 4 and rep["anchors"] == "rows+box_cols"
+    assert out[1][0] in ("S1", "S1dup") and out[1][2] == "P1" and out[2][0] == "S2" and out[2][2] == "P2"
+
+
+def test_box_row_clusters_become_anchors_without_text_layer():
+    grid = [["Substrate", "E", "Product", "Yield"], [T, "MeI", T, "92"], [T, "MeOTf", T, "88"], [T, "PhCHO", T, "70"]]
+    boxes = [_box(100, 80), _box(700, 80), _box(900, 84),          # row 1 + an isomer drawing beside the product
+             _box(100, 280), _box(700, 280),
+             _box(100, 480), _box(700, 480), _box(705, 482)]        # row 3 + duplicate detection
+    out, rep = align_structures(grid, _meta(boxes, ["S1", "P1", "P1iso", "S2", "P2", "S3", "P3", "P3dup"]))
+    assert rep["anchors"] == "box_rows+box_cols" and rep["assigned"] == 6
+    assert [r[0] for r in out[1:]] == ["S1", "S2", "S3"] and [r[2] for r in out[1:]] == ["P1", "P2", "P3"]
