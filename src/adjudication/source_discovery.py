@@ -159,11 +159,11 @@ def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[s
     ev = dict(evidence)
     if source_type == "table":
         if context.get("caption_source") == "pdf_text" and context.get("caption"):
-            ev["caption_text_ocr"] = evidence.get("caption_text", "")
+            ev["caption_text_vlm"] = evidence.get("caption_text", "")
             ev["caption_text"] = context["caption"]
             ev["caption_source"] = "pdf_text"
         if context.get("footnote"):
-            ev["table_note_text_ocr"] = evidence.get("table_note_text", "")
+            ev["table_note_text_vlm"] = evidence.get("table_note_text", "")
             ev["table_note_text"] = context["footnote"]
             ev["note_source"] = "pdf_text"
         ev["label"] = context.get("label")
@@ -252,6 +252,9 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
             logger.warning("source_discovery table evidence load failed path=%s exc=%s", ev_path, exc)
             continue
         source_id = os.path.basename(os.path.dirname(ev_path))
+        if str(evidence.get("parse_status", "ok")).startswith("failed"):
+            logger.info("source_discovery skip failed table source=%s status=%s", source_id, evidence.get("parse_status"))
+            continue
         if not evidence.get("is_relevant", True):
             logger.info("source_discovery skip irrelevant table source=%s", source_id)
             continue

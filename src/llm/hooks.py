@@ -24,7 +24,6 @@ from typing import Iterable
 
 from src.extraction.fusion import ConsistencyCheck, run_checks
 from src.llm.inspectors.figure import FigureInspector
-from src.llm.inspectors.table import TableInspector
 from src.pipeline.hooks import StageContext
 
 logger = logging.getLogger(__name__)
@@ -93,38 +92,6 @@ class FigureInspectionHook:
             ctx.stage_outputs["fusion_issues"] = [i.model_dump() for i in result.issues]
 
         # Layer 2 — VLM cross-check via inspector
-        report = self.inspector.inspect(
-            image_path=ctx.artifact_path,
-            pipeline_df=ctx.evidence_df,
-            source_id=ctx.source_id,
-        )
-        _write_report(report, _inspection_path(ctx))
-        return ctx
-
-
-@dataclass
-class TableInspectionHook:
-    """Post-extraction hook for the table track (paper module 12)."""
-
-    inspector: TableInspector
-    consistency_checks: Iterable[ConsistencyCheck] = ()
-    name: str = "table_vlm_inspection"
-
-    def run(self, ctx: StageContext) -> StageContext:
-        if ctx.kind != "table":
-            return ctx
-
-        if list(self.consistency_checks):
-            result = run_checks(
-                self.consistency_checks,
-                ctx.stage_outputs,
-                stage_tag="table_pipeline.assembly",
-                source_id=ctx.source_id,
-            )
-            ctx.stage_outputs.setdefault("pipeline_confidence", 1.0)
-            ctx.stage_outputs["pipeline_confidence"] += result.confidence_delta
-            ctx.stage_outputs["fusion_issues"] = [i.model_dump() for i in result.issues]
-
         report = self.inspector.inspect(
             image_path=ctx.artifact_path,
             pipeline_df=ctx.evidence_df,

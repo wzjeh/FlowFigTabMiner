@@ -33,16 +33,13 @@ class _TablesSegConfig(TypedDict):
     model_path: str
     threshold: float
 
-class _TablesStructureConfig(TypedDict):
+class _TablesMolConfig(TypedDict):
     model_path: str
-
-class _TablesContentConfig(TypedDict):
-    ocr_engine: str
+    confidence_threshold: float
 
 class _TablesConfig(TypedDict):
     segmentation: _TablesSegConfig
-    structure: _TablesStructureConfig
-    content: _TablesContentConfig
+    molecule_detection: _TablesMolConfig
 
 class _LLMAdjudicationConfig(TypedDict):
     model_name: str
@@ -68,7 +65,7 @@ _REQUIRED_PATHS = [
     ("figures.step2_macro.model_path",),
     ("figures.step3_micro.model_path",),
     ("tables.segmentation.model_path",),
-    ("tables.structure.model_path",),
+    ("tables.molecule_detection.model_path",),
     # LLM/VLM configuration moved to typed Pydantic models loaded via
     # src.llm.config.load_llm_config / load_vlm_config; presence is
     # validated there.

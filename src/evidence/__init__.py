@@ -9,13 +9,8 @@ and skip fields that came from a failed extractor.
 Architecture
 ------------
 - ``types``        — Pydantic schemas (FieldValue, FigureEvidence,
-                      TableEvidence, FieldSource enum, EvidenceStatus).
-- ``assembler``    — FigureEvidenceAssembler + TableEvidenceAssembler.
-                     Each assembler stitches together the outputs of
-                     several extractors (YOLO, PaddleOCR, TATR, MolNexTR,
-                     Gemini metadata, Gemini cells, LLM header judge) and
-                     emits a frozen Evidence object that pydantic-serializes
-                     to the canonical ``_evidence.json``.
+                      FieldSource enum, EvidenceStatus).  Table evidence is
+                      the plain dict written by ``src/extraction/table/pipeline.py``.
 
 The per-field owner table — who's responsible for which field — lives in
 this package's docstring rather than as code, because it's enforced by
@@ -31,8 +26,6 @@ from src.evidence.types import (
     FieldSource,
     FieldValue,
     FigureEvidence,
-    TableCell,
-    TableEvidence,
 )
 
 __all__ = [
@@ -41,6 +34,4 @@ __all__ = [
     "EvidenceStatus",
     "DataPoint",
     "FigureEvidence",
-    "TableCell",
-    "TableEvidence",
 ]

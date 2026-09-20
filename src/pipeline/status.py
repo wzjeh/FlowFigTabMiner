@@ -27,7 +27,7 @@ def write_status(
     """Record ``outcome`` (``ok`` | ``filtered`` | ``failed``) for one source.
 
     ``stage`` names the pipeline stage reporting (``macro_clean``,
-    ``coord_map``, ``table_filter``, ``tatr``, ``cell_vlm``, ``assembly`` …).
+    ``coord_map``, ``table_filter``, ``table_vlm``, ``assembly`` …).
     A later call for the same source overwrites the earlier one, so the
     file always reflects the furthest stage reached.
     """

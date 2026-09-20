@@ -1,10 +1,9 @@
-"""Figure / table inspection (paper modules 6 and 12).
+"""Figure inspection (paper module 6).
 
 Public surface
 --------------
 - ``FigureInspector``  — wraps a ``VLMProvider`` and a ``PointMatcher``.
-- ``TableInspector``   — wraps a ``VLMProvider`` and a ``CellMatcher``.
-- ``PointMatcher`` / ``CellMatcher`` ABCs + default implementations.
+- ``PointMatcher`` ABC + ``NearestPointMatcher`` default implementation.
 
 Typical usage in the pipeline assembly point (``src/pipeline/main.py``)::
 
@@ -14,29 +13,11 @@ Typical usage in the pipeline assembly point (``src/pipeline/main.py``)::
         matcher=NearestPointMatcher(tol=0.05),
         cfg=load_vlm_config("config.yaml"),
     )
-    tab_inspector = TableInspector(
-        vlm=vlm,
-        matcher=ExactCellMatcher(),
-        cfg=load_vlm_config("config.yaml"),
-    )
 """
 
 from __future__ import annotations
 
 from src.llm.inspectors.figure import FigureInspector
-from src.llm.inspectors.matchers import (
-    CellMatcher,
-    ExactCellMatcher,
-    NearestPointMatcher,
-    PointMatcher,
-)
-from src.llm.inspectors.table import TableInspector
+from src.llm.inspectors.matchers import NearestPointMatcher, PointMatcher
 
-__all__ = [
-    "FigureInspector",
-    "TableInspector",
-    "PointMatcher",
-    "CellMatcher",
-    "NearestPointMatcher",
-    "ExactCellMatcher",
-]
+__all__ = ["FigureInspector", "PointMatcher", "NearestPointMatcher"]

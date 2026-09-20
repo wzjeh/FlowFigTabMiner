@@ -34,27 +34,11 @@ tables:
     model_path: "models/yolo11s-tab-molecule-0207/runs/detect/train/weights/best.pt"
     confidence_threshold: 0.25
 
-  structure:
-    model_path: "microsoft/table-transformer-structure-recognition-v1.1-all"
-
-  cell_classification:
-    model_path: "models/cell_classifier.pt"
-
-  content:
-    # MolNexTR is auto-loaded from src/extraction/common/molnextr/
-    ocr_engine: "paddle"
-    ocr_rec_model: "PP-OCRv4_server_rec"
-
+  # Table cells are transcribed by the VLM table reader (vlm.table_reader);
+  # MolNexTR (auto-loaded from src/extraction/common/molnextr/) owns SMILES.
   scheme_parsing:
     model_path: "models/tab-scheme-seg/best.pt"
     confidence_threshold: 0.3
-
-  header_correction:
-    # The VLM provider for header correction is the same one injected for
-    # pipeline modules 6/12; only the trigger heuristic lives here.
-    enabled: true
-    trigger_threshold: 0.5        # row-0 non-empty ratio below this triggers VLM
-    send_header_crop_only: false  # send the full table so the VLM sees data rows
 
 # LLM (text-in / text-out) — used by Step 5 (Global Assembly) and Step 4.5
 # (Local Vars Builder).  Loaded into a frozen Pydantic ``LLMConfig``.
@@ -81,9 +65,25 @@ llm:
     timeout_s: 300.0
 
 # VLM (text + image) — used by the inspection hooks for paper modules 6 (figure)
-# and 12 (table), plus the table header corrector.  Loaded into a frozen
-# Pydantic ``VLMConfig``.
+# (figure), the chart label reader and the table transcriber.  Loaded into
+# frozen Pydantic ``VLMConfig`` subclasses.
 vlm:
+  # Table transcriber: ONE call per table crop returns caption, scheme
+  # conditions, header rows, data rows and footnotes; drawn structures are the
+  # token [STRUCTURE] and get their SMILES from MolNexTR by geometric alignment
+  # (grid_ops.align_structures). Numbers are cross-checked against the PDF text
+  # layer (grid_text_agreement); below min_text_agreement the table is kept but
+  # marked parse_status=unverified. Env override: FFTM_TABLE_READER=gemini|claude.
+  table_reader:
+    provider: "gemini"            # or "claude" (needs ANTHROPIC_API_KEY)
+    model: "gemini-2.5-flash"     # claude: claude-sonnet-5
+    temperature: 0.0
+    max_output_tokens: 16384      # dense SI tables; thinking_budget 0 so output is not starved
+    thinking_budget: 0
+    max_retries: 3
+    timeout_s: 180.0
+    min_text_agreement: 0.6
+
   # VLM second reader for chart labels: the coordinate mapper tiles every YOLO
   # tick-label / heatmap-cell box into a numbered contact sheet and asks the
   # VLM to transcribe cell #i. OCR and VLM readings are fused deterministically

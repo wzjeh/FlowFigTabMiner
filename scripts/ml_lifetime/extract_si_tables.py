@@ -173,7 +173,12 @@ def main():
     print("Loading models...")
     detector = ActiveAreaDetector()
     shared_content_rec = ContentRecognizer()
-    tab_pipeline = TablePipeline(sequential_mode=True, content_recognizer=shared_content_rec)
+    from src.extraction.table.table_vlm import TableTranscriber
+    from src.llm.config import load_table_reader_config
+    from src.llm.providers import get_vlm_provider
+    _tcfg = load_table_reader_config("config.yaml")
+    tab_pipeline = TablePipeline(transcriber=TableTranscriber(vlm=get_vlm_provider(_tcfg.provider), cfg=_tcfg),
+                                 content_recognizer=shared_content_rec, min_text_agreement=_tcfg.min_text_agreement)
     print("Models loaded.\n")
 
     total_csvs = 0

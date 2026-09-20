@@ -1,11 +1,9 @@
 """Typed evidence schema.
 
-Two top-level models — ``FigureEvidence`` and ``TableEvidence`` — are
-written by the new assemblers as the canonical ``_evidence.json`` files.
-Each field carries a ``FieldValue`` wrapper that records which extractor
-produced it, plus latency and any notes.  ``EvidenceStatus`` flags the
-table when the new ``TableCellExtractor`` fails to align (R1 circuit
-breaker): downstream consumers must skip rather than guess.
+``FieldValue`` wraps one extracted value with its provenance (which
+extractor produced it, latency, notes); ``FigureEvidence`` groups the
+figure-side values.  Table evidence is a plain dict written by
+``src/extraction/table/pipeline.py`` (``parse_status`` carries the outcome).
 """
 
 from __future__ import annotations
@@ -20,27 +18,21 @@ class FieldSource(str, enum.Enum):
     """Who produced a value.
 
     Order roughly follows the data-flow: visual detectors first, then
-    OCR / structured-text models, then VLM and LLM.  ``MISSING`` /
-    ``ALIGNMENT_FAILED`` are non-success states that downstream consumers
-    use to decide whether to skip a record.
+    OCR / structured-text models, then VLM.  ``MISSING`` is the non-success
+    state downstream consumers use to decide whether to skip a record.
     """
 
     PIPELINE_YOLO = "pipeline_yolo"             # YOLO + RANSAC for data points
     PIPELINE_PADDLE = "pipeline_paddle"          # PaddleOCR for axis ticks / captions
-    TATR = "tatr"                                # cell grid (row/col, bbox)
     MOLNEXTR = "molnextr"                        # image → SMILES
-    VLM_METADATA = "vlm_metadata"                # Gemini metadata-only call (figure)
-    VLM_CELL = "vlm_cell"                        # Gemini full-cell call (table)
-    LLM_JUDGE = "llm_judge"                      # 1-shot LLM judgment (e.g. header row)
+    VLM_METADATA = "vlm_metadata"                # VLM metadata-only call (figure)
     MISSING = "missing"                          # extractor declined / failed gracefully
-    ALIGNMENT_FAILED = "alignment_failed"        # R1: cell grid alignment circuit-broke
 
 
 class EvidenceStatus(str, enum.Enum):
     """Top-level status of a single evidence record."""
 
     OK = "ok"
-    ALIGNMENT_FAILED = "alignment_failed"        # R1: table cells did not align even after retry
     EXTRACTION_FAILED = "extraction_failed"      # an extractor threw and we couldn't recover
 
 
@@ -108,43 +100,3 @@ class FigureEvidence(BaseModel):
 
     # ── caption (owner: PaddleOCR; used for relevance filter) ───────
     caption: FieldValue
-
-
-# ─────────────────────────────────────────────────────────────── Table schema
-
-
-class TableCell(BaseModel):
-    """One cell in a table grid."""
-
-    model_config = ConfigDict(frozen=True)
-
-    row: int
-    col: int
-    text: str                                    # may be ""
-    smiles: Optional[str] = None                 # populated by MolNexTR when applicable
-
-
-class TableEvidence(BaseModel):
-    """All evidence extracted for one table (one ``_evidence.json``)."""
-
-    model_config = ConfigDict(frozen=True)
-
-    source_id: str
-    status: EvidenceStatus = EvidenceStatus.OK
-    is_relevant: bool
-
-    # ── grid (owner: TATR) ──────────────────────────────────────────
-    row_count: int
-    col_count: int
-
-    # ── cells (owner: Gemini full-cell call; SMILES owner: MolNexTR) ─
-    cells: list[TableCell] = Field(default_factory=list)
-    cells_source: FieldSource = FieldSource.VLM_CELL
-
-    # ── header row (owner: 1-shot LLM judge) ───────────────────────
-    header_row_count: FieldValue                  # value: int ∈ {0, 1, 2}
-    header_confidence: float = 0.0                # raw confidence from LLM
-
-    # ── caption + footnote (owner: PaddleOCR) ───────────────────────
-    caption: FieldValue
-    footnote: FieldValue

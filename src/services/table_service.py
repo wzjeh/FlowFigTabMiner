@@ -35,7 +35,12 @@ _pipeline = None
 def get_pipeline():
     global _pipeline
     if _pipeline is None:
-        _pipeline = TablePipeline(sequential_mode=False)
+        from src.extraction.table.table_vlm import TableTranscriber
+        from src.llm.config import load_table_reader_config
+        from src.llm.providers import get_vlm_provider
+        cfg = load_table_reader_config("config.yaml")
+        _pipeline = TablePipeline(transcriber=TableTranscriber(vlm=get_vlm_provider(cfg.provider), cfg=cfg),
+                                  min_text_agreement=cfg.min_text_agreement)
     return _pipeline
 
 

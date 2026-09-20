@@ -34,17 +34,6 @@ class PointMatcher(abc.ABC):
     ) -> tuple[list[MatchPair], list[dict], list[dict]]: ...
 
 
-class CellMatcher(abc.ABC):
-    """Match table cells (row, column, value) between pipeline & VLM."""
-
-    @abc.abstractmethod
-    def match(
-        self,
-        pipeline_records: list[dict],
-        vlm_records: list[dict],
-    ) -> tuple[list[MatchPair], list[dict], list[dict]]: ...
-
-
 # ─────────────────────────────────────────────────────────────────── default impls
 
 
@@ -139,58 +128,4 @@ class NearestPointMatcher(PointMatcher):
                 unmatched_pipe.append(p_rec)
 
         unmatched_vlm = [v for j, v in enumerate(vlm_records) if j not in used_vlm]
-        return matches, unmatched_pipe, unmatched_vlm
-
-
-def _canonical_text(value: object) -> str:
-    """Conservative normalization for exact cell comparison."""
-    if value is None:
-        return ""
-    text = str(value).strip()
-    return " ".join(text.lower().split())
-
-
-class ExactCellMatcher(CellMatcher):
-    """Exact text match on cells, keyed on ``(row_idx, col_idx)`` when
-    both sides supply indices; otherwise on header-aligned dict keys.
-
-    Pipeline produces cells with ``{row, col, value}``; VLM is asked for
-    the same.  Indices are integer rows / columns starting at 0.
-    """
-
-    def match(
-        self,
-        pipeline_records: list[dict],
-        vlm_records: list[dict],
-    ) -> tuple[list[MatchPair], list[dict], list[dict]]:
-        # Index VLM cells by (row, col).
-        by_rc: dict[tuple[int, int], int] = {}
-        for j, v in enumerate(vlm_records):
-            try:
-                rc = (int(v["row"]), int(v["col"]))
-            except (KeyError, TypeError, ValueError):
-                continue
-            by_rc[rc] = j
-
-        used: set[int] = set()
-        matches: list[MatchPair] = []
-        unmatched_pipe: list[dict] = []
-        for p in pipeline_records:
-            try:
-                rc = (int(p["row"]), int(p["col"]))
-            except (KeyError, TypeError, ValueError):
-                unmatched_pipe.append(p)
-                continue
-            if rc not in by_rc:
-                unmatched_pipe.append(p)
-                continue
-            j = by_rc[rc]
-            v = vlm_records[j]
-            if _canonical_text(p.get("value")) == _canonical_text(v.get("value")):
-                matches.append(MatchPair(pipeline_record=p, vlm_record=v, distance=0.0))
-                used.add(j)
-            else:
-                unmatched_pipe.append(p)
-
-        unmatched_vlm = [v for j, v in enumerate(vlm_records) if j not in used]
         return matches, unmatched_pipe, unmatched_vlm

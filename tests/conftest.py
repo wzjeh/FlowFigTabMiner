@@ -53,7 +53,6 @@ def mock_config():
         "tables": {
             "segmentation": {"model_path": "models/test_table_seg.pt", "threshold": 0.8},
             "molecule_detection": {"model_path": "models/test_mol_det.pt", "confidence_threshold": 0.25},
-            "structure": {"model_path": "microsoft/table-transformer-structure-recognition-v1.1-all"},
         },
         "figures": {
             "step2_macro": {"model_path": "models/test_fig_macro.pt", "confidence_threshold": 0.5},

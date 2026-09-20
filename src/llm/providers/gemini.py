@@ -309,7 +309,9 @@ class GeminiProvider(LLMProvider, VLMProvider):
         # Free mode → fall back to the tolerant parser for fences / comments.
         if response_schema is not None:
             try:
-                parsed = json.loads(raw)
+                # strict=False: the model may emit a raw newline inside a
+                # string (multi-line table cells); that is still our data.
+                parsed = json.loads(raw, strict=False)
             except json.JSONDecodeError as exc:
                 raise ParseError(
                     f"gemini structured output not parseable as JSON (schema={schema_tag}): {exc}",
@@ -335,6 +337,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
             tokens_out=tokens_out,
             latency_ms=elapsed_ms,
             cache_hit=False,
+            finish_reason=finish_reason,
         )
         self._cache.set(
             cache_key,

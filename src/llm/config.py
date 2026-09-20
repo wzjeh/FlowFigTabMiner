@@ -104,6 +104,28 @@ def load_label_reader_config(yaml_path: str | Path) -> LabelReaderConfig:
     return cfg
 
 
+class TableReaderConfig(VLMConfig):
+    """``vlm.table_reader`` — the VLM table transcriber (one call per table)."""
+
+    min_text_agreement: float = Field(default=0.6, ge=0.0, le=1.0)
+
+
+def load_table_reader_config(yaml_path: str | Path) -> TableReaderConfig:
+    """Parse ``vlm.table_reader`` (required).  ``FFTM_TABLE_READER=gemini|claude``
+    overrides provider (and model, unless the config already names that provider)."""
+    import os
+    raw = yaml.safe_load(Path(yaml_path).read_text())
+    section = _safe_get(raw, "vlm", "table_reader")
+    if section is None:
+        raise ConfigError(f"missing vlm.table_reader in {yaml_path}")
+    cfg = TableReaderConfig(**section)
+    override = os.environ.get("FFTM_TABLE_READER", "").strip().lower()
+    if override in ("gemini", "claude"):
+        model = cfg.model if override == cfg.provider else {"gemini": "gemini-2.5-flash", "claude": "claude-sonnet-5"}[override]
+        cfg = cfg.model_copy(update={"provider": override, "model": model})
+    return cfg
+
+
 def load_vlm_config(yaml_path: str | Path) -> VLMConfig:
     """Parse ``vlm.inspection`` from a config.yaml into a typed model."""
     raw = yaml.safe_load(Path(yaml_path).read_text())

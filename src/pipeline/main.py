@@ -40,15 +40,11 @@ from src.extraction.fusion import PointCountConsistency
 from src.extraction.table.pipeline import TablePipeline
 from src.extraction.table.scheme_seg_parser import SchemeSegParser
 from src.llm.concurrency import configure_concurrency
-from src.llm.config import load_label_reader_config, load_llm_config, load_vlm_config
+from src.extraction.table.table_vlm import TableTranscriber
+from src.llm.config import load_label_reader_config, load_llm_config, load_table_reader_config, load_vlm_config
 from src.llm.fusion import ModalityRoutingPolicy
-from src.llm.hooks import FigureInspectionHook, TableInspectionHook
-from src.llm.inspectors import (
-    ExactCellMatcher,
-    FigureInspector,
-    NearestPointMatcher,
-    TableInspector,
-)
+from src.llm.hooks import FigureInspectionHook
+from src.llm.inspectors import FigureInspector, NearestPointMatcher
 from src.llm.providers.gemini import GeminiProvider
 from src.parsing.active_area_detector import ActiveAreaDetector
 from src.pipeline._memory import release_memory
@@ -69,15 +65,14 @@ EXIT_SKIPPED = 3
 
 
 def _build_provider_stack(no_vlm_inspection: bool):
-    """Assemble the LLM/VLM provider and the two inspection hooks.
+    """Assemble the LLM/VLM provider and the figure inspection hook.
 
-    Returns ``(provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader)``.
+    Returns ``(provider, llm_cfg, vlm_cfg, figure_hooks, label_reader)``.
     ``label_reader`` is the VLM second reader for chart tick / cell labels
     (``vlm.label_reader`` in config.yaml; None when disabled or ``--no-vlm``).
-    The hook lists are empty when ``no_vlm_inspection`` is true, so the
-    pipelines run their classic extraction-only flow without ever
-    contacting Gemini for inspection.  The LLM provider is always
-    constructed (adjudication still needs it).
+    ``--no-vlm`` empties the hook list and the label reader only: the figure
+    metadata call and the table transcriber (``vlm.table_reader``) are core
+    extraction steps and always run, like adjudication itself.
     """
     llm_cfg = load_llm_config(CONFIG_PATH)
     vlm_cfg = load_vlm_config(CONFIG_PATH)
@@ -98,7 +93,7 @@ def _build_provider_stack(no_vlm_inspection: bool):
 
     if no_vlm_inspection:
         logger.info("main.providers VLM inspection disabled by --no-vlm")
-        return provider, llm_cfg, vlm_cfg, [], [], None
+        return provider, llm_cfg, vlm_cfg, [], None
 
     label_reader = _build_label_reader(provider)
 
@@ -108,25 +103,26 @@ def _build_provider_stack(no_vlm_inspection: bool):
         matcher=NearestPointMatcher(tol=0.05),
         policy=ModalityRoutingPolicy(numeric_tol=0.05),
     )
-    tab_inspector = TableInspector(
-        vlm=provider,
-        cfg=vlm_cfg,
-        matcher=ExactCellMatcher(),
-        policy=ModalityRoutingPolicy(numeric_tol=0.05),
-    )
     figure_hooks = [
         FigureInspectionHook(
             inspector=fig_inspector,
             consistency_checks=[PointCountConsistency()],
         )
     ]
-    table_hooks = [
-        TableInspectionHook(
-            inspector=tab_inspector,
-            consistency_checks=[],
-        )
-    ]
-    return provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader
+    return provider, llm_cfg, vlm_cfg, figure_hooks, label_reader
+
+
+def _build_table_transcriber(default_provider):
+    """VLM table transcriber (``vlm.table_reader``); a different provider
+    than the default one is built through the registry so the model is
+    swappable by config / ``FFTM_TABLE_READER`` alone."""
+    cfg = load_table_reader_config(CONFIG_PATH)
+    vlm = default_provider
+    if cfg.provider != getattr(default_provider, "name", "gemini"):
+        from src.llm.providers import get_vlm_provider
+        vlm = get_vlm_provider(cfg.provider)
+    logger.info("main.table_reader provider=%s model=%s min_text_agreement=%s", cfg.provider, cfg.model, cfg.min_text_agreement)
+    return TableTranscriber(vlm=vlm, cfg=cfg), cfg
 
 
 def _build_label_reader(default_provider):
@@ -267,6 +263,9 @@ def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cf
                     with open(ev_path) as f:
                         ev = json.load(f)
                     src_id = fname.replace("_evidence.json", "")
+                    if str(ev.get("parse_status", "ok")).startswith("failed"):
+                        print(f"   [LocalVars] skip table {src_id}: {ev.get('parse_status')}")
+                        continue
                     csv_path = ev.get("csv_path", "")
                     csv_head = ""
                     if csv_path and os.path.exists(csv_path):
@@ -292,12 +291,11 @@ def process_one_pdf(
     llm_cfg,
     vlm_cfg,
     figure_hooks,
-    table_hooks,
     label_reader=None,
 ) -> str | None:
     """Run Steps 0-6 for ONE PDF.
 
-    Heavy stage models (Florence-2, YOLO, TATR) are loaded and released
+    Heavy stage models (Florence-2, YOLO, MolNexTR) are loaded and released
     within this call.  Process-level singletons (MolNexTR, and PaddleOCR
     via the ocr_backend cache) persist across calls so a ``--dir`` batch
     reuses them instead of paying MolNexTR's ``torch.load`` per PDF.
@@ -335,7 +333,7 @@ def process_one_pdf(
 
     # ─── Step 0: Pre-filter (skip review articles + non-flow papers) ──
     # This is the EARLY-EXIT gate: it runs before any heavy local weight
-    # (Florence-2 / YOLO / TATR / MolNexTR / PaddleOCR) is loaded, so a
+    # (Florence-2 / YOLO / MolNexTR / PaddleOCR) is loaded, so a
     # review / non-flow paper costs only a 3-page text scan, not inference.
     if not getattr(args, "no_prefilter", False):
         from src.preprocessing.paper_filter import filter_paper
@@ -379,19 +377,14 @@ def process_one_pdf(
 
     _mark("figure")
 
-    # ─── Step Table: Table pipeline (with module-12 hook) ──────────
+    # ─── Step Table: Table pipeline (VLM transcription + MolNexTR) ──
     print("\n=== Step Table: Table Extraction ===")
     shared_content_rec = ContentRecognizer()
-    from src.extraction.table.cell_vlm import TableCellExtractor
-    from src.extraction.table.header_resolver import HeaderResolver
-    tab_cell_extractor = TableCellExtractor(vlm=provider, cfg=vlm_cfg)
-    tab_header_resolver = HeaderResolver(llm=provider, cfg=llm_cfg)
+    transcriber, table_cfg = _build_table_transcriber(provider)
     tab_pipeline = TablePipeline(
-        cell_extractor=tab_cell_extractor,
-        header_resolver=tab_header_resolver,
-        sequential_mode=True,
+        transcriber=transcriber,
         content_recognizer=shared_content_rec,
-        post_extract_hooks=table_hooks,
+        min_text_agreement=table_cfg.min_text_agreement,
     )
 
     tables_dir = os.path.join(intermediate_dir, "tables")
@@ -410,7 +403,7 @@ def process_one_pdf(
     # Release the table pipeline + its stage models.  The MolNexTR and
     # PaddleOCR singletons are NOT freed (they live in module-level
     # caches for cross-PDF reuse under --dir); this only drops the
-    # TablePipeline container and its YOLO/TATR stage references.
+    # TablePipeline container and its YOLO stage references.
     try:
         del tab_pipeline
         del shared_content_rec
@@ -508,11 +501,11 @@ def _run_single(args) -> str | None:
     from src.pipeline.single_instance import single_instance_lock
 
     with single_instance_lock("flowfigtabminer-pipeline"):
-        provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader = _build_provider_stack(
+        provider, llm_cfg, vlm_cfg, figure_hooks, label_reader = _build_provider_stack(
             no_vlm_inspection=args.no_vlm
         )
         return process_one_pdf(
-            args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks,
+            args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks,
             label_reader=label_reader,
         )
 
