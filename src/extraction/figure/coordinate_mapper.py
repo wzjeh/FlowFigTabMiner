@@ -11,17 +11,25 @@ if os.environ.get('USE_EASYOCR', '0') != '1':
     except Exception:
         pass
 from src.extraction.common.ocr_backend import get_rec_instance
-from src.extraction.figure.axis_fit import monotonic_subsequence, robust_fit, tick_text_is_ambiguous
+from src.extraction.figure.axis_fit import (
+    fuse_tick_readings, fuse_value_readings, is_scientific_text, monotonic_subsequence,
+    parse_tick_text, parse_value_text, robust_fit, tick_text_is_ambiguous,
+)
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pandas as pd
 import re
 
 class CoordinateMapper:
-    def __init__(self):
+    def __init__(self, label_reader=None, value_conflict_policy: str = "vlm"):
         # Rec-only OCR for pre-cropped tick labels / data values
         self.rec = get_rec_instance()
+        # Optional VLM second reader (src.extraction.figure.label_reader.VLMLabelReader):
+        # reads the SAME boxes; fusion is deterministic (axis_fit.fuse_*).
+        self.label_reader = label_reader
+        self.value_conflict_policy = value_conflict_policy
 
-    def map_coordinates(self, detections, plot_img_path, force_log_x=False, extract_point_labels=False):
+    def map_coordinates(self, detections, plot_img_path, force_log_x=False, extract_point_labels=False,
+                        figure_id=None, out_dir=None):
         """
         detections: list from Stage2Detector
         force_log_x: bool, if True, treat small integer ticks as Exponents (10^x).
@@ -185,73 +193,15 @@ class CoordinateMapper:
             log(f"Has Right Axis: {has_right_axis}")
 
             # 1. Gather candidates based on Class
-            def parse_val(txt):
-                """Parse OCR text into numeric value.
+            # Tick text parsing lives in axis_fit.parse_tick_text (module-level,
+            # shared with the VLM label reader); keep the local name for the
+            # call sites below.
+            parse_val = parse_tick_text
 
-                Handles rec-only output patterns:
-                  '10 -2' or '10-2.0' → 10^(-2) or 10^(-2.0)
-                  '100.5' → 10^(0.5)
-                  '101' or '101.0' → 10^(1) or 10^(1.0)
-                  '-40', '0.5' → plain numbers
-                """
-                txt = txt.strip()
-                if not txt:
-                    return None
-                if tick_text_is_ambiguous(txt):
-                    return None   # "-10 0", "10-1." — would silently become -100 / 10^-1
-
-                # Reject strings with letters mixed in (YOLO false positives)
-                # Allow: pure numbers ("-40"), scientific ("10-2.0", "10^0.5")
-                # Reject: "flow", "map 1", "3-bromopro", "n tributyls", "(s)", "R1 ("
-                digits_in = sum(1 for c in txt if c.isdigit())
-                alpha_in = sum(1 for c in txt if c.isalpha())
-                if alpha_in > 0 and not txt.lstrip('-').startswith('10'):
-                    # Has letters but doesn't start with "10" → not a tick label
-                    return None
-                if alpha_in > digits_in:
-                    # More letters than digits → likely body text
-                    return None
-
-                # Pattern: "10 -2" or "10 -1.5" (rec-only with space)
-                m = re.match(r'^10\s+([+\-]?\d+\.?\d*)$', txt)
-                if m:
-                    try: return float(m.group(1))  # Return exponent directly
-                    except: pass
-
-                # Pattern: "10-2.0" or "10-1.5" or "100.5" or "101.0" (fused)
-                if txt.startswith('10') and len(txt) > 2:
-                    rest = txt[2:]
-                    # Strip trailing non-numeric (e.g., "10°" → rest="°")
-                    rest_clean = re.sub(r'[^\d\.\-+]', '', rest)
-                    if rest_clean:
-                        try:
-                            exp = float(rest_clean)
-                            if -10 <= exp <= 10:
-                                return exp  # Return as exponent
-                        except ValueError:
-                            pass
-
-                # Pattern: "10^-2" or "10^0.5" (explicit caret)
-                m = re.match(r'^10\^([+\-]?\d+\.?\d*)$', txt)
-                if m:
-                    try: return float(m.group(1))
-                    except: pass
-
-                # "10" alone or "10" + noise: ambiguous (could be 10^? with lost exponent)
-                # Return None to avoid wrong exponent assignment
-                if txt.startswith('10') and not any(c.isdigit() for c in txt[2:]):
-                    return None
-
-                # Plain number: "-40", "0.5", "-90", etc.
-                clean = re.sub(r'[^\d\.\-eE+]', '', txt)
-                try: return float(clean)
-                except: return None
-
-            x_candidates = []      # (center_x, val, raw_text, cx, cy)
+            x_candidates = []      # (center_x, val, raw_text, cx, cy, source)
             y_left_candidates = []
             y_right_candidates = []
 
-            # --- Geometric pre-filter for x_tick_label false positives ---
             def _cluster_1d(values_with_idx, eps):
                 """Simple 1D clustering: group sorted (idx, val) by proximity."""
                 if not values_with_idx:
@@ -321,6 +271,24 @@ class CoordinateMapper:
                     return dets
 
             x_label_dets_geo = filter_tick_dets_geometric(x_label_dets, 'x')
+
+            # ── VLM second reader (ticks): one call over every tick box ──────
+            vlm_tick = {}            # id(det) -> VLM text
+            lr_stats = {"tick_boxes": 0, "tick_agree": 0, "tick_conflict": 0, "tick_vlm_only": 0,
+                        "tick_ocr_only": 0, "value_boxes": 0, "value_agree": 0, "value_conflict": 0,
+                        "value_from_vlm": 0, "value_from_ocr": 0}
+            lr_rows = []
+            lr_meta = {}
+            if self.label_reader is not None:
+                tick_boxes = [d for d in detections if d['label'] in ('x_tick_label', 'y_tick_label')]
+                lr_stats["tick_boxes"] = len(tick_boxes)
+                if tick_boxes:
+                    tr = self.label_reader.read(img, tick_boxes, figure_id or "figure", out_dir)
+                    vlm_tick = {id(tick_boxes[i]): t for i, t in tr.texts.items()}
+                    lr_meta = {"model": tr.model, "cache_hit": tr.cache_hit, "latency_ms": tr.latency_ms,
+                               "tokens_in": tr.tokens_in, "tokens_out": tr.tokens_out, "notes": tr.notes}
+                    log(f"LABELS(VLM) ticks: boxes={len(tick_boxes)} read={len(tr.texts)} ok={tr.ok} "
+                        f"model={tr.model} cache_hit={tr.cache_hit} notes={tr.notes}")
             if len(x_label_dets_geo) < len(x_label_dets):
                 log(f"Geometric Filter (X): {len(x_label_dets)} -> {len(x_label_dets_geo)}")
 
@@ -347,10 +315,27 @@ class CoordinateMapper:
                     text, conf = self.rec.recognize(crop)
 
                     if i < 5: log(f"OCR [{d['label']}]: '{text}' ({conf:.3f})")
-                    val = parse_val(text)
-                    if val is not None:
-                        # [cx, val, text, cx, cy]
-                        cand_list.append([cx, val, text, cx, cy])
+                    if self.label_reader is None:
+                        val = parse_val(text)
+                        if val is not None:
+                            # [cx, val, text, cx, cy, source]
+                            cand_list.append([cx, val, text, cx, cy, "ocr"])
+                        continue
+                    # OCR × VLM fusion: agree → 1 candidate; one reader → that one;
+                    # conflict → both candidates at the same pixel, geometry decides.
+                    vtext = vlm_tick.get(id(d))
+                    fused = fuse_tick_readings(text, vtext)
+                    srcs = [s for _, s in fused]
+                    if any(s.startswith("conflict") for s in srcs): lr_stats["tick_conflict"] += 1
+                    elif srcs == ["agree"]: lr_stats["tick_agree"] += 1
+                    elif srcs == ["vlm"]: lr_stats["tick_vlm_only"] += 1
+                    elif srcs == ["ocr"]: lr_stats["tick_ocr_only"] += 1
+                    log(f"LABELS(VLM) TICK[{d['label']}@{cx:.0f},{cy:.0f}] ocr='{text}' vlm='{vtext}' -> {srcs}")
+                    lr_rows.append({"kind": "tick", "label": d['label'], "box": [float(v) for v in bbox],
+                                    "ocr": text, "vlm": vtext, "candidates": [[v, s] for v, s in fused]})
+                    for v, src in fused:
+                        raw_text = text if src in ("ocr", "agree", "conflict:ocr") else (vtext or "")
+                        cand_list.append([cx, v, raw_text, cx, cy, src])
 
             # Helper: Validates monotonic sequence (Longest Monotonic Subsequence)
             def filter_monotonic(candidates, direction='decreasing'):
@@ -520,11 +505,7 @@ class CoordinateMapper:
             if y_left_candidates: log(f"Sample YL: {[c[2] for c in y_left_candidates[:3]]}")
 
             # 2. Detect Scale Type & Fit Models
-            def _is_scientific_text(txt):
-                """Check if raw OCR text represents 10^x notation."""
-                txt = txt.strip()
-                # "10-2.0", "10 -1.5", "100.5", "101", "10^-2"
-                return bool(re.match(r'^10[\s\^]?[+\-]?\d', txt))
+            _is_scientific_text = is_scientific_text
 
             def check_log_scale(candidates):
                 if len(candidates) < 2: return False
@@ -548,7 +529,7 @@ class CoordinateMapper:
 
             log(f"Log Scale Detect: X={is_x_log}, YL={is_yl_log}")
 
-            def prepare_pairs_and_fit(candidates, is_log, axis_type):
+            def prepare_pairs_and_fit(candidates, is_log, axis_type, key=None):
                  # Candidates: [coord_primary, val, text, cx, cy]
                  # idx 3 is cx, idx 4 is cy
                  pairs = []
@@ -579,12 +560,15 @@ class CoordinateMapper:
                      log(f"Fit REJECTED ({axis_type}): no 2 consistent ticks")
                      return None
                  log(f"Fit quality ({axis_type}): {model.quality}")
-                 self.last_facts.setdefault("fit_quality", {})[axis_type if axis_type == 'x' else 'y'] = model.quality
+                 self.last_facts.setdefault("fit_quality", {})[key or axis_type] = model.quality
+                 used = [c[5] for c in candidates if len(c) > 5]
+                 if any(u.startswith("conflict") for u in used):
+                     log(f"LABELS(VLM) fit ({key or axis_type}) candidates sources={used}")
                  return model
 
-            model_x = prepare_pairs_and_fit(x_candidates, is_x_log, 'x')
-            model_yl = prepare_pairs_and_fit(y_left_candidates, is_yl_log, 'y')
-            model_yr = prepare_pairs_and_fit(y_right_candidates, is_yr_log, 'y')
+            model_x = prepare_pairs_and_fit(x_candidates, is_x_log, 'x', key='x')
+            model_yl = prepare_pairs_and_fit(y_left_candidates, is_yl_log, 'y', key='y_left')
+            model_yr = prepare_pairs_and_fit(y_right_candidates, is_yr_log, 'y', key='y_right')
             
             # FIX: If we successfully matched a Right Axis model, force dual-axis mode
             if model_yr:
@@ -707,7 +691,48 @@ class CoordinateMapper:
             
             if should_extract and value_dets:
                 log(f"Extracting Point Labels from {len(value_dets)} value boxes")
-                # ... extraction loop ...
+                # Read every value box ONCE (OCR, and VLM when a reader is attached),
+                # fuse per box, then give each point its nearest box's value.
+                vlm_val = {}
+                if self.label_reader is not None:
+                    vr = self.label_reader.read(img, value_dets, f"{figure_id or 'figure'}_values", out_dir)
+                    vlm_val = {id(value_dets[i]): t for i, t in vr.texts.items()}
+                    lr_meta.setdefault("value_call", {"model": vr.model, "cache_hit": vr.cache_hit,
+                                                      "latency_ms": vr.latency_ms, "tokens_in": vr.tokens_in,
+                                                      "tokens_out": vr.tokens_out, "notes": vr.notes})
+                    log(f"LABELS(VLM) values: boxes={len(value_dets)} read={len(vr.texts)} ok={vr.ok} "
+                        f"cache_hit={vr.cache_hit} notes={vr.notes}")
+                lr_stats["value_boxes"] = len(value_dets)
+                box_value = {}
+                for v in value_dets:
+                    bx1, by1, bx2, by2 = map(int, v['box'])
+                    pad = 14
+                    bx1, by1 = max(0, bx1-pad), max(0, by1-pad)
+                    bx2, by2 = min(img_w, bx2+pad), min(img_h, by2+pad)
+                    crop = img[by1:by2, bx1:bx2]
+                    if crop.shape[0] < 60 or crop.shape[1] < 60:
+                        scale = 4
+                        crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
+                    ocr_txt, ocr_v = "", None
+                    try:
+                        ocr_txt, _conf = self.rec.recognize(crop)
+                        ocr_v = parse_value_text(ocr_txt)   # plain number: "10" is ten, not a log tick
+                    except Exception:
+                        pass
+                    if self.label_reader is None:
+                        box_value[id(v)] = (ocr_v, "ocr" if ocr_v is not None else "none")
+                        continue
+                    vtext = vlm_val.get(id(v))
+                    vlm_v = parse_value_text(vtext) if vtext else None
+                    fused_v, src = fuse_value_readings(ocr_v, vlm_v, self.value_conflict_policy)
+                    box_value[id(v)] = (fused_v, src)
+                    if src == "agree": lr_stats["value_agree"] += 1
+                    elif src.startswith("conflict"): lr_stats["value_conflict"] += 1
+                    if src in ("vlm", "conflict:vlm"): lr_stats["value_from_vlm"] += 1
+                    elif src in ("ocr", "conflict:ocr"): lr_stats["value_from_ocr"] += 1
+                    log(f"LABELS(VLM) VALUE@{v['center'][0]:.0f},{v['center'][1]:.0f} ocr='{ocr_txt}' vlm='{vtext}' -> {fused_v} ({src})")
+                    lr_rows.append({"kind": "value", "box": [float(b) for b in v['box']], "ocr": ocr_txt, "vlm": vtext,
+                                    "used": fused_v, "source": src})
                 for idx, p in enumerate(points):
                         px, py = p['center']
                         best_det = None
@@ -719,27 +744,17 @@ class CoordinateMapper:
                             if dist < search_radius and dist < min_dist:
                                 min_dist = dist
                                 best_det = v
-                        
                         if best_det:
-                            bx1, by1, bx2, by2 = map(int, best_det['box'])
-                            pad = 14
-                            bx1, by1 = max(0, bx1-pad), max(0, by1-pad)
-                            bx2, by2 = min(img_w, bx2+pad), min(img_h, by2+pad)
-                            crop = img[by1:by2, bx1:bx2]
-                            if crop.shape[0] < 60 or crop.shape[1] < 60:
-                                scale = 4
-                                crop = cv2.resize(crop, (crop.shape[1]*scale, crop.shape[0]*scale), interpolation=cv2.INTER_CUBIC)
-                            val = None  # never inherit the previous point's label
-                            try:
-                                txt, _conf = self.rec.recognize(crop)
-                                val = parse_val(txt)
-                            except Exception:
-                                pass
+                            val = box_value.get(id(best_det), (None, "none"))[0]
                             if val is not None:
                                 point_labels[idx] = val
             
             log(f"Point Labels Extracted: {len(point_labels)}")
             self.last_facts["n_point_labels"] = len(point_labels)
+            if self.label_reader is not None:
+                self.last_facts["label_reader"] = {**lr_stats, **lr_meta}
+                from src.extraction.figure.label_reader import write_forensics
+                write_forensics(out_dir, figure_id or "figure", lr_rows, {**lr_stats, **lr_meta})
 
             # 5. Prediction
             for idx, p in enumerate(points):

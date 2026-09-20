@@ -22,7 +22,7 @@ class LLMConfig(BaseModel):
 
     model_config = {"frozen": True, "extra": "forbid"}
 
-    provider: Literal["gemini"]
+    provider: Literal["gemini", "claude"]
     model: str
     temperature: float = Field(default=0.1, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
@@ -44,7 +44,7 @@ class VLMConfig(BaseModel):
 
     model_config = {"frozen": True, "extra": "forbid"}
 
-    provider: Literal["gemini"]
+    provider: Literal["gemini", "claude"]
     model: str
     temperature: float = Field(default=0.1, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
@@ -74,6 +74,34 @@ def load_llm_config(yaml_path: str | Path) -> LLMConfig:
     if section is None:
         raise ConfigError(f"missing llm.adjudication in {yaml_path}")
     return LLMConfig(**section)
+
+
+class LabelReaderConfig(VLMConfig):
+    """``vlm.label_reader`` — the VLM second reader for chart tick / cell labels."""
+
+    enabled: bool = True
+    value_conflict_policy: Literal["vlm", "ocr", "null"] = "vlm"
+    max_boxes: int = Field(default=80, ge=1)
+
+
+def load_label_reader_config(yaml_path: str | Path) -> LabelReaderConfig:
+    """Parse ``vlm.label_reader``; if absent, mirror ``vlm.inspection`` with
+    ``enabled=False`` so older config files keep the single-reader behaviour.
+    ``FFTM_LABEL_READER=off|gemini|claude`` overrides enabled / provider (eval use)."""
+    import os
+    raw = yaml.safe_load(Path(yaml_path).read_text())
+    section = _safe_get(raw, "vlm", "label_reader")
+    if section is None:
+        base = _safe_get(raw, "vlm", "inspection") or {}
+        section = {**base, "enabled": False}
+    cfg = LabelReaderConfig(**section)
+    override = os.environ.get("FFTM_LABEL_READER", "").strip().lower()
+    if override == "off":
+        cfg = cfg.model_copy(update={"enabled": False})
+    elif override in ("gemini", "claude"):
+        model = cfg.model if override == cfg.provider else {"gemini": "gemini-2.5-flash", "claude": "claude-sonnet-5"}[override]
+        cfg = cfg.model_copy(update={"enabled": True, "provider": override, "model": model})
+    return cfg
 
 
 def load_vlm_config(yaml_path: str | Path) -> VLMConfig:

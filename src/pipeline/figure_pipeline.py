@@ -27,6 +27,8 @@ class FigurePipeline:
         self,
         metadata_extractor: FigureMetadataExtractor,
         post_extract_hooks: Iterable[PipelineHook] = (),
+        label_reader=None,
+        value_conflict_policy: str = "vlm",
     ):
         """Initialize figure pipeline.
 
@@ -69,7 +71,9 @@ class FigurePipeline:
         
         print("Loading LegendMatcher & CoordinateMapper...")
         self.legend_matcher = LegendMatcher(yolo_model=self.yolo_micro)
-        self.coord_mapper = CoordinateMapper()
+        # Optional VLM second reader for tick / cell labels (None → OCR only).
+        self.coord_mapper = CoordinateMapper(label_reader=label_reader,
+                                             value_conflict_policy=value_conflict_policy)
         
         print("Loading EvidenceAssembler...")
         self.assembler = EvidenceAssembler() # Output dir handled per run usually or default
@@ -196,6 +200,7 @@ class FigurePipeline:
                         full_detections, cleaned_plot_path,
                         force_log_x=is_heatmap,
                         extract_point_labels=is_heatmap,
+                        figure_id=figure_id, out_dir=macro_cleaned_dir,
                     )
                 except Exception as e:
                     print(f"      [Mapper Warning] {e}")
@@ -228,6 +233,7 @@ class FigurePipeline:
                     "y_right_scale": mapper_facts.get("y_right_scale"),
                     "axis_fit": mapper_facts.get("axis_fit"),
                     "fit_quality": mapper_facts.get("fit_quality"),
+                    "label_reader": mapper_facts.get("label_reader"),
                     "x_ticks": mapper_facts.get("x_ticks"),
                     "y_left_ticks": mapper_facts.get("y_left_ticks"),
                     "n_points": len(points),

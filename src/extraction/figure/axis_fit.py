@@ -147,3 +147,128 @@ def is_grid_like(raw_data: Sequence[Dict[str, Any]], x_log: bool = True) -> Dict
     nx, ny = _levels(xs, log=x_log), _levels(ys)
     grid = bool(n >= 4 and 2 <= nx <= 15 and 2 <= ny <= 12 and nx * ny <= 1.6 * n and n <= 1.2 * nx * ny)
     return {"grid": grid, "x_levels": nx, "y_levels": ny, "n": n}
+
+
+# ── tick text parsing (lifted from CoordinateMapper.map_coordinates) ────────
+def is_scientific_text(txt: str) -> bool:
+    """OCR string that denotes 10^x notation: "10-2.0", "10 -1.5", "100.5", "101", "10^-2"."""
+    return bool(re.match(r"^10[\s\^]?[+\-]?\d", (txt or "").strip()))
+
+
+def parse_tick_text(txt: str) -> Optional[float]:
+    """Parse an OCR / VLM tick string into a number.
+
+    Log-axis strings return the EXPONENT (``"10-1.5"`` → -1.5, ``"10^0.5"`` →
+    0.5, ``"100.5"`` → 0.5, ``"101"`` → 1.0); plain numbers return the value
+    (``"-40"`` → -40.0).  Ambiguous strings (``"-10 0"``, ``"10-1."``) and
+    strings that look like body text return None.  Behaviour is identical to
+    the former nested ``parse_val`` in the coordinate mapper; the VLM writes
+    exponents as ``10^-1.5`` which the caret branch handles.
+    """
+    txt = (txt or "").strip()
+    if not txt:
+        return None
+    if tick_text_is_ambiguous(txt):
+        return None
+    digits_in = sum(1 for c in txt if c.isdigit())
+    alpha_in = sum(1 for c in txt if c.isalpha())
+    if alpha_in > 0 and not txt.lstrip("-").startswith("10"):
+        return None
+    if alpha_in > digits_in:
+        return None
+    m = re.match(r"^10\s+([+\-]?\d+\.?\d*)$", txt)
+    if m:
+        try:
+            return float(m.group(1))
+        except ValueError:
+            pass
+    m = re.match(r"^10\^([+\-]?\d+\.?\d*)$", txt)          # explicit caret (VLM form)
+    if m:
+        try:
+            return float(m.group(1))
+        except ValueError:
+            pass
+    if txt.startswith("10") and len(txt) > 2:
+        rest_clean = re.sub(r"[^\d\.\-+]", "", txt[2:])
+        if rest_clean:
+            try:
+                exp = float(rest_clean)
+                if -10 <= exp <= 10:
+                    return exp
+            except ValueError:
+                pass
+    if txt.startswith("10") and not any(c.isdigit() for c in txt[2:]):
+        return None
+    clean = re.sub(r"[^\d\.\-eE+]", "", txt)
+    try:
+        return float(clean)
+    except ValueError:
+        return None
+
+
+def parse_value_text(txt: Optional[str]) -> Optional[float]:
+    """Parse a heatmap cell / point label: a plain number (``"43"``, ``"10"``,
+    ``"_69"`` → 69).  Unlike ``parse_tick_text`` there is no 10^x rule, so
+    ``"10"`` is the value ten, not an ambiguous log tick."""
+    t = (txt or "").strip()
+    if not t:
+        return None
+    if sum(c.isalpha() for c in t) > sum(c.isdigit() for c in t):
+        return None
+    m = re.search(r"[+\-]?\d+(?:\.\d+)?", t)
+    if not m:
+        return None
+    try:
+        return float(m.group(0))
+    except ValueError:
+        return None
+
+
+# ── OCR × VLM fusion (deterministic) ────────────────────────────────────────
+def fuse_tick_readings(ocr_text: Optional[str], vlm_text: Optional[str]) -> List[Tuple[float, str]]:
+    """Candidate values for ONE tick box from two readers.
+
+    agree → one candidate (``agree``); one reader only → that reader; both
+    parse but disagree → BOTH candidates (``conflict:ocr`` / ``conflict:vlm``)
+    at the same pixel, so the geometric consensus fit decides — never an
+    average, never a preference.
+    """
+    o = parse_tick_text(ocr_text) if ocr_text else None
+    v = parse_tick_text(vlm_text) if vlm_text else None
+    if o is not None and v is not None:
+        if abs(o - v) <= 1e-9:
+            return [(o, "agree")]
+        return [(o, "conflict:ocr"), (v, "conflict:vlm")]
+    if o is not None:
+        return [(o, "ocr")]
+    if v is not None:
+        return [(v, "vlm")]
+    return []
+
+
+def _valid_value(v: Optional[float]) -> bool:
+    return isinstance(v, (int, float)) and not (isinstance(v, float) and np.isnan(v)) and 0 <= v <= 100
+
+
+def fuse_value_readings(ocr_val: Optional[float], vlm_val: Optional[float],
+                        policy: str = "vlm") -> Tuple[Optional[float], str]:
+    """Value for ONE heatmap cell label from two readers (no geometric arbiter).
+
+    equal → ``agree``; one reader missing / out of [0, 100] → the other;
+    both valid but different → ``policy`` decides (``vlm`` | ``ocr`` |
+    ``null``), and the source records the conflict either way.
+    """
+    o_ok, v_ok = _valid_value(ocr_val), _valid_value(vlm_val)
+    if o_ok and v_ok:
+        if abs(float(ocr_val) - float(vlm_val)) <= 1e-9:
+            return float(ocr_val), "agree"
+        if policy == "ocr":
+            return float(ocr_val), "conflict:ocr"
+        if policy == "null":
+            return None, "conflict:null"
+        return float(vlm_val), "conflict:vlm"
+    if v_ok:
+        return float(vlm_val), "vlm"
+    if o_ok:
+        return float(ocr_val), "ocr"
+    return None, "none"

@@ -51,6 +51,7 @@ PyYAML>=6.0
 
 # ── LLM adjudication / runtime (used by src/llm, src/adjudication, Excel export) ──
 google-genai>=1.47.0           # Gemini provider (Steps 4.4 / 4.5 / 5 + VLM inspection)
+anthropic>=1.0                 # optional Claude provider (vlm.label_reader.provider: claude)
 pydantic>=2.0                  # typed configs / source packets
 diskcache>=5.6.0               # LLM response cache (~/.cache/flowfigtabminer/llm)
 openpyxl>=3.1.0                # *_normalized.xlsx export

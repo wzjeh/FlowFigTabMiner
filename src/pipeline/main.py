@@ -40,7 +40,7 @@ from src.extraction.fusion import PointCountConsistency
 from src.extraction.table.pipeline import TablePipeline
 from src.extraction.table.scheme_seg_parser import SchemeSegParser
 from src.llm.concurrency import configure_concurrency
-from src.llm.config import load_llm_config, load_vlm_config
+from src.llm.config import load_label_reader_config, load_llm_config, load_vlm_config
 from src.llm.fusion import ModalityRoutingPolicy
 from src.llm.hooks import FigureInspectionHook, TableInspectionHook
 from src.llm.inspectors import (
@@ -71,7 +71,9 @@ EXIT_SKIPPED = 3
 def _build_provider_stack(no_vlm_inspection: bool):
     """Assemble the LLM/VLM provider and the two inspection hooks.
 
-    Returns ``(provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks)``.
+    Returns ``(provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader)``.
+    ``label_reader`` is the VLM second reader for chart tick / cell labels
+    (``vlm.label_reader`` in config.yaml; None when disabled or ``--no-vlm``).
     The hook lists are empty when ``no_vlm_inspection`` is true, so the
     pipelines run their classic extraction-only flow without ever
     contacting Gemini for inspection.  The LLM provider is always
@@ -96,7 +98,9 @@ def _build_provider_stack(no_vlm_inspection: bool):
 
     if no_vlm_inspection:
         logger.info("main.providers VLM inspection disabled by --no-vlm")
-        return provider, llm_cfg, vlm_cfg, [], []
+        return provider, llm_cfg, vlm_cfg, [], [], None
+
+    label_reader = _build_label_reader(provider)
 
     fig_inspector = FigureInspector(
         vlm=provider,
@@ -122,7 +126,34 @@ def _build_provider_stack(no_vlm_inspection: bool):
             consistency_checks=[],
         )
     ]
-    return provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks
+    return provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader
+
+
+def _build_label_reader(default_provider):
+    """VLM second reader for tick / heatmap-cell labels (design: VLM reads
+    symbols on a numbered contact sheet, YOLO + robust_fit keep the geometry)."""
+    try:
+        lr_cfg = load_label_reader_config(CONFIG_PATH)
+    except Exception as exc:
+        logger.warning("main.label_reader config error: %s — disabled", exc)
+        return None
+    if not lr_cfg.enabled:
+        logger.info("main.label_reader disabled")
+        return None
+    from src.extraction.figure.label_reader import VLMLabelReader
+    vlm = default_provider
+    if lr_cfg.provider != getattr(default_provider, "name", "gemini"):
+        from src.llm.providers import get_vlm_provider
+        try:
+            vlm = get_vlm_provider(lr_cfg.provider)
+        except Exception as exc:
+            logger.warning("main.label_reader provider '%s' unavailable (%s) — disabled", lr_cfg.provider, exc)
+            return None
+    logger.info("main.label_reader provider=%s model=%s policy=%s", lr_cfg.provider, lr_cfg.model,
+                lr_cfg.value_conflict_policy)
+    reader = VLMLabelReader(vlm=vlm, cfg=lr_cfg, max_boxes=lr_cfg.max_boxes)
+    reader.value_conflict_policy = lr_cfg.value_conflict_policy
+    return reader
 
 
 # ───────────────────────────────────────────────────────────────── steps
@@ -262,6 +293,7 @@ def process_one_pdf(
     vlm_cfg,
     figure_hooks,
     table_hooks,
+    label_reader=None,
 ) -> str | None:
     """Run Steps 0-6 for ONE PDF.
 
@@ -332,6 +364,8 @@ def process_one_pdf(
         fig_pipeline = FigurePipeline(
             metadata_extractor=fig_metadata_extractor,
             post_extract_hooks=figure_hooks,
+            label_reader=label_reader,
+            value_conflict_policy=getattr(label_reader, "value_conflict_policy", "vlm"),
         )
         fig_pipeline.process_pdf_figures(pdf_path)
     except Exception as exc:
@@ -474,11 +508,12 @@ def _run_single(args) -> str | None:
     from src.pipeline.single_instance import single_instance_lock
 
     with single_instance_lock("flowfigtabminer-pipeline"):
-        provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks = _build_provider_stack(
+        provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks, label_reader = _build_provider_stack(
             no_vlm_inspection=args.no_vlm
         )
         return process_one_pdf(
-            args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks
+            args.pdf_path, args, provider, llm_cfg, vlm_cfg, figure_hooks, table_hooks,
+            label_reader=label_reader,
         )
 
 

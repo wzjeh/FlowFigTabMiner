@@ -84,6 +84,23 @@ llm:
 # and 12 (table), plus the table header corrector.  Loaded into a frozen
 # Pydantic ``VLMConfig``.
 vlm:
+  # VLM second reader for chart labels: the coordinate mapper tiles every YOLO
+  # tick-label / heatmap-cell box into a numbered contact sheet and asks the
+  # VLM to transcribe cell #i. OCR and VLM readings are fused deterministically
+  # (axis_fit.fuse_*): tick conflicts are settled by the geometric consensus
+  # fit, cell-value conflicts by value_conflict_policy. VLM never places points.
+  # Env override for evaluation: FFTM_LABEL_READER=off|gemini|claude.
+  label_reader:
+    enabled: true
+    provider: "gemini"            # or "claude" (needs ANTHROPIC_API_KEY)
+    model: "gemini-2.5-flash"     # claude: claude-sonnet-5
+    value_conflict_policy: "vlm"  # vlm | ocr | null  (when both readers give a valid, different number)
+    max_boxes: 80
+    temperature: 0.0
+    max_output_tokens: 4096
+    max_retries: 3
+    timeout_s: 120.0
+
   inspection:
     provider: "gemini"
     model: "gemini-2.5-flash"

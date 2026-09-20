@@ -19,6 +19,10 @@ from src.llm.providers.base import LLMProvider, VLMProvider
 # Importing the concrete provider modules triggers their @register_* decorators
 # and makes them discoverable via the factory helpers above.
 from src.llm.providers import gemini  # noqa: F401  (side-effect import)
+try:  # Claude is optional: registers only when the anthropic SDK can be imported lazily at construction
+    from src.llm.providers import claude  # noqa: F401  (side-effect import)
+except Exception:  # pragma: no cover
+    pass
 
 __all__ = [
     "LLMConfig",
