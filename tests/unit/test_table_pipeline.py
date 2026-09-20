@@ -24,9 +24,9 @@ class TestTablePipelineInit:
 
     def test_init_sequential_mode(self):
         """Test initialization in sequential mode."""
-        with patch('src.extraction.table.pipeline.load_config') as mock_config:
+        with patch('src.utils.config.load_config') as mock_config:
             mock_config.return_value = {"tables": {}}
-            pipeline = TablePipeline(sequential_mode=True)
+            pipeline = TablePipeline(Mock(), Mock(), sequential_mode=True)
 
             assert pipeline.sequential_mode is True
             assert pipeline.filter is None  # Lazy loading
@@ -36,7 +36,7 @@ class TestTablePipelineInit:
 
     def test_init_standard_mode(self):
         """Test initialization in standard mode (load all models)."""
-        with patch('src.extraction.table.pipeline.load_config') as mock_config:
+        with patch('src.utils.config.load_config') as mock_config:
             mock_config.return_value = {"tables": {
                 "segmentation": {"model_path": "test.pt"},
                 "structure": {"model_path": "test_struct"},
@@ -48,7 +48,7 @@ class TestTablePipelineInit:
                 with patch('src.extraction.table.pipeline.TableStructureRecognizer'):
                     with patch('src.extraction.table.pipeline.ContentRecognizer'):
                         with patch('src.extraction.table.pipeline.MoleculeProcessor'):
-                            pipeline = TablePipeline(sequential_mode=False)
+                            pipeline = TablePipeline(Mock(), Mock(), sequential_mode=False)
 
                             # In standard mode, _load_all_models should be called
                             assert pipeline.sequential_mode is False
@@ -110,9 +110,12 @@ class TestProcessTable:
     @pytest.fixture
     def mock_pipeline(self):
         """Create a mock pipeline with mocked dependencies."""
-        with patch('src.extraction.table.pipeline.load_config') as mock_config:
+        with patch('src.utils.config.load_config') as mock_config:
             mock_config.return_value = {"tables": {}}
-            pipeline = TablePipeline(sequential_mode=True)
+            pipeline = TablePipeline(Mock(), Mock(), sequential_mode=True)
+            pipeline.cell_extractor.extract.return_value = Mock(aligned=True, cells=[], notes=None)
+            pipeline.header_resolver.resolve.return_value = Mock(
+                header_row_count=1, confidence=1.0, field_value=Mock(source="llm_judge", value=1))
             return pipeline
 
     @pytest.fixture
@@ -166,6 +169,7 @@ class TestProcessTable:
         # Mock structure recognizer (no cells)
         mock_structure = Mock()
         mock_structure.recognize_structure.return_value = {'cells': []}
+        mock_structure.get_cells_from_grid.return_value = []
 
         # Mock molecule processor
         mock_mol_processor = Mock()
@@ -299,9 +303,9 @@ class TestSequentialMode:
 
     def test_unload_model_in_sequential_mode(self):
         """Test model unloading clears memory."""
-        with patch('src.extraction.table.pipeline.load_config') as mock_config:
+        with patch('src.utils.config.load_config') as mock_config:
             mock_config.return_value = {"tables": {}}
-            pipeline = TablePipeline(sequential_mode=True)
+            pipeline = TablePipeline(Mock(), Mock(), sequential_mode=True)
 
             mock_model = Mock()
 
@@ -311,9 +315,10 @@ class TestSequentialMode:
 
     def test_no_unload_in_standard_mode(self):
         """Test model not unloaded in standard mode."""
-        with patch('src.extraction.table.pipeline.load_config') as mock_config:
+        with patch('src.utils.config.load_config') as mock_config:
             mock_config.return_value = {"tables": {}}
-            pipeline = TablePipeline(sequential_mode=False)
+            with patch.object(TablePipeline, '_load_all_models'):
+                pipeline = TablePipeline(Mock(), Mock(), sequential_mode=False)
 
             mock_model = Mock()
 

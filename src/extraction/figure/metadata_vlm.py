@@ -13,9 +13,11 @@ needed downstream.
 from __future__ import annotations
 
 import logging
+import re
 import time
+import unicodedata
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
@@ -28,6 +30,28 @@ logger = logging.getLogger(__name__)
 
 _PROMPT_PATH = Path(__file__).parent / "prompts" / "metadata.md"
 _PROMPT = _PROMPT_PATH.read_text()
+
+
+# Hygiene for VLM string fields.  A structured-output call can still return
+# junk (observed: a 2 kB "series name" made of backspace characters, and
+# strings echoing the schema field names such as "legend_series_names_null");
+# nothing downstream can use those, so they are dropped deterministically.
+_MAX_TEXT_CHARS = {"default": 300, "short": 120}
+_SCHEMA_ECHO = re.compile(r"(x_axis_label|y_axis_label|x_axis_unit|y_axis_unit|legend_series_names|"
+                          r"legend_markers|footnote_null|_null_null)", re.I)
+
+
+def clean_vlm_text(v: Any, max_chars: int = 120) -> Optional[str]:
+    """Strip control characters and reject over-long or schema-echo strings."""
+    if v is None:
+        return None
+    if not isinstance(v, str):
+        v = str(v)
+    v = "".join(ch for ch in v if unicodedata.category(ch)[0] != "C" or ch in "\n\t")
+    v = re.sub(r"[ \t]+", " ", v).strip()
+    if not v or len(v) > max_chars or _SCHEMA_ECHO.search(v):
+        return None
+    return v
 
 
 class LegendMarker(BaseModel):
@@ -119,12 +143,20 @@ class FigureMetadataExtractor:
         latency_ms = meta.latency_ms
 
         def fv(v, fallback_source: FieldSource = FieldSource.VLM_METADATA) -> FieldValue:
+            v = clean_vlm_text(v)
             return FieldValue(
                 value=v,
                 source=FieldSource.MISSING if v is None or v == "" else fallback_source,
                 model_id=model_id,
                 latency_ms=latency_ms,
             )
+
+        legend_names = [n for n in (clean_vlm_text(s) for s in resp.legend_series_names) if n]
+        legend_markers = []
+        for m in resp.legend_markers:
+            name = clean_vlm_text(m.name)
+            if name:
+                legend_markers.append({"name": name, "color": clean_vlm_text(m.color), "marker": clean_vlm_text(m.marker)})
 
         return FigureMetadata(
             title=fv(resp.title),
@@ -133,14 +165,14 @@ class FigureMetadataExtractor:
             x_axis_unit=fv(resp.x_axis_unit),
             y_axis_unit=fv(resp.y_axis_unit),
             legend_series_names=FieldValue(
-                value=[s for s in resp.legend_series_names if s],
-                source=FieldSource.VLM_METADATA if any(resp.legend_series_names) else FieldSource.MISSING,
+                value=legend_names,
+                source=FieldSource.VLM_METADATA if legend_names else FieldSource.MISSING,
                 model_id=model_id,
                 latency_ms=latency_ms,
             ),
             legend_markers=FieldValue(
-                value=[m.model_dump() for m in resp.legend_markers if m.name],
-                source=FieldSource.VLM_METADATA if resp.legend_markers else FieldSource.MISSING,
+                value=legend_markers,
+                source=FieldSource.VLM_METADATA if legend_markers else FieldSource.MISSING,
                 model_id=model_id,
                 latency_ms=latency_ms,
             ),
