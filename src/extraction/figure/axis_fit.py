@@ -17,6 +17,7 @@ Fixes, all deterministic:
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -60,6 +61,25 @@ def monotonic_subsequence(cands: Sequence[Sequence[Any]], pixel_idx: int, value_
     while end != -1:
         keep.append(end); end = parent[end]
     return [ordered[i] for i in reversed(keep)]
+
+
+def best_monotonic_subsequence(cands: Sequence[Sequence[Any]], pixel_idx: int, value_idx: int = 1,
+                               prefer: str = "decreasing") -> Tuple[List[Sequence[Any]], str]:
+    """Longest monotonic subsequence in EITHER direction (ties → ``prefer``).
+    A Y axis that increases downwards (e.g. a temperature axis drawn 50 → 75
+    top to bottom) used to be cut to a single tick by a decreasing-only filter."""
+    dec = monotonic_subsequence(cands, pixel_idx, value_idx, "decreasing")
+    inc = monotonic_subsequence(cands, pixel_idx, value_idx, "increasing")
+    if len(inc) > len(dec) or (len(inc) == len(dec) and prefer == "increasing"):
+        return inc, "increasing"
+    return dec, "decreasing"
+
+
+def decide_dual_axis(n_left_parsed: int, n_right_parsed: int, min_right: int = 3) -> bool:
+    """A right Y axis needs at least ``min_right`` parseable tick candidates.
+    Two or three stray numbers on the right (legend entries "-78 / -48 / 24",
+    annotations "4", "Cl") are not an axis and must not feed Y_Right."""
+    return n_left_parsed >= 1 and n_right_parsed >= min_right
 
 
 def residual_threshold(values: Sequence[float], is_log: bool) -> float:
@@ -151,8 +171,13 @@ def is_grid_like(raw_data: Sequence[Dict[str, Any]], x_log: bool = True) -> Dict
 
 # ── tick text parsing (lifted from CoordinateMapper.map_coordinates) ────────
 def is_scientific_text(txt: str) -> bool:
-    """OCR string that denotes 10^x notation: "10-2.0", "10 -1.5", "100.5", "101", "10^-2"."""
-    return bool(re.match(r"^10[\s\^]?[+\-]?\d", (txt or "").strip()))
+    """OCR / VLM string that unambiguously denotes 10^x: "10-2.0", "10 -1.5",
+    "100.5", "10^-2", "10^0".  Bare "100" / "101" are NOT treated as
+    exponents: on a linear 0-100 axis "100" is one hundred, and the VLM
+    reader writes log ticks in the caret form, so a fused OCR "100" against a
+    VLM "10^0" becomes a conflict that the geometric fit settles."""
+    t = (txt or "").strip()
+    return bool(re.match(r"^10(\s+[+\-]?\d|\^[+\-]?\d|[+\-]\d|\d*\.\d)", t))
 
 
 def parse_tick_text(txt: str) -> Optional[float]:
@@ -165,9 +190,13 @@ def parse_tick_text(txt: str) -> Optional[float]:
     the former nested ``parse_val`` in the coordinate mapper; the VLM writes
     exponents as ``10^-1.5`` which the caret branch handles.
     """
-    txt = (txt or "").strip()
+    txt = unicodedata.normalize("NFKC", (txt or "")).strip()     # "０" → "0"
     if not txt:
         return None
+    # A tick mark glued to the number ("100-", "-20-", "80_") is not a sign.
+    m = re.match(r"^([+\-]?\d+(?:\.\d+)?)\s*[-\u2013\u2014_|']+$", txt)
+    if m:
+        txt = m.group(1)
     if tick_text_is_ambiguous(txt):
         return None
     digits_in = sum(1 for c in txt if c.isdigit())
@@ -188,7 +217,7 @@ def parse_tick_text(txt: str) -> Optional[float]:
             return float(m.group(1))
         except ValueError:
             pass
-    if txt.startswith("10") and len(txt) > 2:
+    if txt.startswith("10") and len(txt) > 2 and is_scientific_text(txt):
         rest_clean = re.sub(r"[^\d\.\-+]", "", txt[2:])
         if rest_clean:
             try:

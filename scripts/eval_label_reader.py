@@ -73,7 +73,8 @@ def collect(paths: list[str]) -> dict:
         for lg in glob.glob(os.path.join(idir, "macro_cleaned", "*_coordmap_log.txt")):
             txt = open(lg).read()
             m["figures"] += 1
-            m["fit_rejected"] += txt.count("Fit REJECTED")
+            m["fit_rejected"] += txt.count("Fit REJECTED (x)") + txt.count("Fit REJECTED (y_left)")
+            m["dual_axis_rejected"] += txt.count("Dual axis REJECTED")
         for evp in glob.glob(os.path.join(idir, "macro_cleaned", "*_evidence.json")):
             ev = json.load(open(evp)); f = (ev.get("meta") or {}).get("facts") or {}
             for q in (f.get("fit_quality") or {}).values():

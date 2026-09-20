@@ -12,8 +12,9 @@ if os.environ.get('USE_EASYOCR', '0') != '1':
         pass
 from src.extraction.common.ocr_backend import get_rec_instance
 from src.extraction.figure.axis_fit import (
-    fuse_tick_readings, fuse_value_readings, is_scientific_text, monotonic_subsequence,
-    parse_tick_text, parse_value_text, robust_fit, tick_text_is_ambiguous,
+    best_monotonic_subsequence, decide_dual_axis, fuse_tick_readings, fuse_value_readings,
+    is_scientific_text, monotonic_subsequence, parse_tick_text, parse_value_text, robust_fit,
+    tick_text_is_ambiguous,
 )
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pandas as pd
@@ -42,6 +43,7 @@ class CoordinateMapper:
         # point-label count).  Read by FigurePipeline after the call and
         # persisted into the evidence packet so downstream stages never
         # have to re-guess them.  Reset per call.
+        self.stray_label_dets = []   # right-side numbers that were NOT an axis (legend clues)
         self.last_facts = {
             "x_scale": None, "y_left_scale": None, "y_right_scale": None,
             "axis_fit": {"x": None, "y_left": None, "y_right": None},
@@ -441,13 +443,28 @@ class CoordinateMapper:
             # Or just enforce standard. Most flowcharts are standard.
             
             count_yl_raw = len(y_left_candidates)
-            y_left_candidates = filter_monotonic(y_left_candidates, 'decreasing')
-            if len(y_left_candidates) < count_yl_raw:
-                log(f"Monotonic Filter (YL): {count_yl_raw} -> {len(y_left_candidates)} (Removed outliers)")
-            
+            y_left_candidates, yl_dir = best_monotonic_subsequence(y_left_candidates, pixel_idx=4, value_idx=1)
+            self.last_facts["y_left_direction"] = yl_dir
+            if len(y_left_candidates) < count_yl_raw or yl_dir != "decreasing":
+                log(f"Monotonic Filter (YL): {count_yl_raw} -> {len(y_left_candidates)} direction={yl_dir}")
+
+            # A right axis must be a real axis: >= 3 parseable ticks.  Otherwise
+            # the right-side numbers are legend entries / annotations — keep them
+            # out of every pool (they would poison Y_Right) and expose them as
+            # stray labels for series recovery.
+            stray_label_dets = []
+            if has_right_axis and not decide_dual_axis(len(y_left_candidates), len(y_right_candidates)):
+                log(f"Dual axis REJECTED: right side has {len(y_right_candidates)} parseable ticks (<3) -> single axis")
+                stray_label_dets = list(y_right_pool)
+                y_right_candidates = []
+                has_right_axis = False
+                plot_x_max = img_w
+            self.last_facts["n_stray_labels"] = len(stray_label_dets)
+            self.stray_label_dets = stray_label_dets
+
             count_yr_raw = len(y_right_candidates)
             if has_right_axis:
-                y_right_candidates = filter_monotonic(y_right_candidates, 'decreasing')
+                y_right_candidates, _ = best_monotonic_subsequence(y_right_candidates, pixel_idx=4, value_idx=1)
                 if len(y_right_candidates) < count_yr_raw:
                     log(f"Monotonic Filter (YR): {count_yr_raw} -> {len(y_right_candidates)}")
 
@@ -557,7 +574,7 @@ class CoordinateMapper:
 
                  model = robust_fit(pairs, is_log)
                  if model is None:
-                     log(f"Fit REJECTED ({axis_type}): no 2 consistent ticks")
+                     log(f"Fit REJECTED ({key or axis_type}): no 2 consistent ticks")
                      return None
                  log(f"Fit quality ({axis_type}): {model.quality}")
                  self.last_facts.setdefault("fit_quality", {})[key or axis_type] = model.quality

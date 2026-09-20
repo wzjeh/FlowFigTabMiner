@@ -1,5 +1,6 @@
 """Robust axis calibration + precedence rules (2026-09-20 audit fixes)."""
 import numpy as np
+import pytest
 from src.extraction.figure.axis_fit import robust_fit, monotonic_subsequence, tick_text_is_ambiguous, is_grid_like
 from src.adjudication.post_processor import inherit_conditions, source_blocks_inheritance
 
@@ -82,3 +83,25 @@ def test_llm_value_kept_when_source_mentions_it():
     rec = {"conditions": {"solvent": "tetrahydrofuran", "temperature_C": -78}}
     out = inherit_conditions(dict(rec), {}, gv, None, source_text="[a] Reactions run in THF at -78 °C")
     assert out["conditions"]["solvent"] == "tetrahydrofuran" and out["conditions"]["temperature_C"] == -78
+
+
+# ── 2026-09-20 round 3: tick marks, axis direction, dual-axis gate ──────────
+@pytest.mark.parametrize("txt,expected", [("100-", 100.0), ("-20-", -20.0), ("80_", 80.0), ("０", 0.0), ("10-", None), ("10°", None), ("60–", 60.0)])
+def test_parse_tick_text_strips_tick_marks(txt, expected):
+    from src.extraction.figure.axis_fit import parse_tick_text
+    assert parse_tick_text(txt) == expected
+
+
+def test_best_monotonic_keeps_increasing_axis():
+    from src.extraction.figure.axis_fit import best_monotonic_subsequence
+    cands = [[0, v, str(v), 12, y] for v, y in ((50, 25), (55, 103), (60, 179), (65, 256), (70, 337), (75, 411))]
+    kept, direction = best_monotonic_subsequence(cands, pixel_idx=4)
+    assert len(kept) == 6 and direction == "increasing"
+    dec = [[0, v, str(v), 12, y] for v, y in ((80, 96), (40, 166), (0, 234))]
+    kept, direction = best_monotonic_subsequence(dec, pixel_idx=4)
+    assert len(kept) == 3 and direction == "decreasing"
+
+
+def test_decide_dual_axis_needs_three_right_ticks():
+    from src.extraction.figure.axis_fit import decide_dual_axis
+    assert decide_dual_axis(4, 3) and not decide_dual_axis(4, 2) and not decide_dual_axis(0, 5)

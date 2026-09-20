@@ -12,7 +12,7 @@ from src.llm.types import LLMResponse
 
 # ── parsing (behaviour of the former nested parse_val + the VLM caret form) ──
 @pytest.mark.parametrize("txt,expected", [
-    ("10-1.5", -1.5), ("10 -2", -2.0), ("100.5", 0.5), ("101", 1.0), ("10^-1.5", -1.5), ("10^0", 0.0),
+    ("10-1.5", -1.5), ("10 -2", -2.0), ("100.5", 0.5), ("101", 101.0), ("100", 100.0), ("10^-1.5", -1.5), ("10^0", 0.0), ("10^1", 1.0),
     ("-40", -40.0), ("0.5", 0.5), ("-10 0", None), ("10-1.", None), ("flow", None), ("10", None), ("", None),
 ])
 def test_parse_tick_text(txt, expected):
@@ -24,7 +24,7 @@ def test_fuse_tick_readings_cases():
     assert fuse_tick_readings("10-1.5", "10^-1.5") == [(-1.5, "agree")]
     assert fuse_tick_readings("10-1.", "10^-1.5") == [(-1.5, "vlm")]          # OCR ambiguous → VLM only
     assert fuse_tick_readings("-40", "") == [(-40.0, "ocr")]
-    assert fuse_tick_readings("101", "10^-1") == [(1.0, "conflict:ocr"), (-1.0, "conflict:vlm")]
+    assert fuse_tick_readings("101", "10^-1") == [(101.0, "conflict:ocr"), (-1.0, "conflict:vlm")]
     assert fuse_tick_readings("", "") == []
 
 
