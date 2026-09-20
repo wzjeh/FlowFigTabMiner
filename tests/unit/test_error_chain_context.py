@@ -108,7 +108,8 @@ def test_enforce_chart_facts_leaves_xy_plots_alone():
 
 
 def test_infer_legacy_facts_detects_heatmap_from_point_labels():
-    ev = {"meta": {}, "raw_data": [{"Series": "Default", "X": 1, "Y_Left": -78, "Y_Right/Data_Value": 50}] * 4}
+    ev = {"meta": {}, "raw_data": [{"Series": "Default", "X": x, "Y_Left": y, "Y_Right/Data_Value": 50}
+                                   for x in (0.1, 1.0, 10.0) for y in (-78, -48, 0)]}
     out = infer_legacy_facts(ev)
     assert out["meta"]["facts"]["chart_type"] == "heatmap" and out["meta"]["figure_type"] == "heatmap"
     assert out["meta"]["facts"]["series_matched_ratio"] == 0.0

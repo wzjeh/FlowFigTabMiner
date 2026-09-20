@@ -149,7 +149,12 @@ _BASE_RULES = """=== RULES ===
     for this source confirms them. When you fill a field from (b) or (c), list that field
     name in the record's "conditions_provenance" object as {"<field>": "paper_global"}.
     reaction_context (main product, reagent, electrophile) may fill product/reactant NAMES
-    that this source leaves implicit (e.g. a figure that only shows yield vs conditions)."""
+    that this source leaves implicit (e.g. a figure that only shows yield vs conditions).
+    PRECEDENCE OF THE SOURCE'S OWN TEXT: if the caption / footnote / header / text layer of
+    THIS source mentions a quantity (e.g. "Effects of temperature and residence time",
+    "tR = 0.055 s", "at -78 °C"), that field comes from there — or stays null if the source
+    varies it — NEVER from a paper-level default. A source described as batch / macrobatch /
+    flask never receives flow_rate or residence_time defaults."""
 
 _DOMAIN_KNOWLEDGE = """=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
 - For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,

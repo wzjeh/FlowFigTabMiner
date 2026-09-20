@@ -244,7 +244,42 @@ def _has_outcome(rec: dict) -> bool:
     return any(rec.get(k) is not None for k in ("yield_pct", "conversion_pct", "selectivity_pct", "ee_pct"))
 
 
-def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: dict = None) -> dict:
+_FIELD_MENTION = {
+    "residence_time_s": re.compile(r"residence time|\bt\s*_?\s*r\b|\btr\d?\s*=|retention time", re.I),
+    "temperature_C": re.compile(r"temperature|°\s*c\b|℃|\bT\s*\d?\s*=", re.I),
+    "flow_rate_mL_min": re.compile(r"flow rate|ml\s*/?\s*min|ml min", re.I),
+    "solvent": re.compile(r"\b(thf|tetrahydrofuran|toluene|hexane|et2o|diethyl ether|dcm|dichloromethane|mtbe|cpme|2-methf|solvent)\b", re.I),
+    "pressure_bar": re.compile(r"pressure|\bbar\b|\bmpa\b|\batm\b", re.I),
+    "catalyst": re.compile(r"catalyst|\bcat\.|mol\s*%", re.I),
+    "additive": re.compile(r"additive", re.I),
+    "reactor_type": re.compile(r"batch|flask|microreactor|micromixer|flow system|reactor", re.I),
+}
+_BATCH_RE = re.compile(r"macrobatch|\bbatch\b|round-bottom|\bflask\b", re.I)
+_FLOW_ONLY_FIELDS = ("flow_rate_mL_min", "residence_time_s")
+
+
+def source_blocks_inheritance(field: str, source_text: str) -> Optional[str]:
+    """Why a paper-level default must NOT be applied to this source, or None.
+
+    Precedence rule (Zhao, 2026-09-20 audit): a figure/table's own caption,
+    footnote and header outrank the paper text.  If they mention the
+    quantity ("Effects of temperature and residence time", "tR = 0.055 s"),
+    the value belongs to that source's local extraction — filling it from
+    the paper-wide default would silently override what the source says.
+    Batch / flask sources never receive flow-only defaults.
+    """
+    if not source_text:
+        return None
+    if field in _FLOW_ONLY_FIELDS and _BATCH_RE.search(source_text):
+        return "source is batch"
+    pat = _FIELD_MENTION.get(field)
+    if pat and pat.search(source_text):
+        return "source caption/footnote addresses this field"
+    return None
+
+
+def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: dict = None,
+                       source_text: str = "") -> dict:
     """Fill EMPTY condition fields from the two-level pool, never overwrite.
 
     Precedence: value already on the record (``llm_source``) → this source's
@@ -275,6 +310,10 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
             continue
         g = defaults.get(field)
         if isinstance(g, dict) and g.get("scope") == "paper" and g.get("quote"):
+            if source_blocks_inheritance(field, source_text):
+                if stats is not None:
+                    stats["blocked_by_source"] = stats.get("blocked_by_source", 0) + 1
+                continue
             g_val = _scalar(g.get("value"))
             if g_val is not None:
                 conds[field] = g_val
@@ -1087,6 +1126,20 @@ class PostProcessor:
             except Exception:
                 global_vars = {}
         local_vars_cache: dict = {}
+        source_text_cache: dict = {}
+
+        def _source_text_for(source_id):
+            """Caption + footnote of the source (CaptionLocator context) for
+            the inheritance precedence rule."""
+            if source_id not in source_text_cache:
+                try:
+                    from src.parsing.caption_locator import load_context
+                    ctx = load_context(intermediate_dir, source_id) or {}
+                    source_text_cache[source_id] = " ".join(
+                        str(ctx.get(k) or "") for k in ("caption", "footnote", "inner_text"))[:4000]
+                except Exception:
+                    source_text_cache[source_id] = ""
+            return source_text_cache[source_id]
 
         def _local_vars_for(source_id):
             if source_id not in local_vars_cache:
@@ -1103,7 +1156,8 @@ class PostProcessor:
             nr = dict(rec)
 
             # -- Condition inheritance (fill empties only; provenance kept) --
-            nr = inherit_conditions(nr, _local_vars_for(nr.get("__source_id", "")), global_vars, inherit_stats)
+            nr = inherit_conditions(nr, _local_vars_for(nr.get("__source_id", "")), global_vars, inherit_stats,
+                                    source_text=_source_text_for(nr.get("__source_id", "")))
 
             # -- Solvent --
             conds = dict(nr.get("conditions") or {})
@@ -1240,7 +1294,7 @@ class PostProcessor:
             json.dump(normalised, f, indent=2, ensure_ascii=False)
         print(f"[PostProcessor] -> {norm_json}")
         print(f"[PostProcessor] condition inheritance: source_local={inherit_stats['source_local']} "
-              f"paper_global={inherit_stats['paper_global']}")
+              f"paper_global={inherit_stats['paper_global']} blocked_by_source={inherit_stats.get('blocked_by_source', 0)}")
         flush_smiles_cache()  # persist any name→SMILES queries from this PDF
 
         # Save _normalized.xlsx

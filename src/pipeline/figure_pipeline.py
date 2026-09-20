@@ -19,6 +19,7 @@ from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
 from src.pipeline.hooks import PipelineHook, StageContext, run_hooks
 from src.pipeline.status import write_status
 from src.parsing.caption_locator import load_context
+from src.extraction.figure.axis_fit import is_grid_like
 from src.utils.config import load_config
 
 class FigurePipeline:
@@ -215,9 +216,12 @@ class FigurePipeline:
                 # charts) — same rule as source_discovery.infer_legacy_facts.
                 n_labels = int(mapper_facts.get("n_point_labels", 0) or 0)
                 label_heavy = bool(points) and n_labels / len(points) >= 0.5
+                grid = is_grid_like(extraction_data, x_log=bool(mapper_facts.get("x_scale") == "log"))
+                heat = bool(is_heatmap or (label_heavy and grid["grid"]))
                 facts = {
-                    "chart_type": "heatmap" if (is_heatmap or label_heavy) else "xy",
-                    "heatmap_signal": ("legend_bins" if is_heatmap else ("point_labels" if label_heavy else None)),
+                    "chart_type": "heatmap" if heat else "xy",
+                    "heatmap_signal": ("legend_bins" if is_heatmap else ("point_labels+grid" if heat else None)),
+                    "grid": grid,
                     "x_scale": mapper_facts.get("x_scale"),
                     "y_left_scale": mapper_facts.get("y_left_scale"),
                     "y_right_scale": mapper_facts.get("y_right_scale"),

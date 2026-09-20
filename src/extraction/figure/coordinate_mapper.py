@@ -11,6 +11,7 @@ if os.environ.get('USE_EASYOCR', '0') != '1':
     except Exception:
         pass
 from src.extraction.common.ocr_backend import get_rec_instance
+from src.extraction.figure.axis_fit import monotonic_subsequence, robust_fit, tick_text_is_ambiguous
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pandas as pd
 import re
@@ -196,6 +197,8 @@ class CoordinateMapper:
                 txt = txt.strip()
                 if not txt:
                     return None
+                if tick_text_is_ambiguous(txt):
+                    return None   # "-10 0", "10-1." — would silently become -100 / 10^-1
 
                 # Reject strings with letters mixed in (YOLO false positives)
                 # Allow: pure numbers ("-40"), scientific ("10-2.0", "10^0.5")
@@ -440,6 +443,13 @@ class CoordinateMapper:
             process_candidates(y_left_pool, y_left_candidates)
             process_candidates(y_right_pool, y_right_candidates)
 
+            # X ticks: value must increase left→right (drops lost-minus-sign
+            # exponents like "101" sitting between 10^-1.5 and 10^-0.5).
+            count_x_raw = len(x_candidates)
+            x_candidates = monotonic_subsequence(x_candidates, pixel_idx=3, value_idx=1, direction='increasing')
+            if len(x_candidates) < count_x_raw:
+                log(f"Monotonic Filter (X): {count_x_raw} -> {len(x_candidates)} (Removed outliers)")
+
             # [NEW] Apply Monotonic Filter to Y-Candidates
             # Default assumption: Standard Axis (Values decrease Key Top->Bottom)
             # We can try both directions and keep the one with more points?
@@ -564,7 +574,13 @@ class CoordinateMapper:
                  subset = pairs[:5]
                  log(f"Fitting Model ({axis_type}) with {len(pairs)} pairs. Sample: {subset}")
 
-                 return self._fit_ransac(pairs)
+                 model = robust_fit(pairs, is_log)
+                 if model is None:
+                     log(f"Fit REJECTED ({axis_type}): no 2 consistent ticks")
+                     return None
+                 log(f"Fit quality ({axis_type}): {model.quality}")
+                 self.last_facts.setdefault("fit_quality", {})[axis_type if axis_type == 'x' else 'y'] = model.quality
+                 return model
 
             model_x = prepare_pairs_and_fit(x_candidates, is_x_log, 'x')
             model_yl = prepare_pairs_and_fit(y_left_candidates, is_yl_log, 'y')

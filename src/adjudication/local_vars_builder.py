@@ -104,7 +104,9 @@ class LocalVarsBuilder:
             "from the paper's Experimental / Materials-and-Methods section. Conditions such as "
             "temperature, pressure, solvent, catalyst (loading), reactor_type, residence_time often "
             "appear ONLY in the experimental section — you MUST populate fixed_conditions from there "
-            "too, not only from the figure's surrounding text.\n"
+            "too, not only from the figure's surrounding text. PRECEDENCE: the figure's own caption / "
+            "footnote outranks the paper text and any paper-level default — a quantity the figure VARIES "
+            "(its axes or legend series) must stay null in fixed_conditions.\n"
             "(3) Output valid JSON only, no markdown fences.\n"
             "(4) Each text field is suffixed with a source tag in square brackets, e.g. "
             "`Pressure (MPa) [src=vlm_metadata]`. Tag meanings: ``vlm_metadata`` = Gemini vision "
@@ -395,6 +397,10 @@ Output a single valid JSON object (no markdown):
   "data_interpretation_notes": "..."
 }}
 For residence_time_s: convert minutes×60 if needed.
+PRECEDENCE: the table's own caption / note / header outranks the paper text and the paper-level defaults:
+if the caption or note states a condition, use it; if the table VARIES a quantity (a column for it, or
+the caption says "effect of temperature"), leave that field null — never fill it from paper-level defaults.
+A batch / macrobatch table has no flow_rate or residence_time defaults.
 IMPORTANT: fixed_conditions should capture ANY condition that is constant across ALL rows of this table,
 even if stated only in the paper text or caption (not as a CSV column). Common examples:
 - "all reactions were performed at -78°C" → temperature_C: -78

@@ -24,6 +24,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.adjudication.pdf_parser import extract_text_window
 from src.parsing.caption_locator import load_context
+from src.extraction.figure.axis_fit import is_grid_like
 
 logger = logging.getLogger(__name__)
 
@@ -198,8 +199,8 @@ def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:
         f = dict(meta["facts"])
         n = len(raw)
         n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
-        if f.get("chart_type") != "heatmap" and n and n_dv / n >= 0.5:
-            f["chart_type"] = "heatmap"; f["heatmap_signal"] = "point_labels(reclassified)"
+        if f.get("chart_type") != "heatmap" and n and n_dv / n >= 0.5 and is_grid_like(raw)["grid"]:
+            f["chart_type"] = "heatmap"; f["heatmap_signal"] = "point_labels+grid(reclassified)"
             meta["facts"] = f; meta["figure_type"] = "heatmap"
             ev = dict(evidence); ev["meta"] = meta
             return ev
@@ -208,7 +209,7 @@ def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:
     n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
     facts: Dict[str, Any] = {"legacy_inferred": True, "n_points": n, "n_point_labels": n_dv,
                              "has_point_labels": n_dv > 0}
-    if n and n_dv / n >= 0.5:
+    if n and n_dv / n >= 0.5 and is_grid_like(raw)["grid"]:
         facts["chart_type"] = "heatmap"
         facts["x_scale"] = "log"
     series = {r.get("Series") for r in raw if isinstance(r, dict)}
