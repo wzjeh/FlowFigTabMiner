@@ -216,7 +216,8 @@ class FigurePipeline:
                 # charts) — same rule as source_discovery.infer_legacy_facts.
                 n_labels = int(mapper_facts.get("n_point_labels", 0) or 0)
                 label_heavy = bool(points) and n_labels / len(points) >= 0.5
-                grid = is_grid_like(extraction_data, x_log=bool(mapper_facts.get("x_scale") == "log"))
+                grid = is_grid_like(df.to_dict(orient='records') if not df.empty else [],
+                                    x_log=bool(mapper_facts.get("x_scale") == "log"))
                 heat = bool(is_heatmap or (label_heavy and grid["grid"]))
                 facts = {
                     "chart_type": "heatmap" if heat else "xy",
