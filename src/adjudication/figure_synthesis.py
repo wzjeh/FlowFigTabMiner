@@ -104,6 +104,34 @@ def snap_levels(values: List[Optional[float]], gap: float = 2.0) -> List[Optiona
     return out
 
 
+def snap_levels_log(values: List[Optional[float]], gap: float = 0.12) -> List[Optional[float]]:
+    """Cluster positive readings in log10 space (split where the gap exceeds
+    ``gap`` decades) and give every member the cluster's geometric median.
+    Removes per-point jitter along a heatmap's residence-time columns without
+    moving columns onto tick positions (they often sit between ticks)."""
+    idx = [i for i, v in enumerate(values) if isinstance(v, (int, float)) and not math.isnan(v) and v > 0]
+    if not idx:
+        return values
+    logs = {i: math.log10(values[i]) for i in idx}
+    order = sorted(idx, key=lambda i: logs[i])
+    out = list(values)
+    cluster: List[int] = []
+
+    def flush():
+        if cluster:
+            med = statistics.median(logs[i] for i in cluster)
+            for i in cluster:
+                out[i] = float(10 ** med)
+
+    prev = None
+    for i in order:
+        if prev is not None and logs[i] - prev > gap:
+            flush(); cluster = []
+        cluster.append(i); prev = logs[i]
+    flush()
+    return out
+
+
 def snap_to_ticks(values: List[Optional[float]], ticks: List[float], tol: float = 3.0) -> List[Optional[float]]:
     """Snap each reading to the nearest OCR'd axis tick when within ``tol``;
     readings farther away are left as they are (or handled by ``snap_levels``)."""
@@ -166,6 +194,10 @@ def synthesize_records(
         # Heatmap rows often sit BETWEEN axis ticks (-28 °C on a 0/-20/-40 axis):
         # snap to a tick when one is close, otherwise to the clustered row level.
         y_left = snap_levels(snap_to_ticks(y_left, ticks) if ticks else y_left)
+    # Heatmap columns (residence time on a log axis): same-column jitter → column median.
+    x_vals = [_num(p.get("X")) if isinstance(p, dict) else None for p in raw_data]
+    if facts.get("chart_type") == "heatmap" and (axis_map.get("X") or "").startswith("conditions."):
+        x_vals = snap_levels_log(x_vals)
 
     records: List[Dict[str, Any]] = []
     for i, pt in enumerate(raw_data):
@@ -195,7 +227,7 @@ def synthesize_records(
 
         for col in RAW_COLS:
             path = axis_map.get(col)
-            val = y_left[i] if col == "Y_Left" else _num(pt.get(col))
+            val = y_left[i] if col == "Y_Left" else (x_vals[i] if col == "X" else _num(pt.get(col)))
             if not path or val is None:
                 continue
             _set_path(rec, path, _transform(float(val), transforms.get(col)))

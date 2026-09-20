@@ -86,3 +86,19 @@ def test_numeric_identity_from_series_map_becomes_string():
     rec = synthesize_records(tpl, [{"Series": "3", "X": 1.0, "Y_Left": 5.0}], "Figure 1", {"chart_type": "xy"})[0]
     assert rec["product_label"] == "3"
     assert isinstance(normalize_chem_name(3.0), str) and normalize_chem_name(None) is None and normalize_chem_name({"a": 1}) is None
+
+
+def test_snap_levels_log_merges_column_jitter_only():
+    from src.adjudication.figure_synthesis import snap_levels_log
+    vals = [0.310, 0.322, 0.316, 1.05, 0.98, 3.2, None, 0.0]
+    out = snap_levels_log(vals)
+    assert out[0] == out[1] == out[2] and abs(out[0] - 0.316) < 0.01     # one column
+    assert out[3] == out[4] and abs(out[3] - 1.014) < 0.02 and abs(out[5] - 3.2) < 1e-9 and out[6] is None and out[7] == 0.0
+
+
+def test_heatmap_x_columns_are_snapped_in_synthesis():
+    tpl = {"record_template": {"conditions": {}, "other_metrics": {}},
+           "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "conditions.temperature_C", "Y_Right/Data_Value": "yield_pct"}}
+    raw = [{"Series": "Default", "X": x, "Y_Left": -78.0, "Y_Right/Data_Value": 1.0} for x in (0.310, 0.322, 0.316)]
+    recs = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap"})
+    assert len({r["conditions"]["residence_time_s"] for r in recs}) == 1
