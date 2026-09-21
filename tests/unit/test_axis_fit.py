@@ -128,3 +128,11 @@ def test_value_boxes_follow_the_figure_offset_convention():
     boxes = [(x + 6, y + 22) for (x, y) in pts if y < 180] + [(x + 6, 202) for x in (100, 150, 200)]
     out = match_labels_to_points(pts, boxes)
     assert out == {i: i for i in range(9)}
+
+
+def test_parse_tick_text_accepts_unit_suffix():
+    from src.extraction.figure.axis_fit import parse_tick_text
+    assert parse_tick_text("0.5mm") == 0.5 and parse_tick_text("1.59 mm") == 1.59
+    assert parse_tick_text("20 °C") == 20.0 and parse_tick_text("5%") == 5.0 and parse_tick_text("-40°C") == -40.0
+    assert parse_tick_text("10 s") is None                  # "10…" stays reserved for log-axis exponents
+    assert parse_tick_text("yield") is None and parse_tick_text("mm") is None

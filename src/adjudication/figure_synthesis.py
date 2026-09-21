@@ -225,6 +225,15 @@ def synthesize_records(
         elif series and series != "Default":
             rec["other_metrics"]["series"] = series
 
+        # Categorical X (bar chart): the tick text is the value; it goes to
+        # the mapped other_metrics field, else to other_metrics.x_label.
+        x_label = pt.get("X_label")
+        if x_label is not None and x_vals[i] is None:
+            xpath = axis_map.get("X")
+            if xpath and xpath.startswith("other_metrics."):
+                _set_path(rec, xpath, str(x_label))
+            else:
+                rec["other_metrics"]["x_label"] = str(x_label)
         for col in RAW_COLS:
             path = axis_map.get(col)
             val = y_left[i] if col == "Y_Left" else (x_vals[i] if col == "X" else _num(pt.get(col)))

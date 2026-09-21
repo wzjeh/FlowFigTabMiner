@@ -165,7 +165,7 @@ def is_grid_like(raw_data: Sequence[Dict[str, Any]], x_log: bool = True) -> Dict
     xs = [p.get("X") for p in raw_data if isinstance(p, dict)]
     ys = [p.get("Y_Left") for p in raw_data if isinstance(p, dict)]
     n = sum(1 for x, y in zip(xs, ys) if x is not None and y is not None)
-    nx, ny = _levels(xs, log=x_log), _levels(ys)
+    nx, ny = _levels([x for x in xs if x is not None], log=x_log), _levels([y for y in ys if y is not None])
     grid = bool(n >= 4 and 2 <= nx <= 15 and 2 <= ny <= 12 and nx * ny <= 1.6 * n and n <= 1.2 * nx * ny)
     return {"grid": grid, "x_levels": nx, "y_levels": ny, "n": n}
 
@@ -200,6 +200,14 @@ def parse_tick_text(txt: str) -> Optional[float]:
         txt = m.group(1)
     if tick_text_is_ambiguous(txt):
         return None
+    # A number with a unit glued on ("0.5mm", "1.59 mm", "20 °C", "5%"): the
+    # value is the number; the unit lives in the axis title / label text.
+    m = re.match(r"^([+\-]?\d+(?:\.\d+)?)\s*(?:[a-zA-Zµμ°%]{1,6}|°C)$", txt)
+    if m and not txt.startswith("10"):
+        try:
+            return float(m.group(1))
+        except ValueError:
+            pass
     digits_in = sum(1 for c in txt if c.isdigit())
     alpha_in = sum(1 for c in txt if c.isalpha())
     if alpha_in > 0 and not txt.lstrip("-").startswith("10"):
