@@ -85,6 +85,9 @@ def is_record_label(s) -> bool:
     return bool(s and isinstance(s, str) and LABEL_RE.match(s.strip()))
 
 
+_LABEL_IN_NAME_RE = re.compile(r"(?<![A-Za-z0-9])(\d{1,2}[a-z]{1,2}'?)(?![A-Za-z0-9])")
+
+
 def _is_compound_label(s) -> bool:
     """A bare entry value counts as a compound identifier only if it carries a
     letter suffix (``2b``, ``4a'``).  Pure row indices (``1``, ``2``) are NOT
@@ -159,6 +162,11 @@ class EntityPool:
             hit = self.name_to_smiles.get(normalize_name(name))
             if hit:
                 return hit
+            # "Suzuki coupled product (4a)" / "ester 5b": a label carried inside the name
+            for tok in _LABEL_IN_NAME_RE.findall(name):
+                hit = self.label_to_smiles.get(tok.lower())
+                if hit:
+                    return hit
         return None
 
     @property
@@ -189,11 +197,19 @@ def _harvest_csv(pool: EntityPool, csv_path: str) -> None:
             cell = (cell or "").strip()
             if not cell:
                 continue
-            c = canonical_smiles(cell)
-            if c is not None:
+            # The structure aligner writes "<SMILES> <label>" into one cell
+            # ("CCO 3a", "CCO; CCC 4b"): split it into tokens first.
+            toks = [t for t in re.split(r"[\s;]+", cell) if t]
+            cell_smiles = [c for c in (canonical_smiles(t) for t in toks) if c is not None]
+            cell_labels = [t for t in toks if canonical_smiles(t) is None and _CSV_LABEL_RE.match(t)]
+            if cell_smiles and cell_labels and len(cell_smiles) == 1:
+                for lab in cell_labels:
+                    pool.add_label(lab, cell_smiles[0])
+            for c in cell_smiles:
                 smiles_cells.append((idx, c))
-            elif _CSV_LABEL_RE.match(cell):
-                label_cells.append((idx, cell))
+            if not cell_smiles:
+                for lab in cell_labels:
+                    label_cells.append((idx, lab))
         if not smiles_cells:
             continue
         for lidx, label in label_cells:

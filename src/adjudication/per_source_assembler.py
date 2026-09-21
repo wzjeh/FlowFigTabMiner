@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List, Mapping
+from typing import Optional, Any, Dict, List, Mapping
 
 from src.adjudication.figure_synthesis import synthesize_records, validate_template
 from src.adjudication.per_source_prompts import (
@@ -208,38 +208,49 @@ class PerSourceAssembler:
             logger.exception("per_source.prompt_build_fail source=%s exc=%s", packet.source_id, exc)
             return [], 0
 
-        try:
-            response = self.llm.chat(
-                [
-                    ChatMessage(role=Role.SYSTEM, content=system_prompt),
-                    ChatMessage(role=Role.USER, content=user_prompt),
-                ],
-                self.llm_cfg,
-            )
-        except Exception as exc:
-            logger.error("per_source.llm_fail source=%s exc=%s", packet.source_id, exc)
-            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"LLM call failed: {exc}")
-            return [], 0
-
-        raw_text = response.text or ""
-
-        # Forensic raw dump — always.
+        # Attempt 2 (only after a malformed reply) samples at a higher
+        # temperature: at temperature 0 the same truncated string would be
+        # reproduced verbatim (observed: `"paper_doi": "https:` then a newline).
+        cfgs = [self.llm_cfg]
+        if hasattr(self.llm_cfg, "model_copy"):
+            cfgs.append(self.llm_cfg.model_copy(update={"temperature": max(0.4, float(getattr(self.llm_cfg, "temperature", 0.0) or 0.0))}))
         raw_path = os.path.join(raw_dir, f"{packet.source_id}_raw.txt")
-        try:
-            with open(raw_path, "w") as f:
-                f.write(raw_text)
-        except Exception:
-            logger.warning("per_source.raw_write_fail path=%s", raw_path)
+        parsed = None
+        last_exc: Optional[Exception] = None
+        for attempt, cfg in enumerate(cfgs, 1):
+            try:
+                response = self.llm.chat(
+                    [
+                        ChatMessage(role=Role.SYSTEM, content=system_prompt),
+                        ChatMessage(role=Role.USER, content=user_prompt),
+                    ],
+                    cfg,
+                )
+            except Exception as exc:
+                logger.error("per_source.llm_fail source=%s exc=%s", packet.source_id, exc)
+                write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"LLM call failed: {exc}")
+                return [], 0
 
-        cleaned = sanitize_json_text(raw_text)
-        try:
-            parsed = json.loads(cleaned)
-        except Exception as exc:
-            logger.error(
-                "per_source.parse_fail source=%s exc=%s raw=%s",
-                packet.source_id, exc, raw_path,
-            )
-            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"JSON parse failed: {exc}")
+            raw_text = response.text or ""
+
+            # Forensic raw dump — always (the last attempt's reply).
+            try:
+                with open(raw_path, "w") as f:
+                    f.write(raw_text)
+            except Exception:
+                logger.warning("per_source.raw_write_fail path=%s", raw_path)
+
+            cleaned = sanitize_json_text(raw_text)
+            try:
+                parsed = json.loads(cleaned, strict=False)   # raw control characters inside strings are not fatal
+                last_exc = None
+                break
+            except Exception as exc:
+                last_exc = exc
+                logger.warning("per_source.parse_fail attempt=%d source=%s exc=%s", attempt, packet.source_id, exc)
+        if last_exc is not None or parsed is None:
+            logger.error("per_source.parse_fail source=%s exc=%s raw=%s", packet.source_id, last_exc, raw_path)
+            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"JSON parse failed: {last_exc}")
             return [], 0
 
         if not isinstance(parsed, list):

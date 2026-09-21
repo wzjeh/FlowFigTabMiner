@@ -262,3 +262,25 @@ class _DummyCfg:
     max_output_tokens = 1024
     max_retries = 0
     timeout_s = 30.0
+
+
+def test_malformed_reply_is_rerolled_once_at_higher_temperature(tmp_path):
+    """Attempt 1 returns a truncated JSON string; attempt 2 (temperature 0.4) is valid."""
+    from src.llm.config import LLMConfig
+
+    class _Seq(_StubLLM):
+        def __init__(self):
+            super().__init__({})
+            self.replies = ['[{"product_name": "OK", "paper_doi": "https:\n "conditions": {}}]', json.dumps([{"product_name": "OK_RETRY"}])]
+            self.temps = []
+
+        def chat(self, messages, cfg):
+            self.temps.append(cfg.temperature)
+            return LLMResponse(text=self.replies.pop(0), model="stub", tokens_in=1, tokens_out=1, latency_ms=1.0)
+
+    llm = _Seq()
+    asm = PerSourceAssembler(figure_synthesis=False, llm=llm, llm_cfg=LLMConfig(provider="gemini", model="x", temperature=0.0),
+                             prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
+                             max_workers=1, raw_dir=str(tmp_path))
+    records = asm.assemble([_make_packet("page_4_table_0", "table")], CommonPreamble.build({}, ""), "test_pdf")
+    assert [r.get("product_name") for r in records] == ["OK_RETRY"] and llm.temps == [0.0, 0.4]

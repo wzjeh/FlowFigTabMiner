@@ -158,3 +158,20 @@ def test_resolve_does_not_overwrite_existing():
     rec = {"product_label": "2b", "product_smiles": "CCO"}
     resolve_record_smiles(rec, pool)
     assert rec["product_smiles"] == "CCO"  # untouched
+
+
+def test_csv_label_inside_the_structure_cell_is_harvested_and_found_inside_names():
+    with tempfile.TemporaryDirectory() as d:
+        tdir = os.path.join(d, "tables", "t1")
+        os.makedirs(tdir)
+        # the aligner writes "<SMILES> <label>" into one cell
+        _write_csv(os.path.join(tdir, "x_extracted.csv"), [
+            ["Ester", "E", "Product", "Yield"],
+            ["CCOC(=O)c1ccccc1Br 8c", "MeI", "CCOC(=O)c1ccccc1C 4c", "93"],
+        ])
+        pool = build_global_entity_pool(d, {}, [])
+        assert pool.label_to_smiles.get("8c") == canonical_smiles("CCOC(=O)c1ccccc1Br")
+        assert pool.label_to_smiles.get("4c") == canonical_smiles("CCOC(=O)c1ccccc1C")
+        assert pool.lookup(name="Suzuki coupled product (4c)") == canonical_smiles("CCOC(=O)c1ccccc1C")
+        assert pool.lookup(name="ester 8c") == canonical_smiles("CCOC(=O)c1ccccc1Br")
+        assert pool.lookup(name="entry 12") is None
