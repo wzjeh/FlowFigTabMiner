@@ -206,9 +206,12 @@ class GlobalAssembly:
         extra = sorted(c for c in df.columns if c not in PREFERRED_COLUMNS)
         df = df[ordered + extra]
 
+        from src.adjudication.post_processor import _safe_sheet_name, _excel_safe_frame
+        used: set = {"All Records"}
+        df = _excel_safe_frame(df)
         with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name="All Records", index=False)
             for src, grp in df.groupby(src_col, sort=False):
-                sheet = str(src)[:31]
+                sheet = _safe_sheet_name(str(src), used)   # openpyxl forbids : \ / ? * [ ] and > 31 chars
                 grp.to_excel(writer, sheet_name=sheet, index=False)
         print(f"   -> Saved Excel to {out_path}")

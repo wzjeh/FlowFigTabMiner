@@ -1070,6 +1070,15 @@ def _parse_catalyst_fields(record: dict) -> dict:
 
 
 # Fixed Excel column order
+def _excel_safe_frame(df):
+    """openpyxl refuses cell strings holding control characters (PDF text
+    layers carry them: ligature markers, soft hyphens) with "... cannot be
+    used in worksheets"; strip them from every string cell."""
+    from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+    clean = lambda v: ILLEGAL_CHARACTERS_RE.sub("", v) if isinstance(v, str) else v
+    return df.apply(lambda col: col.map(clean))
+
+
 def _safe_sheet_name(raw: str, used: set) -> str:
     """openpyxl forbids : \\ / ? * [ ] in sheet titles and caps length at 31.
     Replace forbidden chars, truncate, and de-duplicate against ``used``."""
@@ -1428,6 +1437,7 @@ class PostProcessor:
         extra = sorted(c for c in df.columns if c not in PREFERRED_COLUMNS)
         df = df[ordered + extra]
 
+        df = _excel_safe_frame(df)
         with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
             # All Records sheet
             df.to_excel(writer, sheet_name="All Records", index=False)

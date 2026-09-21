@@ -78,3 +78,11 @@ def test_smiles_filed_as_a_name_moves_to_the_smiles_field():
     assert r["reactant1_smiles"] == "Brc1cccnc1Br" and r["reactant1_name"] is None
     assert r["reactant2_name"] == "MeI" and r["reactant2_smiles"] is None   # a word, not a SMILES
     assert r["product_name"] == "Cc1cccnc1Br" and r["product_smiles"] == "CCO"
+
+
+def test_excel_safe_frame_strips_control_characters():
+    import pandas as pd
+    from src.adjudication.post_processor import _excel_safe_frame
+    df = pd.DataFrame({"a": ["Figure 9 \x02 Eﬀect", "ok"], "b": [1, 2]})
+    out = _excel_safe_frame(df)
+    assert out["a"].tolist() == ["Figure 9  Eﬀect", "ok"] and out["b"].tolist() == [1, 2]

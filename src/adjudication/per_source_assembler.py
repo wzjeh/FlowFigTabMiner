@@ -243,21 +243,17 @@ class PerSourceAssembler:
             cleaned = sanitize_json_text(raw_text)
             try:
                 parsed = json.loads(cleaned, strict=False)   # raw control characters inside strings are not fatal
+                if not isinstance(parsed, list):
+                    raise ValueError(f"expected a JSON array, got {type(parsed).__name__}")
                 last_exc = None
                 break
             except Exception as exc:
                 last_exc = exc
+                parsed = None
                 logger.warning("per_source.parse_fail attempt=%d source=%s exc=%s", attempt, packet.source_id, exc)
         if last_exc is not None or parsed is None:
             logger.error("per_source.parse_fail source=%s exc=%s raw=%s", packet.source_id, last_exc, raw_path)
             write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"JSON parse failed: {last_exc}")
-            return [], 0
-
-        if not isinstance(parsed, list):
-            logger.error(
-                "per_source.shape_fail source=%s got=%s raw=%s",
-                packet.source_id, type(parsed).__name__, raw_path,
-            )
             return [], 0
 
         # Belt-and-braces tagging + ordering aid.
