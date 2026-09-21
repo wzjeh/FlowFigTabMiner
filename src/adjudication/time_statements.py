@@ -31,8 +31,18 @@ _PATTERNS = [
                r"(?:about|approximately|ca\.?|~|≈)?\s*\(?\s*" + _NUM + r"\s*" + _UNIT + r"\b", re.I),
     # "(−78 °C, Rt = 0.82 s)", "(T = -68 °C, tR1 = 0.5 s)"
     re.compile(r"\(\s*(?:T\s*=\s*)?[−–\-]?\s*\d+(?:\.\d+)?\s*°?\s*C\s*,\s*" + _TR_WORD + r"\s*=\s*" + _NUM + r"\s*" + _UNIT + r"\s*\)", re.I),
+    # "the optimized conditions (−78 °C, 0.8 s)": a (temperature, time) pair is
+    # the flow papers' shorthand for (T, tR); batch sources never receive it.
+    re.compile(r"\(\s*[−–\-]?\s*\d+(?:\.\d+)?\s*°\s*C\s*,\s*" + _NUM + r"\s*" + _UNIT + r"\s*\)", re.I),
 ]
-_VARIED_RE = re.compile(r"\b(vary|varied|varying|various|range|ranging|from\s+\d[^.]{0,30}\bto\b|between)\b", re.I)
+# A sweep of the residence time itself ("varying the residence time", "tR from
+# 0.05 to 6.3 s", "residence times ranging between …") — not any sentence that
+# merely contains "various" (substituents) or "between" (two reactors).
+_VARIED_RE = re.compile(
+    r"(?:vary|varied|varying)\s+(?:the\s+)?(?:\w+\s+){0,3}(?:residence|t\s*_?R\b|R\s*t\b)"
+    r"|(?:residence\s+times?|t\s*_?R\d?|R\s*t)\b[^.;]{0,40}?\b(?:from|between|rang(?:e|ing)|varied|vary)\b"
+    r"|\b(?:from|between)\s+\d+(?:\.\d+)?\s*(?:ms|s|min)?\s*(?:to|and|–|-)\s*\d+(?:\.\d+)?\s*(?:ms|s|min)\b",
+    re.I)
 _SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z(\[])")
 
 

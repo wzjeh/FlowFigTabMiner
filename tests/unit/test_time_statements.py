@@ -29,6 +29,18 @@ def test_units_and_sweeps():
     assert sweep and all(s["varied"] for s in sweep) and fixed_candidates(sweep) == []
 
 
+def test_various_substituents_is_not_a_sweep():
+    st = find_residence_time_statements("The reactions of the styrene oxides bearing various substituents were carried out (tR = 23.8 s).")
+    assert [c["value_s"] for c in fixed_candidates(st)] == [23.8]
+    st = find_residence_time_statements("The residence time was varied between 0.5 and 6 s. Yields at tR = 2 s were highest.")
+    assert [c["value_s"] for c in fixed_candidates(st)] == [2.0]
+
+
+def test_temperature_time_pair_shorthand():
+    st = find_residence_time_statements("Using the optimized conditions (-78 °C, 0.8 s), the reactions with various electrophiles were examined.")
+    assert [c["value_s"] for c in fixed_candidates(st)] == [0.8]
+
+
 def test_empty_and_no_match():
     assert find_residence_time_statements("") == []
     assert find_residence_time_statements("The residence time was varied.") == []
