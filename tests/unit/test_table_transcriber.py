@@ -17,7 +17,7 @@ class _Stub:
     def inspect(self, image, system_prompt, user_prompt, cfg, response_schema=None):
         if self.exc:
             raise self.exc
-        assert response_schema is TableTranscriptionResponse
+        assert response_schema in (None, TableTranscriptionResponse)
         return LLMResponse(text="{}", model="stub", tokens_in=100, tokens_out=20, latency_ms=3.0, finish_reason="STOP"), self.payload
 
 
@@ -78,11 +78,11 @@ def test_single_column_grid_is_rerolled_once(img):
     good = {"header_rows": [["T1", "T2", "Yield"]], "data_rows": [["-78", "-78", "84"]]}
     stub = _Seq([one_col, good])
     tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
-    assert tr.ok and tr.n_cols == 3 and tr.data_rows == [["-78", "-78", "84"]] and stub.temps == [0.0, 0.4]
+    assert tr.ok and tr.n_cols == 3 and tr.data_rows == [["-78", "-78", "84"]] and stub.temps == [0.0, 0.0]
     # attempt 2 no better → keep attempt 1 and say so
-    stub = _Seq([one_col, one_col])
+    stub = _Seq([one_col, one_col, one_col])
     tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
-    assert tr.ok and tr.n_cols == 1 and "single-column" in (tr.notes or "")
+    assert tr.ok and tr.n_cols == 1 and "single-column" in (tr.notes or "") and stub.temps == [0.0, 0.0, 0.4]
     # a genuine one-column list of two rows is not re-rolled
     stub = _Seq([{"header_rows": [["Item"]], "data_rows": [["a"]]}])
     tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)

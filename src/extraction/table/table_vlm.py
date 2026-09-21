@@ -32,6 +32,12 @@ _PROMPT_PATH = Path(__file__).parent / "prompts" / "table_transcribe.md"
 _PROMPT = _PROMPT_PATH.read_text(encoding="utf-8")
 _MAX_CELL_CHARS = 400
 
+_FREE_MODE_SUFFIX = (
+    "\n\nReturn ONLY one JSON object (no markdown fences, no commentary) with exactly these keys: "
+    "caption (string or null), scheme_conditions (string or null), header_rows (array of arrays of strings), "
+    "data_rows (array of arrays of strings), footnotes (string or null).\n"
+)
+
 
 class TableTranscriptionResponse(BaseModel):
     """Schema enforced on the VLM response."""
@@ -130,36 +136,43 @@ class TableTranscriber:
     def transcribe(self, image: Path) -> TableTranscription:
         image = Path(image)
         last_exc = None
-        first = None          # a degenerate attempt-1 grid, kept if attempt 2 is no better
-        for attempt in (1, 2):
-            # Attempt 2 samples at a higher temperature: a malformed structured
-            # reply at temperature 0 is usually a degenerate repetition loop
-            # (observed: thousands of "\n" after a superscript unit), and greedy
-            # decoding would reproduce it exactly.  The same re-roll handles a
-            # grid returned as one cell per row (n_cols == 1 for a table that
-            # plainly has several columns).
-            cfg = self.cfg if attempt == 1 else self.cfg.model_copy(update={"temperature": max(0.4, self.cfg.temperature)})
+        first = None          # a degenerate grid from an earlier attempt, kept if no later attempt is better
+        # Attempt 1: constrained (schema) decoding at temperature 0.
+        # Attempt 2: free-text JSON (schema pasted into the prompt) at 0 — the
+        #   constrained decoder falls into repetition loops on symbols such as
+        #   ± or a superscript minus ("50.207 ±" → thousands of "\n" → prose);
+        #   free decoding writes the same cell verbatim.
+        # Attempt 3: free-text JSON at 0.4 — a last re-roll for loops that
+        #   greedy decoding would reproduce, and for a grid returned as one
+        #   cell per row (n_cols == 1 for a table that plainly has columns).
+        hot = self.cfg.model_copy(update={"temperature": max(0.4, self.cfg.temperature)})
+        attempts = ((self.cfg, TableTranscriptionResponse), (self.cfg, None), (hot, None))
+        for attempt, (cfg, schema) in enumerate(attempts, 1):
+            prompt = _PROMPT if schema is not None else _PROMPT + _FREE_MODE_SUFFIX
             try:
                 t0 = time.perf_counter()
                 meta, parsed = self.vlm.inspect(
                     image=VLMImage(path=image, mime_type=_mime_for(image)),
                     system_prompt="",
-                    user_prompt=_PROMPT,
+                    user_prompt=prompt,
                     cfg=cfg,
-                    response_schema=TableTranscriptionResponse,
+                    response_schema=schema,
                 )
                 elapsed = (time.perf_counter() - t0) * 1000.0
                 resp = TableTranscriptionResponse.model_validate(parsed)
                 last_exc = None
                 hdr, dat, n_cols, notes = normalize_grid(resp.header_rows, resp.data_rows)
-                if attempt == 1 and n_cols == 1 and len(hdr) + len(dat) >= 3:
-                    logger.warning("table_vlm single-column grid image=%s (%d rows); re-rolling", image.name, len(hdr) + len(dat))
-                    first = (meta, resp, hdr, dat, n_cols, notes + ["single-column grid on attempt 1"], elapsed)
+                if attempt > 1:
+                    notes.append(f"attempt {attempt}: {'free-text' if schema is None else 'structured'} JSON at T={cfg.temperature}")
+                if attempt < len(attempts) and n_cols == 1 and len(hdr) + len(dat) >= 3:
+                    logger.warning("table_vlm single-column grid image=%s (%d rows) on attempt %d; re-rolling", image.name, len(hdr) + len(dat), attempt)
+                    if first is None:
+                        first = (meta, resp, hdr, dat, n_cols, notes + [f"single-column grid on attempt {attempt}"], elapsed)
                     continue
                 break
             except Exception as exc:
                 last_exc = exc
-                logger.warning("table_vlm attempt %d failed image=%s exc=%s", attempt, image.name, exc)
+                logger.warning("table_vlm attempt %d failed image=%s exc=%s", attempt, image.name, str(exc)[:200])
         if last_exc is not None or (first is not None and n_cols == 1):
             if first is None:
                 return TableTranscription(ok=False, notes=f"vlm call failed: {last_exc}")
