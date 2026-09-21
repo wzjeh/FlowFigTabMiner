@@ -66,3 +66,15 @@ def test_metric_empty_and_bool():
     for empty in (None, "", "null", "nan"):
         assert _clean_metric_value(empty) == (None, None)
     assert _clean_metric_value(True) == (None, None)  # bool is not a metric
+
+
+# ── promote_smiles_in_names ─────────────────────────────────────────────────
+def test_smiles_filed_as_a_name_moves_to_the_smiles_field():
+    from src.adjudication.post_processor import promote_smiles_in_names
+    r = {"reactant1_name": "Brc1cccnc1Br", "reactant1_smiles": None,
+         "reactant2_name": "MeI", "reactant2_smiles": None,
+         "product_name": "Cc1cccnc1Br", "product_smiles": "CCO"}       # product SMILES already set → name kept
+    promote_smiles_in_names(r)
+    assert r["reactant1_smiles"] == "Brc1cccnc1Br" and r["reactant1_name"] is None
+    assert r["reactant2_name"] == "MeI" and r["reactant2_smiles"] is None   # a word, not a SMILES
+    assert r["product_name"] == "Cc1cccnc1Br" and r["product_smiles"] == "CCO"

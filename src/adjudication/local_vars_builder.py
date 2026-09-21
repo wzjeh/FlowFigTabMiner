@@ -345,10 +345,9 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
         )
 
         context = context or {}
-        # PDF text layer beats the YOLO-crop OCR ("ble 2: …") whenever available.
-        caption = (context.get("caption") if context.get("caption_source") == "pdf_text" else None) \
-            or ev.get("caption_text", "") or ""
-        note = context.get("footnote") or ev.get("table_note_text", "") or ""
+        # caption / note precedence already settled by apply_context_to_evidence
+        caption = ev.get("caption_text", "") or ""
+        note = ev.get("table_note_text", "") or ""
         label = context.get("label") or "(unresolved)"
         num_extracted = ev.get("num_extracted", 0)
         inner_text = (context.get("inner_text") or ev.get("inner_text") or "").strip()

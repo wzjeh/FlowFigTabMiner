@@ -147,9 +147,8 @@ def _figure_anchor_keywords(evidence: Dict[str, Any]) -> Tuple[str, ...]:
 def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[str, Any]], source_type: str) -> Dict[str, Any]:
     """Return a copy of ``evidence`` with PDF-text caption/footnote applied.
 
-    Tables: ``caption_text`` is replaced when the PDF text layer resolved a
-    caption (the YOLO-crop OCR is typically truncated: "ble 2: …");
-    ``table_note_text`` is replaced by the located footnote when non-empty.
+    Tables: the VLM transcription's ``caption_text`` / ``table_note_text``
+    stand; the PDF text layer's caption / footnote fill in only when empty.
     Figures: ``meta.label/caption_pdf/footnote_pdf`` are filled in when the
     evidence predates the CaptionLocator.  Provenance is kept in
     ``caption_source`` / ``note_source``.
@@ -158,12 +157,17 @@ def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[s
         return infer_legacy_facts(evidence) if source_type == "figure" else evidence
     ev = dict(evidence)
     if source_type == "table":
-        if context.get("caption_source") == "pdf_text" and context.get("caption"):
-            ev["caption_text_vlm"] = evidence.get("caption_text", "")
+        # The transcriber read the printed caption / footnotes off the crop;
+        # the PDF text layer (hyphenation markers, glued superscripts, Greek
+        # letters lost to font mapping) only fills in when the crop showed none.
+        if evidence.get("caption_text"):
+            ev["caption_source"] = "vlm"
+        elif context.get("caption_source") == "pdf_text" and context.get("caption"):
             ev["caption_text"] = context["caption"]
             ev["caption_source"] = "pdf_text"
-        if context.get("footnote"):
-            ev["table_note_text_vlm"] = evidence.get("table_note_text", "")
+        if evidence.get("table_note_text"):
+            ev["note_source"] = "vlm"
+        elif context.get("footnote"):
             ev["table_note_text"] = context["footnote"]
             ev["note_source"] = "pdf_text"
         ev["label"] = context.get("label")

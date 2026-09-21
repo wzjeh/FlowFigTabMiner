@@ -51,7 +51,7 @@ llm:
   adjudication:
     provider: "gemini"
     model: "gemini-2.5-flash"     # current stable Gemini Flash; bump to gemini-3.0-flash when GA
-    temperature: 0.1
+    temperature: 0.0              # greedy decoding everywhere: reproducible runs (Zhao 2026-09-21)
     # GlobalAssembly can emit dozens of full reaction records in one call.
     # Two failure modes seen on 2026-06 example.pdf spot-check:
     #   1. 8192 budget → truncated mid-record at row ~10 of Table 1.
@@ -104,7 +104,7 @@ vlm:
   inspection:
     provider: "gemini"
     model: "gemini-2.5-flash"
-    temperature: 0.1
+    temperature: 0.0
     max_output_tokens: 8192
     max_retries: 3
     timeout_s: 180.0

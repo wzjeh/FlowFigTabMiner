@@ -187,6 +187,30 @@ def extract_year(text: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def _is_smiles(s: str) -> bool:
+    """True when ``s`` parses as a molecule (RDKit) and is not a plain word."""
+    s = (s or "").strip()
+    if len(s) < 3 or " " in s or s.isalpha():
+        return False
+    try:
+        from rdkit import Chem, RDLogger
+        RDLogger.DisableLog("rdApp.*")
+        return Chem.MolFromSmiles(s) is not None
+    except Exception:
+        return False
+
+
+def promote_smiles_in_names(record: dict) -> dict:
+    """Move a SMILES string filed under ``reactant1/2_name`` / ``product_name``
+    into the empty ``*_smiles`` field (the name field is then cleared)."""
+    for f in ("reactant1", "reactant2", "product"):
+        name = record.get(f"{f}_name")
+        if name and not record.get(f"{f}_smiles") and _is_smiles(str(name)):
+            record[f"{f}_smiles"] = str(name).strip()
+            record[f"{f}_name"] = None
+    return record
+
+
 def infer_yield_type(record: dict) -> str | None:
     """Infer yield_type from notes and source fields."""
     haystack = " ".join(filter(None, [
@@ -1230,6 +1254,11 @@ class PostProcessor:
             # -- yield_type (infer if null) --
             if not nr.get("yield_type"):
                 nr["yield_type"] = infer_yield_type(nr)
+
+            # -- A SMILES the LLM put into a *_name field moves to *_smiles
+            #    (deterministic; the CSV carries MolNexTR SMILES in the
+            #    structure cells and the model sometimes files them as names) --
+            promote_smiles_in_names(nr)
 
             # -- Chemical-name normalization + abbreviation resolution
             #    (always — fixes OCR errors, restores bare abbreviations like

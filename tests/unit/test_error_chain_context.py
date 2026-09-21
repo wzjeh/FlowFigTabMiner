@@ -170,3 +170,15 @@ def test_global_vars_quote_must_support_value():
     assert dc["flow_rate_mL_min"]["scope"] == "paper" and dc["residence_time_s"]["scope"] == "paper"
     assert dc["reactor_type"]["scope"] == "paper"
     assert dc["pressure_bar"]["value"] is None                # no quote -> no value
+
+
+def test_table_caption_precedence_vlm_first_pdf_text_fallback():
+    from src.adjudication.source_discovery import apply_context_to_evidence
+    ctx = {"caption": "Table 1. Effect of ACHTUNGTRENUNGtemperature.", "caption_source": "pdf_text",
+           "footnote": "[a] GC yield.", "label": "Table 1", "inner_text": "1 | 93"}
+    ev = apply_context_to_evidence({"caption_text": "Table 1. Effect of temperature.", "table_note_text": ""}, ctx, "table")
+    assert ev["caption_text"] == "Table 1. Effect of temperature." and ev["caption_source"] == "vlm"
+    assert ev["table_note_text"] == "[a] GC yield." and ev["note_source"] == "pdf_text"
+    ev = apply_context_to_evidence({"caption_text": "", "table_note_text": "[a] NMR yield."}, ctx, "table")
+    assert ev["caption_text"].startswith("Table 1. Effect of ACHTUNG") and ev["caption_source"] == "pdf_text"
+    assert ev["table_note_text"] == "[a] NMR yield." and ev["note_source"] == "vlm" and ev["label"] == "Table 1"

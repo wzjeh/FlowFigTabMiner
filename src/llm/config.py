@@ -24,7 +24,7 @@ class LLMConfig(BaseModel):
 
     provider: Literal["gemini", "claude"]
     model: str
-    temperature: float = Field(default=0.1, ge=0.0, le=2.0)
+    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
     max_retries: int = Field(default=3, ge=0)
     timeout_s: float = Field(default=120.0, gt=0.0)
@@ -46,7 +46,7 @@ class VLMConfig(BaseModel):
 
     provider: Literal["gemini", "claude"]
     model: str
-    temperature: float = Field(default=0.1, ge=0.0, le=2.0)
+    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
     max_retries: int = Field(default=3, ge=0)
     timeout_s: float = Field(default=180.0, gt=0.0)
