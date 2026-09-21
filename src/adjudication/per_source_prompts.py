@@ -341,12 +341,6 @@ class FigurePromptBuilder(PerSourcePromptBuilder):
             facts_lines = "Chart facts (measured, treat as given): " + json.dumps(
                 {k: facts.get(k) for k in ("chart_type", "x_scale", "y_left_scale", "axis_fit",
                                            "n_point_labels", "series_matched_ratio") if k in facts}) + "\n"
-            if facts.get("x_scale") == "categorical":
-                facts_lines += (
-                    "CATEGORICAL X RULE: the X axis is a set of categories (bar chart). Each point's X is null and\n"
-                    "X_label is the category text printed under it — map X_label (as text) to the field the\n"
-                    "local_vars axis_semantics name for X (other_metrics.<name> unless it is a named condition).\n"
-                )
             if facts.get("chart_type") == "heatmap":
                 facts_lines += (
                     "HEATMAP RULE: X and Y_Left are CONDITION axes (residence_time_s / temperature_C as the\n"

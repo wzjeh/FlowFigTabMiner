@@ -102,17 +102,3 @@ def test_heatmap_x_columns_are_snapped_in_synthesis():
     raw = [{"Series": "Default", "X": x, "Y_Left": -78.0, "Y_Right/Data_Value": 1.0} for x in (0.310, 0.322, 0.316)]
     recs = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap"})
     assert len({r["conditions"]["residence_time_s"] for r in recs}) == 1
-
-
-def test_categorical_x_label_lands_in_other_metrics():
-    tpl = {"record_template": {"conditions": {}, "other_metrics": {}, "yield_pct": None},
-           "axis_map": {"X": "other_metrics.tube_diameter", "Y_Left": "conversion_pct", "Y_Right/Data_Value": None},
-           "series_map": {}}
-    raw = [{"Series": "Default", "X": None, "X_label": "0.5mm", "Y_Left": 79.8},
-           {"Series": "Default", "X": None, "X_label": "1.59mm", "Y_Left": 58.3}]
-    a, b = synthesize_records(tpl, raw, "Figure 7 (p.7)", {"chart_type": "xy", "x_scale": "categorical"})
-    assert a["other_metrics"]["tube_diameter"] == "0.5mm" and a["conversion_pct"] == 79.8
-    assert b["other_metrics"]["tube_diameter"] == "1.59mm"
-    tpl["axis_map"]["X"] = "conditions.residence_time_s"       # numeric field: the text goes to x_label instead
-    a, _ = synthesize_records(tpl, raw, "Figure 7 (p.7)", {})
-    assert a["other_metrics"]["x_label"] == "0.5mm" and a["conditions"].get("residence_time_s") is None

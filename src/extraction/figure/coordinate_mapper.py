@@ -296,9 +296,7 @@ class CoordinateMapper:
                 log(f"Geometric Filter (X): {len(x_label_dets)} -> {len(x_label_dets_geo)}")
 
             # Helper to process a list of dets using rec-only OCR
-            x_tick_texts = []      # (cx, text) of every x tick label — categorical fallback
-
-            def process_candidates(dets, cand_list, text_list=None):
+            def process_candidates(dets, cand_list):
                  for i, d in enumerate(dets):
                     bbox = d['box']
                     cx, cy = d['center']
@@ -320,8 +318,6 @@ class CoordinateMapper:
                     text, conf = self.rec.recognize(crop)
 
                     if i < 5: log(f"OCR [{d['label']}]: '{text}' ({conf:.3f})")
-                    if text_list is not None:
-                        text_list.append((cx, (text or "").strip()))      # OCR reading; VLM overrides below
                     if self.label_reader is None:
                         val = parse_val(text)
                         if val is not None:
@@ -331,8 +327,6 @@ class CoordinateMapper:
                     # OCR × VLM fusion: agree → 1 candidate; one reader → that one;
                     # conflict → both candidates at the same pixel, geometry decides.
                     vtext = vlm_tick.get(id(d))
-                    if text_list is not None and vtext and vtext.strip():
-                        text_list[-1] = (cx, vtext.strip())
                     fused = fuse_tick_readings(text, vtext)
                     srcs = [s for _, s in fused]
                     if any(s.startswith("conflict") for s in srcs): lr_stats["tick_conflict"] += 1
@@ -405,14 +399,13 @@ class CoordinateMapper:
                 return [cands_sorted[i] for i in keep_indices]
 
             # Process X Labels — try geometric-filtered set first
-            process_candidates(x_label_dets_geo, x_candidates, x_tick_texts)
+            process_candidates(x_label_dets_geo, x_candidates)
             # Fallback: if geometric filter was too aggressive (< 2 numeric results),
             # re-run on ALL x_label_dets
             if len(x_candidates) < 2 and len(x_label_dets) > len(x_label_dets_geo):
                 log(f"Geometric filter too aggressive ({len(x_candidates)} candidates). Falling back to all {len(x_label_dets)} detections.")
                 x_candidates = []
-                x_tick_texts = []
-                process_candidates(x_label_dets, x_candidates, x_tick_texts)
+                process_candidates(x_label_dets, x_candidates)
             
             # Process Y Labels
             # ... (Split code unchanged) ...
@@ -601,14 +594,7 @@ class CoordinateMapper:
                 log("Right Axis Model Fit Success -> Forcing Dual Axis Mode")
             
             log(f"Models Fit: X={'OK' if model_x else 'FAIL'}, YL={'OK' if model_yl else 'FAIL'}")
-            # Categorical X (bar charts: "0.5mm | 1mm | 1.59mm", "THF | toluene"):
-            # no linear model, but the tick labels themselves are the X values.
-            x_categorical = None
-            if not model_x and model_yl and len(x_tick_texts) >= 2:
-                cats = sorted([t for t in x_tick_texts if t[1]], key=lambda t: t[0])
-                if len({t for _, t in cats}) >= 2:
-                    x_categorical = cats
-                    log(f"X categorical fallback: {[t for _, t in cats]}")
+
             def _tick_vals(cands):
                 out = []
                 for c in cands:
@@ -621,8 +607,7 @@ class CoordinateMapper:
                 "x_ticks": _tick_vals(x_candidates),
                 "y_left_ticks": _tick_vals(y_left_candidates),
                 "y_right_ticks": _tick_vals(y_right_candidates),
-                "x_scale": "categorical" if x_categorical else ("log" if is_x_log else "linear"),
-                "x_categories": [t for _, t in x_categorical] if x_categorical else None,
+                "x_scale": "log" if is_x_log else "linear",
                 "y_left_scale": "log" if is_yl_log else "linear",
                 "y_right_scale": "log" if is_yr_log else "linear",
                 "axis_fit": {"x": bool(model_x), "y_left": bool(model_yl), "y_right": bool(model_yr)},
@@ -632,24 +617,6 @@ class CoordinateMapper:
             data_rows = []
             points = [d for d in detections if d['label'] == 'data_point']
             log(f"Data Points to Map: {len(points)}")
-            # Bar chart fallback (gated): the scatter detector found nothing,
-            # the Y axis is calibrated and the X axis carries >= 2 tick labels
-            # → the filled bars standing in the plot area are the data points
-            # (top edge = value, centre = category / X position).
-            xs_px = sorted(t[0] for t in x_tick_texts) or sorted(c[3] for c in x_candidates)
-            ys_px = [c[4] for c in y_left_candidates]
-            if not points and model_yl and len(xs_px) >= 2 and ys_px:
-                from src.extraction.figure.bar_detect import detect_bars
-                spacing = float(np.median(np.diff(xs_px))) if len(xs_px) > 1 else 50.0
-                # Right bound = image edge: a bar whose tick label the detector
-                # missed is still a bar; bars must stand on the lowest Y tick.
-                bars = detect_bars(img, (xs_px[0] - 0.5 * spacing, img.shape[1]),
-                                   (min(ys_px), max(ys_px) + 0.1 * (max(ys_px) - min(ys_px))), baseline=max(ys_px))
-                points = [{'label': 'data_point', 'center': (b['cx'], b['top']),
-                           'box': [b['x1'], b['top'], b['x2'], b['bottom']], 'series': 'Default', 'conf': 1.0}
-                          for b in bars]
-                log(f"Bar fallback: {len(points)} filled bars detected")
-                self.last_facts["bars_detected"] = len(points)
             
             # Calculate axis lines (Ghost filtering)
             def get_axis_line_pos(candidates, axis_type):
@@ -839,13 +806,7 @@ class CoordinateMapper:
                     if label_val is not None:
                         real_yr = label_val
                 
-                x_label = None
-                if x_categorical:
-                    near_cat = min(x_categorical, key=lambda t: abs(t[0] - cx))
-                    cat_gap = float(np.median(np.diff([t[0] for t in x_categorical]))) if len(x_categorical) > 1 else 1e9
-                    if abs(near_cat[0] - cx) <= 0.5 * cat_gap:      # a bar without its own tick label gets no category
-                        x_label = near_cat[1]
-                if real_x is not None or x_label is not None:
+                if real_x is not None:
                     # Y_Left (e.g. temperature) can be negative (°C), so no >= 0 constraint.
                     # X (e.g. residence time) is always positive; keep >= 0 guard for it.
                     # Y_Right/Data_Value (yield %) is always >= 0.
@@ -859,8 +820,6 @@ class CoordinateMapper:
                         "Y_Left": f_yl,
                         "Y_Right/Data_Value": f_yr,
                     }
-                    if x_label is not None:
-                        row["X_label"] = x_label
                     data_rows.append(row)
             
             return pd.DataFrame(data_rows), debug_log
