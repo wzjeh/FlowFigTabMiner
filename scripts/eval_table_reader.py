@@ -156,7 +156,7 @@ def collect(paths: list[str]) -> tuple[dict, list[dict]]:
                 c = r.get("conditions") or {}
                 m["records"] += 1
                 m["rec_T"] += c.get("temperature_C") is not None; m["rec_tR"] += c.get("residence_time_s") is not None
-                m["rec_t_batch"] += c.get("reaction_time_s") is not None
+                m["rec_t_batch"] += c.get("reaction_time_s") is not None; m["rec_tR2"] += c.get("residence_time_2_s") is not None
                 m["rec_yield"] += r.get("yield_pct") is not None; m["rec_solvent"] += bool(c.get("solvent"))
                 m["rec_product_name"] += bool(r.get("product_name")); m["rec_product_smiles"] += bool(r.get("product_smiles"))
                 m["rec_reactant_smiles"] += bool(r.get("reactant1_smiles")); m["rec_has_outcome"] += bool(r.get("has_outcome"))

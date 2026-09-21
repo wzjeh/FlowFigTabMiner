@@ -202,3 +202,63 @@ def test_residence_time_candidates_constrain_and_fill():
     assert r["fixed_conditions"]["residence_time_s"] is None
     r = enforce({"fixed_conditions": {"residence_time_s": None, "reactor_type": "round-bottomed flask"}}, cands, "E,Yield")
     assert r["fixed_conditions"]["residence_time_s"] is None
+
+
+def test_paper_wide_candidates_are_never_filled_deterministically():
+    enforce = LocalVarsBuilder._enforce_time_candidates
+    cands = [{"value_s": 0.15, "quote": "Under the optimized conditions (T = -68 °C, tR1 = 0.15 s)", "scope": "paper"}]
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "reactor_type": "flow"}}, cands, "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] is None
+    r = enforce({"fixed_conditions": {"residence_time_s": 0.15, "reactor_type": "flow"}}, cands, "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] == 0.15 and r["fixed_conditions"]["residence_time_source"] == "paper_text_quoted"
+
+
+def test_two_step_residence_times_fill_separate_fields():
+    enforce = LocalVarsBuilder._enforce_time_candidates
+    cands = [{"value_s": 0.05, "quote": "R1 (tR1 = 0.05 s)", "step": 1}, {"value_s": 2.3, "quote": "R2 (tR2 = 2.3 s)", "step": 2}]
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "residence_time_2_s": None, "reactor_type": "flow"}}, cands, "E,Yield")
+    fc = r["fixed_conditions"]
+    assert fc["residence_time_s"] == 0.05 and fc["residence_time_2_s"] is None      # step 2 is never auto-filled
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "residence_time_2_s": 2.3, "reactor_type": "flow"}}, cands, "E,Yield")
+    fc = r["fixed_conditions"]
+    assert fc["residence_time_2_s"] == 2.3 and "tR2" in fc["residence_time_2_quote"] and fc["residence_time_2_source"] == "paper_text_quoted"
+    # a tR2 value is never accepted for the first-step field; a table with a tR2 column keeps step 2 null
+    r = enforce({"fixed_conditions": {"residence_time_s": 2.3, "residence_time_2_s": 2.3}}, cands, "Entry,tR1 [s],tR2 [s],Yield")
+    assert r["fixed_conditions"]["residence_time_s"] is None and r["fixed_conditions"]["residence_time_2_s"] is None
+    # a tR2 value is never accepted for the first-step field (cleared, then the single step-1 candidate fills it)
+    r = enforce({"fixed_conditions": {"residence_time_s": 2.3, "residence_time_2_s": None}}, cands, "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] == 0.05
+
+
+def test_tr2_column_leaves_first_step_fillable():
+    enforce = LocalVarsBuilder._enforce_time_candidates
+    cands = [{"value_s": 0.05, "quote": "R1 (tR1 = 0.05 s)", "step": 1}]
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "residence_time_2_s": None}}, cands, "Entry,tR2 [s],Yield")
+    assert r["fixed_conditions"]["residence_time_s"] == 0.05 and r["fixed_conditions"]["residence_time_2_s"] is None
+
+
+def test_time_guard_written_and_applied_to_records():
+    from src.adjudication.post_processor import inherit_conditions
+    cands = [{"value_s": 0.003, "quote": "residence time in R2=0.003 s", "step": 2}]
+    lv = LocalVarsBuilder._enforce_time_candidates({"fixed_conditions": {"residence_time_s": None, "residence_time_2_s": None}}, cands, "Entry,Substrate,Yield")
+    assert lv["time_guard"] == {"residence_time_s": {"column": False, "allowed": []},
+                                "residence_time_2_s": {"column": False, "allowed": [0.003]}}
+    rec = {"conditions": {"residence_time_s": 0.49, "residence_time_2_s": 0.003, "temperature_C": -70}}
+    out = inherit_conditions(rec, lv, {}, {"source_local": 0, "paper_global": 0})
+    assert out["conditions"]["residence_time_s"] is None and out["conditions"]["residence_time_2_s"] == 0.003
+    assert out["conditions_provenance"]["residence_time_s"] == "removed_unquoted_residence_time"
+    # a table with a tR column keeps whatever the column says
+    lv2 = LocalVarsBuilder._enforce_time_candidates({"fixed_conditions": {}}, [], "Entry,tR [s],Yield")
+    out2 = inherit_conditions({"conditions": {"residence_time_s": 12.5}}, lv2, {}, None)
+    assert out2["conditions"]["residence_time_s"] == 12.5
+
+
+def test_time_columns_in_second_header_row_and_t1_t2_spellings():
+    enforce = LocalVarsBuilder._enforce_time_candidates
+    head = "Macrotube reactor R1,Macrotube reactor R1,Macrotube reactor R1,Conv. [%]\nφ [mm],L [cm],R_t [s],\n1.78,4.8,1.0,64\n"
+    lv = enforce({"fixed_conditions": {"residence_time_s": 1.0}}, [{"value_s": 1.0, "quote": "Rt = 1.0 s", "step": None}], head, header_rows=2)
+    assert lv["time_guard"]["residence_time_s"]["column"] and lv["fixed_conditions"]["residence_time_s"] is None
+    lv = enforce({"fixed_conditions": {}}, [], ",residence timeb t1 (min),residence timeb t2 (min),CO (atm)\nentry,,,\n", header_rows=2)
+    assert lv["time_guard"]["residence_time_s"]["column"] and lv["time_guard"]["residence_time_2_s"]["column"]
+    lv = enforce({"fixed_conditions": {}}, [], "Exp.,Process Parameter\nNo.,RTU 1 Res. Time\n,min\n", header_rows=3)
+    assert lv["time_guard"]["residence_time_s"]["column"] and not lv["time_guard"]["residence_time_2_s"]["column"]

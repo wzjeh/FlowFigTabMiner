@@ -61,6 +61,15 @@ class LocalVarsBuilder:
             scan = " ".join(str(x or "") for x in (evidence_data.get("caption_text"), evidence_data.get("table_note_text"),
                                                    scheme_conditions, text_window))
             time_cands = fixed_candidates(find_residence_time_statements(scan))
+            for c in time_cands:
+                c["scope"] = "near"
+            if not time_cands and paper_text:
+                # Nothing near the table: statements elsewhere in the paper are
+                # offered for citation only (the model decides whether the
+                # sentence describes this table; never filled deterministically).
+                time_cands = fixed_candidates(find_residence_time_statements(paper_text))
+                for c in time_cands:
+                    c["scope"] = "paper"
             system_prompt, user_prompt = self._build_table_prompts(
                 source_id, evidence_data, text_window, csv_head, scheme_conditions, context, time_cands
             )
@@ -78,7 +87,7 @@ class LocalVarsBuilder:
         if source_type == "figure":
             result = self._enforce_chart_facts(result, evidence_data)
         else:
-            result = self._enforce_time_candidates(result, time_cands, csv_head)
+            result = self._enforce_time_candidates(result, time_cands, csv_head, evidence_data.get("header_row_count") or 1)
 
         os.makedirs(output_dir, exist_ok=True)
         with open(out_path, "w") as f:
@@ -224,7 +233,7 @@ Output a single valid JSON object (no markdown):
   }},
   "data_interpretation_notes": "..."
 }}
-maps_to_field must be one of: conditions.temperature_C, conditions.residence_time_s, conditions.reaction_time_s,
+maps_to_field must be one of: conditions.temperature_C, conditions.residence_time_s, conditions.residence_time_2_s, conditions.reaction_time_s,
 conditions.flow_rate_mL_min, conditions.solvent, conditions.catalyst, conditions.pressure_bar,
 conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, other_metrics.<name>
 "data_value" describes the per-point "Y_Right/Data_Value" column when it is populated (same shape as
@@ -281,7 +290,9 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
             ax[key] = {"raw_label": cur.get("raw_label", ""), "semantic_meaning": cur.get("semantic_meaning") or meaning,
                        "maps_to_field": field}
 
-        _set("x_axis", "conditions.residence_time_s", "residence time (log axis converted to seconds)")
+        x_cur = ax.get("x_axis") if isinstance(ax.get("x_axis"), dict) else {}
+        if x_cur.get("maps_to_field") != "conditions.residence_time_2_s":
+            _set("x_axis", "conditions.residence_time_s", "residence time (log axis converted to seconds)")
         if y_is_temp:
             _set("y_left_axis", "conditions.temperature_C", "reaction temperature (°C)")
         dv = ax.get("data_value") if isinstance(ax.get("data_value"), dict) else {}
@@ -335,39 +346,56 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
             lines.append("No legend detected: series labels are not available for this chart.")
         return "\n".join(lines) + "\n"
 
-    _TR_COLUMN_RE = re.compile(r"residence|\bt\s*_?R\d?\b|\bRt\d?\b|retention time|\bτ\b", re.I)
+    # a tR / tR1 / t1 column varies the first step; a tR2 / t2 column the second
+    _TR2_COLUMN_RE = re.compile(r"\bt\s*_?\s*R?\s*2\b|\bR_?t\s*2\b|\bτ\s*_?2\b|residence\s+time.{0,12}(?:t\s*_?\s*R?\s*2|R2|second)\b", re.I)
+    _TR_COLUMN_RE = re.compile(r"residence\s+time(?!.{0,12}(?:t\s*_?\s*R?\s*2|R2|second)\b)|\bres\.?\s*time|\bt\s*_?\s*R\s*1?\b|\bt\s*_?\s*1\b"
+                               r"|\bR_?t\s*1?\b|retention time|\bτ\s*_?1?\b", re.I)
     _BATCH_RE = re.compile(r"batch|flask|vial|stirr", re.I)
+    # (field, quote key, source key, admissible statement steps, column regex, auto-fill a single near candidate)
+    # The second step is never auto-filled: whether a table belongs to a two-reactor
+    # sequence is the model's reading of the table, not a property of the text nearby.
+    _TIME_FIELDS = (("residence_time_s", "residence_time_quote", "residence_time_source", (None, 1), _TR_COLUMN_RE, True),
+                    ("residence_time_2_s", "residence_time_2_quote", "residence_time_2_source", (2,), _TR2_COLUMN_RE, False))
 
     @classmethod
-    def _enforce_time_candidates(cls, result, time_cands, csv_head=""):
-        """fixed_conditions.residence_time_s is either one of the quoted
-        statements found in the paper text (with its sentence in
-        ``residence_time_quote``) or null — never a computed or remembered
-        number.  A table that varies residence time (a tR column) keeps it
-        null; a single candidate for a flow table is filled deterministically."""
+    def _enforce_time_candidates(cls, result, time_cands, csv_head="", header_rows=1):
+        """fixed_conditions.residence_time_s (first step) / residence_time_2_s
+        (second step of a two-reactor system) are each either one of the quoted
+        statements found in the paper text (with the sentence in the *_quote
+        key) or null — never a computed or remembered number.  A table that
+        varies that time (a column for it) keeps it null; a single near-table
+        candidate for a flow table is filled deterministically.  The per-field
+        verdict is stored in ``result["time_guard"]`` so the post-processor can
+        hold every record of the table to the same rule."""
         fc = result.get("fixed_conditions") if isinstance(result, dict) else None
         if not isinstance(fc, dict):
             return result
-        header = (csv_head or "").split("\n", 1)[0]
-        allowed = {round(float(c["value_s"]), 6): c for c in (time_cands or [])}
-        val = fc.get("residence_time_s")
-        if cls._TR_COLUMN_RE.search(header):
-            fc["residence_time_s"] = None; fc["residence_time_quote"] = None
-            return result
-        match = None
-        if isinstance(val, (int, float)) and not isinstance(val, bool):
-            match = next((c for a, c in allowed.items() if abs(float(val) - a) <= 1e-6 * max(1.0, abs(a))), None)
-            if match is None:
-                print(f"[LocalVarsBuilder] residence_time_s={val} is not a quoted statement — cleared")
-                fc["residence_time_s"] = None; fc["residence_time_quote"] = None
+        header = "\n".join((csv_head or "").split("\n")[:max(1, int(header_rows or 1))])
         is_batch = bool(cls._BATCH_RE.search(str(fc.get("reactor_type") or "")))
-        if fc.get("residence_time_s") is None and len(allowed) == 1 and not is_batch:
-            (v, c), = allowed.items()
-            fc["residence_time_s"] = v; fc["residence_time_quote"] = c["quote"]
-            fc["residence_time_source"] = "paper_text_single_candidate"
-        elif match is not None:
-            fc["residence_time_quote"] = fc.get("residence_time_quote") or match["quote"]
-            fc["residence_time_source"] = "paper_text_quoted"
+        guard = result.setdefault("time_guard", {})
+        for field, qkey, skey, steps, col_re, autofill in cls._TIME_FIELDS:
+            cands = [c for c in (time_cands or []) if c.get("step") in steps]
+            allowed = {round(float(c["value_s"]), 6): c for c in cands}
+            val = fc.get(field)
+            has_column = bool(col_re.search(header))
+            # the same rule applies to every record of this table (post_processor.inherit_conditions):
+            # a value comes from a column of the table or is one of the quoted statements
+            guard[field] = {"column": has_column, "allowed": sorted(allowed)}
+            if has_column:
+                fc[field] = None; fc[qkey] = None
+                continue
+            match = None
+            if isinstance(val, (int, float)) and not isinstance(val, bool):
+                match = next((c for a, c in allowed.items() if abs(float(val) - a) <= 1e-6 * max(1.0, abs(a))), None)
+                if match is None:
+                    print(f"[LocalVarsBuilder] {field}={val} is not a quoted statement — cleared")
+                    fc[field] = None; fc[qkey] = None
+            near = all(c.get("scope", "near") == "near" for c in cands)
+            if autofill and fc.get(field) is None and len(allowed) == 1 and not is_batch and near:
+                (v, c), = allowed.items()
+                fc[field] = v; fc[qkey] = c["quote"]; fc[skey] = "paper_text_single_candidate"
+            elif match is not None:
+                fc[qkey] = fc.get(qkey) or match["quote"]; fc[skey] = "paper_text_quoted"
         return result
 
     def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions="", context=None, time_cands=None):
@@ -400,13 +428,18 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
                        if inner_text else "")
 
         if time_cands:
-            lines = "\n".join(f"- {c['value_s']:g} s — \"{c['quote'][:300]}\"" for c in time_cands)
+            lines = "\n".join(f"- {c['value_s']:g} s{(' (step ' + str(c['step']) + ')') if c.get('step') else ''} — \"{c['quote'][:300]}\""
+                              for c in time_cands)
+            where = ("NEAR THIS TABLE" if all(c.get("scope", "near") == "near" for c in time_cands)
+                     else "ELSEWHERE IN THE PAPER (none near this table — cite one only if it clearly describes this table's runs)")
             time_block = f"""
-=== RESIDENCE-TIME STATEMENTS FOUND IN THE PAPER TEXT (verbatim) ===
+=== RESIDENCE-TIME STATEMENTS FOUND {where} (verbatim) ===
 {lines}
 fixed_conditions.residence_time_s may ONLY be one of these values (seconds), with residence_time_quote = that
 sentence verbatim, and only when the sentence describes the conditions of THIS table. Otherwise both are null.
-Never derive a residence time from reactor volume, length or flow rate.
+Two-reactor systems: a "(step 2)" / tR2 statement goes to residence_time_2_s (+ residence_time_2_quote), the
+first step (tR1, or an unnumbered tR) to residence_time_s. Never derive a residence time from reactor volume,
+length or flow rate.
 """
         else:
             time_block = """
@@ -448,6 +481,8 @@ Output a single valid JSON object (no markdown):
     "temperature_C": null,
     "residence_time_s": null,
     "residence_time_quote": null,
+    "residence_time_2_s": null,
+    "residence_time_2_quote": null,
     "reaction_time_s": null,
     "solvent": null,
     "catalyst": null,
@@ -456,7 +491,8 @@ Output a single valid JSON object (no markdown):
   }},
   "data_interpretation_notes": "..."
 }}
-For residence_time_s: convert minutes×60 if needed.
+For residence_time_s: convert minutes×60 if needed. Two-step flow tables (tR1 / tR2 columns, reactors R1 / R2):
+column tR1 maps to conditions.residence_time_s, column tR2 to conditions.residence_time_2_s.
 PRECEDENCE: the table's own caption / note / header outranks the paper text and the paper-level defaults:
 if the caption or note states a condition, use it; if the table VARIES a quantity (a column for it, or
 the caption says "effect of temperature"), leave that field null — never fill it from paper-level defaults.

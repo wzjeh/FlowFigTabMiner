@@ -256,7 +256,7 @@ def infer_yield_type(record: dict) -> str | None:
 
 
 INHERITABLE_CONDITION_FIELDS = (
-    "temperature_C", "residence_time_s", "reaction_time_s", "flow_rate_mL_min", "solvent",
+    "temperature_C", "residence_time_s", "residence_time_2_s", "reaction_time_s", "flow_rate_mL_min", "solvent",
     "reactor_type", "pressure_bar", "catalyst", "additive",
 )
 
@@ -306,7 +306,7 @@ _FIELD_MENTION = {
     "reactor_type": re.compile(r"batch|flask|microreactor|micromixer|flow system|reactor", re.I),
 }
 _BATCH_RE = re.compile(r"macrobatch|\bbatch\b|round-bottom|\bflask\b", re.I)
-_FLOW_ONLY_FIELDS = ("flow_rate_mL_min", "residence_time_s")
+_FLOW_ONLY_FIELDS = ("flow_rate_mL_min", "residence_time_s", "residence_time_2_s")
 
 
 _TR_RE = _FIELD_MENTION["residence_time_s"]
@@ -364,6 +364,19 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
     for field, v in list(conds.items()):
         if isinstance(v, str):
             conds[field] = clean_condition_string(v)
+    # Residence times of a table record come from a column of that table or
+    # are one of the statements quoted in the paper text (local_vars.time_guard,
+    # written by LocalVarsBuilder); anything else is a remembered or computed
+    # number and is dropped rather than kept as a plausible wrong value.
+    for field, g in ((local_vars or {}).get("time_guard") or {}).items():
+        cur = conds.get(field)
+        if cur is None or g.get("column") or isinstance(cur, bool) or not isinstance(cur, (int, float)):
+            continue
+        if not any(abs(float(cur) - a) <= 1e-6 * max(1.0, abs(a)) for a in g.get("allowed") or []):
+            conds[field] = None
+            prov[field] = "removed_unquoted_residence_time"
+            if stats is not None:
+                stats["removed_unquoted_residence_time"] = stats.get("removed_unquoted_residence_time", 0) + 1
     for field in INHERITABLE_CONDITION_FIELDS:
         cur = conds.get(field)
         if cur not in (None, "", [], {}):
@@ -1137,7 +1150,7 @@ PREFERRED_COLUMNS = [
     "yield_pct", "yield_type", "batch_yield_pct",
     "conversion_pct", "selectivity_pct",
     "diastereomeric_ratio", "ee_pct",
-    "temperature_C", "residence_time_s", "reaction_time_s", "flow_rate_mL_min",
+    "temperature_C", "residence_time_s", "residence_time_2_s", "reaction_time_s", "flow_rate_mL_min",
     "flow_rate_stream1_mL_min", "flow_rate_stream2_mL_min",
     "solvent", "solvent_list",
     "catalyst", "catalyst_metal", "catalyst_loading_pct",

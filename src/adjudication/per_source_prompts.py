@@ -53,7 +53,8 @@ _OUTPUT_SCHEMA = """For each reaction record, output one JSON object with these 
   "paper_doi": null,               // DOI found in paper text, null if not found
   "conditions": {
     "temperature_C": null,
-    "residence_time_s": null,      // FLOW only: residence time in seconds (minutes × 60)
+    "residence_time_s": null,      // FLOW only: residence time in seconds (minutes × 60); first reactor (tR1) in two-step systems
+    "residence_time_2_s": null,    // FLOW, two-step systems only: second reactor residence time (tR2) in seconds
     "reaction_time_s": null,       // BATCH / flask only: reaction time in seconds; null for flow
     "flow_rate_mL_min": null,
     "flow_rate_stream1_mL_min": null,
@@ -409,7 +410,7 @@ class FigureTemplateBuilder(FigurePromptBuilder):
   },
   "notes": "<one line on how the mapping was decided>"
 }
-Field paths: conditions.temperature_C, conditions.residence_time_s, conditions.flow_rate_mL_min,
+Field paths: conditions.temperature_C, conditions.residence_time_s, conditions.residence_time_2_s, conditions.flow_rate_mL_min,
 conditions.pressure_bar, conditions.solvent, conditions.catalyst, yield_pct, conversion_pct,
 selectivity_pct, ee_pct, product_name, product_label, product_smiles, reactant1_name, reactant2_name,
 other_metrics.<name>.

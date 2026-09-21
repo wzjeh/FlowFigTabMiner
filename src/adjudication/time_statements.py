@@ -26,8 +26,10 @@ _TR_WORD = r"(?:residence\s+times?|t\s*_?\s*R\s*\d?|R\s*t\s*\d?|τ\s*\d?)"
 _PATTERNS = [
     # "0.5 s residence time", "a residence time of ..." handled below; value-first form
     re.compile(r"\b" + _NUM + r"\s*" + _UNIT + r"\s+(?:of\s+)?residence\s+time", re.I),
+    # "after only 30 ms (τ1)", "2.5 ms (tR2)": value followed by the symbol in parentheses
+    re.compile(r"\b" + _NUM + r"\s*" + _UNIT + r"\s*\(\s*" + _TR_WORD + r"\s*\)", re.I),
     # "residence time (tR) in R1 of 0.82 s", "tR = 0.82 s", "Rt: 1.5 s", "residence time (0.055 s)"
-    re.compile(_TR_WORD + r"(?:\s*\([^)\d]{0,20}\))?(?:\s+in\s+R\s*\d)?\s*(?:=|:|of|was|is|were|being)?\s*"
+    re.compile(_TR_WORD + r"(?:\s*\([^)\d]{0,20}\))?(?:\s+(?:in|of)\s+(?:reactor\s+)?R\s*\d)?\s*(?:=|:|of|was|is|were|being)?\s*"
                r"(?:about|approximately|ca\.?|~|≈)?\s*\(?\s*" + _NUM + r"\s*" + _UNIT + r"\b", re.I),
     # "(−78 °C, Rt = 0.82 s)", "(T = -68 °C, tR1 = 0.5 s)"
     re.compile(r"\(\s*(?:T\s*=\s*)?[−–\-]?\s*\d+(?:\.\d+)?\s*°?\s*C\s*,\s*" + _TR_WORD + r"\s*=\s*" + _NUM + r"\s*" + _UNIT + r"\s*\)", re.I),
@@ -44,6 +46,11 @@ _VARIED_RE = re.compile(
     r"|\b(?:from|between)\s+\d+(?:\.\d+)?\s*(?:ms|s|min)?\s*(?:to|and|–|-)\s*\d+(?:\.\d+)?\s*(?:ms|s|min)\b",
     re.I)
 _SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z(\[])")
+# tR1 / τ2 / Rt1 / "residence time in R2": the step (reactor) number carried by the statement
+_STEP_RE = re.compile(r"(?:t\s*_?\s*R|R\s*t|τ|\b(?:in|of)\s+(?:reactor\s+)?R)\s*(\d)\b", re.I)
+# "passed through R2 (ø = 1000 μm, l = 50 cm, tR = 2.3 s)": the statement sits inside the
+# parenthesis that a reactor label opened (one nested level allowed)
+_CTX_STEP_RE = re.compile(r"\bR\s*(\d)\s*\((?:[^()]|\([^()]*\))*\(?\s*$")
 
 
 def _sentence_around(text: str, start: int, end: int) -> str:
@@ -66,8 +73,10 @@ def _sentence_around(text: str, start: int, end: int) -> str:
 def find_residence_time_statements(text: str) -> List[Dict[str, Any]]:
     """Every residence-time value stated in ``text`` with its sentence.
 
-    Returns ``[{value_s, raw, quote, varied}]`` ordered by position, one entry
-    per distinct (value, sentence).  ``varied`` marks sentences that describe
+    Returns ``[{value_s, raw, quote, varied, step}]`` ordered by position, one
+    entry per distinct (value, sentence); ``step`` is the reactor number in the
+    symbol (tR1 → 1, τ2 → 2) or in the reactor label whose parenthesis holds the
+    statement ("R2 (…, tR = 2.3 s)"), else None.  ``varied`` marks sentences that describe
     a sweep ("varying the residence time from 0.05 to 6 s"): such values are
     not fixed conditions and the caller must not use them as candidates.
     """
@@ -86,8 +95,10 @@ def find_residence_time_statements(text: str) -> List[Dict[str, Any]]:
             if key in seen:
                 continue
             seen.add(key)
+            sm = _STEP_RE.search(m.group(0)) or _CTX_STEP_RE.search(text[max(0, m.start() - 120):m.start()])
             out.append({"value_s": value_s, "raw": re.sub(r"\s+", " ", m.group(0)).strip(),
-                        "quote": quote[:400], "varied": bool(_VARIED_RE.search(quote)), "pos": m.start()})
+                        "quote": quote[:400], "varied": bool(_VARIED_RE.search(quote)),
+                        "step": int(sm.group(1)) if sm else None, "pos": m.start()})
     out.sort(key=lambda d: d["pos"])
     for d in out:
         d.pop("pos", None)
@@ -100,8 +111,9 @@ def fixed_candidates(statements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     seen = set()
     cands = []
     for s in statements:
-        if s.get("varied") or s["value_s"] in seen:
+        key = (s["value_s"], s.get("step"))
+        if s.get("varied") or key in seen:
             continue
-        seen.add(s["value_s"])
+        seen.add(key)
         cands.append(s)
     return cands

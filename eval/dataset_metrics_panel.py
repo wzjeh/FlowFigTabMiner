@@ -48,6 +48,7 @@ FIELD_ALIASES: Dict[str, List[str]] = {
     "temperature":      ["temperature_C", "T1_C", "temperature"],
     "residence_time":   ["residence_time_s", "tR1_s", "tR_s"],
     "reaction_time":    ["reaction_time_s"],
+    "residence_time_2": ["residence_time_2_s"],
     "solvent":          ["solvent"],
     "reactor_type":     ["reactor_type"],
     "flow_rate":        ["flow_rate_mL_min", "flow_rate_stream1_mL_min"],
