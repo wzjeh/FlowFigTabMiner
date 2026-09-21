@@ -24,6 +24,17 @@ _KEYWORDS_CANDIDATES = [
 ]
 
 
+
+def text_layer_readable(text: str, min_alpha_fraction: float = 0.5) -> bool:
+    """True when letters make up at least half of the non-space characters.
+    Readable papers measure 0.88–0.95; a text layer with a broken font encoding
+    measured 0.08 (rb2_68) — its only real words were the publisher's download
+    watermark, so a word count cannot tell the two apart."""
+    chars = [c for c in (text or "") if not c.isspace()]
+    if len(chars) < 200:
+        return False
+    return sum(c.isalpha() for c in chars) / len(chars) >= min_alpha_fraction
+
 def _load_keywords() -> tuple:
     """Return (flow_include, review_exclude) from keywords.yaml; ([], []) if
     the config is missing (callers treat empty whitelist as fail-safe)."""
@@ -83,6 +94,14 @@ def filter_paper(pdf_path: str, pages_to_check: int = 3) -> dict:
     except Exception as e:
         logger.warning(f"Failed to extract text from {pdf_path}: {e}; treating as relevant")
         return {"is_relevant": True, "reason": f"Text extraction error: {e}", "matched_keyword": None}
+
+    # 0. A text layer that holds no readable words (broken font encoding, scanned
+    # pages) says nothing about the topic: fail safe like the other "cannot read"
+    # cases instead of calling the paper irrelevant (rb2_68: 12.7k characters of
+    # symbols, skipped as "no flow chemistry keywords").
+    if not text_layer_readable(full_text):
+        logger.info("Paper filter PASS — text layer unreadable, cannot judge relevance")
+        return {"is_relevant": True, "reason": "text layer unreadable (fail-safe)", "matched_keyword": None}
 
     # 1. Exclude review / overview articles first (no extractable reaction data).
     # Restrict to the title/abstract region (first ~1500 chars) so a primary
