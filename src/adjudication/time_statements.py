@@ -36,6 +36,8 @@ _PATTERNS = [
     # "the optimized conditions (−78 °C, 0.8 s)": a (temperature, time) pair is
     # the flow papers' shorthand for (T, tR); batch sources never receive it.
     re.compile(r"\(\s*[−–\-]?\s*\d+(?:\.\d+)?\s*°\s*C\s*,\s*" + _NUM + r"\s*" + _UNIT + r"\s*\)", re.I),
+    # "passed through R2 (φ = 1000 μm, L = 50 cm, 2.2 s)": a bare time closing a reactor's parenthesis
+    re.compile(r"\bR\s*\d\s*\((?:[^()]|\([^()]*\))*?,\s*" + _NUM + r"\s*" + _UNIT + r"\s*\)", re.I),
 ]
 # A sweep of the residence time itself ("varying the residence time", "tR from
 # 0.05 to 6.3 s", "residence times ranging between …") — not any sentence that
@@ -50,7 +52,7 @@ _SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z(\[])")
 _STEP_RE = re.compile(r"(?:t\s*_?\s*R|R\s*t|τ|\b(?:in|of)\s+(?:reactor\s+)?R)\s*(\d)\b", re.I)
 # "passed through R2 (ø = 1000 μm, l = 50 cm, tR = 2.3 s)": the statement sits inside the
 # parenthesis that a reactor label opened (one nested level allowed)
-_CTX_STEP_RE = re.compile(r"\bR\s*(\d)\s*\((?:[^()]|\([^()]*\))*\(?\s*$")
+_CTX_STEP_RE = re.compile(r"\bR\s*(\d)\s*\((?:[^()]|\([^()]*\))*(?:\([^()]*)?$")
 
 
 def _sentence_around(text: str, start: int, end: int) -> str:
@@ -95,7 +97,7 @@ def find_residence_time_statements(text: str) -> List[Dict[str, Any]]:
             if key in seen:
                 continue
             seen.add(key)
-            sm = _STEP_RE.search(m.group(0)) or _CTX_STEP_RE.search(text[max(0, m.start() - 120):m.start()])
+            sm = _STEP_RE.search(m.group(0)) or _CTX_STEP_RE.search(text[max(0, m.start(1) - 120):m.start(1)])
             out.append({"value_s": value_s, "raw": re.sub(r"\s+", " ", m.group(0)).strip(),
                         "quote": quote[:400], "varied": bool(_VARIED_RE.search(quote)),
                         "step": int(sm.group(1)) if sm else None, "pos": m.start()})

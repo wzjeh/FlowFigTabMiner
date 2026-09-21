@@ -262,3 +262,36 @@ def test_time_columns_in_second_header_row_and_t1_t2_spellings():
     assert lv["time_guard"]["residence_time_s"]["column"] and lv["time_guard"]["residence_time_2_s"]["column"]
     lv = enforce({"fixed_conditions": {}}, [], "Exp.,Process Parameter\nNo.,RTU 1 Res. Time\n,min\n", header_rows=3)
     assert lv["time_guard"]["residence_time_s"]["column"] and not lv["time_guard"]["residence_time_2_s"]["column"]
+
+
+def test_figure_carried_fields_and_enforcement():
+    ev = {"raw_data": [{"X": 0.5, "Y_Left": 80, "Series": "tR2 = 2 s"}, {"X": 1.0, "Y_Left": 70, "Series": "tR2 = 5 s"}],
+          "text_evidence": {"legend_text": [{"text": "tR2 = 2 s", "source": "vlm_metadata"}]}}
+    result = {"axis_semantics": {"x_axis": {"maps_to_field": "conditions.residence_time_s"}, "y_left_axis": {"maps_to_field": "yield_pct"}},
+              "series_semantics": {"tR2 = 2 s": {"role": "condition", "metric": "residence_time_2_s"}},
+              "fixed_conditions": {"residence_time_s": 0.5, "residence_time_2_s": 2.0}}
+    carried = LocalVarsBuilder._figure_carried(result, ev)
+    assert carried == {"residence_time_s": True, "residence_time_2_s": True}
+    out = LocalVarsBuilder._enforce_time_candidates(result, [{"value_s": 2.0, "quote": "tR2 = 2 s", "step": 2}], carried=carried)
+    assert out["fixed_conditions"]["residence_time_s"] is None and out["fixed_conditions"]["residence_time_2_s"] is None
+    assert out["time_guard"]["residence_time_s"]["column"] and out["time_candidates"][0]["value_s"] == 2.0
+    # a figure whose axes carry neither: same rule as a table (quoted or null; single near step-1 candidate filled)
+    result = {"axis_semantics": {"x_axis": {"maps_to_field": "conditions.temperature_C"}}, "fixed_conditions": {"residence_time_s": 3.3, "residence_time_2_s": 2.2}}
+    carried = LocalVarsBuilder._figure_carried(result, {"raw_data": []})
+    out = LocalVarsBuilder._enforce_time_candidates(result, [{"value_s": 0.8, "quote": "Rt=0.8 s", "step": None, "scope": "near"}], carried=carried)
+    assert out["fixed_conditions"]["residence_time_s"] == 0.8 and out["fixed_conditions"]["residence_time_2_s"] is None
+    scan = LocalVarsBuilder._figure_scan_text(ev, {"caption": "Figure 2. Yields at tR = 0.5 s."}, "window text")
+    assert "tR2 = 2 s" in scan and "Figure 2" in scan and scan.endswith("window text")
+
+
+def test_synthesized_records_keep_axis_values_under_the_guard():
+    from src.adjudication.figure_synthesis import synthesize_records
+    from src.adjudication.post_processor import inherit_conditions
+    tpl = {"record_template": {"conditions": {"residence_time_s": None, "residence_time_2_s": 2.2, "temperature_C": None}, "yield_pct": None},
+           "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "yield_pct"}}
+    rec = synthesize_records(tpl, [{"X": 0.7, "Y_Left": 55, "Series": "Default"}], "Figure 1", {"chart_type": "xy"})[0]
+    assert rec["__data_fields"] == ["conditions.residence_time_s", "yield_pct"]
+    lv = {"time_guard": {"residence_time_s": {"column": False, "allowed": []}, "residence_time_2_s": {"column": False, "allowed": []}}}
+    out = inherit_conditions(rec, lv, {}, None)
+    assert out["conditions"]["residence_time_s"] == 0.7 and out["conditions"]["residence_time_2_s"] is None
+    assert "__data_fields" not in out and out["conditions_provenance"]["residence_time_2_s"] == "removed_unquoted_residence_time"

@@ -50,26 +50,30 @@ class LocalVarsBuilder:
         text_window = self._extract_text_window(source_id, source_type, paper_text, context)
         global_block = self._render_global_vars(global_vars)
 
+        # Residence-time statements the model may cite (caption / note / legend /
+        # scheme text / paper window); nothing is ever computed from reactor
+        # geometry (Zhao 2026-09-21).  Same rule for figures and tables: the
+        # only difference is what "the data carries this quantity" means.
         if source_type == "figure":
-            system_prompt, user_prompt = self._build_figure_prompts(
-                source_id, evidence_data, text_window, context
-            )
+            scan = self._figure_scan_text(evidence_data, context, text_window)
         else:
-            # Residence-time statements the model may cite (caption / note /
-            # scheme text / paper window); nothing is ever computed from
-            # reactor geometry (Zhao 2026-09-21).
             scan = " ".join(str(x or "") for x in (evidence_data.get("caption_text"), evidence_data.get("table_note_text"),
                                                    scheme_conditions, text_window))
-            time_cands = fixed_candidates(find_residence_time_statements(scan))
+        time_cands = fixed_candidates(find_residence_time_statements(scan))
+        for c in time_cands:
+            c["scope"] = "near"
+        if not time_cands and paper_text:
+            # Nothing near the source: statements elsewhere in the paper are
+            # offered for citation only (the model decides whether the
+            # sentence describes this source; never filled deterministically).
+            time_cands = fixed_candidates(find_residence_time_statements(paper_text))
             for c in time_cands:
-                c["scope"] = "near"
-            if not time_cands and paper_text:
-                # Nothing near the table: statements elsewhere in the paper are
-                # offered for citation only (the model decides whether the
-                # sentence describes this table; never filled deterministically).
-                time_cands = fixed_candidates(find_residence_time_statements(paper_text))
-                for c in time_cands:
-                    c["scope"] = "paper"
+                c["scope"] = "paper"
+        if source_type == "figure":
+            system_prompt, user_prompt = self._build_figure_prompts(
+                source_id, evidence_data, text_window, context, time_cands
+            )
+        else:
             system_prompt, user_prompt = self._build_table_prompts(
                 source_id, evidence_data, text_window, csv_head, scheme_conditions, context, time_cands
             )
@@ -86,6 +90,7 @@ class LocalVarsBuilder:
         result = self._clean_json(llm_response.text, source_id, source_type)
         if source_type == "figure":
             result = self._enforce_chart_facts(result, evidence_data)
+            result = self._enforce_time_candidates(result, time_cands, carried=self._figure_carried(result, evidence_data))
         else:
             result = self._enforce_time_candidates(result, time_cands, csv_head, evidence_data.get("header_row_count") or 1)
 
@@ -108,7 +113,7 @@ class LocalVarsBuilder:
         "If you see these abbreviations in the context, treat them as valid solvent names."
     )
 
-    def _build_figure_prompts(self, source_id, ev, text_window, context=None):
+    def _build_figure_prompts(self, source_id, ev, text_window, context=None, time_cands=None):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
             "Analyze a single extracted figure from a flow chemistry paper and produce "
@@ -203,8 +208,7 @@ X range: {x_range}
 Y_Left range: {yl_range}
 Y_Right/Data_Value range: {dv_range} ({len(dv_vals)} of {len(raw_data)} points carry a value)
 Unique series: {unique_series}
-{facts_block}
-
+{facts_block}{self._render_time_block(time_cands, "figure")}
 === RELEVANT PAPER TEXT CONTEXT (4000 chars) ===
 {text_window}
 
@@ -226,6 +230,10 @@ Output a single valid JSON object (no markdown):
   }},
   "fixed_conditions": {{
     "temperature_C": null,
+    "residence_time_s": null,
+    "residence_time_quote": null,
+    "residence_time_2_s": null,
+    "residence_time_2_quote": null,
     "solvent": null,
     "catalyst": null,
     "reactor_type": null,
@@ -262,6 +270,63 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
                 q = (v.get("quote") or "")[:140]
                 lines.append(f"  {field} = {v['value']!r}  [scope={v.get('scope')}]  quote: \"{q}\"")
         return "\n".join(lines) + "\n"
+
+    @staticmethod
+    def _render_time_block(time_cands, kind):
+        """Prompt block listing the verbatim residence-time statements the model may cite."""
+        what = "THIS FIGURE" if kind == "figure" else "THIS TABLE"
+        if not time_cands:
+            return f"""
+=== RESIDENCE-TIME STATEMENTS FOUND IN THE PAPER TEXT ===
+(none) — fixed_conditions.residence_time_s stays null; never derive it from reactor volume, length or flow rate.
+"""
+        lines = "\n".join(f"- {c['value_s']:g} s{(' (step ' + str(c['step']) + ')') if c.get('step') else ''} — \"{c['quote'][:300]}\""
+                          for c in time_cands)
+        where = (f"NEAR {what}" if all(c.get("scope", "near") == "near" for c in time_cands)
+                 else f"ELSEWHERE IN THE PAPER (none near {what.lower()} — cite one only if it clearly describes its runs)")
+        varies = ("an axis or legend series" if kind == "figure" else "a column")
+        return f"""
+=== RESIDENCE-TIME STATEMENTS FOUND {where} (verbatim) ===
+{lines}
+fixed_conditions.residence_time_s may ONLY be one of these values (seconds), with residence_time_quote = that
+sentence verbatim, and only when the sentence describes the conditions of {what}; a residence time that
+{varies} of {what.lower()} varies stays null. Otherwise both are null.
+Two-reactor systems: a "(step 2)" / tR2 statement goes to residence_time_2_s (+ residence_time_2_quote), the
+first step (tR1, or an unnumbered tR) to residence_time_s. Never derive a residence time from reactor volume,
+length or flow rate.
+"""
+
+    @staticmethod
+    def _figure_scan_text(ev, context, text_window):
+        """Text a figure may cite: its caption / footnote, the legend and chart
+        text read from the image, and the paper window around it."""
+        meta = (ev or {}).get("meta", {}) or {}
+        context = context or {}
+        text_ev = (ev or {}).get("text_evidence", {}) or {}
+        parts = [context.get("caption") or meta.get("caption_pdf") or meta.get("caption"),
+                 context.get("footnote") or meta.get("footnote_pdf")]
+        for key in ("legend_text", "chart_text"):
+            for it in text_ev.get(key) or []:
+                parts.append(it.get("text") if isinstance(it, dict) else it)
+        parts.append(text_window)
+        return " ".join(str(x) for x in parts if x)
+
+    @classmethod
+    def _figure_carried(cls, result, ev):
+        """Which residence-time fields the figure's data itself carries: an axis
+        mapped to the field, or a legend series that states the time."""
+        ax = result.get("axis_semantics") if isinstance(result, dict) else None
+        axis_fields = {a.get("maps_to_field") for a in (ax or {}).values() if isinstance(a, dict)}
+        series = {str(p.get("Series")) for p in ((ev or {}).get("raw_data") or []) if isinstance(p, dict) and p.get("Series")}
+        sem = result.get("series_semantics") if isinstance(result, dict) else None
+        series_text = " | ".join(sorted(series | set((sem or {}).keys() if isinstance(sem, dict) else ())))
+        sem_json = json.dumps(sem) if isinstance(sem, dict) else ""
+        return {
+            "residence_time_s": "conditions.residence_time_s" in axis_fields
+                                or bool(cls._TR_COLUMN_RE.search(series_text)) or "residence_time_s" in sem_json,
+            "residence_time_2_s": "conditions.residence_time_2_s" in axis_fields
+                                  or bool(cls._TR2_COLUMN_RE.search(series_text)) or "residence_time_2_s" in sem_json,
+        }
 
     @staticmethod
     def _enforce_chart_facts(result, ev):
@@ -358,7 +423,7 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
                     ("residence_time_2_s", "residence_time_2_quote", "residence_time_2_source", (2,), _TR2_COLUMN_RE, False))
 
     @classmethod
-    def _enforce_time_candidates(cls, result, time_cands, csv_head="", header_rows=1):
+    def _enforce_time_candidates(cls, result, time_cands, csv_head="", header_rows=1, carried=None):
         """fixed_conditions.residence_time_s (first step) / residence_time_2_s
         (second step of a two-reactor system) are each either one of the quoted
         statements found in the paper text (with the sentence in the *_quote
@@ -366,18 +431,22 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
         varies that time (a column for it) keeps it null; a single near-table
         candidate for a flow table is filled deterministically.  The per-field
         verdict is stored in ``result["time_guard"]`` so the post-processor can
-        hold every record of the table to the same rule."""
+        hold every record of the source to the same rule.  ``carried`` (figures)
+        replaces the column check: the axis / legend series carries the field."""
         fc = result.get("fixed_conditions") if isinstance(result, dict) else None
         if not isinstance(fc, dict):
             return result
         header = "\n".join((csv_head or "").split("\n")[:max(1, int(header_rows or 1))])
         is_batch = bool(cls._BATCH_RE.search(str(fc.get("reactor_type") or "")))
         guard = result.setdefault("time_guard", {})
+        # the statements themselves, for the per-source prompt (rendered with local_vars)
+        result["time_candidates"] = [{"value_s": c["value_s"], "step": c.get("step"), "scope": c.get("scope", "near"),
+                                      "quote": c["quote"][:240]} for c in (time_cands or [])[:12]]
         for field, qkey, skey, steps, col_re, autofill in cls._TIME_FIELDS:
             cands = [c for c in (time_cands or []) if c.get("step") in steps]
             allowed = {round(float(c["value_s"]), 6): c for c in cands}
             val = fc.get(field)
-            has_column = bool(col_re.search(header))
+            has_column = bool(carried.get(field)) if carried is not None else bool(col_re.search(header))
             # the same rule applies to every record of this table (post_processor.inherit_conditions):
             # a value comes from a column of the table or is one of the quoted statements
             guard[field] = {"column": has_column, "allowed": sorted(allowed)}
@@ -427,25 +496,7 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
         inner_block = (f"\n=== TABLE TEXT LAYER (verbatim from the PDF, row order; authoritative for numbers) ===\n{inner_text}\n"
                        if inner_text else "")
 
-        if time_cands:
-            lines = "\n".join(f"- {c['value_s']:g} s{(' (step ' + str(c['step']) + ')') if c.get('step') else ''} — \"{c['quote'][:300]}\""
-                              for c in time_cands)
-            where = ("NEAR THIS TABLE" if all(c.get("scope", "near") == "near" for c in time_cands)
-                     else "ELSEWHERE IN THE PAPER (none near this table — cite one only if it clearly describes this table's runs)")
-            time_block = f"""
-=== RESIDENCE-TIME STATEMENTS FOUND {where} (verbatim) ===
-{lines}
-fixed_conditions.residence_time_s may ONLY be one of these values (seconds), with residence_time_quote = that
-sentence verbatim, and only when the sentence describes the conditions of THIS table. Otherwise both are null.
-Two-reactor systems: a "(step 2)" / tR2 statement goes to residence_time_2_s (+ residence_time_2_quote), the
-first step (tR1, or an unnumbered tR) to residence_time_s. Never derive a residence time from reactor volume,
-length or flow rate.
-"""
-        else:
-            time_block = """
-=== RESIDENCE-TIME STATEMENTS FOUND IN THE PAPER TEXT ===
-(none) — fixed_conditions.residence_time_s stays null; never derive it from reactor volume, length or flow rate.
-"""
+        time_block = self._render_time_block(time_cands, "table")
         scheme_cond_block = ""
         if scheme_conditions:
             scheme_cond_block = f"""

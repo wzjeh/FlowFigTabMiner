@@ -72,3 +72,9 @@ def test_step_from_enclosing_reactor_parenthesis():
             "The mixture was passed through R2 (f=1000 mm, L=50 cm, Rt=2.31 s). At 70 °C the maximum was at Rt=0.8 s.")
     assert [(c["value_s"], c["step"]) for c in fixed_candidates(find_residence_time_statements(text))] == \
         [(0.057, 1), (9.8, 2), (1.8, 3), (2.31, 2), (0.8, None)]
+
+
+def test_bare_time_closing_a_reactor_parenthesis():
+    st = find_residence_time_statements("The resulting mixture was passed through R2 (f=1000 mm, L=50 cm, 2.2 s). The reaction temperature (T) was controlled.")
+    assert [(c["value_s"], c["step"]) for c in fixed_candidates(st)] == [(2.2, 2)]
+    assert find_residence_time_statements("R1 (f=1000 mm, L=50 cm) at 20 °C for 5 min") == []

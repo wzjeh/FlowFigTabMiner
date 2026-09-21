@@ -275,7 +275,11 @@ class PerSourcePromptBuilder(ABC):
     def _render_local_vars(self, packet: SourcePacket) -> str:
         if not packet.local_vars:
             return "(no local_vars available for this source)"
-        return json.dumps(packet.local_vars, indent=2, ensure_ascii=False)
+        # time_candidates / time_guard are the local-vars builder's working data
+        # (the chosen value and its quote already sit in fixed_conditions);
+        # rendering them shifts the model's reading of unrelated fields.
+        lv = {k: v for k, v in packet.local_vars.items() if k not in ("time_candidates", "time_guard")}
+        return json.dumps(lv, indent=2, ensure_ascii=False)
 
     def _render_common_blocks(self, preamble: CommonPreamble, packet: SourcePacket) -> str:
         pools = preamble.render_pools_section()
@@ -425,6 +429,9 @@ Rules for the template:
   time) belongs in record_template.conditions — do not leave it null just because it is a number.
 - product_name / reactant names must be filled whenever the caption, local_vars.reaction_context or the
   paper-level context names them (RULE 18); never leave the product null on a yield figure.
+- conditions.residence_time_s / residence_time_2_s in record_template: only the value already in
+  local_vars.fixed_conditions (a verbatim statement of the paper); a number remembered from the paper or
+  derived from reactor volume / flow rate is wrong — leave it null.
 - Output the JSON object only."""
 
     def build(self, packet: SourcePacket, preamble: CommonPreamble) -> Tuple[str, str]:

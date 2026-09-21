@@ -364,13 +364,15 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
     for field, v in list(conds.items()):
         if isinstance(v, str):
             conds[field] = clean_condition_string(v)
-    # Residence times of a table record come from a column of that table or
-    # are one of the statements quoted in the paper text (local_vars.time_guard,
-    # written by LocalVarsBuilder); anything else is a remembered or computed
-    # number and is dropped rather than kept as a plausible wrong value.
+    # Residence times of a record come from the data itself (a table column, a
+    # figure axis or legend series) or are one of the statements quoted in the
+    # paper text (local_vars.time_guard, written by LocalVarsBuilder); anything
+    # else is a remembered or computed number and is dropped rather than kept
+    # as a plausible wrong value.
+    data_fields = {p.split(".", 1)[1] for p in (rec.pop("__data_fields", None) or []) if str(p).startswith("conditions.")}
     for field, g in ((local_vars or {}).get("time_guard") or {}).items():
         cur = conds.get(field)
-        if cur is None or g.get("column") or isinstance(cur, bool) or not isinstance(cur, (int, float)):
+        if cur is None or g.get("column") or field in data_fields or isinstance(cur, bool) or not isinstance(cur, (int, float)):
             continue
         if not any(abs(float(cur) - a) <= 1e-6 * max(1.0, abs(a)) for a in g.get("allowed") or []):
             conds[field] = None

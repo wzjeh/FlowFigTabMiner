@@ -211,6 +211,7 @@ def synthesize_records(
         if not isinstance(rec["other_metrics"], dict):
             rec["other_metrics"] = {}
 
+        data_fields = []                       # paths set from the point / its series (never guarded)
         series = pt.get("Series")
         smap = series_map.get(series) if series is not None else None
         if isinstance(smap, dict):
@@ -222,6 +223,7 @@ def synthesize_records(
                     if path.endswith(("_name", "_label", "_smiles")) and isinstance(val, (int, float)) and not isinstance(val, bool):
                         val = str(val)          # identities are strings
                     _set_path(rec, path, val)
+                    data_fields.append(path)
         elif series and series != "Default":
             rec["other_metrics"]["series"] = series
 
@@ -231,8 +233,10 @@ def synthesize_records(
             if not path or val is None:
                 continue
             _set_path(rec, path, _transform(float(val), transforms.get(col)))
+            data_fields.append(path)
 
         rec["source_table_or_figure"] = human_label
         rec["__synthesized"] = True
+        rec["__data_fields"] = sorted(set(data_fields))
         records.append(rec)
     return records
