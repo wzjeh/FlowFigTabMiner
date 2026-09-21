@@ -25,6 +25,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from src.adjudication.pdf_parser import extract_text_window
 from src.parsing.caption_locator import load_context
 from src.extraction.figure.axis_fit import is_grid_like
+from src.pipeline.status import write_status
 
 logger = logging.getLogger(__name__)
 
@@ -238,6 +239,39 @@ def _table_anchor_keywords(evidence: Dict[str, Any]) -> Tuple[str, ...]:
     return ()
 
 
+_RAW_VALUE_COLS = ("X", "Y_Left", "Y_Right/Data_Value")
+
+
+def load_figure_evidence(path: str) -> Dict[str, Any]:
+    """Load a figure evidence file with non-finite numbers in ``raw_data`` turned
+    into None.  Partially labelled charts were written with pandas NaN for the
+    unlabelled points; ``is not None`` then counted them as read labels and a
+    scatter panel was reclassified as a heatmap (rb1_69 Figure 7a: concentrations
+    filed as temperature)."""
+    evidence = json.load(open(path))
+    raw = evidence.get("raw_data")
+    if isinstance(raw, list):
+        evidence["raw_data"] = [
+            {k: (None if isinstance(v, float) and (v != v or v in (float("inf"), float("-inf"))) else v) for k, v in p.items()}
+            if isinstance(p, dict) else p for p in raw]
+    return evidence
+
+
+def figure_value_problem(evidence: Dict[str, Any]) -> Optional[str]:
+    """Why a figure has nothing to assemble, else None.  A figure whose axes
+    could not be calibrated keeps only pixel positions (``note: CoordMapping
+    Failed``); records built from it would be empty shells that inherit the
+    paper's conditions and look like measurements."""
+    raw = [p for p in (evidence.get("raw_data") or []) if isinstance(p, dict)]
+    if not raw:
+        return "no data points extracted"
+    def _num(v):
+        return isinstance(v, (int, float)) and not isinstance(v, bool)
+    if not any(_num(p.get(c)) for p in raw for c in _RAW_VALUE_COLS):
+        return f"coordinate mapping failed: {len(raw)} points carry pixel positions only"
+    return None
+
+
 def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[SourcePacket]:
     """Walk the per-PDF intermediate dir; return one packet per relevant source.
 
@@ -283,7 +317,7 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
     # --- Figures: flat layout ``macro_cleaned/{figure_id}_evidence.json``
     for ev_path in sorted(glob.glob(os.path.join(pdf_root, "macro_cleaned", "*_evidence.json"))):
         try:
-            evidence = json.load(open(ev_path))
+            evidence = load_figure_evidence(ev_path)
         except Exception as exc:
             logger.warning("source_discovery figure evidence load failed path=%s exc=%s", ev_path, exc)
             continue
@@ -293,6 +327,11 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
                 logger.info("source_discovery skip irrelevant figure source=%s", source_id)
                 continue
             logger.info("source_discovery keep irrelevant figure (soft flag) source=%s", source_id)
+        problem = figure_value_problem(evidence)
+        if problem:
+            logger.info("source_discovery skip figure without values source=%s reason=%s", source_id, problem)
+            write_status(pdf_root, source_id, "coord_map", "failed", problem)
+            continue
         local_vars, lv_path = _load_local_vars(local_vars_dir, source_id)
         context = load_context(pdf_root, source_id)
         evidence = apply_context_to_evidence(evidence, context, "figure")

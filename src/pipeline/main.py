@@ -217,7 +217,7 @@ def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cf
     check of its own) — used by ``scripts/reassemble.py --rebuild-vars``.
     """
     from src.parsing.caption_locator import load_context
-    from src.adjudication.source_discovery import apply_context_to_evidence
+    from src.adjudication.source_discovery import apply_context_to_evidence, figure_value_problem, load_figure_evidence
 
     paper_text = PDFParser().extract_text(pdf_path)
     local_vars_dir = os.path.join(intermediate_dir, "local_vars")
@@ -238,12 +238,13 @@ def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cf
     macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
     for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
         try:
-            with open(jpath) as f:
-                ev = json.load(f)
+            ev = load_figure_evidence(jpath)
             src_id = ev.get("meta", {}).get(
                 "figure_id",
                 os.path.basename(jpath).replace("_evidence.json", ""),
             )
+            if figure_value_problem(ev):
+                continue                    # nothing to assemble (source_discovery records why)
             ctx = load_context(intermediate_dir, src_id)
             builder.build(
                 src_id, "figure", apply_context_to_evidence(ev, ctx, "figure"), paper_text, local_vars_dir,

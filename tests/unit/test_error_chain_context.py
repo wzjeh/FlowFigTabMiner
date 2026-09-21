@@ -295,3 +295,33 @@ def test_synthesized_records_keep_axis_values_under_the_guard():
     out = inherit_conditions(rec, lv, {}, None)
     assert out["conditions"]["residence_time_s"] == 0.7 and out["conditions"]["residence_time_2_s"] is None
     assert "__data_fields" not in out and out["conditions_provenance"]["residence_time_2_s"] == "removed_unquoted_residence_time"
+
+
+def test_figure_without_calibrated_values_is_not_assembled(tmp_path):
+    from src.adjudication.source_discovery import discover, figure_value_problem
+    ok = {"raw_data": [{"X": 1.0, "Y_Left": 50.0, "Series": "Default"}]}
+    px = {"raw_data": [{"Series": "zigzag", "x_pixel": 706.5, "y_pixel": 131.7, "note": "CoordMapping Failed"}]}
+    assert figure_value_problem(ok) is None
+    assert "pixel positions only" in figure_value_problem(px) and figure_value_problem({"raw_data": []}) == "no data points extracted"
+    mc = tmp_path / "paperX" / "macro_cleaned"
+    mc.mkdir(parents=True)
+    json.dump({"is_relevant": True, "meta": {}, "text_evidence": {}, **ok}, open(mc / "page_2_figure_0_t0_evidence.json", "w"))
+    json.dump({"is_relevant": True, "meta": {}, "text_evidence": {}, **px}, open(mc / "page_9_figure_1_t0_evidence.json", "w"))
+    packets = discover(str(tmp_path), "paperX", "paper text")
+    assert [p.source_id for p in packets] == ["page_2_figure_0_t0"]
+    st = json.load(open(tmp_path / "paperX" / "status" / "page_9_figure_1_t0.json"))
+    assert st["stage"] == "coord_map" and st["outcome"] == "failed" and "pixel positions only" in st["reason"]
+
+
+def test_nan_point_labels_do_not_turn_a_scatter_into_a_heatmap(tmp_path):
+    from src.adjudication.source_discovery import infer_legacy_facts, load_figure_evidence
+    raw = [{"Series": "Default", "X": x, "Y_Left": y, "Y_Right/Data_Value": float("nan")} for x in (1, 10, 100) for y in (-78, -40, 0)]
+    p = tmp_path / "page_7_figure_0_t0_evidence.json"
+    json.dump({"meta": {"facts": {"chart_type": "xy"}}, "raw_data": raw}, open(p, "w"))       # json.dump writes NaN like the old pipeline did
+    assert "NaN" in open(p).read()
+    ev = load_figure_evidence(str(p))
+    assert all(pt["Y_Right/Data_Value"] is None for pt in ev["raw_data"])
+    assert infer_legacy_facts(ev)["meta"]["facts"]["chart_type"] == "xy"
+    # the same grid WITH read labels is still a value map
+    ev["raw_data"] = [dict(pt, **{"Y_Right/Data_Value": 50.0}) for pt in ev["raw_data"]]
+    assert infer_legacy_facts(ev)["meta"]["facts"]["chart_type"] == "heatmap"

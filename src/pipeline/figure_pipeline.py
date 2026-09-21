@@ -266,7 +266,10 @@ class FigurePipeline:
                 
                 extraction_data = []
                 if not df.empty:
-                    extraction_data = df.to_dict(orient='records')
+                    # pandas NaN → None: "NaN" is not JSON, and a reader testing
+                    # ``is not None`` would count an unread label as a value
+                    extraction_data = [{k: (None if isinstance(v, float) and v != v else v) for k, v in row.items()}
+                                       for row in df.to_dict(orient='records')]
                 else:
                     write_status(
                         intermediate_dir, figure_id, "coord_map", "failed",
