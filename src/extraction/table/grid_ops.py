@@ -258,7 +258,7 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
     n_tokens = sum(len(s) for s in slots_by_row)
     report: Dict[str, Any] = {"status": "none", "n_boxes": len(boxes), "n_tokens": n_tokens,
                               "n_box_rows": 0, "n_token_rows": len(slots_by_row), "assigned": 0, "unresolved": 0,
-                              "unplaced": 0, "anchors": "none", "n_duplicates": len(mol_meta) - len(metas)}
+                              "unplaced": 0, "filled_empty": 0, "anchors": "none", "n_duplicates": len(mol_meta) - len(metas)}
     if not boxes:
         return out, report
     if n_tokens == 0:
@@ -295,41 +295,82 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
                 report["anchors"] = "box_rows+box_cols" if report["anchors"] == "box_rows" else "rows+box_cols"
         data_c = [c for c in row_centres if c is not None]
         pitch = statistics.median([b - a for a, b in zip(data_c, data_c[1:])]) if len(data_c) > 1 else None
-        by_row: Dict[int, List[int]] = {}
-        for bi, (x1, y1, x2, y2) in enumerate(boxes):
-            cy = (y1 + y2) / 2
-            r = _nearest(row_centres, cy)
-            if r is None or (pitch and abs(row_centres[r] - cy) > 0.6 * pitch):
-                report["unplaced"] += 1          # header-band / footnote drawing, not a cell
-                continue
-            by_row.setdefault(r, []).append(bi)
         slots_map = {row[0][0]: row for row in slots_by_row}
-        for r, bis in by_row.items():
-            bis.sort(key=lambda i: boxes[i][0])
-            slots = list(slots_map.get(r, []))
-            if col_centres:
-                # Per cell: the box whose centre is nearest the row anchor wins;
-                # competing boxes (duplicate detections, fragments) stay unplaced.
-                claims: Dict[Tuple[int, int, int], List[int]] = {}
-                for bi in bis:
-                    c = _nearest(col_centres, (boxes[bi][0] + boxes[bi][2]) / 2)
-                    slot = next((s for s in slots if s[1] == c and s not in claims), None)
-                    if slot is None:
-                        slot = next((s for s in slots if s[1] == c), None)
-                    if slot is None:
-                        report["unplaced"] += 1; continue
+
+        def _rows_near(cy: float, reach: float) -> List[int]:
+            """Data rows within ``reach`` × pitch of ``cy``, nearest first."""
+            cand = [(abs(c - cy), r) for r, c in enumerate(row_centres) if c is not None]
+            cand = [(d, r) for d, r in cand if not pitch or d <= reach * pitch]
+            return [r for _, r in sorted(cand)]
+
+        leftover: List[int] = []
+        order = sorted(range(len(boxes)), key=lambda i: (boxes[i][1] + boxes[i][3], boxes[i][0]))
+        if col_centres:
+            # Per cell: a box claims the token slot of its column in the
+            # nearest row.  A drawing printed once for several entries
+            # (merged cell: token on the first row, "" below) has its centre
+            # lower down — walk up through the empty cells to that token.
+            # Competing claims (duplicate detections, fragments): the box
+            # nearest the row anchor wins, the rest stay unplaced.
+            claims: Dict[Tuple[int, int, int], List[int]] = {}
+            for bi in order:
+                x1, y1, x2, y2 = boxes[bi]
+                near = _rows_near((y1 + y2) / 2, 0.6)
+                if not near:
+                    leftover.append(bi)          # header-band / footnote drawing, not a cell
+                    continue
+                r0 = near[0]; c = _nearest(col_centres, (x1 + x2) / 2)
+                slot = None; rr = r0
+                while rr >= 0:
+                    col_slots = [s for s in slots_map.get(rr, ()) if s[1] == c]
+                    free = [s for s in col_slots if s not in claims]
+                    if free:
+                        slot = free[0]; break
+                    if col_slots:
+                        slot = col_slots[0] if rr == r0 else None; break   # own row: compete; above: taken
+                    if c >= len(out[rr]) or out[rr][c] != "":
+                        break                                            # text cell ends the span
+                    rr -= 1
+                if slot is None:
+                    leftover.append(bi)
+                else:
                     claims.setdefault(slot, []).append(bi)
-                for slot, cands in claims.items():
-                    dy = {i: abs((boxes[i][1] + boxes[i][3]) / 2 - row_centres[r]) for i in cands}
-                    tol = 0.25 * pitch if pitch else 0.0
-                    near = [i for i in cands if dy[i] <= min(dy.values()) + tol]
-                    best = min(near, key=lambda i: (boxes[i][0], dy[i]))   # same line → the leftmost drawing is the cell's
-                    pairs.append((slot, best)); report["unplaced"] += len(cands) - 1
-            elif len(bis) == len(slots):
-                pairs.extend(zip(slots, bis))
-            else:
-                report["unplaced"] += len(bis)
-        report["status"] = "anchored" if report["unplaced"] == 0 and len(pairs) == n_tokens else "anchored_partial"
+            for slot, cands in claims.items():
+                dy = {i: abs((boxes[i][1] + boxes[i][3]) / 2 - row_centres[slot[0]]) for i in cands}
+                tol = 0.25 * pitch if pitch else 0.0
+                near_ = [i for i in cands if dy[i] <= min(dy.values()) + tol]
+                best = min(near_, key=lambda i: (boxes[i][0], dy[i]))   # same line → the leftmost drawing is the cell's
+                pairs.append((slot, best)); leftover.extend(i for i in cands if i != best)
+        else:
+            by_row: Dict[int, List[int]] = {}
+            for bi in order:
+                near = _rows_near((boxes[bi][1] + boxes[bi][3]) / 2, 0.6)
+                if near:
+                    by_row.setdefault(near[0], []).append(bi)
+                else:
+                    leftover.append(bi)
+            for r, bis in by_row.items():
+                bis.sort(key=lambda i: boxes[i][0])
+                slots = list(slots_map.get(r, []))
+                if len(bis) == len(slots):
+                    pairs.extend(zip(slots, bis))
+                else:
+                    leftover.extend(bis)
+        # A drawing whose cell the transcriber left empty (missed token): the
+        # drawing is printed there, so the cell gets its SMILES anyway.
+        if col_centres:
+            filled: set = set()
+            for bi in list(leftover):
+                near = _rows_near((boxes[bi][1] + boxes[bi][3]) / 2, 0.6)
+                c = _nearest(col_centres, (boxes[bi][0] + boxes[bi][2]) / 2)
+                smiles = str(metas[bi].get("smiles") or "").strip()
+                if near and c is not None and c < len(out[near[0]]) and out[near[0]][c] == "" \
+                        and (near[0], c) not in filled and smiles and not smiles.startswith("<"):
+                    out[near[0]][c] = smiles
+                    filled.add((near[0], c)); leftover.remove(bi)
+            report["filled_empty"] = len(filled)
+        report["unplaced"] = len(leftover)
+        report["status"] = "anchored" if not leftover and len(pairs) == n_tokens else "anchored_partial"
     else:
         box_rows = cluster_rows(boxes)
         # Column-sequence fallback: assign every box to a token column by

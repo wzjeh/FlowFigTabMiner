@@ -18,8 +18,8 @@ Per table crop (``tables/{b}.png`` from TF-ID):
    per-source status record.
 
 Caption / footnote precedence is decided downstream
-(``source_discovery.apply_context_to_evidence``): the PDF text layer wins
-when present, the VLM transcription is the fallback.
+(``source_discovery.apply_context_to_evidence``): the VLM transcription
+stands, the PDF text layer fills in when the crop showed none.
 """
 from __future__ import annotations
 

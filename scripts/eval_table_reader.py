@@ -137,7 +137,7 @@ def collect(paths: list[str]) -> tuple[dict, list[dict]]:
                 import csv as _csv
                 for row in _csv.reader(lines):
                     valid_cells += sum(1 for c in row if _rdkit_valid(c.strip()))
-            extra = max(0, valid_cells - int(al.get("assigned") or 0)) if al else 0
+            extra = max(0, valid_cells - int(al.get("assigned") or 0) - int(al.get("filled_empty") or 0)) if al else 0
             m["smiles_cells_not_from_aligner"] += extra
             tables.append({"paper": base, "source_id": sid, "parse_status": ps, "n_rows": ev.get("n_rows"), "n_cols": ev.get("n_cols"),
                            "header_row_count": ev.get("header_row_count"), "grid_text_agreement": ag,

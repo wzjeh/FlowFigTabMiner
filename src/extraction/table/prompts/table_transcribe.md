@@ -7,7 +7,8 @@ Rules:
 1. **Transcribe cells verbatim** — keep units, superscript footnote markers
    (write them as plain text such as `93[c]` or `87 (90)`), parentheses,
    and abbreviations exactly as printed. Do not compute, normalise or
-   translate anything.
+   translate anything. Greek letters (α, β, γ, δ, μ, ε) are copied as the
+   Unicode letter, never as a Latin letter or a quote mark.
 2. **Drawn chemical structures**: every molecule that is DRAWN (a skeletal
    structure, not typed text) is the literal token `[STRUCTURE]`. If one cell
    contains several drawings, write `[STRUCTURE]; [STRUCTURE]`. NEVER write a

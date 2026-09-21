@@ -174,3 +174,40 @@ def test_column_sequence_fallback_when_rows_do_not_cluster():
     out, rep = align_structures(grid, _meta(boxes, names))
     assert rep["status"] == "columns" and rep["assigned"] == 8
     assert [r[0] for r in out[1:]] == ["S1", "S2", "S3", "S4"] and [r[2] for r in out[1:]] == ["P1", "P2", "P3", "P4"]
+
+
+def test_drawing_spanning_two_text_rows_lands_in_the_row_with_the_slot():
+    # Product drawn once for the MeI / MeOTf pair: the VLM writes the token on
+    # the first row and "" (ditto) on the second; the drawing's centre is
+    # nearer the second row's text line.
+    grid = [["E", "Product", "Yield"], ["tBuOH", T, "93"], ["MeI", T, "62"], ["MeOTf", "", "82"], ["PhCHO", T, "70"]]
+    rows = [None, 100.0, 200.0, 240.0, 340.0]
+    cols = [30.0, 150.0, 300.0]
+    meta = _meta([_box(130, 85), _box(130, 222), _box(130, 325)])      # 2nd box centre y=237 ≈ MeOTf line
+    out, rep = align_structures(grid, meta, row_centres=rows, col_centres=cols)
+    assert rep["status"] == "anchored" and rep["assigned"] == 3 and rep["unplaced"] == 0
+    assert out[2][1] == "C1" and out[3][1] == ""
+
+
+def test_leftover_drawing_fills_the_empty_cell_it_is_printed_in():
+    # Ester 8b is drawn in row 3 but the VLM missed the token (wrote "").
+    grid = [["Ester", "E", "Product"], [T + " 8a", "tBuOH", T], ["", "MeI", T], ["", "iPrOH", T], ["", "MeI", T]]
+    rows = [None, 100.0, 200.0, 300.0, 400.0]
+    cols = [50.0, 150.0, 300.0]
+    meta = _meta([_box(30, 85), _box(280, 85), _box(280, 185), _box(30, 285), _box(280, 285), _box(280, 385)])
+    out, rep = align_structures(grid, meta, row_centres=rows, col_centres=cols)
+    assert rep["assigned"] == 5 and rep["filled_empty"] == 1 and rep["unplaced"] == 0 and rep["status"] == "anchored"
+    assert out[3][0] == "C3" and out[2][0] == "" and out[4][0] == ""
+
+
+def test_tall_merged_cell_drawing_walks_up_to_its_token():
+    # Ester 1a drawn once for entries 1–4: token on row 1, "" below, drawing
+    # centred at row 3.  It must fill the token, not the empty cell it sits in.
+    grid = [["Ester", "E", "Yield"], [T + " 1a", "tBuOH", "93"], ["", "MeI", "88"], ["", "Me3SiCl", "96"], ["", "PhCHO", "82"],
+            [T + " 1b", "iPrOH", "87"], ["", "MeI", "62"]]
+    rows = [None, 100.0, 200.0, 300.0, 400.0, 500.0, 600.0]
+    cols = [50.0, 150.0, 300.0]
+    meta = _meta([_box(30, 285, h=40), _box(30, 535, h=40)])
+    out, rep = align_structures(grid, meta, row_centres=rows, col_centres=cols)
+    assert rep["status"] == "anchored" and rep["assigned"] == 2 and rep["filled_empty"] == 0
+    assert out[1][0] == "C0 1a" and out[3][0] == "" and out[5][0] == "C1 1b" and out[6][0] == ""

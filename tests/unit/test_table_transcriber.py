@@ -58,3 +58,38 @@ def test_transcribe_empty_grid_and_failure(img):
 def test_transcribe_rejects_schema_echo_caption(img):
     tr = TableTranscriber(_Stub({"caption": "legend_series_names_null_null", "data_rows": [["1", "2"]]}), _CFG).transcribe(img)
     assert tr.ok and tr.caption is None
+
+
+class _Seq(_Stub):
+    """One payload per call (attempt 1, attempt 2 …)."""
+
+    def __init__(self, payloads):
+        super().__init__()
+        self.payloads, self.temps = list(payloads), []
+
+    def inspect(self, image, system_prompt, user_prompt, cfg, response_schema=None):
+        self.temps.append(cfg.temperature)
+        self.payload = self.payloads.pop(0)
+        return super().inspect(image, system_prompt, user_prompt, cfg, response_schema)
+
+
+def test_single_column_grid_is_rerolled_once(img):
+    one_col = {"header_rows": [["T1"], ["T2"], ["Yield"]], "data_rows": [["-78"], ["-78"], ["84"]]}
+    good = {"header_rows": [["T1", "T2", "Yield"]], "data_rows": [["-78", "-78", "84"]]}
+    stub = _Seq([one_col, good])
+    tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
+    assert tr.ok and tr.n_cols == 3 and tr.data_rows == [["-78", "-78", "84"]] and stub.temps == [0.0, 0.4]
+    # attempt 2 no better → keep attempt 1 and say so
+    stub = _Seq([one_col, one_col])
+    tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
+    assert tr.ok and tr.n_cols == 1 and "single-column" in (tr.notes or "")
+    # a genuine one-column list of two rows is not re-rolled
+    stub = _Seq([{"header_rows": [["Item"]], "data_rows": [["a"]]}])
+    tr = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
+    assert tr.ok and tr.n_cols == 1 and stub.temps == [0.0]
+
+
+def test_caption_and_footnotes_are_one_line(img):
+    payload = {"caption": "Table 5. Br\nLi exchange", "footnotes": "[a] GC.\n[b] NMR.", "header_rows": [["a", "b"]], "data_rows": [["1", "2"]]}
+    tr = TableTranscriber(vlm=_Stub(payload), cfg=_CFG).transcribe(img)
+    assert tr.caption == "Table 5. Br Li exchange" and tr.footnotes == "[a] GC. [b] NMR."

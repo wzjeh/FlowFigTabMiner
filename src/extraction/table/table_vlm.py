@@ -69,6 +69,13 @@ def _clean_cell(v) -> str:
     return s[:_MAX_CELL_CHARS]
 
 
+def _one_line(v: Optional[str]) -> Optional[str]:
+    """Caption / footnote / scheme text: sanitised and whitespace-collapsed
+    (the model sometimes emits line breaks for glyphs it cannot read)."""
+    v = clean_vlm_text(v, max_chars=4000)
+    return re.sub(r"\s+", " ", v).strip() if v else v
+
+
 def normalize_grid(header_rows: List[List[str]], data_rows: List[List[str]]
                    ) -> Tuple[List[List[str]], List[List[str]], int, List[str]]:
     """Clean cells and force a rectangular grid: the modal data-row width
@@ -123,11 +130,14 @@ class TableTranscriber:
     def transcribe(self, image: Path) -> TableTranscription:
         image = Path(image)
         last_exc = None
+        first = None          # a degenerate attempt-1 grid, kept if attempt 2 is no better
         for attempt in (1, 2):
             # Attempt 2 samples at a higher temperature: a malformed structured
             # reply at temperature 0 is usually a degenerate repetition loop
             # (observed: thousands of "\n" after a superscript unit), and greedy
-            # decoding would reproduce it exactly.
+            # decoding would reproduce it exactly.  The same re-roll handles a
+            # grid returned as one cell per row (n_cols == 1 for a table that
+            # plainly has several columns).
             cfg = self.cfg if attempt == 1 else self.cfg.model_copy(update={"temperature": max(0.4, self.cfg.temperature)})
             try:
                 t0 = time.perf_counter()
@@ -141,23 +151,28 @@ class TableTranscriber:
                 elapsed = (time.perf_counter() - t0) * 1000.0
                 resp = TableTranscriptionResponse.model_validate(parsed)
                 last_exc = None
+                hdr, dat, n_cols, notes = normalize_grid(resp.header_rows, resp.data_rows)
+                if attempt == 1 and n_cols == 1 and len(hdr) + len(dat) >= 3:
+                    logger.warning("table_vlm single-column grid image=%s (%d rows); re-rolling", image.name, len(hdr) + len(dat))
+                    first = (meta, resp, hdr, dat, n_cols, notes + ["single-column grid on attempt 1"], elapsed)
+                    continue
                 break
             except Exception as exc:
                 last_exc = exc
                 logger.warning("table_vlm attempt %d failed image=%s exc=%s", attempt, image.name, exc)
-        if last_exc is not None:
-            return TableTranscription(ok=False, notes=f"vlm call failed: {last_exc}")
-
-        hdr, dat, n_cols, notes = normalize_grid(resp.header_rows, resp.data_rows)
+        if last_exc is not None or (first is not None and n_cols == 1):
+            if first is None:
+                return TableTranscription(ok=False, notes=f"vlm call failed: {last_exc}")
+            meta, resp, hdr, dat, n_cols, notes, elapsed = first
         fin = str(getattr(meta, "finish_reason", None) or "").split(".")[-1].upper()
         if fin and fin not in ("STOP", "END_TURN"):
             notes.append(f"finish_reason={fin}")
         out = TableTranscription(
             ok=bool(dat) and n_cols > 0,
             header_rows=hdr, data_rows=dat, n_cols=n_cols,
-            caption=clean_vlm_text(resp.caption, max_chars=4000),
-            scheme_conditions=clean_vlm_text(resp.scheme_conditions, max_chars=4000),
-            footnotes=clean_vlm_text(resp.footnotes, max_chars=4000),
+            caption=_one_line(resp.caption),
+            scheme_conditions=_one_line(resp.scheme_conditions),
+            footnotes=_one_line(resp.footnotes),
             model=meta.model, latency_ms=getattr(meta, "latency_ms", None) or elapsed,
             tokens_in=meta.tokens_in, tokens_out=meta.tokens_out,
             cache_hit=bool(getattr(meta, "cache_hit", False)),
