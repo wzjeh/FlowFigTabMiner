@@ -154,3 +154,6 @@ data/ml_lifetime/analysis_figures/.DS_Store
 
 # Carthesian Hessian binaries from ORCA scans
 data/ml_lifetime/ts_calc/*.carthess
+
+# Regression-gate snapshots (scripts/regression_gate.py)
+eval/snapshots/
