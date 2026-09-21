@@ -28,6 +28,12 @@ class RateLimitError(LLMProviderError):
     """
 
 
+class TransientError(LLMProviderError):
+    """The provider failed on its side and says so (HTTP 500 INTERNAL, 503
+    UNAVAILABLE, a timeout): the same request is expected to succeed shortly,
+    so it is retried with the same backoff as a rate limit."""
+
+
 class ContextLengthError(LLMError):
     """Request exceeded the model's context window."""
 

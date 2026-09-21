@@ -36,6 +36,7 @@ from src.llm.errors import (
     LLMProviderError,
     ParseError,
     RateLimitError,
+    TransientError,
 )
 from src.llm.providers._registry import register_llm_provider, register_vlm_provider
 from src.llm.providers.base import LLMProvider, VLMProvider
@@ -52,7 +53,7 @@ def _backoff_call(
     max_retries: int,
     label: str,
 ) -> tuple[Any, int]:
-    """Run ``call`` with exponential backoff on RateLimitError.
+    """Run ``call`` with exponential backoff on RateLimitError / TransientError.
 
     Delays grow as 1 s, 2 s, 4 s, ... up to ``max_retries`` attempts.
     Other LLMProviderError types propagate immediately (no retry).
@@ -64,14 +65,14 @@ def _backoff_call(
     for attempt in range(max_retries + 1):
         try:
             return call(), attempt
-        except RateLimitError as exc:
+        except (RateLimitError, TransientError) as exc:
             last_exc = exc
             if attempt >= max_retries:
                 break
             sleep_s = (2 ** attempt) + random.uniform(0, 0.5)
             logger.warning(
-                "%s rate-limited (attempt %d/%d), sleeping %.1fs before retry",
-                label,
+                "%s %s (attempt %d/%d), sleeping %.1fs before retry",
+                label, "rate-limited" if isinstance(exc, RateLimitError) else f"transient failure: {str(exc)[:80]}",
                 attempt + 1,
                 max_retries + 1,
                 sleep_s,
@@ -379,4 +380,6 @@ class GeminiProvider(LLMProvider, VLMProvider):
         msg = str(exc).lower()
         if "quota" in msg or "rate" in msg or "429" in msg:
             raise RateLimitError(str(exc)) from exc
+        if any(k in msg for k in ("500 internal", "503", "unavailable", "overloaded", "deadline exceeded", "timed out", "timeout")):
+            raise TransientError(str(exc)) from exc      # one source must not be lost to a server hiccup
         raise LLMProviderError(str(exc)) from exc

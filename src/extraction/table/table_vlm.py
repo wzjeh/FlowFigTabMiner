@@ -126,6 +126,15 @@ def _mime_for(path: Path) -> str:
             "tif": "image/tiff", "tiff": "image/tiff"}.get(path.suffix.lower().lstrip("."), "image/png")
 
 
+def _degenerate(hdr, dat, n_cols) -> Optional[str]:
+    """Why a parsed grid deserves a re-roll, else None."""
+    if n_cols == 1 and len(hdr) + len(dat) >= 3:
+        return "single-column grid"
+    if not dat and len(hdr) >= 2:
+        return "no data rows"
+    return None
+
+
 class TableTranscriber:
     """One structured VLM call per table image (any ``VLMProvider``)."""
 
@@ -133,6 +142,8 @@ class TableTranscriber:
         self.vlm = vlm
         self.cfg = cfg
 
+    # a grid worth one more attempt: one cell per row, or rows but no data rows
+    # (attempt 1 of rb1_45 Table 1: 3 rows all in header_rows after an 8.7k-token loop in one cell)
     def transcribe(self, image: Path) -> TableTranscription:
         image = Path(image)
         last_exc = None
@@ -164,19 +175,25 @@ class TableTranscriber:
                 hdr, dat, n_cols, notes = normalize_grid(resp.header_rows, resp.data_rows)
                 if attempt > 1:
                     notes.append(f"attempt {attempt}: {'free-text' if schema is None else 'structured'} JSON at T={cfg.temperature}")
-                if attempt < len(attempts) and n_cols == 1 and len(hdr) + len(dat) >= 3:
-                    logger.warning("table_vlm single-column grid image=%s (%d rows) on attempt %d; re-rolling", image.name, len(hdr) + len(dat), attempt)
+                bad = _degenerate(hdr, dat, n_cols)
+                if attempt < len(attempts) and bad:
+                    logger.warning("table_vlm %s image=%s (%d rows) on attempt %d; re-rolling", bad, image.name, len(hdr) + len(dat), attempt)
                     if first is None:
-                        first = (meta, resp, hdr, dat, n_cols, notes + [f"single-column grid on attempt {attempt}"], elapsed)
+                        first = (meta, resp, hdr, dat, n_cols, notes + [f"{bad} on attempt {attempt}"], elapsed)
                     continue
                 break
             except Exception as exc:
                 last_exc = exc
                 logger.warning("table_vlm attempt %d failed image=%s exc=%s", attempt, image.name, str(exc)[:200])
-        if last_exc is not None or (first is not None and n_cols == 1):
+        if last_exc is not None or (first is not None and _degenerate(hdr, dat, n_cols)):
             if first is None:
                 return TableTranscription(ok=False, notes=f"vlm call failed: {last_exc}")
             meta, resp, hdr, dat, n_cols, notes, elapsed = first
+        if not dat and len(hdr) >= 2:
+            # every attempt filed all rows as header rows (seen on small property
+            # tables): a table has one header row at least and data below it
+            hdr, dat = hdr[:1], hdr[1:]
+            notes.append("all rows were returned as header rows: first row kept as the header")
         fin = str(getattr(meta, "finish_reason", None) or "").split(".")[-1].upper()
         if fin and fin not in ("STOP", "END_TURN"):
             notes.append(f"finish_reason={fin}")

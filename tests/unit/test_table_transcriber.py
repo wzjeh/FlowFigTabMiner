@@ -93,3 +93,15 @@ def test_caption_and_footnotes_are_one_line(img):
     payload = {"caption": "Table 5. Br\nLi exchange", "footnotes": "[a] GC.\n[b] NMR.", "header_rows": [["a", "b"]], "data_rows": [["1", "2"]]}
     tr = TableTranscriber(vlm=_Stub(payload), cfg=_CFG).transcribe(img)
     assert tr.caption == "Table 5. Br Li exchange" and tr.footnotes == "[a] GC. [b] NMR."
+
+
+def test_all_rows_filed_as_header_is_rerolled_then_split(img):
+    header_only = {"header_rows": [["Fluid", "Phase", "Density"], ["Toluene", "primary", "859"], ["Mixed acid", "secondary", "1590"]], "data_rows": []}
+    good = {"header_rows": [["Fluid", "Phase", "Density"]], "data_rows": [["Toluene", "primary", "859"], ["Mixed acid", "secondary", "1590"]]}
+    stub = _Seq([header_only, good])
+    out = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
+    assert out.ok and len(out.data_rows) == 2 and "attempt 2" in out.notes
+    stub = _Seq([header_only, header_only, header_only])
+    out = TableTranscriber(vlm=stub, cfg=_CFG).transcribe(img)
+    assert out.ok and out.header_rows == [["Fluid", "Phase", "Density"]] and out.data_rows[0] == ["Toluene", "primary", "859"]
+    assert "first row kept as the header" in out.notes and stub.temps == [0.0, 0.0, 0.4]

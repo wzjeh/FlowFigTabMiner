@@ -44,6 +44,7 @@ class PointCountConsistency(ConsistencyCheck):
 
     Optional keys:
       - ``expected_min`` (int) — caller's minimum-plausible count.
+      - ``is_heatmap`` (bool) — a heatmap labels every cell, so 0 labels is a real gap.
     """
 
     id = "point_count_consistency"
@@ -71,6 +72,12 @@ class PointCountConsistency(ConsistencyCheck):
         if yolo_n == 0 and ocr_n == 0:
             logger.debug("point_count_consistency yolo=0 ocr=0 → skip (empty chart)")
             return ConsistencyResult()  # nothing to check; downstream handles
+        if ocr_n == 0 and not stage_outputs.get("is_heatmap"):
+            # An ordinary scatter / line plot prints no value next to its points:
+            # there is nothing to cross-check.  Only a chart that labels its
+            # points (heatmap cells, annotated markers) can disagree with YOLO.
+            logger.debug("point_count_consistency yolo=%d ocr=0 → skip (chart carries no value labels)", yolo_n)
+            return ConsistencyResult()
 
         ratio = min(yolo_n, ocr_n) / max(yolo_n, ocr_n, 1)
         logger.debug(
