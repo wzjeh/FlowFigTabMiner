@@ -203,7 +203,14 @@ def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:
         # what the legend OCR said.
         f = dict(meta["facts"])
         n = len(raw)
-        n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
+        # The pipeline's own label count wins when it recorded one: on a chart with a
+        # right Y axis EVERY point carries a Y_Right/Data_Value (the right-axis reading),
+        # so counting that column would turn dual-axis scatter plots into heatmaps
+        # (rb2_67 / rb2_38: conversion and selectivity filed as temperature).
+        if "n_point_labels" in f:
+            n_dv = int(f.get("n_point_labels") or 0)
+        else:
+            n_dv = sum(1 for r in raw if isinstance(r, dict) and r.get("Y_Right/Data_Value") is not None)
         if f.get("chart_type") != "heatmap" and n and n_dv / n >= 0.5 and is_grid_like(raw)["grid"]:
             f["chart_type"] = "heatmap"; f["heatmap_signal"] = "point_labels+grid(reclassified)"
             meta["facts"] = f; meta["figure_type"] = "heatmap"

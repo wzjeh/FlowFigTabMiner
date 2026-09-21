@@ -128,7 +128,12 @@ def test_unmapped_column_falls_back_instead_of_being_dropped():
            "series_map": {"Conversion": {"conversion_pct": "Y_Left"}}}
     raw = [{"X": 5, "Y_Left": 91.0, "Y_Right/Data_Value": 0.4, "Series": "Default"}]      # legend matching failed
     rec = synthesize_records(tpl, raw, "Figure 3", {"chart_type": "xy"}, fb)[0]
-    assert rec["other_metrics"] == {"conversion_or_selectivity_pct": 91.0, "data_value": 0.4} and rec.get("conversion_pct") is None
+    # Y_Left falls back to the local-vars field; the unnamed right-axis reading is not invented into a metric
+    assert rec["other_metrics"] == {"conversion_or_selectivity_pct": 91.0} and rec.get("conversion_pct") is None
+    # a point whose ONLY measured column is unnamed keeps it under a generic slot
+    lone = synthesize_records({"record_template": {"conditions": {}}, "axis_map": {"X": "conditions.pressure_bar", "Y_Left": None}},
+                              [{"X": 5, "Y_Left": 12.5, "Series": "Default"}], "Figure 3", {"chart_type": "xy"}, {})[0]
+    assert lone["other_metrics"] == {"y_left": 12.5}
 
 
 def test_series_route_by_axis_field_reference():

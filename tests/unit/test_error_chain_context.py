@@ -325,3 +325,13 @@ def test_nan_point_labels_do_not_turn_a_scatter_into_a_heatmap(tmp_path):
     # the same grid WITH read labels is still a value map
     ev["raw_data"] = [dict(pt, **{"Y_Right/Data_Value": 50.0}) for pt in ev["raw_data"]]
     assert infer_legacy_facts(ev)["meta"]["facts"]["chart_type"] == "heatmap"
+
+
+def test_dual_axis_scatter_is_not_reclassified_as_heatmap():
+    from src.adjudication.source_discovery import infer_legacy_facts
+    # every point of a dual-axis chart carries the right-axis reading; the pipeline counted 0 point labels
+    raw = [{"Series": "Conversion", "X": x, "Y_Left": y, "Y_Right/Data_Value": y / 5.0} for x in (5, 10, 20, 30) for y in (10, 50, 90)]
+    ev = {"meta": {"facts": {"chart_type": "xy", "n_point_labels": 0, "has_point_labels": False}}, "raw_data": raw}
+    assert infer_legacy_facts(ev)["meta"]["facts"]["chart_type"] == "xy"
+    ev["meta"]["facts"]["n_point_labels"] = 12                       # a labelled value map recorded as xy is still reclassified
+    assert infer_legacy_facts(ev)["meta"]["facts"]["chart_type"] == "heatmap"

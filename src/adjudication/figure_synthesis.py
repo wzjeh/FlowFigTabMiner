@@ -286,9 +286,15 @@ def synthesize_records(
             val = y_left[i] if col == "Y_Left" else (x_vals[i] if col == "X" else _num(pt.get(col)))
             if val is None:
                 continue
-            # series routing > axis_map > the local-vars axis field > a named other_metrics slot:
-            # a number read off the chart is never dropped
-            path = routes.get(col) or axis_map.get(col) or fallback.get(col) or _COL_FALLBACK_NAME[col]
+            # series routing > axis_map > the local-vars axis field; a column nobody names
+            # gets an other_metrics slot only when it would otherwise be the point's sole
+            # loss — on a dual-axis chart every point also carries the OTHER axis' reading,
+            # which means nothing for that series
+            path = routes.get(col) or axis_map.get(col) or fallback.get(col)
+            if not path:
+                if any(routes.get(c) or axis_map.get(c) or fallback.get(c) for c in RAW_COLS if c != "X"):
+                    continue
+                path = _COL_FALLBACK_NAME[col]
             _set_path(rec, path, _transform(float(val), transforms.get(col)))
             data_fields.append(path)
 
