@@ -118,6 +118,26 @@ def health(papers: List[str], inter_dir: str = INTER_DIR, final_dir: str = FINAL
             if s.get("outcome") == "failed":
                 out["failures"].append({"paper": b, "source": s.get("source_id"), "stage": s.get("stage"),
                                         "reason": str(s.get("reason"))[:200]})
+        q = out.setdefault("quality", collections.Counter())
+        for ev in glob.glob(os.path.join(idir, "macro_cleaned", "*_evidence.json")):
+            try:
+                e = json.load(open(ev))
+            except Exception:
+                continue
+            raw = [p for p in (e.get("raw_data") or []) if isinstance(p, dict)]
+            q["figures"] += 1
+            q["figure_points"] += len(raw)
+            q["figures_without_values"] += not any(isinstance(p.get(c), (int, float)) for p in raw for c in ("X", "Y_Left", "Y_Right/Data_Value"))
+        for ev in glob.glob(os.path.join(idir, "tables", "*", "*_evidence.json")):
+            try:
+                e = json.load(open(ev))
+            except Exception:
+                continue
+            ps = str(e.get("parse_status"))
+            q["tables"] += 1
+            q["tables_failed"] += ps.startswith("failed")
+            q["tables_unverified"] += ps == "unverified"
+            q["tables_irrelevant"] += e.get("is_relevant") is False
         fp = os.path.join(final_dir, f"{b}_normalized.json")
         if not os.path.exists(fp):
             if timing.get("status") == "ok":
@@ -132,6 +152,7 @@ def health(papers: List[str], inter_dir: str = INTER_DIR, final_dir: str = FINAL
         if n == 0:
             out["zero_records"].append(b)
     out["stage_outcomes"] = dict(out["stage_outcomes"])
+    out["quality"] = dict(out.get("quality") or {})
     return out
 
 
@@ -217,6 +238,7 @@ def cmd_health(a) -> None:
         if h[k]:
             print(f"  {k}: {h[k]}")
     print("  stage outcomes:", h["stage_outcomes"])
+    print("  sources:", h["quality"])
     if h["failures"]:
         print(f"  failed sources: {len(h['failures'])}")
         for f in h["failures"]:
