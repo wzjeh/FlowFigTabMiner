@@ -182,3 +182,23 @@ def test_table_caption_precedence_vlm_first_pdf_text_fallback():
     ev = apply_context_to_evidence({"caption_text": "", "table_note_text": "[a] NMR yield."}, ctx, "table")
     assert ev["caption_text"].startswith("Table 1. Effect of ACHTUNG") and ev["caption_source"] == "pdf_text"
     assert ev["table_note_text"] == "[a] NMR yield." and ev["note_source"] == "vlm" and ev["label"] == "Table 1"
+
+
+def test_residence_time_candidates_constrain_and_fill():
+    enforce = LocalVarsBuilder._enforce_time_candidates
+    cands = [{"value_s": 0.82, "quote": "carried out with the system shown in Scheme 10 (−78 °C, Rt = 0.82 s)."}]
+    # LLM left it null, one candidate, flow table → filled with the quote
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "reactor_type": "micro flow system"}}, cands, "Electrophile,Product,Yield")
+    fc = r["fixed_conditions"]
+    assert fc["residence_time_s"] == 0.82 and "Rt = 0.82 s" in fc["residence_time_quote"] and fc["residence_time_source"] == "paper_text_single_candidate"
+    # a value the paper never states is cleared
+    r = enforce({"fixed_conditions": {"residence_time_s": 3.0, "reactor_type": "flow"}}, cands + [{"value_s": 1.5, "quote": "tR = 1.5 s"}], "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] is None
+    # a quoted value is kept and gets its sentence
+    r = enforce({"fixed_conditions": {"residence_time_s": 1.5, "reactor_type": "flow"}}, cands + [{"value_s": 1.5, "quote": "tR = 1.5 s"}], "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] == 1.5 and r["fixed_conditions"]["residence_time_quote"] == "tR = 1.5 s"
+    # the table varies tR (column) → null; batch table → not filled
+    r = enforce({"fixed_conditions": {"residence_time_s": 0.82}}, cands, "Entry,tR1 [s],Yield")
+    assert r["fixed_conditions"]["residence_time_s"] is None
+    r = enforce({"fixed_conditions": {"residence_time_s": None, "reactor_type": "round-bottomed flask"}}, cands, "E,Yield")
+    assert r["fixed_conditions"]["residence_time_s"] is None

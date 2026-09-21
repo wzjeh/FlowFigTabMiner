@@ -1,5 +1,7 @@
 import os
 import json
+import re
+from src.adjudication.time_statements import find_residence_time_statements, fixed_candidates
 
 from src.llm.config import LLMConfig
 from src.llm.providers.base import LLMProvider
@@ -53,8 +55,14 @@ class LocalVarsBuilder:
                 source_id, evidence_data, text_window, context
             )
         else:
+            # Residence-time statements the model may cite (caption / note /
+            # scheme text / paper window); nothing is ever computed from
+            # reactor geometry (Zhao 2026-09-21).
+            scan = " ".join(str(x or "") for x in (evidence_data.get("caption_text"), evidence_data.get("table_note_text"),
+                                                   scheme_conditions, text_window))
+            time_cands = fixed_candidates(find_residence_time_statements(scan))
             system_prompt, user_prompt = self._build_table_prompts(
-                source_id, evidence_data, text_window, csv_head, scheme_conditions, context
+                source_id, evidence_data, text_window, csv_head, scheme_conditions, context, time_cands
             )
         if global_block:
             user_prompt = user_prompt.replace("=== OUTPUT SCHEMA ===", global_block + "\n=== OUTPUT SCHEMA ===", 1)
@@ -69,6 +77,8 @@ class LocalVarsBuilder:
         result = self._clean_json(llm_response.text, source_id, source_type)
         if source_type == "figure":
             result = self._enforce_chart_facts(result, evidence_data)
+        else:
+            result = self._enforce_time_candidates(result, time_cands, csv_head)
 
         os.makedirs(output_dir, exist_ok=True)
         with open(out_path, "w") as f:
@@ -325,7 +335,42 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
             lines.append("No legend detected: series labels are not available for this chart.")
         return "\n".join(lines) + "\n"
 
-    def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions="", context=None):
+    _TR_COLUMN_RE = re.compile(r"residence|\bt\s*_?R\d?\b|\bRt\d?\b|retention time|\bτ\b", re.I)
+    _BATCH_RE = re.compile(r"batch|flask|vial|stirr", re.I)
+
+    @classmethod
+    def _enforce_time_candidates(cls, result, time_cands, csv_head=""):
+        """fixed_conditions.residence_time_s is either one of the quoted
+        statements found in the paper text (with its sentence in
+        ``residence_time_quote``) or null — never a computed or remembered
+        number.  A table that varies residence time (a tR column) keeps it
+        null; a single candidate for a flow table is filled deterministically."""
+        fc = result.get("fixed_conditions") if isinstance(result, dict) else None
+        if not isinstance(fc, dict):
+            return result
+        header = (csv_head or "").split("\n", 1)[0]
+        allowed = {round(float(c["value_s"]), 6): c for c in (time_cands or [])}
+        val = fc.get("residence_time_s")
+        if cls._TR_COLUMN_RE.search(header):
+            fc["residence_time_s"] = None; fc["residence_time_quote"] = None
+            return result
+        match = None
+        if isinstance(val, (int, float)) and not isinstance(val, bool):
+            match = next((c for a, c in allowed.items() if abs(float(val) - a) <= 1e-6 * max(1.0, abs(a))), None)
+            if match is None:
+                print(f"[LocalVarsBuilder] residence_time_s={val} is not a quoted statement — cleared")
+                fc["residence_time_s"] = None; fc["residence_time_quote"] = None
+        is_batch = bool(cls._BATCH_RE.search(str(fc.get("reactor_type") or "")))
+        if fc.get("residence_time_s") is None and len(allowed) == 1 and not is_batch:
+            (v, c), = allowed.items()
+            fc["residence_time_s"] = v; fc["residence_time_quote"] = c["quote"]
+            fc["residence_time_source"] = "paper_text_single_candidate"
+        elif match is not None:
+            fc["residence_time_quote"] = fc.get("residence_time_quote") or match["quote"]
+            fc["residence_time_source"] = "paper_text_quoted"
+        return result
+
+    def _build_table_prompts(self, source_id, ev, text_window, csv_head, scheme_conditions="", context=None, time_cands=None):
         system_prompt = (
             "You are an expert flow chemistry data analyst. "
             "Analyze a single extracted table from a flow chemistry paper and produce "
@@ -354,6 +399,20 @@ the axis entries; REQUIRED when CHART FACTS say the chart is a heatmap or point 
         inner_block = (f"\n=== TABLE TEXT LAYER (verbatim from the PDF, row order; authoritative for numbers) ===\n{inner_text}\n"
                        if inner_text else "")
 
+        if time_cands:
+            lines = "\n".join(f"- {c['value_s']:g} s — \"{c['quote'][:300]}\"" for c in time_cands)
+            time_block = f"""
+=== RESIDENCE-TIME STATEMENTS FOUND IN THE PAPER TEXT (verbatim) ===
+{lines}
+fixed_conditions.residence_time_s may ONLY be one of these values (seconds), with residence_time_quote = that
+sentence verbatim, and only when the sentence describes the conditions of THIS table. Otherwise both are null.
+Never derive a residence time from reactor volume, length or flow rate.
+"""
+        else:
+            time_block = """
+=== RESIDENCE-TIME STATEMENTS FOUND IN THE PAPER TEXT ===
+(none) — fixed_conditions.residence_time_s stays null; never derive it from reactor volume, length or flow rate.
+"""
         scheme_cond_block = ""
         if scheme_conditions:
             scheme_cond_block = f"""
@@ -372,7 +431,7 @@ CSV preview (first 6 rows):
 {inner_block}
 === RELEVANT PAPER TEXT CONTEXT (4000 chars) ===
 {text_window}
-{scheme_cond_block}
+{scheme_cond_block}{time_block}
 === OUTPUT SCHEMA ===
 Output a single valid JSON object (no markdown):
 {{
@@ -388,6 +447,7 @@ Output a single valid JSON object (no markdown):
   "fixed_conditions": {{
     "temperature_C": null,
     "residence_time_s": null,
+    "residence_time_quote": null,
     "reaction_time_s": null,
     "solvent": null,
     "catalyst": null,
