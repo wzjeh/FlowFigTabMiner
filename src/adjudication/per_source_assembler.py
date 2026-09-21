@@ -151,7 +151,7 @@ class PerSourceAssembler:
         except Exception:
             pass
         try:
-            tpl = json.loads(sanitize_json_text(raw_text))
+            tpl = json.loads(sanitize_json_text(raw_text), strict=False)   # raw newlines inside strings are data
         except Exception as exc:
             logger.error("per_source.template_parse_fail source=%s exc=%s", packet.source_id, exc)
             return None, 0

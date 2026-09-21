@@ -200,6 +200,33 @@ def _is_smiles(s: str) -> bool:
         return False
 
 
+def _rdkit_parses(s: str) -> bool:
+    """RDKit accepts the string as a molecule ("CCO" included — unlike
+    ``_is_smiles``, which also rejects plain words for the name→SMILES move)."""
+    s = (s or "").strip()
+    if len(s) < 2 or " " in s:
+        return False
+    try:
+        from rdkit import Chem, RDLogger
+        RDLogger.DisableLog("rdApp.*")
+        return Chem.MolFromSmiles(s) is not None
+    except Exception:
+        return False
+
+
+def drop_invalid_smiles(record: dict) -> dict:
+    """A ``*_smiles`` value that RDKit cannot parse (an unfilled ``[STRUCTURE]``
+    token copied from the CSV, a MolNexTR misread) is cleared: an empty field
+    beats a wrong molecule.  The cleared text is kept in ``__smiles_dropped``."""
+    for f in ("reactant1", "reactant2", "product"):
+        v = record.get(f"{f}_smiles")
+        if v and not _rdkit_parses(str(v)):
+            note = f"{f}={str(v)[:80]}"
+            record["__smiles_dropped"] = (record.get("__smiles_dropped") + "; " + note) if record.get("__smiles_dropped") else note
+            record[f"{f}_smiles"] = None
+    return record
+
+
 def promote_smiles_in_names(record: dict) -> dict:
     """Move a SMILES string filed under ``reactant1/2_name`` / ``product_name``
     into the empty ``*_smiles`` field (the name field is then cleared)."""
@@ -1268,6 +1295,7 @@ class PostProcessor:
             #    (deterministic; the CSV carries MolNexTR SMILES in the
             #    structure cells and the model sometimes files them as names) --
             promote_smiles_in_names(nr)
+            drop_invalid_smiles(nr)
 
             # -- Chemical-name normalization + abbreviation resolution
             #    (always — fixes OCR errors, restores bare abbreviations like

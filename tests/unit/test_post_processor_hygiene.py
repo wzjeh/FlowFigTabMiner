@@ -86,3 +86,11 @@ def test_excel_safe_frame_strips_control_characters():
     df = pd.DataFrame({"a": ["Figure 9 \x02 Eﬀect", "ok"], "b": [1, 2]})
     out = _excel_safe_frame(df)
     assert out["a"].tolist() == ["Figure 9  Eﬀect", "ok"] and out["b"].tolist() == [1, 2]
+
+
+def test_invalid_smiles_fields_are_cleared():
+    from src.adjudication.post_processor import drop_invalid_smiles
+    r = {"product_smiles": "[STRUCTURE]", "reactant1_smiles": "CCCCN1CC(c2ccccc2)C(O)c3ccco31", "reactant2_smiles": "CCO"}
+    drop_invalid_smiles(r)
+    assert r["product_smiles"] is None and r["reactant1_smiles"] is None and r["reactant2_smiles"] == "CCO"
+    assert r["__smiles_dropped"] == "reactant1=CCCCN1CC(c2ccccc2)C(O)c3ccco31; product=[STRUCTURE]"
