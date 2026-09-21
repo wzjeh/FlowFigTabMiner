@@ -284,3 +284,30 @@ def test_malformed_reply_is_rerolled_once_at_higher_temperature(tmp_path):
                              max_workers=1, raw_dir=str(tmp_path))
     records = asm.assemble([_make_packet("page_4_table_0", "table")], CommonPreamble.build({}, ""), "test_pdf")
     assert [r.get("product_name") for r in records] == ["OK_RETRY"] and llm.temps == [0.0, 0.4]
+
+
+def test_failed_llm_call_gets_the_second_attempt_and_reports_the_call_failure(tmp_path):
+    from src.llm.config import LLMConfig
+
+    class _Flaky(_StubLLM):
+        def __init__(self, fail_times):
+            super().__init__({})
+            self.fail_times, self.temps = fail_times, []
+
+        def chat(self, messages, cfg):
+            self.temps.append(cfg.temperature)
+            if len(self.temps) <= self.fail_times:
+                raise RuntimeError("500 INTERNAL")
+            return LLMResponse(text=json.dumps([{"product_name": "RECOVERED"}]), model="stub", tokens_in=1, tokens_out=1, latency_ms=1.0)
+
+    def _run(llm):
+        asm = PerSourceAssembler(figure_synthesis=False, llm=llm, llm_cfg=LLMConfig(provider="gemini", model="x", temperature=0.0),
+                                 prompt_builders={"figure": FigurePromptBuilder(), "table": TablePromptBuilder()},
+                                 max_workers=1, raw_dir=str(tmp_path))
+        return asm.assemble([_make_packet("page_12_table_0", "table")], CommonPreamble.build({}, ""), "test_pdf")
+
+    llm = _Flaky(1)
+    assert [r.get("product_name") for r in _run(llm)] == ["RECOVERED"] and llm.temps == [0.0, 0.4]
+    assert _run(_Flaky(2)) == []
+    status = json.load(open(tmp_path / "test_pdf" / "status" / "page_12_table_0.json"))
+    assert status["outcome"] == "failed" and status["reason"].startswith("LLM call failed: 500 INTERNAL")

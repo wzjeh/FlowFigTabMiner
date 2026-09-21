@@ -19,9 +19,17 @@ Template shape (produced by ``FigureTemplateBuilder``)::
                    "Y_Right/Data_Value": "yield_pct"},          # field path or null
       "axis_transforms": {"X": {"scale": 1, "offset": 0}, ...},  # optional unit fixes
       "series_map": {"-78 °C": {"conditions.temperature_C": -78},
-                     "3a": {"product_label": "3a"}},              # per-series fields
+                     "3a": {"product_label": "3a"},               # per-series fields
+                     "Conversion": {"conversion_pct": "Y_Left"}},  # per-series routing of a raw column
       "notes": "..."
     }
+
+Two rules keep measured numbers from disappearing:
+- a series_map value that names a raw column ("X" / "Y_Left" / "Y_Right/Data_Value"), or the field
+  axis_map gave that column, routes the column of the series' points to the field (several
+  quantities sharing one axis);
+- a raw column that carries a value but ends up mapped nowhere falls back to the field the
+  local-vars builder gave that axis, else to ``other_metrics.<column>`` — never dropped.
 """
 
 from __future__ import annotations
@@ -156,6 +164,46 @@ def _num(v: Any) -> Optional[float]:
     return float(v)
 
 
+def _series_routes(smap: Any, axis_map: Optional[Dict[str, Any]] = None) -> Dict[str, str]:
+    """{raw column: field path} for the series_map entries that route a column.
+    The model names the column either directly ("conversion_pct": "Y_Left") or by
+    the field axis_map gave it ("yield_pct": "other_metrics.yield_or_conversion_pct")."""
+    if not isinstance(smap, dict):
+        return {}
+    by_field = {p: c for c, p in (axis_map or {}).items() if c in RAW_COLS and isinstance(p, str) and p}
+    routes = {}
+    for path, val in smap.items():
+        if not isinstance(val, str) or not _valid_path(path):
+            continue
+        col = val if val in RAW_COLS else by_field.get(val)
+        if col and path != (axis_map or {}).get(col):
+            routes[col] = path
+    return routes
+
+
+def _is_route(val: Any, axis_map: Dict[str, Any]) -> bool:
+    return isinstance(val, str) and (val in RAW_COLS or val in {p for p in axis_map.values() if p})
+
+
+def axis_fallback(local_vars: Optional[Dict[str, Any]]) -> Dict[str, str]:
+    """{raw column: field path} from local_vars.axis_semantics — where a column
+    goes when the template leaves it unmapped."""
+    ax = (local_vars or {}).get("axis_semantics") if isinstance(local_vars, dict) else None
+    if not isinstance(ax, dict):
+        return {}
+    out = {}
+    for col, keys in (("X", ("x_axis",)), ("Y_Left", ("y_left_axis",)), ("Y_Right/Data_Value", ("data_value", "y_right_axis"))):
+        for k in keys:
+            path = (ax.get(k) or {}).get("maps_to_field") if isinstance(ax.get(k), dict) else None
+            if _valid_path(path):
+                out[col] = path
+                break
+    return out
+
+
+_COL_FALLBACK_NAME = {"X": "other_metrics.x", "Y_Left": "other_metrics.y_left", "Y_Right/Data_Value": "other_metrics.data_value"}
+
+
 def validate_template(tpl: Any) -> Optional[str]:
     """Return an error string if the template is unusable, else None."""
     if not isinstance(tpl, dict):
@@ -166,7 +214,8 @@ def validate_template(tpl: Any) -> Optional[str]:
     if not isinstance(am, dict):
         return "axis_map missing"
     mapped = [c for c in RAW_COLS if _valid_path(am.get(c))]
-    if not mapped:
+    sm = tpl.get("series_map") if isinstance(tpl.get("series_map"), dict) else {}
+    if not mapped and not any(_series_routes(v, am) for v in sm.values()):
         return "axis_map maps no raw column to a known field"
     return None
 
@@ -176,9 +225,12 @@ def synthesize_records(
     raw_data: List[Dict[str, Any]],
     human_label: str,
     facts: Optional[Dict[str, Any]] = None,
+    fallback: Optional[Dict[str, str]] = None,
 ) -> List[Dict[str, Any]]:
-    """Build one record per raw point from the template.  Pure function."""
+    """Build one record per raw point from the template.  Pure function.
+    ``fallback`` = ``axis_fallback(local_vars)``: fields for columns the template left unmapped."""
     facts = facts or {}
+    fallback = fallback or {}
     template = tpl["record_template"]
     axis_map = {c: (p if _valid_path(p) else None) for c, p in (tpl.get("axis_map") or {}).items()}
     transforms = tpl.get("axis_transforms") or {}
@@ -214,8 +266,11 @@ def synthesize_records(
         data_fields = []                       # paths set from the point / its series (never guarded)
         series = pt.get("Series")
         smap = series_map.get(series) if series is not None else None
+        routes = _series_routes(smap, axis_map)   # this series' own column → field routing
         if isinstance(smap, dict):
             for path, val in smap.items():
+                if _is_route(val, axis_map):
+                    continue                    # a routing entry, applied with the columns below
                 # A legend series may set conditions / identities, never an
                 # outcome constant: "<20%" → yield_pct=10 would fabricate a
                 # measurement for every point whose cell label was not read.
@@ -228,10 +283,12 @@ def synthesize_records(
             rec["other_metrics"]["series"] = series
 
         for col in RAW_COLS:
-            path = axis_map.get(col)
             val = y_left[i] if col == "Y_Left" else (x_vals[i] if col == "X" else _num(pt.get(col)))
-            if not path or val is None:
+            if val is None:
                 continue
+            # series routing > axis_map > the local-vars axis field > a named other_metrics slot:
+            # a number read off the chart is never dropped
+            path = routes.get(col) or axis_map.get(col) or fallback.get(col) or _COL_FALLBACK_NAME[col]
             _set_path(rec, path, _transform(float(val), transforms.get(col)))
             data_fields.append(path)
 

@@ -26,7 +26,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional, Any, Dict, List, Mapping
 
-from src.adjudication.figure_synthesis import synthesize_records, validate_template
+from src.adjudication.figure_synthesis import axis_fallback, synthesize_records, validate_template
 from src.adjudication.per_source_prompts import (
     CommonPreamble,
     FigureTemplateBuilder,
@@ -162,7 +162,7 @@ class PerSourceAssembler:
             logger.error("per_source.template_invalid source=%s err=%s", packet.source_id, err)
             return None, 0
         facts = (packet.evidence.get("meta", {}) or {}).get("facts") or {}
-        records = synthesize_records(tpl, raw_data, packet.human_label, facts)
+        records = synthesize_records(tpl, raw_data, packet.human_label, facts, axis_fallback(packet.local_vars))
         for j, rec in enumerate(records):
             rec["__source_id"] = packet.source_id
             rec["__assembly_order"] = order_idx * 1000 + j
@@ -227,9 +227,12 @@ class PerSourceAssembler:
                     cfg,
                 )
             except Exception as exc:
-                logger.error("per_source.llm_fail source=%s exc=%s", packet.source_id, exc)
-                write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"LLM call failed: {exc}")
-                return [], 0
+                # The provider already backed off on rate limits / 5xx.  A prompt that
+                # still fails at temperature 0 (rb1_70 Table: four "500 INTERNAL" in a
+                # row) gets the second, warmer attempt before the source is given up.
+                logger.error("per_source.llm_fail attempt=%d source=%s exc=%s", attempt, packet.source_id, exc)
+                last_exc = RuntimeError(f"LLM call failed: {exc}")
+                continue
 
             raw_text = response.text or ""
 
@@ -253,7 +256,8 @@ class PerSourceAssembler:
                 logger.warning("per_source.parse_fail attempt=%d source=%s exc=%s", attempt, packet.source_id, exc)
         if last_exc is not None or parsed is None:
             logger.error("per_source.parse_fail source=%s exc=%s raw=%s", packet.source_id, last_exc, raw_path)
-            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", f"JSON parse failed: {last_exc}")
+            reason = str(last_exc) if str(last_exc).startswith("LLM call failed") else f"JSON parse failed: {last_exc}"
+            write_status(os.path.dirname(raw_dir), packet.source_id, "assembly", "failed", reason)
             return [], 0
 
         # Belt-and-braces tagging + ordering aid.

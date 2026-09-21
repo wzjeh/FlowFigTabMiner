@@ -102,3 +102,43 @@ def test_heatmap_x_columns_are_snapped_in_synthesis():
     raw = [{"Series": "Default", "X": x, "Y_Left": -78.0, "Y_Right/Data_Value": 1.0} for x in (0.310, 0.322, 0.316)]
     recs = synthesize_records(tpl, raw, "Figure 1", {"chart_type": "heatmap"})
     assert len({r["conditions"]["residence_time_s"] for r in recs}) == 1
+
+
+def test_series_routes_a_shared_axis_to_different_outcome_fields():
+    from src.adjudication.figure_synthesis import validate_template
+    tpl = {"record_template": {"conditions": {}}, "axis_map": {"X": "conditions.pressure_bar", "Y_Left": None},
+           "series_map": {"Conversion": {"conversion_pct": "Y_Left"}, "Selectivity": {"selectivity_pct": "Y_Left"}}}
+    assert validate_template(tpl) is None
+    raw = [{"X": 5, "Y_Left": 91.0, "Series": "Conversion"}, {"X": 5, "Y_Left": 98.5, "Series": "Selectivity"}]
+    a, b = synthesize_records(tpl, raw, "Figure 3", {"chart_type": "xy"})
+    assert a["conversion_pct"] == 91.0 and a.get("selectivity_pct") is None and b["selectivity_pct"] == 98.5
+    assert "conversion_pct" in a["__data_fields"] and a["conditions"]["pressure_bar"] == 5
+    # a template that maps nothing at all is still rejected
+    assert validate_template({"record_template": {}, "axis_map": {"X": None}, "series_map": {"A": {"product_label": "3a"}}})
+
+
+def test_unmapped_column_falls_back_instead_of_being_dropped():
+    from src.adjudication.figure_synthesis import axis_fallback
+    lv = {"axis_semantics": {"x_axis": {"maps_to_field": "conditions.pressure_bar"},
+                             "y_left_axis": {"maps_to_field": "other_metrics.conversion_or_selectivity_pct"},
+                             "data_value": {"maps_to_field": "not a path"}}}
+    fb = axis_fallback(lv)
+    assert fb == {"X": "conditions.pressure_bar", "Y_Left": "other_metrics.conversion_or_selectivity_pct"}
+    tpl = {"record_template": {"conditions": {}}, "axis_map": {"X": "conditions.pressure_bar", "Y_Left": None, "Y_Right/Data_Value": None},
+           "series_map": {"Conversion": {"conversion_pct": "Y_Left"}}}
+    raw = [{"X": 5, "Y_Left": 91.0, "Y_Right/Data_Value": 0.4, "Series": "Default"}]      # legend matching failed
+    rec = synthesize_records(tpl, raw, "Figure 3", {"chart_type": "xy"}, fb)[0]
+    assert rec["other_metrics"] == {"conversion_or_selectivity_pct": 91.0, "data_value": 0.4} and rec.get("conversion_pct") is None
+
+
+def test_series_route_by_axis_field_reference():
+    tpl = {"record_template": {"conditions": {}},
+           "axis_map": {"X": "other_metrics.catalyst_mol_pct", "Y_Left": "other_metrics.yield_or_conversion_pct"},
+           "series_map": {"Yield of biphenyl": {"product_name": "biphenyl", "yield_pct": "other_metrics.yield_or_conversion_pct"},
+                          "Conversion of 4-NBDT": {"conversion_pct": "other_metrics.yield_or_conversion_pct"}}}
+    raw = [{"X": 1.0, "Y_Left": 86.8, "Series": "Conversion of 4-NBDT"}, {"X": 1.0, "Y_Left": 71.0, "Series": "Yield of biphenyl"},
+           {"X": 2.0, "Y_Left": 50.0, "Series": "Default"}]
+    a, b, c = synthesize_records(tpl, raw, "Figure 9", {"chart_type": "xy"})
+    assert a["conversion_pct"] == 86.8 and "yield_or_conversion_pct" not in a["other_metrics"]
+    assert b["yield_pct"] == 71.0 and b["product_name"] == "biphenyl"
+    assert c["other_metrics"]["yield_or_conversion_pct"] == 50.0 and c.get("yield_pct") is None      # unmatched series keeps the axis field
