@@ -211,3 +211,15 @@ def test_tall_merged_cell_drawing_walks_up_to_its_token():
     out, rep = align_structures(grid, meta, row_centres=rows, col_centres=cols)
     assert rep["status"] == "anchored" and rep["assigned"] == 2 and rep["filled_empty"] == 0
     assert out[1][0] == "C0 1a" and out[3][0] == "" and out[5][0] == "C1 1b" and out[6][0] == ""
+
+
+def test_fill_ditto_copies_down_except_outcome_and_entry_columns():
+    from src.extraction.table.grid_ops import fill_ditto
+    hdr = [["Entry", "Flow rate [mL/min]", "Rt [min]", "Substrate", "Yield [%]"]]
+    dat = [["1", "0.63", "5", "CCO", "22"], ["2", "", "", "", ""], ["", "0.10", "30", "c1ccccc1", "75"], ["4", "", "", "", "28"]]
+    out, n = fill_ditto(hdr, dat)
+    assert n == 6
+    assert out[1] == ["2", "0.63", "5", "CCO", ""]          # yield blank stays (missing result)
+    assert out[2][0] == "" and out[3] == ["4", "0.10", "30", "c1ccccc1", "28"]   # entry column untouched
+    out, n = fill_ditto(hdr, [["1", "", "", "", ""]])
+    assert n == 0 and out == [["1", "", "", "", ""]]         # nothing above → nothing filled

@@ -53,7 +53,8 @@ _OUTPUT_SCHEMA = """For each reaction record, output one JSON object with these 
   "paper_doi": null,               // DOI found in paper text, null if not found
   "conditions": {
     "temperature_C": null,
-    "residence_time_s": null,
+    "residence_time_s": null,      // FLOW only: residence time in seconds (minutes × 60)
+    "reaction_time_s": null,       // BATCH / flask only: reaction time in seconds; null for flow
     "flow_rate_mL_min": null,
     "flow_rate_stream1_mL_min": null,
     "flow_rate_stream2_mL_min": null,
@@ -154,7 +155,8 @@ _BASE_RULES = """=== RULES ===
     THIS source mentions a quantity (e.g. "Effects of temperature and residence time",
     "tR = 0.055 s", "at -78 °C"), that field comes from there — or stays null if the source
     varies it — NEVER from a paper-level default. A source described as batch / macrobatch /
-    flask never receives flow_rate or residence_time defaults."""
+    flask never receives flow_rate or residence_time defaults: its time column ("t", "time",
+    "reaction time") is conditions.reaction_time_s (seconds), residence_time_s stays null."""
 
 _DOMAIN_KNOWLEDGE = """=== FLOW CHEMISTRY DOMAIN KNOWLEDGE ===
 - For organolithium flow chemistry papers: if reactor_type is not explicitly stated in a source,

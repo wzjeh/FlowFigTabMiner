@@ -114,8 +114,9 @@ def collect(paths: list[str]) -> dict:
                     x, yl, dv = _num(pt.get("X")), _num(pt.get("Y_Left")), _num(pt.get("Y_Right/Data_Value"))
                     vals = [c.get("temperature_C"), c.get("residence_time_s"), r.get("yield_pct")] + list((r.get("other_metrics") or {}).values())
                     has = lambda v, tol: v is None or any(isinstance(w, (int, float)) and abs(w - v) <= tol for w in vals)
-                    # X of heatmap columns is clustered in log space (snap_levels_log) → log tolerance.
-                    has_x = lambda v: v is None or has(v, 1e-6) or (v > 0 and any(
+                    # X of heatmap columns is clustered in log space (snap_levels_log) → log tolerance;
+                    # a minutes axis is stored in seconds (×60) by the assembler → accept the converted value.
+                    has_x = lambda v: v is None or has(v, 1e-6) or has(v * 60, 1e-3) or (v > 0 and any(
                         isinstance(w, (int, float)) and w > 0 and abs(math.log10(w) - math.log10(v)) <= 0.15 for w in vals))
                     y_ok = dv is None or dv > 100 or dv < 0 or any(isinstance(w, (int, float)) and abs(w - dv) < 1e-6 for w in vals)
                     fidelity_ok += bool(has_x(x) and has(yl, 2.5) and y_ok)

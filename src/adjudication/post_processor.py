@@ -229,7 +229,7 @@ def infer_yield_type(record: dict) -> str | None:
 
 
 INHERITABLE_CONDITION_FIELDS = (
-    "temperature_C", "residence_time_s", "flow_rate_mL_min", "solvent",
+    "temperature_C", "residence_time_s", "reaction_time_s", "flow_rate_mL_min", "solvent",
     "reactor_type", "pressure_bar", "catalyst", "additive",
 )
 
@@ -1101,7 +1101,7 @@ PREFERRED_COLUMNS = [
     "yield_pct", "yield_type", "batch_yield_pct",
     "conversion_pct", "selectivity_pct",
     "diastereomeric_ratio", "ee_pct",
-    "temperature_C", "residence_time_s", "flow_rate_mL_min",
+    "temperature_C", "residence_time_s", "reaction_time_s", "flow_rate_mL_min",
     "flow_rate_stream1_mL_min", "flow_rate_stream2_mL_min",
     "solvent", "solvent_list",
     "catalyst", "catalyst_metal", "catalyst_loading_pct",

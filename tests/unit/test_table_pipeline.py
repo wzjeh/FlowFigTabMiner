@@ -88,7 +88,7 @@ def test_happy_path_aligns_smiles_and_cross_checks(paper):
     ev = json.load(open(res["json_path"]))
     assert ev["structure_alignment"]["status"] in ("ok", "anchored", "anchored_partial") and ev["structure_alignment"]["assigned"] == 2
     assert ev["structure_alignment"]["unresolved"] == 1                  # RDKit-invalid SMILES stays a token
-    assert ev["grid_text_agreement"] == 1.0 and ev["header_row_count"] == 1 and ev["n_rows"] == 3
+    assert ev["grid_text_agreement"] == 1.0 and ev["header_row_count"] == 1 and ev["n_rows"] == 3 and ev["ditto_filled"] == 0
     assert ev["caption_text"] == "Table 1. Scope." and ev["table_note_text"] == "[a] GC yield."
     st = json.load(open(inter / "status" / "page_1_table_0.json"))
     assert st["stage"] == "evidence" and st["outcome"] == "ok"

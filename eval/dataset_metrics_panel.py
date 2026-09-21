@@ -47,6 +47,7 @@ FIELD_ALIASES: Dict[str, List[str]] = {
     "ee":               ["ee_pct", "ee"],
     "temperature":      ["temperature_C", "T1_C", "temperature"],
     "residence_time":   ["residence_time_s", "tR1_s", "tR_s"],
+    "reaction_time":    ["reaction_time_s"],
     "solvent":          ["solvent"],
     "reactor_type":     ["reactor_type"],
     "flow_rate":        ["flow_rate_mL_min", "flow_rate_stream1_mL_min"],
@@ -57,7 +58,7 @@ FIELD_ALIASES: Dict[str, List[str]] = {
 GROUPS = [
     ("Identity", ["product_smiles", "reactant_smiles", "product_name"]),
     ("Outcome",  ["yield", "conversion", "selectivity", "ee"]),
-    ("Conditions", ["temperature", "residence_time", "solvent", "reactor_type", "flow_rate"]),
+    ("Conditions", ["temperature", "residence_time", "reaction_time", "solvent", "reactor_type", "flow_rate"]),
     ("Class",    ["reaction_class"]),
 ]
 

@@ -214,7 +214,7 @@ Output a single valid JSON object (no markdown):
   }},
   "data_interpretation_notes": "..."
 }}
-maps_to_field must be one of: conditions.temperature_C, conditions.residence_time_s,
+maps_to_field must be one of: conditions.temperature_C, conditions.residence_time_s, conditions.reaction_time_s,
 conditions.flow_rate_mL_min, conditions.solvent, conditions.catalyst, conditions.pressure_bar,
 conditions.reactor_type, yield_pct, conversion_pct, selectivity_pct, ee_pct, other_metrics.<name>
 "data_value" describes the per-point "Y_Right/Data_Value" column when it is populated (same shape as
@@ -388,6 +388,7 @@ Output a single valid JSON object (no markdown):
   "fixed_conditions": {{
     "temperature_C": null,
     "residence_time_s": null,
+    "reaction_time_s": null,
     "solvent": null,
     "catalyst": null,
     "reactor_type": null,
@@ -399,7 +400,8 @@ For residence_time_s: convert minutes×60 if needed.
 PRECEDENCE: the table's own caption / note / header outranks the paper text and the paper-level defaults:
 if the caption or note states a condition, use it; if the table VARIES a quantity (a column for it, or
 the caption says "effect of temperature"), leave that field null — never fill it from paper-level defaults.
-A batch / macrobatch table has no flow_rate or residence_time defaults.
+A batch / macrobatch table has no flow_rate or residence_time defaults; its time column maps to
+conditions.reaction_time_s (seconds), never to residence_time_s.
 IMPORTANT: fixed_conditions should capture ANY condition that is constant across ALL rows of this table,
 even if stated only in the paper text or caption (not as a CSV column). Common examples:
 - "all reactions were performed at -78°C" → temperature_C: -78

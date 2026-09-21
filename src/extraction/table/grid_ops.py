@@ -429,6 +429,36 @@ def align_structures(grid: Sequence[Sequence[str]], mol_meta: Sequence[Dict[str,
     return out, report
 
 
+_OUTCOME_HEADER_RE = re.compile(r"yield|conv|\bee\b|\be\.?e\.?\b|\bd\.?r\.?\b|\be\.?r\.?\b|selectiv|purity|recover|productiv|throughput|\bTON\b|\bTOF\b|\bPI\b", re.I)
+_ENTRY_HEADER_RE = re.compile(r"^\s*(entry|entries|no\.?|#|run)\s*$", re.I)
+
+
+def fill_ditto(header_rows: Sequence[Sequence[str]], data_rows: Sequence[Sequence[str]]) -> Tuple[List[List[str]], int]:
+    """Blank data cells mean "same as above": fill them from the nearest
+    non-blank cell above in the same column (downward only — Zhao 2026-09-21).
+    Outcome columns (yield / conversion / ee / dr / selectivity) and the entry
+    column are left alone: a blank there is a missing result, not a ditto.
+    Returns the filled rows and the number of cells filled."""
+    out = [list(map(lambda v: "" if v is None else str(v), row)) for row in data_rows]
+    if not out:
+        return out, 0
+    n_cols = max(len(r) for r in out)
+    heads = [" ".join(str(h[c]) for h in header_rows if c < len(h) and h[c]) for c in range(n_cols)]
+    n = 0
+    for c in range(n_cols):
+        if _OUTCOME_HEADER_RE.search(heads[c]) or (c == 0 and _ENTRY_HEADER_RE.match(heads[c] or "entry")):
+            continue
+        above = ""
+        for row in out:
+            if c >= len(row):
+                continue
+            if row[c].strip():
+                above = row[c]
+            elif above:
+                row[c] = above; n += 1
+    return out, n
+
+
 def _numbers(text: str) -> Counter:
     out: Counter = Counter()
     for tok in _NUM_RE.findall(text or ""):

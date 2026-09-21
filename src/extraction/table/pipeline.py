@@ -35,7 +35,7 @@ import yaml
 
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
-from src.extraction.table.grid_ops import align_structures, text_agreement, text_layer_anchors
+from src.extraction.table.grid_ops import align_structures, fill_ditto, text_agreement, text_layer_anchors
 from src.extraction.table.table_vlm import TableTranscriber
 from src.parsing.caption_locator import load_context
 from src.parsing.table_filter import TableFilter
@@ -209,10 +209,13 @@ class TablePipeline:
             row_c, col_c = text_layer_anchors(full_grid, len(tr.header_rows), context["inner_lines"], context["bbox_pt"],
                                               scale, (float(crop_coords[0] or 0), float(crop_coords[1] or 0)), img_w)
         grid, align = align_structures(full_grid, mol_meta, row_centres=row_c, col_centres=col_c)
+        n_hdr = len(tr.header_rows)
+        data_filled, n_ditto = fill_ditto(grid[:n_hdr], grid[n_hdr:])   # blank = "same as above" (not outcome / entry columns)
+        grid = grid[:n_hdr] + data_filled
         agreement = text_agreement(tr.data_rows, context.get("inner_text"))
         parse_status = "unverified" if (agreement is not None and agreement < self.min_text_agreement) else "ok"
         logger.info(f"   -> grid {len(tr.header_rows)}+{len(tr.data_rows)}x{tr.n_cols}, structures {align['status']} "
-                    f"({align['assigned']}/{align['n_tokens']}), text agreement {agreement}, status {parse_status}")
+                    f"({align['assigned']}/{align['n_tokens']}), ditto filled {n_ditto}, text agreement {agreement}, status {parse_status}")
 
         # 5. CSV (dense, headerless, header rows first)
         df = pd.DataFrame(grid)
@@ -239,7 +242,7 @@ class TablePipeline:
             "is_relevant": bool(is_relevant),
             "parse_status": parse_status,
             "grid_text_agreement": agreement,
-            "structure_alignment": align,
+            "structure_alignment": align, "ditto_filled": n_ditto,
             "n_molecules": len(mol_meta),
             "molecules": [{"box": [round(float(v), 1) for v in m["box"]], "smiles": m.get("smiles", "")} for m in mol_meta],
             "transcriber": transcriber_meta,

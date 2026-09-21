@@ -135,8 +135,11 @@ def collect(paths: list[str]) -> tuple[dict, list[dict]]:
                 lines = open(csvp).read().splitlines()
                 csv_preview = "\n".join(lines[:6])
                 import csv as _csv
+                prev: list = []
                 for row in _csv.reader(lines):
-                    valid_cells += sum(1 for c in row if _rdkit_valid(c.strip()))
+                    # a cell equal to the one above is a ditto copy, not a new SMILES
+                    valid_cells += sum(1 for i, c in enumerate(row) if _rdkit_valid(c.strip()) and not (i < len(prev) and prev[i] == c))
+                    prev = row
             extra = max(0, valid_cells - int(al.get("assigned") or 0) - int(al.get("filled_empty") or 0)) if al else 0
             m["smiles_cells_not_from_aligner"] += extra
             tables.append({"paper": base, "source_id": sid, "parse_status": ps, "n_rows": ev.get("n_rows"), "n_cols": ev.get("n_cols"),
@@ -153,6 +156,7 @@ def collect(paths: list[str]) -> tuple[dict, list[dict]]:
                 c = r.get("conditions") or {}
                 m["records"] += 1
                 m["rec_T"] += c.get("temperature_C") is not None; m["rec_tR"] += c.get("residence_time_s") is not None
+                m["rec_t_batch"] += c.get("reaction_time_s") is not None
                 m["rec_yield"] += r.get("yield_pct") is not None; m["rec_solvent"] += bool(c.get("solvent"))
                 m["rec_product_name"] += bool(r.get("product_name")); m["rec_product_smiles"] += bool(r.get("product_smiles"))
                 m["rec_reactant_smiles"] += bool(r.get("reactant1_smiles")); m["rec_has_outcome"] += bool(r.get("has_outcome"))
