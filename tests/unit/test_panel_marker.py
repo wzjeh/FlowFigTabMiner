@@ -70,3 +70,16 @@ def test_synthesized_records_keep_the_legend_name_even_when_mapped():
     recs = synthesize_records(tpl, raw, "Figure 3")
     assert recs[0]["other_metrics"].get("series") == "1a" and recs[0]["reactant1_name"] == "tert-butyl p-bromobenzoate"
     assert "series" not in recs[1].get("other_metrics", {})
+
+
+def test_marker_with_its_own_text_feeds_the_panel_line():
+    from src.assembly.evidence_assembler import panel_text
+    from src.adjudication.source_discovery import panel_line
+    assert (panel_letter("d) R = methyl"), panel_text("d) R = methyl")) == ("d", "R = methyl")
+    assert (panel_letter("a) R= tert-butyl"), panel_text("a) R= tert-butyl")) == ("a", "R= tert-butyl")
+    assert (panel_letter("d）R=methyl"), panel_text("d）R=methyl")) == ("d", "R=methyl")      # full-width paren from OCR
+    assert panel_letter("a yield") is None and panel_text("(b)") is None
+    ev = {"text_evidence": {"panel_marker": "d", "panel_text": "R = methyl"}, "panel_caption": "methyl ester (1d)"}
+    assert panel_line(ev) == "Panel (d) [src=marker]: R = methyl | [src=caption]: methyl ester (1d)\n"
+    assert panel_line({"text_evidence": {"panel_marker": "d"}}) == ""
+    assert panel_line({"text_evidence": {}, "panel_caption": "x"}) == ""

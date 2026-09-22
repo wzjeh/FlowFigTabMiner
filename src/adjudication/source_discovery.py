@@ -195,6 +195,21 @@ def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[s
 _PANEL_SPLIT_RE = re.compile(r"(?<![A-Za-z0-9])\(?([a-h])\)\s*:?\s*", re.I)
 
 
+def panel_line(ev: Dict[str, Any]) -> str:
+    """One evidence line for a sub-panel, "" when the figure has none:
+    ``Panel (d) [src=marker]: R = methyl | [src=caption]: …``."""
+    te = ev.get("text_evidence") or {}
+    letter = te.get("panel_marker")
+    parts = []
+    if te.get("panel_text"):
+        parts.append(f"[src=marker]: {te['panel_text']}")
+    if ev.get("panel_caption"):
+        parts.append(f"[src=caption]: {ev['panel_caption']}")
+    if not letter or not parts:
+        return ""
+    return f"Panel ({letter}) " + " | ".join(parts) + "\n"
+
+
 def panel_caption(caption: str, letter: str) -> Optional[str]:
     """The part of a multi-panel caption that describes panel ``letter``:
     "(a) tert-butyl ester 1a and (b) isopropyl ester 1b" -> "tert-butyl ester 1a"

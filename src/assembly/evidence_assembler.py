@@ -94,8 +94,9 @@ class EvidenceAssembler:
         # readings.  Preserves the legacy dict shape so LocalVarsBuilder's
         # field accessors keep working; provenance rides in each entry.
         text_ev_vlm = _vlm_text_evidence(vlm_metadata)
-        if text_evidence.get("panel_marker"):          # OCR'd off the marker crop; the VLM never sees it (masked)
-            text_ev_vlm["panel_marker"] = text_evidence["panel_marker"]
+        for k in ("panel_marker", "panel_text"):        # OCR'd off the marker crop; the VLM never sees it (masked)
+            if text_evidence.get(k):
+                text_ev_vlm[k] = text_evidence[k]
 
         # PDF-text-layer identity (CaptionLocator): real label, verbatim
         # caption/footnote.  ``caption`` stays the PaddleOCR reading for
@@ -284,10 +285,13 @@ class EvidenceAssembler:
         # caption. Read it off the marker crop; one letter or nothing.
         markers = sorted(p for p in files if "subfigure_marker" in os.path.basename(p))
         for path in markers:
-            letter = panel_letter(self._ocr_marker(path))
+            raw = self._ocr_marker(path)
+            letter = panel_letter(raw)
             if letter:
                 evidence["panel_marker"] = letter
-                print(f"      [Panel] {os.path.basename(path)} -> '{letter}'")
+                if panel_text(raw):                     # "d) R = methyl": the marker names the panel's variant itself
+                    evidence["panel_text"] = panel_text(raw)
+                print(f"      [Panel] {os.path.basename(path)} -> '{letter}' {evidence.get('panel_text') or ''}".rstrip())
                 break
 
         return evidence
@@ -471,14 +475,22 @@ class EvidenceAssembler:
         return True
 
 
-_PANEL_RE = re.compile(r"^[\(\[]?\s*([a-hA-H]|[ivx]{1,4}|[IVX]{1,4})\s*[\)\]\.:]?$")
+_PANEL_RE = re.compile(r"^[\(\[]?\s*([a-hA-H]|[ivx]{1,4}|[IVX]{1,4})\s*(?:[\)\]）\.:]\s*(.*)|$)", re.S)
 
 
 def panel_letter(text):
     """Normalise an OCR'd sub-panel marker ("(a)", "b)", "C", "(ii)") to its
-    lower-case letter / numeral; None when the text is not a marker."""
+    lower-case letter / numeral; None when the text is not a marker.  A bare
+    letter must stand alone; a closed marker may carry text ("d) R = methyl")."""
     m = _PANEL_RE.match((text or "").strip())
     return m.group(1).lower() if m else None
+
+
+def panel_text(text):
+    """What is printed after the marker ("d) R = methyl" -> "R = methyl"), or None."""
+    m = _PANEL_RE.match((text or "").strip())
+    rest = (m.group(2) or "").strip() if m else ""
+    return rest or None
 
 
 # ── helpers: serialise VLM FieldValues into the legacy text_evidence shape ──

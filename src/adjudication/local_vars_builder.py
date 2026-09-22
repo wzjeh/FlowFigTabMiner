@@ -1,5 +1,6 @@
 import os
 import json
+from src.adjudication.source_discovery import panel_line as _panel_line
 import re
 from src.adjudication.time_statements import find_residence_time_statements, fixed_candidates
 
@@ -192,8 +193,7 @@ class LocalVarsBuilder:
         dv_range = f"{min(dv_vals):.3g} to {max(dv_vals):.3g}" if dv_vals else "N/A"
         facts_block = self._render_chart_facts(meta.get("facts") or {}, len(dv_vals), len(raw_data))
 
-        panel_line = (f"Panel ({ev['text_evidence']['panel_marker']}) [src=caption]: {ev['panel_caption']}\n"
-                      if ev.get("panel_caption") else "")
+        panel_line = _panel_line(ev)
         user_prompt = f"""=== FIGURE EVIDENCE ===
 Source ID: {source_id}
 Paper label: {label}

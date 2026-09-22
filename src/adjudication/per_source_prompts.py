@@ -19,7 +19,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Tuple
 
-from src.adjudication.source_discovery import SourcePacket
+from src.adjudication.source_discovery import SourcePacket, panel_line
 
 
 # ── Output schema and rules — verbatim from the old single-call GlobalAssembly
@@ -357,7 +357,7 @@ class FigurePromptBuilder(PerSourcePromptBuilder):
             f"=== THIS SOURCE: {packet.human_label} ({packet.source_id}) ===\n"
             f"Paper label: {label}\n"
             f"Caption [src={caption_src}]: {caption or '(none)'}\n"
-            + (f"Panel ({ev['text_evidence']['panel_marker']}) [src=caption]: {ev['panel_caption']}\n" if ev.get("panel_caption") else "")
+            + panel_line(ev)
             + f"Footnote: {footnote or '(none)'}\n"
             f"Figure type: {figure_type}\n"
             + facts_lines + inner_block +
