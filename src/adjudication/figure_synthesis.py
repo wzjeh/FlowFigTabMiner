@@ -220,6 +220,24 @@ def validate_template(tpl: Any) -> Optional[str]:
     return None
 
 
+def scalar_conditions(template: Dict[str, Any], panel: Optional[str] = None) -> Dict[str, Any]:
+    """A condition in the template must be one value.  A per-panel map the
+    model wrote instead ({"a": 24, "b": 0, "c": -28}) collapses to this
+    panel's entry when the panel letter is known, otherwise to null; a list
+    becomes null.  Copies; never edits the caller's template."""
+    out = copy.deepcopy(template) if isinstance(template, dict) else {}
+    cond = out.get("conditions")
+    if not isinstance(cond, dict):
+        return out
+    for k, v in list(cond.items()):
+        if isinstance(v, dict):
+            hit = v.get(panel) if panel else None
+            cond[k] = hit if isinstance(hit, (int, float, str)) and not isinstance(hit, bool) else None
+        elif isinstance(v, list):
+            cond[k] = None
+    return out
+
+
 def synthesize_records(
     tpl: Dict[str, Any],
     raw_data: List[Dict[str, Any]],
@@ -231,7 +249,7 @@ def synthesize_records(
     ``fallback`` = ``axis_fallback(local_vars)``: fields for columns the template left unmapped."""
     facts = facts or {}
     fallback = fallback or {}
-    template = tpl["record_template"]
+    template = scalar_conditions(tpl["record_template"], facts.get("panel_marker"))
     axis_map = {c: (p if _valid_path(p) else None) for c, p in (tpl.get("axis_map") or {}).items()}
     transforms = tpl.get("axis_transforms") or {}
     series_map = tpl.get("series_map") or {}
@@ -275,6 +293,10 @@ def synthesize_records(
                 # outcome constant: "<20%" → yield_pct=10 would fabricate a
                 # measurement for every point whose cell label was not read.
                 if _valid_path(path) and path not in OUTCOME_FIELDS:
+                    if isinstance(val, dict):   # a per-panel map ({"a": 24, "b": 0}) is one value at most
+                        val = val.get(facts.get("panel_marker")) if facts.get("panel_marker") else None
+                    if isinstance(val, (list, dict)) or val is None:
+                        continue
                     if path.endswith(("_name", "_label", "_smiles")) and isinstance(val, (int, float)) and not isinstance(val, bool):
                         val = str(val)          # identities are strings
                     _set_path(rec, path, val)

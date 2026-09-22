@@ -147,3 +147,23 @@ def test_series_route_by_axis_field_reference():
     assert a["conversion_pct"] == 86.8 and "yield_or_conversion_pct" not in a["other_metrics"]
     assert b["yield_pct"] == 71.0 and b["product_name"] == "biphenyl"
     assert c["other_metrics"]["yield_or_conversion_pct"] == 50.0 and c.get("yield_pct") is None      # unmatched series keeps the axis field
+
+
+def test_per_panel_condition_maps_collapse_to_one_value():
+    from src.adjudication.figure_synthesis import scalar_conditions, synthesize_records
+    tpl = {"record_template": {"conditions": {"temperature_C": {"a": 24, "b": 0, "c": -28}, "solvent": "THF", "flow_rate_mL_min": [1, 2]}},
+           "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "yield_pct"}, "series_map": {}}
+    assert scalar_conditions(tpl["record_template"], "c")["conditions"] == {"temperature_C": -28, "solvent": "THF", "flow_rate_mL_min": None}
+    assert scalar_conditions(tpl["record_template"], None)["conditions"]["temperature_C"] is None
+    recs = synthesize_records(tpl, [{"X": 1.0, "Y_Left": 50.0}], "Figure 2", facts={"panel_marker": "b"})
+    assert recs[0]["conditions"]["temperature_C"] == 0 and tpl["record_template"]["conditions"]["temperature_C"] == {"a": 24, "b": 0, "c": -28}
+
+
+def test_series_map_values_must_be_scalars():
+    from src.adjudication.figure_synthesis import synthesize_records
+    tpl = {"record_template": {"conditions": {}}, "axis_map": {"X": "conditions.residence_time_s", "Y_Left": "yield_pct"},
+           "series_map": {"Default": {"conditions.temperature_C": {"a": 24, "b": 0}, "conditions.solvent": ["THF", "Et2O"]}}}
+    r = synthesize_records(tpl, [{"X": 1.0, "Y_Left": 50.0, "Series": "Default"}], "Fig", facts={"panel_marker": "b"})[0]
+    assert r["conditions"]["temperature_C"] == 0 and "solvent" not in r["conditions"]
+    r = synthesize_records(tpl, [{"X": 1.0, "Y_Left": 50.0, "Series": "Default"}], "Fig")[0]
+    assert "temperature_C" not in r["conditions"]
