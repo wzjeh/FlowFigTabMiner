@@ -4,6 +4,8 @@ import os
 from typing import Optional
 
 from src.adjudication.pdf_parser import PDFParser
+from src.adjudication.product_namer import ProductNamer
+from src.adjudication.post_processor import lookup_smiles
 from src.adjudication.per_source_assembler import PerSourceAssembler
 from src.adjudication.per_source_prompts import (
     CommonPreamble,
@@ -52,6 +54,7 @@ class GlobalAssembly:
             max_workers=10,
             raw_dir=intermediate_root,
             figure_synthesis=self._figure_synthesis_enabled(),
+            product_namer=ProductNamer(llm, llm_cfg, resolves=lambda n: lookup_smiles(n) is not None),
         )
 
     @staticmethod

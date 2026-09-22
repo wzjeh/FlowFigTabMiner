@@ -53,8 +53,10 @@ class PerSourceAssembler:
         max_workers: int = 10,
         raw_dir: str = "data/intermediate",
         figure_synthesis: bool = True,
+        product_namer=None,
     ):
         self.llm = llm
+        self.product_namer = product_namer
         self.llm_cfg = llm_cfg
         self.prompt_builders = dict(prompt_builders)
         self.max_workers = max_workers
@@ -161,6 +163,8 @@ class PerSourceAssembler:
         if err:
             logger.error("per_source.template_invalid source=%s err=%s", packet.source_id, err)
             return None, 0
+        if self.product_namer is not None:
+            tpl = self.product_namer.refine(tpl, packet, preamble, raw_dir)
         facts = (packet.evidence.get("meta", {}) or {}).get("facts") or {}
         records = synthesize_records(tpl, raw_data, packet.human_label, facts, axis_fallback(packet.local_vars))
         for j, rec in enumerate(records):
