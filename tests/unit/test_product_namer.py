@@ -68,3 +68,9 @@ def test_a_name_no_database_knows_counts_as_generic():
     assert is_generic_product("tridecafluorohexylstannane", None, None, resolves=lambda n: False)
     assert not is_generic_product("tridecafluorohexylstannane", None, None, resolves=lambda n: True)
     assert not is_generic_product("tridecafluorohexylstannane", None, None)          # no resolver: name is trusted
+
+
+def test_a_pair_of_compounds_is_not_a_name():
+    cfg = LLMConfig(provider="gemini", model="x", temperature=0.0)
+    reply = json.dumps({"product_name": "(2S*,3S*)-2,3-dimethyl-2,3-diphenyloxirane and (2R*,3S*)-2,3-dimethyl-2,3-diphenyloxirane", "basis": "x"})
+    assert ProductNamer(_LLM(reply), cfg).refine(_tpl(), _packet(), CommonPreamble.build({}, "")) == _tpl()

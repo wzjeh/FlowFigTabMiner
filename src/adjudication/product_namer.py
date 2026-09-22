@@ -98,7 +98,8 @@ class ProductNamer:
         name = (ans.get("product_name") or "").strip() if isinstance(ans.get("product_name"), str) else ""
         label = (ans.get("product_label") or "").strip() if isinstance(ans.get("product_label"), str) else ""
         old = (rt.get("product_name") or "").strip()
-        accepted = bool(name) and len(name) <= 120 and name.lower() != old.lower() and not _GENERIC_RE.search(name)
+        accepted = (bool(name) and len(name) <= 120 and name.lower() != old.lower() and not _GENERIC_RE.search(name)
+                    and not re.search(r"\b(and|or)\b|[;/]", name))      # one compound, not a pair
         if not accepted and not label:
             logger.info("product_namer %s: no specific name (%s)", packet.source_id, ans.get("basis"))
             return tpl
