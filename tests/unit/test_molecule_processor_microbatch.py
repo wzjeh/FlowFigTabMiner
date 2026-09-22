@@ -121,3 +121,18 @@ class TestProcessImageMicrobatch:
         _, metrics = proc.process_image(_img(), cr, mask_only=True)
         assert metrics == []
         cr.recognize_structures_batch.assert_not_called()
+
+
+class TestUnscaledRetry:
+    def test_invalid_upscaled_reading_is_retried_on_the_native_crop(self, monkeypatch, tmp_path):
+        """126 px epoxide: upscaled -> 'C[CH3]C1(c2ccccc2)CO1' (RDKit rejects), native -> correct.
+        A valid first reading ('CCO') and a native reading that is also invalid are left alone."""
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("MOLNEXTR_BATCH", raising=False)
+        proc = _make_processor(_boxes_3())          # 50 px boxes: all get upscaled
+        cr = MagicMock()
+        cr.recognize_structures_batch.side_effect = [["CCO", "C[CH3]C1(c2ccccc2)CO1", "C[CH3]C"], ["CC1(c2ccccc2)CO1", "C[CH3]C"]]
+        _, metrics = proc.process_image(_img(), cr, mask_only=True)
+        assert cr.recognize_structures_batch.call_count == 2
+        assert len(cr.recognize_structures_batch.call_args_list[1][0][0]) == 2      # only the two invalid ones
+        assert [m["smiles"] for m in metrics][:2] == ["CCO", "CC1(c2ccccc2)CO1"]

@@ -5,6 +5,15 @@ import torch
 from ultralytics import YOLO
 import PIL.Image
 
+def _rdkit_valid(smiles: str) -> bool:
+    try:
+        from rdkit import Chem, RDLogger
+        RDLogger.DisableLog("rdApp.*")
+        return Chem.MolFromSmiles(smiles) is not None
+    except Exception:
+        return False
+
+
 class MoleculeProcessor:
     def __init__(self, model_path=None, conf_threshold=0.25):
         """
@@ -139,6 +148,7 @@ class MoleculeProcessor:
                 # Resolution upscaling: only if short side < 192px (MolNexTR
                 # handles ~200-300px naturally; over-upscaling adds ringing).
                 h_crop, w_crop = mol_crop.shape[:2]
+                unscaled = mol_crop        # second reading if the upscaled one is not a molecule
                 target_upscale_h = 300
                 if h_crop < 192:
                     scale_factor = min(target_upscale_h / h_crop, 3.0)
@@ -150,7 +160,7 @@ class MoleculeProcessor:
                 else:
                     print(f"   -> [Debug] Box {i} sufficient size ({w_crop}x{h_crop}). Skipped Upscaling.")
 
-                box_crops.append((i, x1, y1, x2, y2, conf, mol_crop))
+                box_crops.append((i, x1, y1, x2, y2, conf, mol_crop, unscaled))
 
             # ── Phase 2: structure recognition — micro-batch (issue #14) ──
             # Optional local optimization, NOT the headline fix.  SMILES are
@@ -174,8 +184,21 @@ class MoleculeProcessor:
                         print(f"Structure Rec Error: {e}")
                         smiles_list.append("")
 
+            # Upscaling sharpens most small drawings but also invents atoms on
+            # some ('C[CH3]C1(c2ccccc2)CO1' for a 126 px epoxide that reads
+            # correctly at native size): a reading RDKit rejects is retried on
+            # the unscaled crop.  A valid first reading is never touched.
+            retry = [k for k, (bc, smi) in enumerate(zip(box_crops, smiles_list))
+                     if bc[7] is not bc[6] and smi and smi != "<invalid>" and not _rdkit_valid(smi)]
+            if retry:
+                second = content_recognizer.recognize_structures_batch([box_crops[k][7] for k in retry], batch_size=batch_size)
+                for k, smi in zip(retry, second):
+                    if smi and smi != "<invalid>" and _rdkit_valid(smi):
+                        print(f"   -> [Debug] Box {box_crops[k][0]}: unscaled reading '{smi}' replaces invalid '{smiles_list[k]}'")
+                        smiles_list[k] = smi
+
             # ── Phase 3: per-box OCR fallback + mask + metrics (unchanged) ──
-            for (i, x1, y1, x2, y2, conf, mol_crop), smiles in zip(box_crops, smiles_list):
+            for (i, x1, y1, x2, y2, conf, mol_crop, _unscaled), smiles in zip(box_crops, smiles_list):
                 logging_smiles = smiles if smiles else "[NoSMILES]"
 
                 if not smiles or smiles == "<invalid>":
