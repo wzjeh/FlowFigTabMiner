@@ -5,6 +5,9 @@ import torch
 from ultralytics import YOLO
 import PIL.Image
 
+from src.extraction.common.structure_plausibility import suspicious_smiles
+
+
 def _rdkit_valid(smiles: str) -> bool:
     try:
         from rdkit import Chem, RDLogger
@@ -43,7 +46,7 @@ class MoleculeProcessor:
             print(f"Warning: Molecule Model not found at {model_path}")
             self.model = None
 
-    def process_image(self, image_path_or_array, content_recognizer, mask_only=False, output_path=None):
+    def process_image(self, image_path_or_array, content_recognizer, mask_only=False, output_path=None, second_reader=None):
         """
         Detect molecules, convert to SMILES using content_recognizer, 
         and replace them in the image with text or just mask them.
@@ -197,8 +200,24 @@ class MoleculeProcessor:
                         print(f"   -> [Debug] Box {box_crops[k][0]}: unscaled reading '{smi}' replaces invalid '{smiles_list[k]}'")
                         smiles_list[k] = smi
 
+            # A reading that is not a plausible molecule (RDKit rejects it, an
+            # element no paper draws, a molecule plus shards) goes to the VLM
+            # second reader; its answer replaces the reading only when it is
+            # plausible. A plausible first reading is never sent.
+            readers = ["molnextr"] * len(box_crops)
+            if second_reader is not None:
+                for k, (bc, smi) in enumerate(zip(box_crops, smiles_list)):
+                    why = suspicious_smiles(smi)
+                    if not why:
+                        continue
+                    alt = second_reader.read(bc[6])
+                    if alt:
+                        print(f"   -> [Debug] Box {bc[0]}: VLM reading '{alt}' replaces suspicious '{smi}' ({why})")
+                        smiles_list[k] = alt
+                        readers[k] = "vlm"
+
             # ── Phase 3: per-box OCR fallback + mask + metrics (unchanged) ──
-            for (i, x1, y1, x2, y2, conf, mol_crop, _unscaled), smiles in zip(box_crops, smiles_list):
+            for (i, x1, y1, x2, y2, conf, mol_crop, _unscaled), smiles, reader in zip(box_crops, smiles_list, readers):
                 logging_smiles = smiles if smiles else "[NoSMILES]"
 
                 if not smiles or smiles == "<invalid>":
@@ -237,7 +256,8 @@ class MoleculeProcessor:
                 metrics.append({
                     'box': [x1, y1, x2, y2],
                     'conf': conf,
-                    'smiles': smiles
+                    'smiles': smiles,
+                    'reader': reader,
                 })
 
         return processed_img, metrics

@@ -136,3 +136,26 @@ class TestUnscaledRetry:
         assert cr.recognize_structures_batch.call_count == 2
         assert len(cr.recognize_structures_batch.call_args_list[1][0][0]) == 2      # only the two invalid ones
         assert [m["smiles"] for m in metrics][:2] == ["CCO", "CC1(c2ccccc2)CO1"]
+
+
+class TestSecondReader:
+    def test_only_suspicious_readings_go_to_the_vlm_and_only_plausible_answers_replace(self, monkeypatch, tmp_path):
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("MOLNEXTR_BATCH", raising=False)
+        proc = _make_processor(_boxes_3())
+        cr = MagicMock()
+        cr.recognize_structures_batch.return_value = ["CCO", "Brc1ccc([Na])cc1", "CBr.[I-].c1ccc(-c2ccccc2)cc1"]
+        reader = MagicMock()
+        reader.read.side_effect = ["N#Cc1ccc(Br)cc1", None]        # second box fixed, third one the VLM could not read
+        _, metrics = proc.process_image(_img(), cr, mask_only=True, second_reader=reader)
+        assert reader.read.call_count == 2                          # the plausible 'CCO' was never sent
+        assert [m["smiles"] for m in metrics] == ["CCO", "N#Cc1ccc(Br)cc1", "CBr.[I-].c1ccc(-c2ccccc2)cc1"]
+        assert [m["reader"] for m in metrics] == ["molnextr", "vlm", "molnextr"]
+
+    def test_without_a_reader_nothing_changes(self, monkeypatch, tmp_path):
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("MOLNEXTR_BATCH", raising=False)
+        proc = _make_processor(_boxes_3())
+        cr = MagicMock(); cr.recognize_structures_batch.return_value = ["CCO", "Brc1ccc([Na])cc1", "CCC"]
+        _, metrics = proc.process_image(_img(), cr, mask_only=True)
+        assert [m["smiles"] for m in metrics] == ["CCO", "Brc1ccc([Na])cc1", "CCC"] and all(m["reader"] == "molnextr" for m in metrics)

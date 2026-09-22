@@ -35,6 +35,7 @@ import yaml
 
 from src.extraction.common.content_recognizer import ContentRecognizer
 from src.extraction.common.molecule_processor import MoleculeProcessor
+from src.extraction.common.structure_second_reader import VLMStructureReader
 from src.extraction.table.grid_ops import align_structures, fill_ditto, text_agreement, text_layer_anchors
 from src.extraction.table.table_vlm import TableTranscriber
 from src.parsing.caption_locator import load_context
@@ -123,6 +124,7 @@ class TablePipeline:
         self.molecule_processor = molecule_processor or MoleculeProcessor(
             model_path=mol_cfg.get("model_path"), conf_threshold=mol_cfg.get("confidence_threshold", 0.25))
         self.recognizer = content_recognizer or ContentRecognizer()
+        self.second_reader = VLMStructureReader(self.transcriber.vlm, self.transcriber.cfg)
 
     # ------------------------------------------------------------------ helpers
     @staticmethod
@@ -175,14 +177,16 @@ class TablePipeline:
         try:
             _, mol_meta = self.molecule_processor.process_image(
                 body_path, self.recognizer, mask_only=True,
-                output_path=os.path.join(table_output_dir, f"{table_basename}_body_main_debug_yolo.png"))
+                output_path=os.path.join(table_output_dir, f"{table_basename}_body_main_debug_yolo.png"),
+                second_reader=self.second_reader)
         except Exception as exc:
             logger.warning(f"   -> molecule detection failed: {exc}")
         mol_meta = _drop_scheme_boxes(mol_meta or [], scheme_boxes, float(crop_coords[1] or 0))
         for m in mol_meta:
             if not _smiles_is_valid(str(m.get("smiles") or "")):
                 m["smiles"] = ""
-        logger.info(f"   -> {len(mol_meta)} molecule boxes, {sum(1 for m in mol_meta if m['smiles'])} with valid SMILES")
+        logger.info(f"   -> {len(mol_meta)} molecule boxes, {sum(1 for m in mol_meta if m['smiles'])} with valid SMILES, "
+                    f"{sum(1 for m in mol_meta if m.get('reader') == 'vlm')} read by the VLM")
 
         # 3. VLM transcription of the full crop
         tr = self.transcriber.transcribe(Path(image_path))

@@ -27,6 +27,7 @@ import cv2
 from pydantic import BaseModel
 
 from src.adjudication.entity_pool import canonical_smiles
+from src.extraction.common.structure_second_reader import VLMStructureReader
 from src.extraction.figure.contact_sheet import build_contact_sheet
 from src.llm.providers.base import VLMImage
 
@@ -139,6 +140,7 @@ class FigureSchemeHarvester:
         self.vlm = vlm
         self.cfg = cfg
         self.max_boxes = max_boxes
+        self.second_reader = VLMStructureReader(vlm, cfg)
 
     def harvest(self, intermediate_dir: str) -> Dict[str, str]:
         """label -> canonical SMILES over every filtered figure crop of one paper.
@@ -158,7 +160,8 @@ class FigureSchemeHarvester:
 
     def _one(self, png: str, sid: str, out_dir: str) -> Dict[str, str]:
         os.makedirs(out_dir, exist_ok=True)
-        _, mols = self.mp.process_image(png, self.cr, mask_only=True, output_path=os.path.join(out_dir, f"{sid}_molecules.png"))
+        _, mols = self.mp.process_image(png, self.cr, mask_only=True, output_path=os.path.join(out_dir, f"{sid}_molecules.png"),
+                                        second_reader=self.second_reader)
         mols = [m for m in (mols or []) if m.get("smiles")][: self.max_boxes]
         if not mols:
             return {}
@@ -173,7 +176,7 @@ class FigureSchemeHarvester:
         pool = readings_to_pool(mols, resp.readings)
         json.dump({"source_id": sid, "n_structures": len(mols), "latency_ms": (time.perf_counter() - t0) * 1000.0,
                    "cache_hit": bool(getattr(meta, "cache_hit", False)),
-                   "structures": [{"index": i, "box": [int(v) for v in m["box"]], "smiles": m.get("smiles")} for i, m in enumerate(mols)],
+                   "structures": [{"index": i, "box": [int(v) for v in m["box"]], "smiles": m.get("smiles"), "reader": m.get("reader")} for i, m in enumerate(mols)],
                    "readings": [r.model_dump() for r in resp.readings], "pool": pool},
                   open(os.path.join(out_dir, f"{sid}_compounds.json"), "w"), indent=1)
         logger.info("figure_scheme %s structures=%d labels=%d pool=%d", sid, len(mols), sum(bool(r.label or r.variants) for r in resp.readings), len(pool))
