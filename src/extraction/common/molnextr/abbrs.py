@@ -213,6 +213,15 @@ SUBSTITUTIONS: List[Substitution] = [
     Substitution(['n-Pent'],'CCCCC','CCCCC',0.5),
     Substitution(['H3','H'],'','',0.5),
 
+    # Flow-chemistry (organolithium) papers: labels the character decoder reads
+    # correctly but the condensed-formula parser cannot expand (Sn has no valence
+    # entry) or expands wrongly (Bus -> Bu + s = butyl).
+    Substitution(['Bus'], 'S(=O)(=O)C([CH3])([CH3])[CH3]', "[S](=O)(=O)C(C)(C)C", 0),   # tert-butylsulfonyl
+    Substitution(['SnBu3', 'Bu3Sn'], '[Sn]([CH2][CH2][CH2][CH3])([CH2][CH2][CH2][CH3])[CH2][CH2][CH2][CH3]', "[Sn](CCCC)(CCCC)CCCC", 0),
+    Substitution(['SnPh3', 'Ph3Sn'], '[Sn](c1ccccc1)(c1ccccc1)c1ccccc1', "[Sn](c1ccccc1)(c1ccccc1)c1ccccc1", 0),
+    Substitution(['SnMe3', 'Me3Sn'], '[Sn]([CH3])([CH3])[CH3]', "[Sn](C)(C)C", 0),
+    Substitution(['Bpin'], 'B1OC([CH3])([CH3])C([CH3])([CH3])O1', "[B]1OC(C)(C)C(C)(C)O1", 0),
+
 ]
 
 ABBREVIATIONS = {abbrv: sub for sub in SUBSTITUTIONS for abbrv in sub.abbrvs}
