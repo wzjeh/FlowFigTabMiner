@@ -36,6 +36,7 @@ from src.adjudication.local_vars_builder import LocalVarsBuilder
 from src.adjudication.pdf_parser import PDFParser
 from src.adjudication.post_processor import PostProcessor
 from src.extraction.common.content_recognizer import ContentRecognizer
+from src.extraction.common.molecule_processor import MoleculeProcessor
 from src.extraction.fusion import PointCountConsistency
 from src.extraction.table.pipeline import TablePipeline
 from src.extraction.table.scheme_seg_parser import SchemeSegParser
@@ -181,6 +182,25 @@ def run_step1_tfid(pdf_path: str) -> bool:
     except Exception as exc:
         print(f"Step 1 Failed: {exc}")
         return False
+
+
+def run_step35_figure_schemes(intermediate_dir: str, provider, vlm_cfg) -> dict:
+    """label -> SMILES harvested from the figure crops macro YOLO rejected.
+    Forensics under ``{intermediate}/schemes/``; {} when there is nothing to read."""
+    from src.extraction.scheme.figure_scheme_harvest import FigureSchemeHarvester, filtered_scheme_crops
+    crops = filtered_scheme_crops(intermediate_dir)
+    if not crops:
+        return {}
+    mol_cfg = load_config().get("tables", {}).get("molecule_detection", {})
+    mp = MoleculeProcessor(model_path=mol_cfg.get("model_path"), conf_threshold=mol_cfg.get("confidence_threshold", 0.25))
+    rec = ContentRecognizer()
+    try:
+        pool = FigureSchemeHarvester(mp, rec, provider, vlm_cfg).harvest(intermediate_dir)
+    finally:
+        del mp, rec
+        release_memory()
+    print(f"   -> figure schemes: {len(crops)} crops, {len(pool)} labelled structures")
+    return pool
 
 
 def run_step44_global_vars(pdf_path: str, intermediate_dir: str, provider, llm_cfg, rebuild: bool = False) -> dict:
@@ -446,6 +466,13 @@ def process_one_pdf(
             )
         else:
             print("   No scheme images found.")
+
+    # Schemes that TF-ID filed as figures (macro YOLO: "no target_image"):
+    # the only place many papers draw the structure behind "3" / "c-9".
+    fig_pool = run_step35_figure_schemes(intermediate_dir, provider, vlm_cfg)
+    for k, v in fig_pool.items():
+        if k not in reactant_pool and k not in product_pool:
+            compound_pool.setdefault(k, v)
 
     if reactant_pool or product_pool or compound_pool:
         pool_path = os.path.join(intermediate_dir, "compound_pool.json")
