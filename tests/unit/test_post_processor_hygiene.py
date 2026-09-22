@@ -94,3 +94,14 @@ def test_invalid_smiles_fields_are_cleared():
     drop_invalid_smiles(r)
     assert r["product_smiles"] is None and r["reactant1_smiles"] is None and r["reactant2_smiles"] == "CCO"
     assert r["__smiles_dropped"] == "reactant1=CCCCN1CC(c2ccccc2)C(O)c3ccco31; product=[STRUCTURE]"
+
+
+def test_generic_product_smiles_is_parked_so_name_lookups_can_fill_the_slot():
+    from src.adjudication.post_processor import park_generic_smiles
+    r = park_generic_smiles({"product_smiles": "*OC(=O)c1ccccc1", "product_name": "tert-butyl benzoate"})
+    assert r["product_smiles"] is None and r["product_core_smiles"] == "*OC(=O)c1ccccc1" and "generic" in r["__smiles_dropped"]
+    r = park_generic_smiles({"product_smiles": "C=C.C=C.C[Si](C)(C)c1ccccc1-c1ccc(Cl)cc1"})
+    assert r["product_smiles"] is None and r["product_core_smiles"].startswith("C=C.")
+    for keep in ("CC(C)(C)OC(=O)c1ccccc1", "[Na+].[Cl-]", "CCO.CC(=O)O"):      # one compound; salts / two real fragments stay
+        r = park_generic_smiles({"product_smiles": keep})
+        assert r["product_smiles"] == keep and "product_core_smiles" not in r

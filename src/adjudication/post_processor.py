@@ -227,6 +227,37 @@ def drop_invalid_smiles(record: dict) -> dict:
     return record
 
 
+def _generic_smiles(s: str) -> bool:
+    """A Markush core ('*OC(=O)c1ccccc1', an R-group drawn as a wildcard) or a
+    MolNexTR misread dragging junk fragments ('C=C.C=C.C[Si](C)(C)c1ccccc1-…').
+    Both parse, neither names one compound."""
+    if "*" in s:
+        return True
+    if "." in s:
+        try:
+            from rdkit import Chem
+            frags = [Chem.MolFromSmiles(f) for f in s.split(".")]
+            heavy = sorted((m.GetNumHeavyAtoms() if m else 0) for m in frags)
+            return len(heavy) > 1 and heavy[-2] <= 3 and heavy[-1] >= 6   # one real molecule plus shards (a salt is not that)
+        except Exception:
+            return False
+    return False
+
+
+def park_generic_smiles(record: dict) -> dict:
+    """Move a generic product structure out of ``product_smiles`` into
+    ``product_core_smiles``.  The pool and PubChem lookups only fill an empty
+    field, so a wildcard core in the slot kept 'tert-butyl benzoate' from
+    ever being resolved to its real structure."""
+    v = record.get("product_smiles")
+    if v and _rdkit_parses(str(v)) and _generic_smiles(str(v)):
+        record["product_core_smiles"] = v
+        record["product_smiles"] = None
+        note = f"product(generic)={str(v)[:80]}"
+        record["__smiles_dropped"] = (record.get("__smiles_dropped") + "; " + note) if record.get("__smiles_dropped") else note
+    return record
+
+
 def promote_smiles_in_names(record: dict) -> dict:
     """Move a SMILES string filed under ``reactant1/2_name`` / ``product_name``
     into the empty ``*_smiles`` field (the name field is then cleared)."""
@@ -1141,7 +1172,7 @@ PREFERRED_COLUMNS = [
     "entry_number",
     "reactant1_name", "reactant1_smiles",
     "reactant2_name", "reactant2_smiles",
-    "product_name", "product_smiles", "product_label",
+    "product_name", "product_smiles", "product_label", "product_core_smiles",
     "reaction_smiles",
     "reaction_class_record_level",
     "reaction_class_paper_level",
@@ -1311,6 +1342,7 @@ class PostProcessor:
             #    structure cells and the model sometimes files them as names) --
             promote_smiles_in_names(nr)
             drop_invalid_smiles(nr)
+            park_generic_smiles(nr)
 
             # -- Chemical-name normalization + abbreviation resolution
             #    (always — fixes OCR errors, restores bare abbreviations like
