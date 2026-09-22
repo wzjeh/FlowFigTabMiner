@@ -94,6 +94,8 @@ class EvidenceAssembler:
         # readings.  Preserves the legacy dict shape so LocalVarsBuilder's
         # field accessors keep working; provenance rides in each entry.
         text_ev_vlm = _vlm_text_evidence(vlm_metadata)
+        if text_evidence.get("panel_marker"):          # OCR'd off the marker crop; the VLM never sees it (masked)
+            text_ev_vlm["panel_marker"] = text_evidence["panel_marker"]
 
         # PDF-text-layer identity (CaptionLocator): real label, verbatim
         # caption/footnote.  ``caption`` stays the PaddleOCR reading for
@@ -275,8 +277,40 @@ class EvidenceAssembler:
         
         # Clean and Deduplicate
         self._clean_and_deduplicate(evidence)
-        
+
+        # The sub-panel letter ("(a)") is masked out of the cleaned plot and
+        # never reached the evidence, so a multi-panel figure could not be
+        # tied to the "(a) substrate 1a / (b) substrate 1b" split of its
+        # caption. Read it off the marker crop; one letter or nothing.
+        markers = sorted(p for p in files if "subfigure_marker" in os.path.basename(p))
+        for path in markers:
+            letter = panel_letter(self._ocr_marker(path))
+            if letter:
+                evidence["panel_marker"] = letter
+                print(f"      [Panel] {os.path.basename(path)} -> '{letter}'")
+                break
+
         return evidence
+
+    def _ocr_marker(self, file_path):
+        """Rec-only OCR of a marker crop.  The full pipeline's angle
+        classifier flips these 40 px crops ("b)" -> "(q"); the rec model on
+        an upscaled, padded crop reads them as printed."""
+        try:
+            import cv2
+            from src.extraction.common.ocr_backend import get_rec_instance
+            img = cv2.imread(file_path)
+            if img is None:
+                return ""
+            h, w = img.shape[:2]
+            scale = max(1, -(-150 // min(h, w)))
+            img = cv2.resize(img, (w * scale, h * scale), interpolation=cv2.INTER_CUBIC)
+            img = cv2.copyMakeBorder(img, 30, 30, 30, 30, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+            text, _conf = get_rec_instance().recognize(img)
+            return (text or "").strip()
+        except Exception as e:
+            print(f"      [OCR Error] {os.path.basename(file_path)}: {e}")
+            return ""
 
     def _clean_and_deduplicate(self, evidence):
         """
@@ -435,6 +469,16 @@ class EvidenceAssembler:
         if len(text) < 2: return False # Skip single chars
         if text.replace('.', '').isdigit(): return False # Skip pure numbers (often axis ticks misdetected as titles)
         return True
+
+
+_PANEL_RE = re.compile(r"^[\(\[]?\s*([a-hA-H]|[ivx]{1,4}|[IVX]{1,4})\s*[\)\]\.:]?$")
+
+
+def panel_letter(text):
+    """Normalise an OCR'd sub-panel marker ("(a)", "b)", "C", "(ii)") to its
+    lower-case letter / numeral; None when the text is not a marker."""
+    m = _PANEL_RE.match((text or "").strip())
+    return m.group(1).lower() if m else None
 
 
 # ── helpers: serialise VLM FieldValues into the legacy text_evidence shape ──

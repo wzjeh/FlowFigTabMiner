@@ -192,11 +192,13 @@ class LocalVarsBuilder:
         dv_range = f"{min(dv_vals):.3g} to {max(dv_vals):.3g}" if dv_vals else "N/A"
         facts_block = self._render_chart_facts(meta.get("facts") or {}, len(dv_vals), len(raw_data))
 
+        panel_line = (f"Panel ({ev['text_evidence']['panel_marker']}) [src=caption]: {ev['panel_caption']}\n"
+                      if ev.get("panel_caption") else "")
         user_prompt = f"""=== FIGURE EVIDENCE ===
 Source ID: {source_id}
 Paper label: {label}
 Caption [src={caption_src}]: {caption or '(none)'}
-Footnote: {footnote or '(none)'}
+{panel_line}Footnote: {footnote or '(none)'}
 {inner_block}Figure type: {figure_type}
 X-axis label: {x_title}
 Y-left-axis label: {yl_title}

@@ -149,7 +149,13 @@ class YoloDetector:
                         # If label == 'caption' and intersection is tiny (just touching), maybe ignore?
                         # But if we want to extract it, we should include it.
                         
-                        if include_element:
+                        # A neighbour panel's "(b)" that only grazes this
+                        # target is not this panel's marker: keep the crop
+                        # only when most of the marker lies inside.
+                        own_marker = (label != "subfigure_marker" or
+                                      (intersect_w * intersect_h) >= 0.5 * max(1, (dx2 - dx1) * (dy2 - dy1)))
+
+                        if include_element and own_marker:
                             # Save Crop (of the element itself)
                             elem_crop = original_img[dy1:dy2, dx1:dx2]
                             if elem_crop.size > 0:

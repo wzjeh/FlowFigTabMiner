@@ -70,7 +70,8 @@ def _human_label_for_figure(source_id: str, evidence: Dict[str, Any], local_vars
     """
     if context and context.get("label"):
         cap = (context.get("caption") or "")[:80].strip()
-        return f"{context['label']} (p.{_page_index(source_id)})" + (f" — {cap}" if cap else "")
+        letter = (evidence.get("text_evidence") or {}).get("panel_marker") or ""
+        return f"{context['label']}{letter} (p.{_page_index(source_id)})" + (f" — {cap}" if cap else "")
     if local_vars:
         ctx = local_vars.get("reaction_context") or ""
         if ctx:
@@ -184,7 +185,31 @@ def apply_context_to_evidence(evidence: Dict[str, Any], context: Optional[Dict[s
             meta["footnote_pdf"] = context.get("footnote", "")
             meta["caption_source"] = context.get("caption_source", "missing")
         ev["meta"] = meta
+        letter = (ev.get("text_evidence") or {}).get("panel_marker")
+        seg = panel_caption(context.get("caption") or meta.get("caption_pdf") or "", letter) if letter else None
+        if seg:
+            ev["panel_caption"] = seg
     return infer_legacy_facts(ev) if source_type == "figure" else ev
+
+
+_PANEL_SPLIT_RE = re.compile(r"(?<![A-Za-z0-9])\(?([a-h])\)\s*:?\s*", re.I)
+
+
+def panel_caption(caption: str, letter: str) -> Optional[str]:
+    """The part of a multi-panel caption that describes panel ``letter``:
+    "(a) tert-butyl ester 1a and (b) isopropyl ester 1b" -> "tert-butyl ester 1a"
+    for "a".  None when the caption has no such marker."""
+    if not caption or not letter:
+        return None
+    marks = list(_PANEL_SPLIT_RE.finditer(caption))
+    for i, m in enumerate(marks):
+        if m.group(1).lower() != letter.lower():
+            continue
+        end = marks[i + 1].start() if i + 1 < len(marks) else len(caption)
+        seg = caption[m.end():end].strip()
+        seg = re.sub(r"[\s,;]*(?:and|or)?\s*$", "", seg, flags=re.I).strip(" ,;")
+        return seg or None
+    return None
 
 
 def infer_legacy_facts(evidence: Dict[str, Any]) -> Dict[str, Any]:

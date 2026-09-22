@@ -279,8 +279,8 @@ def synthesize_records(
                         val = str(val)          # identities are strings
                     _set_path(rec, path, val)
                     data_fields.append(path)
-        elif series and series != "Default":
-            rec["other_metrics"]["series"] = series
+        if series and series != "Default":
+            rec["other_metrics"]["series"] = series      # the legend name as printed, whatever the map made of it
 
         for col in RAW_COLS:
             val = y_left[i] if col == "Y_Left" else (x_vals[i] if col == "X" else _num(pt.get(col)))

@@ -260,6 +260,7 @@ class FigurePipeline:
                     "has_point_labels": bool(mapper_facts.get("n_point_labels", 0)),
                     "n_series_legend": len(prototypes),
                     "series_source": series_source,
+                    "panel_marker": text_evidence.get("panel_marker"),
                     "n_stray_labels": mapper_facts.get("n_stray_labels", 0),
                     "series_matched_ratio": round(n_series_matched / len(points), 3) if points else 0.0,
                 }
