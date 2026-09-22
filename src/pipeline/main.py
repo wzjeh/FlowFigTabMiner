@@ -184,6 +184,38 @@ def run_step1_tfid(pdf_path: str) -> bool:
         return False
 
 
+def run_step_tables(intermediate_dir: str, provider) -> None:
+    """Every ``tables/*.png`` crop through the table pipeline (VLM transcription
+    + molecule YOLO + MolNexTR).  Also the entry point for re-running only this
+    stage (``scripts/rerun_tables.py``)."""
+    print("\n=== Step Table: Table Extraction ===")
+    shared_content_rec = ContentRecognizer()
+    transcriber, table_cfg = _build_table_transcriber(provider)
+    tab_pipeline = TablePipeline(
+        transcriber=transcriber,
+        content_recognizer=shared_content_rec,
+        min_text_agreement=table_cfg.min_text_agreement,
+    )
+    tables_dir = os.path.join(intermediate_dir, "tables")
+    if os.path.exists(tables_dir):
+        table_imgs = glob.glob(os.path.join(glob.escape(tables_dir), "*.png"))
+        table_imgs = [f for f in table_imgs if "_body" not in f and "_crop" not in f]
+        print(f"Processing {len(table_imgs)} tables...")
+        for t_img in table_imgs:
+            try:
+                tab_pipeline.process_table(t_img, output_dir=tables_dir)
+            except Exception as exc:
+                print(f"Error processing table {t_img}: {exc}")
+    else:
+        print("No tables directory found.")
+    # Release the table pipeline + its stage models.  The MolNexTR and
+    # PaddleOCR singletons are NOT freed (they live in module-level
+    # caches for cross-PDF reuse under --dir); this only drops the
+    # TablePipeline container and its YOLO stage references.
+    del tab_pipeline, shared_content_rec
+    release_memory()
+
+
 def run_step35_figure_schemes(intermediate_dir: str, provider, vlm_cfg) -> dict:
     """label -> SMILES harvested from the figure crops macro YOLO rejected.
     Forensics under ``{intermediate}/schemes/``; {} when there is nothing to read."""
@@ -399,38 +431,8 @@ def process_one_pdf(
     _mark("figure")
 
     # ─── Step Table: Table pipeline (VLM transcription + MolNexTR) ──
-    print("\n=== Step Table: Table Extraction ===")
-    shared_content_rec = ContentRecognizer()
-    transcriber, table_cfg = _build_table_transcriber(provider)
-    tab_pipeline = TablePipeline(
-        transcriber=transcriber,
-        content_recognizer=shared_content_rec,
-        min_text_agreement=table_cfg.min_text_agreement,
-    )
-
+    run_step_tables(intermediate_dir, provider)
     tables_dir = os.path.join(intermediate_dir, "tables")
-    if os.path.exists(tables_dir):
-        table_imgs = glob.glob(os.path.join(glob.escape(tables_dir), "*.png"))
-        table_imgs = [f for f in table_imgs if "_body" not in f and "_crop" not in f]
-        print(f"Processing {len(table_imgs)} tables...")
-        for t_img in table_imgs:
-            try:
-                tab_pipeline.process_table(t_img, output_dir=tables_dir)
-            except Exception as exc:
-                print(f"Error processing table {t_img}: {exc}")
-    else:
-        print("No tables directory found.")
-
-    # Release the table pipeline + its stage models.  The MolNexTR and
-    # PaddleOCR singletons are NOT freed (they live in module-level
-    # caches for cross-PDF reuse under --dir); this only drops the
-    # TablePipeline container and its YOLO stage references.
-    try:
-        del tab_pipeline
-        del shared_content_rec
-    except NameError:
-        pass
-    release_memory()
 
     _mark("table")
 
