@@ -16,7 +16,7 @@ class MetaAggregator:
                 "figures": list of figure_ids included
             }
         """
-        json_pattern = os.path.join(self.evidence_dir, "*_evidence.json")
+        json_pattern = os.path.join(glob.escape(self.evidence_dir), "*_evidence.json")
         evidence_files = glob.glob(json_pattern)
         
         all_terms = set()

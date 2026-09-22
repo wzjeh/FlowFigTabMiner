@@ -78,8 +78,8 @@ class GlobalAssembly:
         except OSError:
             return True
         for pat in (
-            os.path.join(intermediate_dir, "macro_cleaned", "*_evidence.json"),
-            os.path.join(intermediate_dir, "tables", "**", "*_evidence.json"),
+            os.path.join(glob.escape(intermediate_dir), "macro_cleaned", "*_evidence.json"),
+            os.path.join(glob.escape(intermediate_dir), "tables", "**", "*_evidence.json"),
         ):
             for e in glob.glob(pat, recursive=True):
                 if os.path.getmtime(e) > final_mtime:

@@ -30,6 +30,9 @@ paper_filter:
     - microfluidic reactor
     - flow synthesis
     - flow process
+    - microflow
+    - micro-flow
+    - micro flow
 
   # BLACKLIST: review / overview / non-data articles to SKIP.
   # SPECIFIC phrases only — never bare "review"/"perspective"/"account",

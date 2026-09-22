@@ -107,7 +107,7 @@ class YoloDetector:
                 
                 # CLEANUP: Remove detailed crops from previous runs for THIS target
                 # Pattern: {basename}_t{i}_*
-                existing_files = glob.glob(os.path.join(yolo_out_dir, f"{target_out_name}_*"))
+                existing_files = glob.glob(os.path.join(glob.escape(yolo_out_dir), f"{target_out_name}_*"))
                 for f in existing_files:
                     try: os.remove(f)
                     except: pass

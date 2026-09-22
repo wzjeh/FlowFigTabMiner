@@ -109,7 +109,7 @@ class FigurePipeline:
             except Exception as e:
                 print(f"Error reading selection file: {e}")
 
-        all_figures = glob.glob(os.path.join(figures_dir, "*.png"))
+        all_figures = glob.glob(os.path.join(glob.escape(figures_dir), "*.png"))
         
         if whitelist is not None:
             figure_images = [f for f in all_figures if os.path.basename(f) in whitelist]

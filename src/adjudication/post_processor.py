@@ -858,7 +858,7 @@ def _collect_intermediate_reaction_context(intermediate_dir: str | None) -> str:
     if not intermediate_dir or not os.path.isdir(intermediate_dir):
         return ""
     snippets: list[str] = []
-    for path in glob.glob(os.path.join(intermediate_dir, "**", "*local_vars.json"), recursive=True)[:20]:
+    for path in glob.glob(os.path.join(glob.escape(intermediate_dir), "**", "*local_vars.json"), recursive=True)[:20]:
         try:
             with open(path, encoding="utf-8", errors="ignore") as fh:
                 obj = json.load(fh)

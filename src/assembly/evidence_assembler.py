@@ -188,7 +188,7 @@ class EvidenceAssembler:
         
         # 1. Look for existing caption crops on the same page
         import glob
-        pattern = os.path.join(intermediate_dir, f"{page_pre}_figure_*_caption_*.png")
+        pattern = os.path.join(glob.escape(intermediate_dir), f"{page_pre}_figure_*_caption_*.png")
         cap_files = glob.glob(pattern)
         
         if cap_files:
@@ -220,7 +220,7 @@ class EvidenceAssembler:
         # Crops are named: {figure_id}_{label}_{index}.png
         # Note: figure_id itself might contain underscores, so we match by prefix
         
-        search_pattern = os.path.join(intermediate_dir, f"{figure_id}_*.png")
+        search_pattern = os.path.join(glob.escape(intermediate_dir), f"{figure_id}_*.png")
         files = glob.glob(search_pattern)
         
         for file_path in files:
@@ -356,7 +356,7 @@ class EvidenceAssembler:
             
             # Search for any caption file on this page: page_2_figure_*_caption_*.png
             # We want to find captions distinct from what we already have (if any)
-            fallback_pattern = os.path.join(intermediate_dir, f"{page_prefix}_figure_*_caption_*.png")
+            fallback_pattern = os.path.join(glob.escape(intermediate_dir), f"{page_prefix}_figure_*_caption_*.png")
             print(f"      [Fallback Debug] Scanning: {fallback_pattern}")
             fallback_files = sorted(glob.glob(fallback_pattern))
             print(f"      [Fallback Debug] Found {len(fallback_files)} candidates: {[os.path.basename(f) for f in fallback_files]}")

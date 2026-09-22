@@ -290,7 +290,7 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
     packets: List[SourcePacket] = []
 
     # --- Tables: nested layout ``tables/{table_basename}/{...}_evidence.json``
-    for ev_path in sorted(glob.glob(os.path.join(pdf_root, "tables", "**", "*_evidence.json"), recursive=True)):
+    for ev_path in sorted(glob.glob(os.path.join(glob.escape(pdf_root), "tables", "**", "*_evidence.json"), recursive=True)):
         try:
             evidence = json.load(open(ev_path))
         except Exception as exc:
@@ -322,7 +322,7 @@ def discover(intermediate_dir: str, basename: str, paper_text: str) -> List[Sour
         ))
 
     # --- Figures: flat layout ``macro_cleaned/{figure_id}_evidence.json``
-    for ev_path in sorted(glob.glob(os.path.join(pdf_root, "macro_cleaned", "*_evidence.json"))):
+    for ev_path in sorted(glob.glob(os.path.join(glob.escape(pdf_root), "macro_cleaned", "*_evidence.json"))):
         try:
             evidence = load_figure_evidence(ev_path)
         except Exception as exc:

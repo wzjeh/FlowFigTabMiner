@@ -85,7 +85,7 @@ def _experimental_section(paper_text: str, size: int = 12000) -> str:
 
 def _collect_captions(intermediate_dir: str) -> List[Dict[str, str]]:
     out = []
-    for p in sorted(glob.glob(os.path.join(intermediate_dir, "context", "*_context.json"))):
+    for p in sorted(glob.glob(os.path.join(glob.escape(intermediate_dir), "context", "*_context.json"))):
         try:
             c = json.load(open(p))
         except Exception:
@@ -104,9 +104,9 @@ def _collect_captions(intermediate_dir: str) -> List[Dict[str, str]]:
 
 
 def _newest_mtime(intermediate_dir: str) -> float:
-    paths = glob.glob(os.path.join(intermediate_dir, "context", "*.json")) \
-        + glob.glob(os.path.join(intermediate_dir, "macro_cleaned", "*_evidence.json")) \
-        + glob.glob(os.path.join(intermediate_dir, "tables", "**", "*_evidence.json"), recursive=True)
+    paths = glob.glob(os.path.join(glob.escape(intermediate_dir), "context", "*.json")) \
+        + glob.glob(os.path.join(glob.escape(intermediate_dir), "macro_cleaned", "*_evidence.json")) \
+        + glob.glob(os.path.join(glob.escape(intermediate_dir), "tables", "**", "*_evidence.json"), recursive=True)
     return max((os.path.getmtime(p) for p in paths), default=0.0)
 
 

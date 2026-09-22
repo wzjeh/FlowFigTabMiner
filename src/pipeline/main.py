@@ -222,7 +222,7 @@ def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cf
     paper_text = PDFParser().extract_text(pdf_path)
     local_vars_dir = os.path.join(intermediate_dir, "local_vars")
     if rebuild and os.path.isdir(local_vars_dir):
-        for fn in glob.glob(os.path.join(local_vars_dir, "*_local_vars.json")):
+        for fn in glob.glob(os.path.join(glob.escape(local_vars_dir), "*_local_vars.json")):
             os.remove(fn)
         print(f"   [LocalVars] rebuild: cleared cached local_vars in {local_vars_dir}")
     os.makedirs(local_vars_dir, exist_ok=True)
@@ -236,7 +236,7 @@ def run_step45_local_vars(pdf_path: str, intermediate_dir: str, provider, llm_cf
         print(f"   [LocalVars] Loaded scheme_conditions.txt ({len(scheme_cond_text)} chars)")
 
     macro_cleaned_dir = os.path.join(intermediate_dir, "macro_cleaned")
-    for jpath in glob.glob(os.path.join(macro_cleaned_dir, "*_evidence.json")):
+    for jpath in glob.glob(os.path.join(glob.escape(macro_cleaned_dir), "*_evidence.json")):
         try:
             ev = load_figure_evidence(jpath)
             src_id = ev.get("meta", {}).get(
@@ -347,7 +347,7 @@ def process_one_pdf(
     _mark("filter")
 
     # ─── Step 1: TF-ID ──────────────────────────────────────────────
-    figures_exist = len(glob.glob(os.path.join(intermediate_dir, "figures", "*.png"))) > 0
+    figures_exist = len(glob.glob(os.path.join(glob.escape(intermediate_dir), "figures", "*.png"))) > 0
     if args.skip_tfid and figures_exist:
         print("\n=== Step 1: TF-ID Parsing (SKIPPED - intermediate figures found) ===")
     elif not run_step1_tfid(pdf_path):
@@ -390,7 +390,7 @@ def process_one_pdf(
 
     tables_dir = os.path.join(intermediate_dir, "tables")
     if os.path.exists(tables_dir):
-        table_imgs = glob.glob(os.path.join(tables_dir, "*.png"))
+        table_imgs = glob.glob(os.path.join(glob.escape(tables_dir), "*.png"))
         table_imgs = [f for f in table_imgs if "_body" not in f and "_crop" not in f]
         print(f"Processing {len(table_imgs)} tables...")
         for t_img in table_imgs:
@@ -422,7 +422,7 @@ def process_one_pdf(
     scheme_conditions_texts: list[str] = []
 
     if os.path.exists(tables_dir):
-        scheme_imgs = glob.glob(os.path.join(tables_dir, "**", "*_table_scheme_*.png"), recursive=True)
+        scheme_imgs = glob.glob(os.path.join(glob.escape(tables_dir), "**", "*_table_scheme_*.png"), recursive=True)
         if scheme_imgs:
             scheme_cfg = load_config().get("tables", {}).get("scheme_parsing", {})
             scheme_parser = SchemeSegParser(
@@ -526,7 +526,7 @@ def _run_batch(args) -> None:
     the children serialise on the lock and two batches can't run heavy
     work concurrently either.
     """
-    pdfs = sorted(glob.glob(os.path.join(args.dir, "*.pdf")))
+    pdfs = sorted(glob.glob(os.path.join(glob.escape(args.dir), "*.pdf")))
     if not pdfs:
         print(f"Error: no *.pdf found in {args.dir}")
         return

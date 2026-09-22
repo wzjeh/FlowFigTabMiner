@@ -109,7 +109,7 @@ def health(papers: List[str], inter_dir: str = INTER_DIR, final_dir: str = FINAL
             out["not_ok"].append({"paper": b, "status": timing.get("status", "no timing.json (crash or still running)")})
         if timing.get("total") is not None:
             out["timing_s"][b] = timing
-        for sp in sorted(glob.glob(os.path.join(idir, "status", "*.json"))):
+        for sp in sorted(glob.glob(os.path.join(glob.escape(idir), "status", "*.json"))):
             try:
                 s = json.load(open(sp))
             except Exception:
@@ -119,7 +119,7 @@ def health(papers: List[str], inter_dir: str = INTER_DIR, final_dir: str = FINAL
                 out["failures"].append({"paper": b, "source": s.get("source_id"), "stage": s.get("stage"),
                                         "reason": str(s.get("reason"))[:200]})
         q = out.setdefault("quality", collections.Counter())
-        for ev in glob.glob(os.path.join(idir, "macro_cleaned", "*_evidence.json")):
+        for ev in glob.glob(os.path.join(glob.escape(idir), "macro_cleaned", "*_evidence.json")):
             try:
                 e = json.load(open(ev))
             except Exception:
@@ -128,7 +128,7 @@ def health(papers: List[str], inter_dir: str = INTER_DIR, final_dir: str = FINAL
             q["figures"] += 1
             q["figure_points"] += len(raw)
             q["figures_without_values"] += not any(isinstance(p.get(c), (int, float)) for p in raw for c in ("X", "Y_Left", "Y_Right/Data_Value"))
-        for ev in glob.glob(os.path.join(idir, "tables", "*", "*_evidence.json")):
+        for ev in glob.glob(os.path.join(glob.escape(idir), "tables", "*", "*_evidence.json")):
             try:
                 e = json.load(open(ev))
             except Exception:

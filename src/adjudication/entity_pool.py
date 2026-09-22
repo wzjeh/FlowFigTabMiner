@@ -244,7 +244,7 @@ def build_global_entity_pool(intermediate_dir: str, scheme_pools: dict,
     # 2. table CSVs.
     tables_dir = os.path.join(intermediate_dir, "tables")
     if os.path.isdir(tables_dir):
-        for csv_path in glob.glob(os.path.join(tables_dir, "**", "*_extracted.csv"),
+        for csv_path in glob.glob(os.path.join(glob.escape(tables_dir), "**", "*_extracted.csv"),
                                   recursive=True):
             _harvest_csv(pool, csv_path)
 
