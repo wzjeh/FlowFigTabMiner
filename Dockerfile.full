@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # CPU-only torch first (the PyPI wheel drags in ~4 GB of CUDA libraries),
 # then everything else from the same pinned list the venv was built from.
 COPY requirements.txt .
-RUN pip install --no-cache-dir torch==2.8.0 torchvision==0.23.0 \
-        --index-url https://download.pytorch.org/whl/cpu \
+RUN pip install --no-cache-dir torch==2.8.0+cpu torchvision==0.23.0+cpu \
+        --extra-index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt huggingface_hub
 
 COPY src/ src/
