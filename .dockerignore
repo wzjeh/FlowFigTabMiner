@@ -1,0 +1,31 @@
+# Build context for every Dockerfile.* in this repo: only code and configs.
+# Weights, data, the venv and papers never enter an image.
+.git
+.github
+flowfigtabminer/
+flowfigtabminer.egg-info/
+models/
+data/
+runs/
+eval/
+evaluation/
+pub/
+other dataset/
+tests/
+__pycache__/
+**/__pycache__/
+*.pyc
+.env
+.env.local
+*.ipynb
+*.rtf
+*.png
+*.log
+# root-level notes only; the prompt files under src/**/prompts/*.md must stay
+CHANGELOG.md
+IMPROVEMENTS.md
+MEMORY.md
+ML_LIFETIME_PLAN.md
+WEB_ARCHITECTURE.md
+project_logic.md
+CLAUDE.md

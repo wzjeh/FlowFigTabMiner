@@ -1,0 +1,55 @@
+# FlowFigTabMiner, complete local pipeline (TF-ID -> figure/table extraction ->
+# Gemini assembly -> post-processing) in one CPU image.  Python 3.9 to match
+# the development venv exactly; the four Dockerfile.{tfid,figure,table,frontend}
+# images are the Cloud Run demo and are not touched by this file.
+#
+#   docker run --rm -e GEMINI_API_KEY=... \
+#       -v $PWD/models:/app/models -v $PWD/data:/app/data \
+#       ghcr.io/wzjeh/flowfigtabminer --dir data/input/my_pdfs
+#
+# Weights land in /app/models on first run (hf.co/wyzhaoc/FlowFigTabMiner-models
+# plus the public TF-ID / TATR / docling models); mount it to keep them.
+FROM python:3.9-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    libopenblas0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# CPU-only torch first (the PyPI wheel drags in ~4 GB of CUDA libraries),
+# then everything else from the same pinned list the venv was built from.
+COPY requirements.txt .
+RUN pip install --no-cache-dir torch==2.8.0 torchvision==0.23.0 \
+        --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt huggingface_hub
+
+COPY src/ src/
+COPY scripts/ scripts/
+COPY config.yaml keywords.yaml ./
+COPY docker/entrypoint-full.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && mkdir -p data/input data/intermediate data/final_output data/cache models
+
+# Hugging Face and PaddleX caches live under the models volume so a single
+# mount keeps every weight between runs.
+ENV HF_HOME=/app/models/hf
+ENV PADDLE_PDX_CACHE_HOME=/app/models/paddlex
+ENV DISABLE_MODEL_SOURCE_CHECK=True
+ENV PADDLEPD_DISABLE_MODEL_SOURCE_CHECK=True
+# OneDNN is not available on every x86 CPU Paddle may land on.
+ENV FLAGS_use_mkldnn=0
+ENV FLAGS_pir_apply_mkldnn_pass=0
+ENV FLAGS_enable_pir_api=0
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+VOLUME ["/app/models", "/app/data"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["--help"]
