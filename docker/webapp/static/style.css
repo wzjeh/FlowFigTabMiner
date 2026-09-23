@@ -13,6 +13,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
 html { background: var(--paper); }
 body {
   font-family: var(--sans);
@@ -89,6 +90,30 @@ h2.section::after { content: ""; flex: 1; border-bottom: 1px solid var(--rule); 
 .stats { display: flex; gap: 40px; flex-wrap: wrap; margin: 4px 0 24px; }
 .stat b { display: block; font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.2; }
 .stat span { font-size: 12px; color: var(--sub); }
+
+/* extract reveal: right panel as tall as the original, scrolls inside */
+.pair.stretch { align-items: stretch; }
+.pair.stretch + .pair.stretch { margin-top: 32px; }
+.frame.fill { position: relative; min-height: 380px; }
+.frame.fill > .reveal, .frame.fill > .reveal-body { position: absolute; inset: 18px; }
+.reveal { display: flex; align-items: center; justify-content: center; }
+.reveal-body { display: flex; flex-direction: column; }
+.reveal .reveal-body { position: absolute; inset: 0; }
+.fill-scroll { flex: 1; min-height: 0; overflow: auto; }
+.fill-scroll thead th { position: sticky; top: 0; background: var(--card); }
+.extract {
+  width: 200px; height: 200px; border-radius: 50%;
+  border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  font-family: var(--serif); transition: background .2s, color .2s, border-color .2s;
+}
+.extract span { font-size: 28px; letter-spacing: 0.06em; }
+.extract small { font-size: 15px; color: var(--shu); letter-spacing: 0.3em; transition: color .2s; }
+.extract:hover { background: var(--shu); border-color: var(--shu); color: #fff; }
+.extract:hover small { color: #fff; }
+.reading { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 13px; color: var(--sub); }
+.reading .bar { width: 260px; height: 2px; background: var(--faint); }
+.reading .bar i { display: block; height: 100%; width: 0; background: var(--shu); }
 
 /* chart */
 svg.chart { width: 100%; height: auto; display: block; }

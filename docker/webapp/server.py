@@ -77,7 +77,7 @@ def index():
 def examples():
     import json
     out = {}
-    for kind in ("figure", "table", "paper"):
+    for kind in ("figure", "figure2", "table", "paper"):
         p = os.path.join(EXAMPLES_DIR, kind, "result.json")
         if os.path.exists(p):
             out[kind] = dict(json.load(open(p)), base=f"/examples/{kind}/")

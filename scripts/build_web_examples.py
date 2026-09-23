@@ -4,7 +4,8 @@
   flowfigtabminer/bin/python scripts/build_web_examples.py
 
 Figure: Figure 2 of the same paper (a yield heatmap over temperature and
-residence time); table: the Cloud Run demo's example table.  Both run once
+residence time) and, as figure2, a two-axis scatter / line plot (the Cloud Run
+demo's example figure); table: the Cloud Run demo's example table.  Both run once
 through the same functions the page uses for a visitor's upload.  Paper: the current
 pipeline output for Nagaki et al. 2007 (Chem. Asian J.), packaged as is; the PDF
 itself is not copied.  Output: docker/webapp/examples/{figure,table,paper}/.
@@ -55,6 +56,18 @@ def main(which):
             p["label"] = "Figure 2 · Nagaki et al. 2007"
             p["axes"] = {"x": "residence time (s)", "y": "temperature (°C)", "value": "yield (%)"}
         _save("figure", result, d)
+    if "figure2" in which:
+        # a scatter / line plot with two y axes (the Cloud Run demo's example figure)
+        d = _fresh("figure2")
+        result = jobs.extract_figure(os.path.join(examples, "example_figure.png"), keys, d)
+        for p in result.get("panels", []):
+            p["label"] = "Scatter / line plot"
+            p["axes"] = {"x": "liquid flow rate (mL/min)", "y": "selectivity (%)"}
+            # each point is read against both y axes; the legend puts the main
+            # product on the left axis and the by-products on the right one
+            p["series_axis"] = {s["name"]: ("left" if s["name"].startswith("3,4-dichloroaniline") else "right")
+                                for s in p["series"]}
+        _save("figure2", result, d)
     if "table" in which:
         d = _fresh("table")
         _save("table", jobs.extract_table(os.path.join(examples, "example_table.png"), keys, d), d)
@@ -70,4 +83,4 @@ def main(which):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:] or ["figure", "table", "paper"])
+    main(sys.argv[1:] or ["figure", "figure2", "table", "paper"])
