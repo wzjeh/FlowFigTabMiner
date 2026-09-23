@@ -1,12 +1,14 @@
 """Gradio demo for the FlowFigTabMiner image: figure, table, or whole PDF.
 
-Started by the image entrypoint as ``web`` (port 7860).  Two ways to pay for
-the Gemini calls:
-  * bring your own key (used for this job only, never written anywhere);
-  * demo mode: the demo password unlocks the key in the server environment.
+Started by the image entrypoint as ``web`` (port 7860).  Who pays for Gemini:
+  * a visitor who enters their own key: that key, for that job only, never stored;
+  * otherwise a free trial on the server's key: one figure, one table and one
+    paper per visitor (by IP), and at most FFTM_TRIAL_MONTHLY
+    ("figure=1000,table=1000,pdf=100") jobs of each kind per month in total.
+    Usage is kept in data/web_usage.json.
 
-Server environment (never in this file): GEMINI_API_KEY, optional GEMINI_API_KEY_1../GOOGLE_API_KEY_1..,
-DEMO_PASSWORD.
+Server environment (never in this file): GEMINI_API_KEY, optional
+GEMINI_API_KEY_1../GOOGLE_API_KEY_1.. as quota fallbacks.
 """
 import glob
 import json
@@ -17,6 +19,8 @@ import subprocess
 import sys
 import time
 import uuid
+
+import threading
 
 import gradio as gr
 import pandas as pd
@@ -63,21 +67,73 @@ def _key_works(key: str) -> bool:
     return _KEY_OK[key]
 
 
-def _resolve_key(user_key: str, demo_password: str):
-    """-> (keys to try in order, mode label)."""
-    expected = os.environ.get("DEMO_PASSWORD", "")
-    if demo_password.strip():
-        if expected and demo_password.strip() == expected:
-            keys = [k for k in _demo_keys() if _key_works(k)]
-            if not keys:
-                raise gr.Error("Demo mode is not configured on this server (no working Gemini key).")
-            return keys, "demo"
-        raise gr.Error("Wrong demo password.")
+USAGE_PATH = os.path.join(APP_DIR, "data", "web_usage.json")
+_USAGE_LOCK = threading.Lock()
+
+
+def _monthly_caps():
+    raw = os.environ.get("FFTM_TRIAL_MONTHLY", "figure=1000,table=1000,pdf=100")
+    return {k.strip(): int(v) for k, v in (kv.split("=") for kv in raw.split(",") if "=" in kv)}
+
+
+def _visitor(request) -> str:
+    if request is None:
+        return "local"
+    fwd = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    return fwd or (request.client.host if request.client else "unknown")
+
+
+def _load_usage():
+    month = time.strftime("%Y-%m")
+    try:
+        u = json.load(open(USAGE_PATH))
+    except Exception:  # noqa: BLE001 - first run or unreadable: start the month fresh
+        u = {}
+    if u.get("month") != month:
+        u = {"month": month, "counts": {}, "visitors": {}}
+    return u
+
+
+def _take_trial(kind: str, visitor: str):
+    """Reserve one trial job; raise gr.Error when the visitor or the month is used up."""
+    with _USAGE_LOCK:
+        u = _load_usage()
+        used = u["visitors"].setdefault(kind, [])
+        if visitor in used:
+            raise gr.Error(f"The free {kind} trial has been used from this address. "
+                           "Enter your own Gemini API key to continue.")
+        cap = _monthly_caps().get(kind, 0)
+        if u["counts"].get(kind, 0) >= cap:
+            raise gr.Error(f"This month's free {kind} trials ({cap}) are used up. "
+                           "Enter your own Gemini API key to continue.")
+        used.append(visitor)
+        u["counts"][kind] = u["counts"].get(kind, 0) + 1
+        os.makedirs(os.path.dirname(USAGE_PATH), exist_ok=True)
+        json.dump(u, open(USAGE_PATH, "w"), indent=1)
+
+
+def _refund_trial(kind: str, visitor: str):
+    """A job that crashed on our side does not use up the visitor's trial."""
+    with _USAGE_LOCK:
+        u = _load_usage()
+        if visitor in u["visitors"].get(kind, []):
+            u["visitors"][kind].remove(visitor)
+            u["counts"][kind] = max(0, u["counts"].get(kind, 0) - 1)
+            json.dump(u, open(USAGE_PATH, "w"), indent=1)
+
+
+def _resolve_key(user_key: str, kind: str, request):
+    """-> (keys to try in order, mode label, visitor id or None when not a trial)."""
     if user_key.strip():
         if not _key_works(user_key.strip()):
             raise gr.Error("This Gemini API key is not valid.")
-        return [user_key.strip()], "own key"
-    raise gr.Error("Enter your Gemini API key, or the demo password.")
+        return [user_key.strip()], "own key", None
+    keys = [k for k in _demo_keys() if _key_works(k)]
+    if not keys:
+        raise gr.Error("The free trial is not available right now. Enter your own Gemini API key.")
+    visitor = _visitor(request)
+    _take_trial(kind, visitor)
+    return keys, "free trial", visitor
 
 
 def _quota_exhausted(text: str) -> bool:
@@ -137,10 +193,10 @@ def _build_figure_pipeline(provider):
                           value_conflict_policy=getattr(label_reader, "value_conflict_policy", "vlm"))
 
 
-def run_figure(image_path, user_key, demo_password):
+def run_figure(image_path, user_key, request: gr.Request):
     if not image_path:
         raise gr.Error("Upload a figure image first.")
-    keys, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode, visitor = _resolve_key(user_key or "", "figure", request)
     job = _job_dir("figure")
     fig_dir = os.path.join(job, "figures")
     os.makedirs(fig_dir)
@@ -158,6 +214,8 @@ def run_figure(image_path, user_key, demo_password):
         evidence_paths = _with_fallback(keys, _job)
     except Exception as exc:
         shutil.rmtree(job, ignore_errors=True)
+        if visitor:
+            _refund_trial("figure", visitor)
         raise gr.Error(f"Figure extraction failed: {type(exc).__name__}: {exc}")
     if not evidence_paths:
         shutil.rmtree(job, ignore_errors=True)
@@ -184,10 +242,10 @@ def run_figure(image_path, user_key, demo_password):
 # ── table ─────────────────────────────────────────────────────────────────
 
 
-def run_table(image_path, user_key, demo_password):
+def run_table(image_path, user_key, request: gr.Request):
     if not image_path:
         raise gr.Error("Upload a table image first.")
-    keys, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode, visitor = _resolve_key(user_key or "", "table", request)
     job = _job_dir("table")
     tables_dir = os.path.join(job, "tables")
     os.makedirs(tables_dir)
@@ -210,6 +268,8 @@ def run_table(image_path, user_key, demo_password):
         result = _with_fallback(keys, _job)
     except Exception as exc:
         shutil.rmtree(job, ignore_errors=True)
+        if visitor:
+            _refund_trial("table", visitor)
         raise gr.Error(f"Table extraction failed: {type(exc).__name__}: {exc}")
     if not result.get("is_valid"):
         return None, f"Not extracted: {result.get('reason')}", None, None
@@ -236,10 +296,10 @@ def _preview(records):
     return rows
 
 
-def run_pdf(pdf, user_key, demo_password, progress=gr.Progress()):
+def run_pdf(pdf, user_key, request: gr.Request, progress=gr.Progress()):
     if pdf is None:
         raise gr.Error("Upload a PDF first.")
-    keys, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode, visitor = _resolve_key(user_key or "", "pdf", request)
     job = uuid.uuid4().hex[:8]
     stem = re.sub(r"[^A-Za-z0-9._-]+", "_", os.path.splitext(os.path.basename(pdf.name))[0])[:60]
     basename = f"web_pdf_{job}_{stem}"
@@ -283,6 +343,8 @@ def run_pdf(pdf, user_key, demo_password, progress=gr.Progress()):
         yield "\n".join(log_lines[-40:]), None, None, None
         return
     if proc.returncode != 0 or not os.path.exists(js):
+        if visitor:
+            _refund_trial("pdf", visitor)
         log_lines.append(f"Pipeline exited with code {proc.returncode}; see log above.")
         yield "\n".join(log_lines[-60:]), None, None, None
         return
@@ -302,14 +364,13 @@ INTRO = ("# FlowFigTabMiner\n"
          "Reaction data from flow-chemistry papers: a **figure** (scatter plot / heatmap) gives its data points, "
          "a **table** gives its rows with structures read as SMILES, a **whole PDF** gives assembled reaction records "
          "(reactants, product, conditions, yield).\n\n"
-         "Gemini does the reading of text and the assembly. Enter your own key "
-         "([free key](https://aistudio.google.com/apikey); used for this job only) or the demo password.")
+         "Try it without a key: one figure, one table and one paper per visitor run on our Gemini key. "
+         "For more, paste your own key ([get a free key](https://aistudio.google.com/apikey)); it is used for "
+         "your job only and never stored.")
 
 with gr.Blocks(title="FlowFigTabMiner") as demo:
     gr.Markdown(INTRO)
-    with gr.Row():
-        user_key = gr.Textbox(label="Your Gemini API key", type="password", scale=2)
-        demo_password = gr.Textbox(label="or: demo password", type="password", scale=1)
+    user_key = gr.Textbox(label="Gemini API key (optional; leave empty for the free trial)", type="password")
 
     with gr.Tab("Figure"):
         with gr.Row():
@@ -322,7 +383,7 @@ with gr.Blocks(title="FlowFigTabMiner") as demo:
         fig_cleaned = gr.Image(label="Cleaned plot area", height=320)
         fig_table = gr.Dataframe(label="Data points", wrap=True)
         fig_json = gr.File(label="JSON")
-        fig_btn.click(run_figure, [fig_in, user_key, demo_password], [fig_cleaned, fig_summary, fig_table, fig_json],
+        fig_btn.click(run_figure, [fig_in, user_key], [fig_cleaned, fig_summary, fig_table, fig_json],
                       concurrency_limit=1)
 
     with gr.Tab("Table"):
@@ -336,7 +397,7 @@ with gr.Blocks(title="FlowFigTabMiner") as demo:
         tab_debug = gr.Image(label="Detected structures", height=320)
         tab_table = gr.Dataframe(label="Rows (structures as SMILES)", wrap=True)
         tab_csv = gr.File(label="CSV")
-        tab_btn.click(run_table, [tab_in, user_key, demo_password], [tab_debug, tab_summary, tab_table, tab_csv],
+        tab_btn.click(run_table, [tab_in, user_key], [tab_debug, tab_summary, tab_table, tab_csv],
                       concurrency_limit=1)
 
     with gr.Tab("Whole PDF"):
@@ -351,7 +412,7 @@ with gr.Blocks(title="FlowFigTabMiner") as demo:
         with gr.Row():
             pdf_xlsx = gr.File(label="Excel")
             pdf_json = gr.File(label="JSON")
-        pdf_btn.click(run_pdf, [pdf_in, user_key, demo_password], [pdf_log, pdf_table, pdf_xlsx, pdf_json],
+        pdf_btn.click(run_pdf, [pdf_in, user_key], [pdf_log, pdf_table, pdf_xlsx, pdf_json],
                       concurrency_limit=1)
 
 demo.queue(default_concurrency_limit=1).launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", "7860")))
