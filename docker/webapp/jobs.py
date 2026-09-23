@@ -220,13 +220,21 @@ def figure_result(evidence_paths, input_png, out_dir, seconds=None):
             "n_points": sum(len(s["points"]) for p in panels for s in p["series"]), "seconds": seconds}
 
 
+def _table_cell(v):
+    """A structure cell may carry its compound label and yield after the SMILES ('<smiles> 3a 24')."""
+    head, _, rest = str(v).strip().partition(" ")
+    if looks_like_smiles(head):
+        return {"smiles": head, "text": rest} if rest else {"smiles": head}
+    return {"text": str(v)}
+
+
 def table_result(result, input_png, out_dir, seconds=None):
     if result.get("csv_path") and os.path.exists(result["csv_path"]):
         df = pd.read_csv(result["csv_path"], dtype=str, keep_default_na=False)
     else:
         df = pd.DataFrame(result.get("dataframe") if result.get("dataframe") is not None else [])
     columns = [("" if str(c).startswith("Unnamed") else str(c)) for c in df.columns]
-    rows = [[{"smiles": v} if looks_like_smiles(v) else {"text": str(v)} for v in r] for r in df.astype(str).values.tolist()]
+    rows = [[_table_cell(v) for v in r] for r in df.astype(str).values.tolist()]
     return {"kind": "table", "input": _publish(input_png, out_dir, "input.png"), "caption": result.get("caption_text") or "",
             "notes": result.get("table_note_text") or "", "columns": columns, "rows": rows, "seconds": seconds}
 

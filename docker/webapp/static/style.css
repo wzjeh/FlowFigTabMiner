@@ -172,3 +172,4 @@ footer {
 }
 footer a { text-decoration: none; }
 footer .dot { color: var(--rule); }
+table.data .mol-label { font-size: 12px; color: var(--sub); margin-top: 2px; }

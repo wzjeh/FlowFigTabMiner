@@ -51,7 +51,7 @@ function figureRows(r) {
 }
 
 function tableRows(r) {
-  const cell = (c) => (c.smiles ? `<td>${mol(c.smiles)}</td>` : `<td>${esc(c.text)}</td>`);
+  const cell = (c) => (c.smiles ? `<td>${mol(c.smiles)}${c.text ? `<div class="mol-label">${esc(c.text)}</div>` : ""}</td>` : `<td>${esc(c.text)}</td>`);
   return `<table class="data"><thead><tr>${r.columns.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead>
     <tbody>${r.rows.map((row) => `<tr>${row.map(cell).join("")}</tr>`).join("")}</tbody></table>`;
 }
