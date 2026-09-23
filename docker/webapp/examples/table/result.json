@@ -1,0 +1,363 @@
+{
+ "kind": "table",
+ "input": "input.png",
+ "caption": "Table 1: External trapping of 2 and 3 with electrophiles under continuous flow conditions.",
+ "notes": "[a] A solution of fluoroiodomethane (1) (0.10 M in THF; flow rate: 4.0 mL/min) and a solution of MeLi (Br free; 0.20 M in Et2O; flow rate: 4.0 mL/min) or LDA (0.42 M in THF; flow rate: 1.0 mL min−1) were introduced to M1 by syringe pumps. The resulting solution was passed through R1 (tR1 = 0.013 s, T = −60 °C (4a–i); tR1 = 0.082 s, T = −40 °C (5a–c, 6a–c)) and was mixed with a solution of electrophiles (0.30 M in THF; flow rate: 4.0 mL min−1) in M2. The resulting solution was passed through R2 (tR2 = 7.85 s, T = −60 °C (4a–4i); tR2 = 10.47 s, T = −40 °C (5a–5c); tR2 = 20.94 s, T = −40 °C (6a–6c)). [b] Previous research data (Ref. [3a]). [c] Yields were determined by 1H NMR analysis using dibromomethane as an internal standard. [d] The productivity was calculated based on the yield of the isolated product.",
+ "columns": [
+  "Electrophile",
+  "Lithiating agent",
+  "Product",
+  "",
+  "Yield [%] Internal in batch",
+  "External in flow[a]",
+  "Productivity [g h−1][d]"
+ ],
+ "rows": [
+  [
+   {
+    "smiles": "CON(C)C(=O)CCc1ccccc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)CCc1ccccc1"
+   },
+   {
+    "text": "4a"
+   },
+   {
+    "text": "34[b]"
+   },
+   {
+    "text": "70 (82)[c]"
+   },
+   {
+    "text": "2.8"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)/C=C/c1ccccc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(/C=C/c1ccccc1)CF"
+   },
+   {
+    "text": "4b"
+   },
+   {
+    "text": "41[b]"
+   },
+   {
+    "text": "80 (88)[c]"
+   },
+   {
+    "text": "3.2"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1ccccc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1ccccc1"
+   },
+   {
+    "text": "4c"
+   },
+   {
+    "text": "58[b]"
+   },
+   {
+    "text": "66 (79)[c]"
+   },
+   {
+    "text": "2.2"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1cccs1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1cccs1"
+   },
+   {
+    "text": "4d"
+   },
+   {
+    "text": "45[b]"
+   },
+   {
+    "text": "68 (80)[c]"
+   },
+   {
+    "text": "2.4"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1ccc(-c2ccccc2)cc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1ccc(-c2ccccc2)cc1"
+   },
+   {
+    "text": "4e"
+   },
+   {
+    "text": "53[b]"
+   },
+   {
+    "text": "60 (72)[c]"
+   },
+   {
+    "text": "3.1"
+   }
+  ],
+  [
+   {
+    "smiles": "CCC(C(=O)N(C)OC)c1ccccc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "CCC(C(=O)CF)c1ccccc1"
+   },
+   {
+    "text": "4f"
+   },
+   {
+    "text": "30[b]"
+   },
+   {
+    "text": "60 (65)[c]"
+   },
+   {
+    "text": "2.6"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1cccc(F)c1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1cccc(F)c1"
+   },
+   {
+    "text": "4g"
+   },
+   {
+    "text": "47[b]"
+   },
+   {
+    "text": "80 (93)[c]"
+   },
+   {
+    "text": "3.0"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1ccc(C(F)(F)F)cc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1ccc(C(F)(F)F)cc1"
+   },
+   {
+    "text": "4h"
+   },
+   {
+    "text": "41[b]"
+   },
+   {
+    "text": "75 (84)[c]"
+   },
+   {
+    "text": "3.7"
+   }
+  ],
+  [
+   {
+    "smiles": "CON(C)C(=O)c1ccc(F)cc1"
+   },
+   {
+    "text": "MeLi"
+   },
+   {
+    "smiles": "O=C(CF)c1ccc(F)cc1"
+   },
+   {
+    "text": "4i"
+   },
+   {
+    "text": "55[b]"
+   },
+   {
+    "text": "77 (87)[c]"
+   },
+   {
+    "text": "2.9"
+   }
+  ],
+  [
+   {
+    "text": "Bu3SnCl"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "CCCC[Sn](CCCC)(CCCC)C(F)I"
+   },
+   {
+    "text": "5a"
+   },
+   {
+    "text": "21[c]"
+   },
+   {
+    "text": "84 (99)[c]"
+   },
+   {
+    "text": "9.1"
+   }
+  ],
+  [
+   {
+    "text": "Ph3SnCl"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "FC(I)[Sn](c1ccccc1)(c1ccccc1)c1ccccc1"
+   },
+   {
+    "text": "5b"
+   },
+   {
+    "text": "41[c]"
+   },
+   {
+    "text": "80 (95)[c]"
+   },
+   {
+    "text": "9.8"
+   }
+  ],
+  [
+   {
+    "text": "Bu2PhSnCl"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "*C(F)I"
+   },
+   {
+    "text": "5c"
+   },
+   {
+    "text": "–"
+   },
+   {
+    "text": "60 (65)[c]"
+   },
+   {
+    "text": "6.8"
+   }
+  ],
+  [
+   {
+    "smiles": "O=C(c1ccccc1)c1ccccc1"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "FC1OC1(c1ccccc1)c1ccccc1"
+   },
+   {
+    "text": "6a"
+   },
+   {
+    "text": "49[c]"
+   },
+   {
+    "text": "76 (99)[c]"
+   },
+   {
+    "text": "3.9"
+   }
+  ],
+  [
+   {
+    "smiles": "O=C(c1ccc(F)cc1)c1ccc(F)cc1"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "Fc1ccc(C2(c3ccc(F)cc3)OC2F)cc1"
+   },
+   {
+    "text": "6b"
+   },
+   {
+    "text": "42[c]"
+   },
+   {
+    "text": "56 (99)[c]"
+   },
+   {
+    "text": "3.4"
+   }
+  ],
+  [
+   {
+    "smiles": "CC(C)C(=O)c1ccccc1"
+   },
+   {
+    "text": "LDA"
+   },
+   {
+    "smiles": "CC(C)C1(c2ccccc2)OC1F"
+   },
+   {
+    "text": "6c"
+   },
+   {
+    "text": "80[c]"
+   },
+   {
+    "text": "85 (95)[c]"
+   },
+   {
+    "text": "3.7"
+   }
+  ]
+ ],
+ "seconds": 13
+}

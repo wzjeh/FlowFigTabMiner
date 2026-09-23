@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowFigTabMiner · Nagaki Laboratory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="brand">
+    <span class="seal" aria-hidden="true">流</span>
+    <div>
+      <h1>FlowFigTabMiner</h1>
+      <p class="tagline">Reaction data, read from flow-chemistry literature</p>
+    </div>
+  </div>
+  <a class="lab" href="https://wwwchem.sci.hokudai.ac.jp/~yuhan/" target="_blank" rel="noopener">
+    <span class="lab-jp">永木研究室</span>
+    <span class="lab-en">Nagaki Laboratory · Hokkaido University 北海道大学</span>
+  </a>
+</header>
+
+<main>
+  <p class="lead">
+    Scatter plots, heatmaps, reaction tables and whole papers are turned into reaction records:
+    reactants, product structure, temperature, residence time and yield.
+  </p>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="figure" role="tab"><span class="kanji">図</span><span>Figure</span></button>
+    <button class="tab" data-tab="table" role="tab"><span class="kanji">表</span><span>Table</span></button>
+    <button class="tab" data-tab="paper" role="tab"><span class="kanji">論文</span><span>Paper</span></button>
+  </nav>
+
+  <section class="panel active" id="panel-figure">
+    <h2 class="section"><span>Example</span><span class="jp">例</span></h2>
+    <div class="result" id="example-figure"><p class="muted">Loading…</p></div>
+    <h2 class="section"><span>Try your own figure</span><span class="jp">試す</span></h2>
+    <div class="try" data-kind="figure"></div>
+  </section>
+
+  <section class="panel" id="panel-table">
+    <h2 class="section"><span>Example</span><span class="jp">例</span></h2>
+    <div class="result" id="example-table"><p class="muted">Loading…</p></div>
+    <h2 class="section"><span>Try your own table</span><span class="jp">試す</span></h2>
+    <div class="try" data-kind="table"></div>
+  </section>
+
+  <section class="panel" id="panel-paper">
+    <h2 class="section"><span>Example</span><span class="jp">例</span></h2>
+    <div class="result" id="example-paper"><p class="muted">Loading…</p></div>
+    <h2 class="section"><span>Try your own paper</span><span class="jp">試す</span></h2>
+    <div class="try" data-kind="pdf"></div>
+  </section>
+</main>
+
+<footer>
+  <span>FlowFigTabMiner</span>
+  <span class="dot">·</span>
+  <a href="https://wwwchem.sci.hokudai.ac.jp/~yuhan/" target="_blank" rel="noopener">Nagaki Laboratory, Hokkaido University</a>
+  <span class="dot">·</span>
+  <span>For research demonstration only</span>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

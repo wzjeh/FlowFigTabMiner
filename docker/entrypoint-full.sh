@@ -29,6 +29,6 @@ fi
 
 if [ "$1" = "web" ]; then
     shift
-    exec python docker/webapp/app.py "$@"
+    exec uvicorn server:app --app-dir docker/webapp --host 0.0.0.0 --port "${PORT:-7860}" "$@"
 fi
 exec python -m src.pipeline.main "$@"
