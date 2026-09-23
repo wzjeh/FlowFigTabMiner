@@ -35,6 +35,8 @@ app.mount("/examples", StaticFiles(directory=EXAMPLES_DIR), name="examples")
 
 _JOBS = {}                     # id -> {kind, state, step, submitted, started, finished, result, error}
 _QUEUE = queue.Queue()
+TYPICAL_SECONDS = {"figure": 90, "table": 75, "pdf": 360}      # until the server has timed a few of its own
+KIND_NAME = {"figure": "a figure", "table": "a table", "pdf": "a paper"}
 
 
 def _visitor(request: Request) -> str:
@@ -68,9 +70,36 @@ def _worker():
 threading.Thread(target=_worker, daemon=True).start()
 
 
+def _typical(kind: str) -> float:
+    """Mean of the last five finished jobs of this kind on this server."""
+    done = sorted((j for j in _JOBS.values() if j["kind"] == kind and j["state"] == "done" and "finished" in j),
+                  key=lambda j: j["finished"])[-5:]
+    return sum(j["finished"] - j["started"] for j in done) / len(done) if done else TYPICAL_SECONDS[kind]
+
+
+def _queue_info(job):
+    """Where a waiting job stands: jobs ahead, a rough wait, and what is running now."""
+    now = time.time()
+    ahead = [j for j in _JOBS.values() if j["state"] in ("queued", "running") and j["submitted"] < job["submitted"]]
+    wait = 0.0
+    for j in ahead:
+        left = _typical(j["kind"])
+        if j["state"] == "running":
+            left = max(left - (now - j["started"]), 20)          # overran its typical time: a little longer
+        wait += left
+    running = next((j for j in ahead if j["state"] == "running"), None)
+    return {"ahead": len(ahead), "wait": round(wait),
+            "now": {"kind": KIND_NAME[running["kind"]], "step": running.get("step")} if running else None}
+
+
 @app.get("/")
 def index():
     return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+
+@app.get("/api/limits")
+def limits():
+    return {"tries": jobs.tries_per_address()}
 
 
 @app.get("/api/examples")
@@ -148,8 +177,7 @@ def status(job_id: str):
     if out["result"] is not None:
         out["result"] = dict(out["result"], base=f"/files/{job_id}/")
     if job["state"] == "queued":
-        out["ahead"] = sum(1 for j in _JOBS.values() if j["state"] in ("queued", "running")
-                           and j["submitted"] < job["submitted"])
+        out.update(_queue_info(job))
     return out
 
 

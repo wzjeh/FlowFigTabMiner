@@ -195,13 +195,25 @@ const TRY_TEXT = {
   pdf: ["Drop a paper (PDF) here, or click to choose", "One flow-chemistry research article · about 10 minutes · the file is deleted afterwards"],
 };
 
+const ordinal = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
+
+function queueText(j) {
+  const wait = j.wait < 60 ? "under a minute" : `about ${Math.round(j.wait / 60)} min`;
+  const now = j.now ? ` Now reading ${j.now.kind}${j.now.step ? ` · ${j.now.step.toLowerCase()}` : ""}.` : "";
+  return `You are ${ordinal(j.ahead + 1)} in line · ${wait} to wait.${now} Yours starts on its own.`;
+}
+
+fetch("/api/limits").then((r) => r.json()).then((l) => {
+  document.querySelectorAll(".try .tries").forEach((n) => { n.textContent = `${l.tries} free tries per visitor.`; });
+}).catch(() => {});
+
 document.querySelectorAll(".try").forEach((box) => {
   const kind = box.dataset.kind;
   box.innerHTML = `
     <label class="drop"><input type="file" hidden accept="${kind === "pdf" ? ".pdf" : "image/png,image/jpeg"}">
       <strong>${TRY_TEXT[kind][0]}</strong>
       <div class="note">${TRY_TEXT[kind][1]}</div>
-      <div class="note">One free try per visitor.</div>
+      <div class="note tries">Free tries for every visitor.</div>
     </label>
     <div class="status"><span class="brush"></span><span class="msg"></span></div>
     <div class="out"></div>`;
@@ -213,6 +225,13 @@ document.querySelectorAll(".try").forEach((box) => {
   drop.addEventListener("dragleave", () => drop.classList.remove("over"));
   drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); if (e.dataTransfer.files[0]) submit(e.dataTransfer.files[0]); });
   input.addEventListener("change", () => input.files[0] && submit(input.files[0]));
+
+  // the job id survives a page refresh: the visitor comes back to its progress or result
+  const saved = "fftm-job-" + kind;
+  const remember = (id) => { try { id ? localStorage.setItem(saved, id) : localStorage.removeItem(saved); } catch (e) { /* storage blocked */ } };
+  let resumeId = null;
+  try { resumeId = localStorage.getItem(saved); } catch (e) { /* storage blocked */ }
+  if (resumeId) poll(resumeId);
 
   async function submit(file) {
     out.innerHTML = "";
@@ -226,13 +245,18 @@ document.querySelectorAll(".try").forEach((box) => {
     } catch (e) { return say("Could not reach the server. Please try again.", "error"); }
     const body = await res.json().catch(() => ({}));
     if (!res.ok) return say(body.error || "The server refused this file.", "error");
+    remember(body.id);
     poll(body.id);
   }
 
   function poll(id) {
-    fetch("/api/jobs/" + id).then((r) => r.json()).then((j) => {
+    fetch("/api/jobs/" + id).then((r) => {
+      if (r.status === 404) { remember(null); return null; }       // the server restarted since
+      return r.json();
+    }).then((j) => {
+      if (!j) return;
       const mmss = `${Math.floor(j.elapsed / 60)}:${String(j.elapsed % 60).padStart(2, "0")}`;
-      if (j.state === "queued") { say(`Waiting in line (${j.ahead} ahead) …`); }
+      if (j.state === "queued") { say(queueText(j)); }
       else if (j.state === "running") { say(`${j.step} … ${mmss}`); }
       else if (j.state === "done") { say(`Done in ${mmss}.`, "done"); show(out, kind, j.result, "try-" + kind); return; }
       else { say(j.error || "Extraction failed.", "error"); return; }

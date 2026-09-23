@@ -1,10 +1,11 @@
 """Extraction jobs for the demo page: one figure image, one table image, or a PDF.
 
 Every job runs on the server's Gemini key (GEMINI_API_KEY, then
-GEMINI_API_KEY_n / GOOGLE_API_KEY_n when a key's quota is exhausted).  Visitors
-get one free try per kind (by IP) and the month has a total cap per kind
-(FFTM_TRIAL_MONTHLY, default "figure=1000,table=1000,pdf=100"), counted in
-data/web_usage.json.  A job that fails on our side is refunded.
+GEMINI_API_KEY_n / GOOGLE_API_KEY_n when a key's quota is exhausted).  Each
+address gets a few free tries per kind (FFTM_TRIAL_PER_ADDRESS, default 3: a
+conference or lab network shares one address) and the month has a total cap
+per kind (FFTM_TRIAL_MONTHLY, default "figure=1500,table=1500,pdf=150"),
+counted in data/web_usage.json.  A job that fails on our side is refunded.
 
 Each job returns a display dict (no files to download): the same shape the
 precomputed examples use, see ``figure_result`` / ``table_result`` /
@@ -112,7 +113,7 @@ _USAGE_LOCK = threading.Lock()
 
 
 def _monthly_caps():
-    raw = os.environ.get("FFTM_TRIAL_MONTHLY", "figure=1000,table=1000,pdf=100")
+    raw = os.environ.get("FFTM_TRIAL_MONTHLY", "figure=1500,table=1500,pdf=150")
     return {k.strip(): int(v) for k, v in (kv.split("=") for kv in raw.split(",") if "=" in kv)}
 
 
@@ -127,16 +128,20 @@ def _load_usage():
     return u
 
 
+def tries_per_address() -> int:
+    return int(os.environ.get("FFTM_TRIAL_PER_ADDRESS", "3"))
+
+
 def take_trial(kind: str, visitor: str):
     with _USAGE_LOCK:
         u = _load_usage()
-        used = u["visitors"].setdefault(kind, [])
-        if visitor in used:
-            raise TrialRefused(f"The free {kind} try has already been used from this address.")
+        used = u["visitors"].setdefault(kind, {})
+        if used.get(visitor, 0) >= tries_per_address():
+            raise TrialRefused(f"The free {kind} tries from this address are used up.")
         cap = _monthly_caps().get(kind, 0)
         if u["counts"].get(kind, 0) >= cap:
             raise TrialRefused(f"This month's free {kind} tries are used up. Please come back next month.")
-        used.append(visitor)
+        used[visitor] = used.get(visitor, 0) + 1
         u["counts"][kind] = u["counts"].get(kind, 0) + 1
         os.makedirs(os.path.dirname(USAGE_PATH), exist_ok=True)
         json.dump(u, open(USAGE_PATH, "w"), indent=1)
@@ -145,8 +150,9 @@ def take_trial(kind: str, visitor: str):
 def refund_trial(kind: str, visitor: str):
     with _USAGE_LOCK:
         u = _load_usage()
-        if visitor in u["visitors"].get(kind, []):
-            u["visitors"][kind].remove(visitor)
+        used = u["visitors"].get(kind, {})
+        if used.get(visitor, 0) > 0:
+            used[visitor] -= 1
             u["counts"][kind] = max(0, u["counts"].get(kind, 0) - 1)
             json.dump(u, open(USAGE_PATH, "w"), indent=1)
 
