@@ -38,18 +38,34 @@ python3.9 -m venv flowfigtabminer && source flowfigtabminer/bin/activate
 pip install -e .                       # installs deps (requirements.txt) + the CLI
 ```
 
-**Models** (git-ignored, place under `models/`):
+**Models** (git-ignored, place under `models/`). One repository holds the
+custom YOLO weights, the MolNexTR checkpoint and the PaddleOCR models, laid
+out exactly as `config.yaml` expects:
 
 ```bash
 pip install huggingface_hub
-# 5 custom YOLO models — download, then copy each best.pt to the path in config.yaml
-huggingface-cli download wyzhaoc/YOLO11 --local-dir models/hf_yolo11
-# MolNexTR (1.06 GB)
-huggingface-cli download CYF200127/MolNexTR molnextr_best.pth --local-dir models/ --repo-type dataset
-mv models/molnextr_best.pth models/molnextr_model_best.pth
+hf download wyzhaoc/FlowFigTabMiner-models --local-dir models/
 ```
 
-TF-ID, TATR and PaddleOCR weights auto-download on first run.
+TF-ID, TATR and docling weights auto-download on first run.
+
+### Docker (no local setup)
+
+A single CPU image runs the whole pipeline; weights are fetched into the
+mounted `models/` volume on first run (about 1.4 GB, once):
+
+```bash
+mkdir -p models data/input/my_pdfs          # put PDFs in data/input/my_pdfs
+docker run --rm -e GEMINI_API_KEY=your_key \
+    -v "$PWD/models:/app/models" -v "$PWD/data:/app/data" \
+    ghcr.io/wzjeh/flowfigtabminer --dir data/input/my_pdfs
+```
+
+Results appear in `data/final_output/`. The container needs about 10 GB of
+RAM for the table stage. `scripts/docker_smoke.py` loads every model once
+without an API key (`docker run --rm --entrypoint python -v "$PWD/models:/app/models"
+ghcr.io/wzjeh/flowfigtabminer scripts/docker_smoke.py`). The image is built
+from `Dockerfile.full` by the `docker-full` GitHub Actions workflow.
 
 **API key** — the LLM steps use Google Gemini:
 
