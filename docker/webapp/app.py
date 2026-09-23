@@ -33,18 +33,45 @@ EXIT_SKIPPED = 3
 # ── keys ──────────────────────────────────────────────────────────────────
 
 
+def _demo_keys():
+    """GEMINI_API_KEY first, then GEMINI_API_KEY_1, _2, ... as quota fallbacks."""
+    keys = [os.environ.get("GEMINI_API_KEY", "")]
+    keys += [os.environ.get(f"GEMINI_API_KEY_{i}", "") for i in range(1, 5)]
+    return [k for k in keys if k]
+
+
 def _resolve_key(user_key: str, demo_password: str):
+    """-> (keys to try in order, mode label)."""
     expected = os.environ.get("DEMO_PASSWORD", "")
     if demo_password.strip():
         if expected and demo_password.strip() == expected:
-            key = os.environ.get("GEMINI_API_KEY", "")
-            if not key:
+            keys = _demo_keys()
+            if not keys:
                 raise gr.Error("Demo mode is not configured on this server (no GEMINI_API_KEY).")
-            return key, "demo"
+            return keys, "demo"
         raise gr.Error("Wrong demo password.")
     if user_key.strip():
-        return user_key.strip(), "own key"
+        return [user_key.strip()], "own key"
     raise gr.Error("Enter your Gemini API key, or the demo password.")
+
+
+def _quota_exhausted(text: str) -> bool:
+    t = str(text)
+    return "429" in t or "RESOURCE_EXHAUSTED" in t or "quota" in t.lower()
+
+
+def _with_fallback(keys, job_fn):
+    """Run ``job_fn(key)``; on a quota error move to the next key."""
+    last = None
+    for i, key in enumerate(keys):
+        try:
+            return job_fn(key)
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+            if i + 1 < len(keys) and _quota_exhausted(exc):
+                continue
+            raise
+    raise last
 
 
 class _WithKey:
@@ -88,18 +115,22 @@ def _build_figure_pipeline(provider):
 def run_figure(image_path, user_key, demo_password):
     if not image_path:
         raise gr.Error("Upload a figure image first.")
-    key, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode = _resolve_key(user_key or "", demo_password or "")
     job = _job_dir("figure")
     fig_dir = os.path.join(job, "figures")
     os.makedirs(fig_dir)
     src = os.path.join(fig_dir, "figure.png")
     shutil.copy(image_path, src)
     t0 = time.time()
-    try:
+
+    def _job(key):
         with _WithKey(key):
             from src.llm.providers.gemini import GeminiProvider
             pipeline = _build_figure_pipeline(GeminiProvider())
-            evidence_paths = pipeline.process_images([src], job)
+            return pipeline.process_images([src], job)
+
+    try:
+        evidence_paths = _with_fallback(keys, _job)
     except Exception as exc:
         shutil.rmtree(job, ignore_errors=True)
         raise gr.Error(f"Figure extraction failed: {type(exc).__name__}: {exc}")
@@ -131,14 +162,15 @@ def run_figure(image_path, user_key, demo_password):
 def run_table(image_path, user_key, demo_password):
     if not image_path:
         raise gr.Error("Upload a table image first.")
-    key, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode = _resolve_key(user_key or "", demo_password or "")
     job = _job_dir("table")
     tables_dir = os.path.join(job, "tables")
     os.makedirs(tables_dir)
     src = os.path.join(tables_dir, "table.png")
     shutil.copy(image_path, src)
     t0 = time.time()
-    try:
+
+    def _job(key):
         with _WithKey(key):
             from src.llm.providers.gemini import GeminiProvider
             from src.pipeline.main import _build_table_transcriber
@@ -147,7 +179,10 @@ def run_table(image_path, user_key, demo_password):
             transcriber, table_cfg = _build_table_transcriber(GeminiProvider())
             pipeline = TablePipeline(transcriber=transcriber, content_recognizer=ContentRecognizer(),
                                      min_text_agreement=table_cfg.min_text_agreement)
-            result = pipeline.process_table(src, output_dir=tables_dir)
+            return pipeline.process_table(src, output_dir=tables_dir)
+
+    try:
+        result = _with_fallback(keys, _job)
     except Exception as exc:
         shutil.rmtree(job, ignore_errors=True)
         raise gr.Error(f"Table extraction failed: {type(exc).__name__}: {exc}")
@@ -179,7 +214,7 @@ def _preview(records):
 def run_pdf(pdf, user_key, demo_password, progress=gr.Progress()):
     if pdf is None:
         raise gr.Error("Upload a PDF first.")
-    key, mode = _resolve_key(user_key or "", demo_password or "")
+    keys, mode = _resolve_key(user_key or "", demo_password or "")
     job = uuid.uuid4().hex[:8]
     stem = re.sub(r"[^A-Za-z0-9._-]+", "_", os.path.splitext(os.path.basename(pdf.name))[0])[:60]
     basename = f"web_pdf_{job}_{stem}"
@@ -188,25 +223,33 @@ def run_pdf(pdf, user_key, demo_password, progress=gr.Progress()):
     pdf_path = os.path.join(input_dir, basename + ".pdf")
     shutil.copy(pdf.name, pdf_path)
 
-    env = dict(os.environ, GEMINI_API_KEY=key, PYTHONUNBUFFERED="1")
     log_lines = [f"[{mode}] job {job}: {os.path.basename(pdf.name)}"]
     t0 = time.time()
-    proc = subprocess.Popen([sys.executable, "-m", "src.pipeline.main", pdf_path], cwd=APP_DIR, env=env,
-                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    try:
-        for line in proc.stdout:
-            line = line.rstrip()
-            if not line:
-                continue
-            log_lines.append(line)
-            m = re.search(r"=== Step ([\w.\-]+)", line)
-            if m:
-                progress(0.1, desc=f"Step {m.group(1)}  ({time.time() - t0:.0f}s)")
-            yield "\n".join(log_lines[-40:]), None, None, None
-        proc.wait()
-    finally:
-        if proc.poll() is None:
-            proc.kill()
+    for attempt, key in enumerate(keys):
+        env = dict(os.environ, GEMINI_API_KEY=key, PYTHONUNBUFFERED="1")
+        args = [sys.executable, "-m", "src.pipeline.main", pdf_path] + (["--skip-tfid", "--force-assembly"] if attempt else [])
+        proc = subprocess.Popen(args, cwd=APP_DIR, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                text=True, bufsize=1)
+        quota_hit = False
+        try:
+            for line in proc.stdout:
+                line = line.rstrip()
+                if not line:
+                    continue
+                log_lines.append(line)
+                quota_hit = quota_hit or _quota_exhausted(line)
+                m = re.search(r"=== Step ([\w.\-]+)", line)
+                if m:
+                    progress(0.1, desc=f"Step {m.group(1)}  ({time.time() - t0:.0f}s)")
+                yield "\n".join(log_lines[-40:]), None, None, None
+            proc.wait()
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+        if proc.returncode == 0 or not quota_hit or attempt + 1 >= len(keys):
+            break
+        log_lines.append(f"Gemini quota exhausted on key {attempt + 1}; retrying with the next key.")
+        yield "\n".join(log_lines[-40:]), None, None, None
 
     xlsx = os.path.join(FINAL_DIR, basename + "_normalized.xlsx")
     js = os.path.join(FINAL_DIR, basename + "_normalized.json")
