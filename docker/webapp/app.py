@@ -55,7 +55,8 @@ def _key_works(key: str) -> bool:
     if key not in _KEY_OK:
         try:
             from google import genai
-            next(iter(genai.Client(api_key=key).models.list(config={"page_size": 1})))
+            client = genai.Client(api_key=key)          # keep a reference: a collected client closes itself
+            next(iter(client.models.list(config={"page_size": 1})))
             _KEY_OK[key] = True
         except Exception as exc:  # noqa: BLE001
             _KEY_OK[key] = _quota_exhausted(exc)     # over quota is still a valid key
