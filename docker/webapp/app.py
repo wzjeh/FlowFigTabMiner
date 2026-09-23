@@ -46,17 +46,35 @@ def _demo_keys():
     return out
 
 
+_KEY_OK = {}
+
+
+def _key_works(key: str) -> bool:
+    """One cheap call per key per process: an invalid key would not raise in the
+    pipeline (each VLM step logs and emits MISSING), it would just empty the result."""
+    if key not in _KEY_OK:
+        try:
+            from google import genai
+            next(iter(genai.Client(api_key=key).models.list(config={"page_size": 1})))
+            _KEY_OK[key] = True
+        except Exception as exc:  # noqa: BLE001
+            _KEY_OK[key] = _quota_exhausted(exc)     # over quota is still a valid key
+    return _KEY_OK[key]
+
+
 def _resolve_key(user_key: str, demo_password: str):
     """-> (keys to try in order, mode label)."""
     expected = os.environ.get("DEMO_PASSWORD", "")
     if demo_password.strip():
         if expected and demo_password.strip() == expected:
-            keys = _demo_keys()
+            keys = [k for k in _demo_keys() if _key_works(k)]
             if not keys:
-                raise gr.Error("Demo mode is not configured on this server (no GEMINI_API_KEY).")
+                raise gr.Error("Demo mode is not configured on this server (no working Gemini key).")
             return keys, "demo"
         raise gr.Error("Wrong demo password.")
     if user_key.strip():
+        if not _key_works(user_key.strip()):
+            raise gr.Error("This Gemini API key is not valid.")
         return [user_key.strip()], "own key"
     raise gr.Error("Enter your Gemini API key, or the demo password.")
 
