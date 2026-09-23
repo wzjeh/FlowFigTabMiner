@@ -64,10 +64,6 @@ def main(which):
             p["label"] = "Scatter / line plot"
             p["axes"] = {"x": "Liquid flow rate (mL/min)",          # axis titles as printed in the figure
                          "y_left": "Selectivity of main product (%)", "y_right": "Selectivity of by products (%)"}
-            # each point is read against both y axes; the legend puts the main
-            # product on the left axis and the by-products on the right one
-            p["series_axis"] = {s["name"]: ("left" if s["name"].startswith("3,4-dichloroaniline") else "right")
-                                for s in p["series"]}
         _save("figure2", result, d)
     if "table" in which:
         d = _fresh("table")

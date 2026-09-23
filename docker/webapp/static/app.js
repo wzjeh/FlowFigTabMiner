@@ -26,7 +26,7 @@ openTab((location.hash || "#figure").slice(1));
 // inside). A visitor's own result is shown straight away.
 
 function figureRows(r) {
-  const p0 = r.panels[0] || {}, ax = p0.axes || {}, sideOf = p0.series_axis || null;
+  const p0 = r.panels[0] || {}, ax = p0.axes || {};
   const heat = p0.chart_type === "heatmap";
   let pts = r.panels.flatMap((p) => p.series.flatMap((s) => s.points.map((pt) => ({ name: s.name, x: pt[0], y: pt[1], v: pt[2] }))));
   if (heat) pts = pts.filter((p) => p.v != null);          // unlabelled cells carry no value
@@ -37,10 +37,10 @@ function figureRows(r) {
   if (heat) {
     head = [ax.x || "x", ax.y || "y", ax.value || "value"];
     row = (p) => [fmtT(p.x), fmt(p.y, 0), fmt(p.v, 0)];
-  } else if (sideOf) {
-    // two y axes: each series is read on its own axis, so it fills one of the two columns
-    head = ["series", ax.x || "x", ax.y_left || "left y axis", ax.y_right || "right y axis"];
-    row = (p) => sideOf[p.name] === "right" ? [p.name, fmtT(p.x), "", fmt(p.v, 2)] : [p.name, fmtT(p.x), fmt(p.y, 2), ""];
+  } else if (ax.y_left) {
+    // two y axes: every point is read against both, as the pipeline's CSV has it
+    head = ["series", ax.x || "x", ax.y_left, ax.y_right || "right y axis"];
+    row = (p) => [p.name, fmtT(p.x), fmt(p.y, 2), fmt(p.v, 2)];
   } else {
     const hasV = pts.some((p) => p.v != null);
     head = ["series", ax.x || "x", ax.y || "y"].concat(hasV ? [ax.value || "right axis"] : []);

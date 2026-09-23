@@ -129,12 +129,6 @@
     "x": "Liquid flow rate (mL/min)",
     "y_left": "Selectivity of main product (%)",
     "y_right": "Selectivity of by products (%)"
-   },
-   "series_axis": {
-    "3,4-dichloroaniline": "left",
-    "dechloronitrobenzen": "right",
-    "azo": "right",
-    "dechloroaniline": "right"
    }
   }
  ],
