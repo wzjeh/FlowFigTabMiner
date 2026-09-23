@@ -10,8 +10,12 @@ if [ ! -f "$MODELS/molnextr_model_best.pth" ]; then
     python -c "from huggingface_hub import snapshot_download; snapshot_download('$WEIGHTS_REPO', local_dir='$MODELS')"
 fi
 
-if [ -z "$GEMINI_API_KEY" ]; then
+if [ -z "$GEMINI_API_KEY" ] && [ "$1" != "web" ]; then
     echo "[entrypoint] WARNING: GEMINI_API_KEY is not set; steps 4.4/4.5/5 and the VLM readers will fail" >&2
 fi
 
+if [ "$1" = "web" ]; then
+    shift
+    exec python docker/webapp/app.py "$@"
+fi
 exec python -m src.pipeline.main "$@"

@@ -6,6 +6,8 @@
 #   docker run --rm -e GEMINI_API_KEY=... \
 #       -v $PWD/models:/app/models -v $PWD/data:/app/data \
 #       ghcr.io/wzjeh/flowfigtabminer --dir data/input/my_pdfs
+#   docker run --rm -p 7860:7860 -v $PWD/models:/app/models \
+#       ghcr.io/wzjeh/flowfigtabminer web            # browser demo
 #
 # Weights land in /app/models on first run (hf.co/wyzhaoc/FlowFigTabMiner-models
 # plus the public TF-ID / TATR / docling models); mount it to keep them.
@@ -28,11 +30,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir torch==2.8.0+cpu torchvision==0.23.0+cpu \
         --extra-index-url https://download.pytorch.org/whl/cpu \
-    && pip install --no-cache-dir -r requirements.txt huggingface_hub
+    && pip install --no-cache-dir -r requirements.txt huggingface_hub \
+    && pip install --no-cache-dir "gradio<5" \
+    && pip install --no-cache-dir "websockets>=13,<15.1"   # gradio 4 pins 12, google-genai needs >=13; both import fine
 
 COPY src/ src/
 COPY scripts/ scripts/
 COPY config.yaml keywords.yaml ./
+COPY docker/webapp/app.py docker/webapp/app.py
 COPY docker/entrypoint-full.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && mkdir -p data/input data/intermediate data/final_output data/cache models
@@ -41,8 +46,8 @@ RUN chmod +x /entrypoint.sh \
 # mount keeps every weight between runs.
 ENV HF_HOME=/app/models/hf
 ENV PADDLE_PDX_CACHE_HOME=/app/models/paddlex
-ENV DISABLE_MODEL_SOURCE_CHECK=True
-ENV PADDLEPD_DISABLE_MODEL_SOURCE_CHECK=True
+# PaddleX reads exactly this name; it skips a ~90 s connectivity probe at startup.
+ENV PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True
 # OneDNN is not available on every x86 CPU Paddle may land on.
 ENV FLAGS_use_mkldnn=0
 ENV FLAGS_pir_apply_mkldnn_pass=0
@@ -51,5 +56,8 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
 VOLUME ["/app/models", "/app/data"]
+EXPOSE 7860
 ENTRYPOINT ["/entrypoint.sh"]
+# `web` starts the Gradio demo (figure / table / whole PDF) on port 7860;
+# anything else is passed to the pipeline CLI.
 CMD ["--help"]
