@@ -273,9 +273,13 @@ def run_table(image_path, user_key, request: gr.Request):
         raise gr.Error(f"Table extraction failed: {type(exc).__name__}: {exc}")
     if not result.get("is_valid"):
         return None, f"Not extracted: {result.get('reason')}", None, None
-    df = result.get("dataframe")
-    if df is None and result.get("csv_path"):
+    # the CSV carries the real header row; the in-memory frame has integer column names
+    if result.get("csv_path") and os.path.exists(result["csv_path"]):
         df = pd.read_csv(result["csv_path"])
+    else:
+        df = result.get("dataframe")
+    if df is not None:
+        df.columns = [str(c) for c in df.columns]
     debug = glob.glob(os.path.join(tables_dir, "table", "*debug_yolo.png"))
     summary = (f"[{mode}] {0 if df is None else len(df)} rows, parse={result.get('parse_status')} "
                f"relevant={result.get('is_relevant')} in {time.time() - t0:.0f}s\n"
