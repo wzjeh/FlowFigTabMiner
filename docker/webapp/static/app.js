@@ -28,8 +28,7 @@ openTab((location.hash || "#figure").slice(1));
 function figureRows(r) {
   const p0 = r.panels[0] || {}, ax = p0.axes || {};
   const heat = p0.chart_type === "heatmap";
-  let pts = r.panels.flatMap((p) => p.series.flatMap((s) => s.points.map((pt) => ({ name: s.name, x: pt[0], y: pt[1], v: pt[2] }))));
-  if (heat) pts = pts.filter((p) => p.v != null);          // unlabelled cells carry no value
+  const pts = r.panels.flatMap((p) => p.series.flatMap((s) => s.points.map((pt) => ({ name: s.name, x: pt[0], y: pt[1], v: pt[2] }))));
   // the same residence time (x as displayed) together; within it top to bottom, then by series
   const xKey = (p) => Number(fmtT(p.x));
   pts.sort((a, b) => xKey(a) - xKey(b) || b.y - a.y || a.name.localeCompare(b.name));
