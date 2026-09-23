@@ -62,7 +62,8 @@ def main(which):
         result = jobs.extract_figure(os.path.join(examples, "example_figure.png"), keys, d)
         for p in result.get("panels", []):
             p["label"] = "Scatter / line plot"
-            p["axes"] = {"x": "liquid flow rate (mL/min)", "y": "selectivity (%)"}
+            p["axes"] = {"x": "Liquid flow rate (mL/min)",          # axis titles as printed in the figure
+                         "y_left": "Selectivity of main product (%)", "y_right": "Selectivity of by products (%)"}
             # each point is read against both y axes; the legend puts the main
             # product on the left axis and the by-products on the right one
             p["series_axis"] = {s["name"]: ("left" if s["name"].startswith("3,4-dichloroaniline") else "right")

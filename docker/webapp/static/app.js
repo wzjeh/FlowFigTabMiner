@@ -38,8 +38,9 @@ function figureRows(r) {
     head = [ax.x || "x", ax.y || "y", ax.value || "value"];
     row = (p) => [fmtT(p.x), fmt(p.y, 0), fmt(p.v, 0)];
   } else if (sideOf) {
-    head = ["series", ax.x || "x", ax.y || "y", "axis"];
-    row = (p) => [p.name, fmtT(p.x), sideOf[p.name] === "right" ? fmt(p.v, 2) : fmt(p.y, 2), sideOf[p.name] === "right" ? "right" : "left"];
+    // two y axes: each series is read on its own axis, so it fills one of the two columns
+    head = ["series", ax.x || "x", ax.y_left || "left y axis", ax.y_right || "right y axis"];
+    row = (p) => sideOf[p.name] === "right" ? [p.name, fmtT(p.x), "", fmt(p.v, 2)] : [p.name, fmtT(p.x), fmt(p.y, 2), ""];
   } else {
     const hasV = pts.some((p) => p.v != null);
     head = ["series", ax.x || "x", ax.y || "y"].concat(hasV ? [ax.value || "right axis"] : []);
@@ -100,7 +101,7 @@ function wireReveal(el) {
       const tick = () => {
         const s = (performance.now() - t0) / 1000;
         bar.style.width = Math.min(100, (100 * s) / total) + "%";
-        msg.textContent = `Reading … ${Math.min(total, Math.floor(s))} / ${total} s`;
+        msg.textContent = "Reading …";          // how long it takes is only known afterwards
         if (s < total) return requestAnimationFrame(tick);
         reading.hidden = true;
         body.hidden = false;

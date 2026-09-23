@@ -128,7 +128,7 @@ svg.chart .grid { stroke: var(--faint); stroke-width: 1; }
 table.data { border-collapse: collapse; width: 100%; font-size: 13px; }
 table.data th {
   text-align: left; font-weight: 500; color: var(--sub); font-size: 12px;
-  border-bottom: 1px solid var(--ink); padding: 8px 10px; white-space: nowrap;
+  border-bottom: 1px solid var(--ink); padding: 8px 10px; vertical-align: bottom;
 }
 table.data td { border-bottom: 1px solid var(--faint); padding: 8px 10px; vertical-align: middle; }
 table.data td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
