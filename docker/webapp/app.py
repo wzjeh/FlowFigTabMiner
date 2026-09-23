@@ -5,7 +5,8 @@ the Gemini calls:
   * bring your own key (used for this job only, never written anywhere);
   * demo mode: the demo password unlocks the key in the server environment.
 
-Server environment (never in this file): GEMINI_API_KEY, DEMO_PASSWORD.
+Server environment (never in this file): GEMINI_API_KEY, optional GEMINI_API_KEY_1../GOOGLE_API_KEY_1..,
+DEMO_PASSWORD.
 """
 import glob
 import json
@@ -34,10 +35,15 @@ EXIT_SKIPPED = 3
 
 
 def _demo_keys():
-    """GEMINI_API_KEY first, then GEMINI_API_KEY_1, _2, ... as quota fallbacks."""
+    """GEMINI_API_KEY first, then GEMINI_API_KEY_1.. / GOOGLE_API_KEY_1.. as quota fallbacks."""
     keys = [os.environ.get("GEMINI_API_KEY", "")]
-    keys += [os.environ.get(f"GEMINI_API_KEY_{i}", "") for i in range(1, 5)]
-    return [k for k in keys if k]
+    for i in range(1, 5):
+        keys += [os.environ.get(f"GEMINI_API_KEY_{i}", ""), os.environ.get(f"GOOGLE_API_KEY_{i}", "")]
+    out = []
+    for k in keys:
+        if k and k not in out:
+            out.append(k)
+    return out
 
 
 def _resolve_key(user_key: str, demo_password: str):
