@@ -1,6 +1,6 @@
 """
 table-service: FastAPI service wrapping the table extraction pipeline.
-Downloads a single table crop from GCS, runs filter+TATR+OCR+MolNexTR, uploads CSV to GCS.
+Downloads a single table crop from GCS, runs filter + Gemini transcriber + MolNexTR, uploads CSV to GCS.
 
 POST /extract
   Body: {"image_gcs_uri": "gs://...", "job_id": "..."}
@@ -15,6 +15,7 @@ os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
 os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
 import logging
 import tempfile
+import threading
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -30,18 +31,30 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="table-service")
 
 _pipeline = None
+_pipeline_lock = threading.Lock()
 
 
 def get_pipeline():
     global _pipeline
-    if _pipeline is None:
-        from src.extraction.table.table_vlm import TableTranscriber
-        from src.llm.config import load_table_reader_config
-        from src.llm.providers import get_vlm_provider
-        cfg = load_table_reader_config("config.yaml")
-        _pipeline = TablePipeline(transcriber=TableTranscriber(vlm=get_vlm_provider(cfg.provider), cfg=cfg),
-                                  min_text_agreement=cfg.min_text_agreement)
+    with _pipeline_lock:                 # the startup warm-up and a first request build it once
+        if _pipeline is None:
+            _pipeline = _build_pipeline()
     return _pipeline
+
+
+@app.on_event("startup")
+def _warm_up():
+    """Load every model when the instance starts, not inside the first visitor's request."""
+    threading.Thread(target=get_pipeline, daemon=True).start()
+
+
+def _build_pipeline():
+    from src.extraction.table.table_vlm import TableTranscriber
+    from src.llm.config import load_table_reader_config
+    from src.llm.providers import get_vlm_provider
+    cfg = load_table_reader_config("config.yaml")
+    return TablePipeline(transcriber=TableTranscriber(vlm=get_vlm_provider(cfg.provider), cfg=cfg),
+                         min_text_agreement=cfg.min_text_agreement)
 
 
 class ExtractRequest(BaseModel):

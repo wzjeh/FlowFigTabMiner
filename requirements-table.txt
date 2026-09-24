@@ -1,4 +1,4 @@
-# table-service: YOLO filter + TATR + PaddleOCR + MolNexTR
+# table-service: YOLO filter + Gemini table transcriber + PaddleOCR + MolNexTR
 torch==2.8.0
 torchvision==0.23.0
 ultralytics==8.4.2
@@ -22,3 +22,7 @@ google-cloud-storage
 fastapi
 uvicorn[standard]
 pyyaml
+google-genai==1.47.0           # table transcriber (VLM)
+pydantic==2.10.6
+diskcache==5.6.3              # LLM response cache
+PyMuPDF==1.26.5

@@ -1,4 +1,4 @@
-# table-service: YOLO filter + TATR + PaddleOCR + MolNexTR (CPU)
+# table-service: YOLO filter + Gemini table transcriber + PaddleOCR + MolNexTR (CPU)
 FROM python:3.10-slim
 
 WORKDIR /app
@@ -37,6 +37,8 @@ ENV FLAGS_enable_pir_api=0
 ENV DISABLE_MODEL_SOURCE_CHECK=True
 ENV PADDLEPD_DISABLE_MODEL_SOURCE_CHECK=True
 ENV PYTHONPATH=/app
+# MolNexTR weights are read from local disk, see deploy/entrypoint.sh
+ENV MODELS_LOCAL_COPY=molnextr_model_best.pth
 
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
