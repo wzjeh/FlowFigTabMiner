@@ -47,6 +47,23 @@ logger = logging.getLogger(__name__)
 _ENV_VAR = "GEMINI_API_KEY"
 
 
+# Google retires Gemini models on its own schedule; a retired model answers
+# 404 NOT_FOUND ("... is no longer available").  A call then moves on to the
+# next model here and the retired one is skipped for the rest of the process.
+# Both successors accept the same settings (temperature 0, thinking_budget 0).
+_SUCCESSORS = ("gemini-3.5-flash", "gemini-3.8-flash")
+_RETIRED: set = set()
+
+
+def _model_chain(model: str) -> tuple:
+    return tuple(dict.fromkeys(m for m in (model, *_SUCCESSORS) if m not in _RETIRED))
+
+
+def _is_retired(exc: Exception) -> bool:
+    msg = str(exc)
+    return "404" in msg and "NOT_FOUND" in msg
+
+
 def _backoff_call(
     call: Callable[[], Any],
     *,
@@ -172,12 +189,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
 
         def _call() -> Any:
             with acquire_llm_slot():
-                try:
-                    return self._client.models.generate_content(
-                        model=cfg.model, contents=contents, config=config
-                    )
-                except Exception as exc:
-                    self._wrap_and_raise(exc)
+                return self._generate(cfg.model, contents, config)
 
         t0 = time.perf_counter()
         response, retry_count = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.chat")
@@ -291,12 +303,7 @@ class GeminiProvider(LLMProvider, VLMProvider):
 
         def _call() -> Any:
             with acquire_llm_slot():
-                try:
-                    return self._client.models.generate_content(
-                        model=cfg.model, contents=contents, config=config
-                    )
-                except Exception as exc:
-                    self._wrap_and_raise(exc)
+                return self._generate(cfg.model, contents, config)
 
         t0 = time.perf_counter()
         response, retry_count = _backoff_call(_call, max_retries=cfg.max_retries, label="gemini.inspect")
@@ -373,6 +380,19 @@ class GeminiProvider(LLMProvider, VLMProvider):
                 return json.loads(recovered)
             except json.JSONDecodeError as exc:
                 raise ParseError(f"could not decode recovered JSON: {exc}", raw_text=raw)
+
+    def _generate(self, model: str, contents: Any, config: Any) -> Any:
+        """generate_content on ``model``, or on its successor once Google has retired it."""
+        chain = _model_chain(model)
+        for m in chain:
+            try:
+                return self._client.models.generate_content(model=m, contents=contents, config=config)
+            except Exception as exc:
+                if not _is_retired(exc):
+                    self._wrap_and_raise(exc)
+                _RETIRED.add(m)
+                logger.warning("gemini model %s is no longer served; switching to the next one", m)
+        raise LLMProviderError(f"no Gemini model in {chain} is served any more")
 
     @staticmethod
     def _wrap_and_raise(exc: Exception) -> None:
