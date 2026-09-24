@@ -106,7 +106,7 @@ def extract(req: ExtractRequest):
                 "caption_text": "",
             }
 
-        if not result:
+        if not result or (not result.get("is_valid") and result.get("reason") != "Filtered by YOLO"):
             return {
                 "status": "error",
                 "is_relevant": False,
@@ -116,7 +116,7 @@ def extract(req: ExtractRequest):
             }
 
         # Check for hard filter results (YOLO filter)
-        if result.get("reason") == "YOLO_filter":
+        if result.get("reason") == "Filtered by YOLO":
             return {
                 "status": "filtered_yolo",
                 "is_relevant": False,
@@ -127,7 +127,8 @@ def extract(req: ExtractRequest):
 
         is_relevant = result.get("is_relevant", True)
         csv_path = result.get("csv_path")
-        cells = result.get("cells", [])
+        df = result.get("dataframe")
+        n_rows = 0 if df is None else max(0, len(df) - int(result.get("header_row_count") or 0))
         caption_text = result.get("caption_text", "")
 
         # Upload CSV to GCS regardless of relevance (soft marking)
@@ -142,14 +143,14 @@ def extract(req: ExtractRequest):
                 logger.warning(f"CSV upload failed: {e}")
 
         status = "success" if is_relevant else "filtered_keywords"
-        if not cells and is_relevant:
+        if not n_rows and is_relevant:
             status = "no_cells"
 
         return {
             "status": status,
             "is_relevant": is_relevant,
             "csv_gcs_uri": csv_uri,
-            "row_count": len(cells),
+            "row_count": n_rows,
             "caption_text": caption_text,
         }
 

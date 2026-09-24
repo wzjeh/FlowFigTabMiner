@@ -28,6 +28,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 EXAMPLES_DIR = os.path.join(HERE, "examples")
 STATIC_DIR = os.path.join(HERE, "static")
 MAX_UPLOAD = {"figure": 10, "table": 10, "pdf": 30}          # MB
+# docker/entrypoint-full.sh fetches the weights alongside the page and names the
+# file it writes when done; a local run has its weights already.
+MODELS_READY = os.environ.get("FFTM_MODELS_READY")
 
 app = FastAPI(title="FlowFigTabMiner demo", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -50,6 +53,9 @@ def _worker():
         job_id, kind, path, visitor = _QUEUE.get()
         job = _JOBS[job_id]
         job.update(state="running", started=time.time(), step="Starting")
+        while MODELS_READY and not os.path.exists(MODELS_READY):         # a fresh instance is still fetching its weights
+            job["step"] = "Preparing the models"
+            time.sleep(3)
         out_dir = os.path.join(jobs.JOBS_DIR, job_id)
         try:
             keys = jobs.server_keys()

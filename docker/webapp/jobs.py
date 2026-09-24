@@ -32,7 +32,7 @@ os.chdir(APP_DIR)            # the pipeline reads config.yaml and models/ by rel
 INTER_DIR = os.path.join(APP_DIR, "data", "intermediate")
 FINAL_DIR = os.path.join(APP_DIR, "data", "final_output")
 JOBS_DIR = os.path.join(APP_DIR, "data", "web_jobs")          # per-job display images, served under /files/
-USAGE_PATH = os.path.join(APP_DIR, "data", "web_usage.json")
+USAGE_PATH = os.environ.get("FFTM_USAGE_PATH") or os.path.join(APP_DIR, "data", "web_usage.json")   # Cloud Run: a GCS volume
 EXIT_SKIPPED = 3
 KINDS = ("figure", "table", "pdf")
 
