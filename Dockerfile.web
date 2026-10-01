@@ -1,0 +1,24 @@
+# Light front of the Cloud Run demo (docker/webapp/front.py): the page, its
+# precomputed examples and structure drawings, plus forwarding of the
+# extraction API to the worker (Dockerfile.full in `web` mode). No models, so
+# it starts in a second or two and can scale freely.
+#
+#   docker run --rm -p 8080:8080 -e FFTM_WORKER_URL=https://<worker> <image>
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# RDKit draws the structures; libxrender is the one system library its wheel needs
+RUN apt-get update && apt-get install -y --no-install-recommends libxrender1 libxext6 \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir fastapi==0.115.0 uvicorn==0.30.0 httpx==0.28.1 \
+        google-auth==2.47.0 requests==2.32.5 rdkit-pypi==2022.9.5 "numpy>=1.24,<2"
+
+COPY docker/webapp/pages.py docker/webapp/front.py docker/webapp/
+COPY docker/webapp/static/ docker/webapp/static/
+COPY docker/webapp/examples/ docker/webapp/examples/
+
+ENV PYTHONUNBUFFERED=1
+EXPOSE 8080
+# sh -c so any container args are ignored
+ENTRYPOINT ["sh", "-c", "exec uvicorn front:app --app-dir docker/webapp --host 0.0.0.0 --port ${PORT:-8080}"]

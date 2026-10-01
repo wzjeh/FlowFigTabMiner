@@ -7,8 +7,10 @@ scripts/build_web_examples.py) and shown instantly.  A visitor's own figure,
 table or paper runs live as a job: POST /api/jobs returns an id, the page polls
 GET /api/jobs/{id}; every request is short, nothing depends on a long-lived
 connection through a proxy.
+
+On Cloud Run this process is the worker behind ``front.py``, which serves the
+page itself and forwards /api/jobs and /files here.
 """
-import functools
 import os
 import queue
 import shutil
@@ -19,22 +21,19 @@ import traceback
 import uuid
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 
 import jobs  # noqa: E402  (uvicorn --app-dir docker/webapp)
+import pages
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-EXAMPLES_DIR = os.path.join(HERE, "examples")
-STATIC_DIR = os.path.join(HERE, "static")
 MAX_UPLOAD = {"figure": 10, "table": 10, "pdf": 30}          # MB
 # docker/entrypoint-full.sh fetches the weights alongside the page and names the
 # file it writes when done; a local run has its weights already.
 MODELS_READY = os.environ.get("FFTM_MODELS_READY")
 
 app = FastAPI(title="FlowFigTabMiner demo", docs_url=None, redoc_url=None)
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-app.mount("/examples", StaticFiles(directory=EXAMPLES_DIR), name="examples")
+app.include_router(pages.router)
+pages.mount_static(app)
 
 _JOBS = {}                     # id -> {kind, state, step, submitted, started, finished, result, error}
 _QUEUE = queue.Queue()
@@ -42,6 +41,11 @@ KIND_NAME = {"figure": "a figure", "table": "a table", "pdf": "a paper"}
 
 
 def _visitor(request: Request) -> str:
+    # behind front.py the visitor's address arrives in X-FFTM-Visitor; the worker
+    # only accepts authenticated calls, so the header cannot come from outside
+    forwarded = request.headers.get("x-fftm-visitor")
+    if forwarded:
+        return forwarded
     fwd = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
     return fwd or (request.client.host if request.client else "unknown")
 
@@ -81,54 +85,6 @@ def _queue_info(job):
     running = next((j for j in ahead if j["state"] == "running"), None)
     return {"ahead": len(ahead),
             "now": {"kind": KIND_NAME[running["kind"]], "step": running.get("step")} if running else None}
-
-
-@app.get("/")
-def index():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
-
-
-@app.get("/api/limits")
-def limits():
-    return {"tries": jobs.tries_per_address()}
-
-
-@app.get("/api/examples")
-def examples():
-    import json
-    out = {}
-    for kind in ("figure", "figure2", "table", "paper"):
-        p = os.path.join(EXAMPLES_DIR, kind, "result.json")
-        if os.path.exists(p):
-            out[kind] = dict(json.load(open(p)), base=f"/examples/{kind}/")
-    return out
-
-
-@functools.lru_cache(maxsize=4096)
-def _mol_svg(smiles: str, w: int, h: int) -> str:
-    from rdkit import Chem, RDLogger
-    from rdkit.Chem.Draw import rdMolDraw2D
-    RDLogger.DisableLog("rdApp.*")
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        raise ValueError(smiles)
-    d = rdMolDraw2D.MolDraw2DSVG(w, h)
-    opts = d.drawOptions()
-    opts.clearBackground = False
-    opts.bondLineWidth = 1.2
-    opts.padding = 0.08
-    d.DrawMolecule(mol)
-    d.FinishDrawing()
-    return d.GetDrawingText()
-
-
-@app.get("/api/mol.svg")
-def mol_svg(smiles: str, w: int = 180, h: int = 120):
-    try:
-        svg = _mol_svg(smiles, max(60, min(w, 600)), max(40, min(h, 400)))
-    except Exception:  # noqa: BLE001
-        raise HTTPException(404, "not a structure")
-    return Response(svg, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=86400"})
 
 
 @app.post("/api/jobs")

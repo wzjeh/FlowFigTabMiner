@@ -24,6 +24,8 @@ import uuid
 
 import pandas as pd
 
+from pages import tries_per_address
+
 APP_DIR = "/app" if os.path.isdir("/app/src") else os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
@@ -126,10 +128,6 @@ def _load_usage():
     if u.get("month") != month:
         u = {"month": month, "counts": {}, "visitors": {}}
     return u
-
-
-def tries_per_address() -> int:
-    return int(os.environ.get("FFTM_TRIAL_PER_ADDRESS", "3"))
 
 
 def take_trial(kind: str, visitor: str):

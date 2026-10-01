@@ -242,9 +242,12 @@ document.querySelectorAll(".try").forEach((box) => {
     fd.append("kind", kind);
     fd.append("file", file);
     let res;
+    // after a quiet period the extraction server starts first (about a minute)
+    const waking = setTimeout(() => say("Starting the extraction server after a quiet period, this takes about a minute …"), 6000);
     try {
       res = await fetch("/api/jobs", { method: "POST", body: fd });
     } catch (e) { return say("Could not reach the server. Please try again.", "error"); }
+    finally { clearTimeout(waking); }
     const body = await res.json().catch(() => ({}));
     if (!res.ok) return say(body.error || "The server refused this file.", "error");
     remember(body.id);
@@ -254,6 +257,7 @@ document.querySelectorAll(".try").forEach((box) => {
   function poll(id) {
     fetch("/api/jobs/" + id).then((r) => {
       if (r.status === 404) { remember(null); return null; }       // the server restarted since
+      if (!r.ok) throw new Error(r.status);                        // briefly unreachable: ask again
       return r.json();
     }).then((j) => {
       if (!j) return;
