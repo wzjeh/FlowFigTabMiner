@@ -19,9 +19,21 @@ STATIC_DIR = os.path.join(HERE, "static")
 router = APIRouter()
 
 
+# Browsers must ask again before reusing the page or its files, or a visitor
+# keeps an old version after a redeploy; an unchanged file costs only a 304.
+REVALIDATE = {"Cache-Control": "no-cache"}
+
+
+class _RevalidatedFiles(StaticFiles):
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        response.headers.update(REVALIDATE)
+        return response
+
+
 def mount_static(app: FastAPI):
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    app.mount("/examples", StaticFiles(directory=EXAMPLES_DIR), name="examples")
+    app.mount("/static", _RevalidatedFiles(directory=STATIC_DIR), name="static")
+    app.mount("/examples", _RevalidatedFiles(directory=EXAMPLES_DIR), name="examples")
 
 
 def per_kind(env: str, default: str) -> dict:
@@ -36,7 +48,7 @@ def tries_per_address() -> dict:
 
 @router.get("/")
 def index():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), headers=REVALIDATE)
 
 
 @router.get("/api/limits")
