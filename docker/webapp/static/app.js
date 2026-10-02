@@ -210,6 +210,10 @@ function queueText(j) {
 }
 
 fetch("/api/limits").then((r) => r.json()).then((l) => {
+  const t = l.tries, plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const quota = document.getElementById("quota");
+  quota.innerHTML = `<strong>Free trial</strong> · each visitor can extract ${plural(t.figure, "figure", "figures")}, ${plural(t.table, "table", "tables")} and ${plural(t.pdf, "paper", "papers")}.`;
+  quota.hidden = false;
   document.querySelectorAll(".try").forEach((box) => {
     const n = l.tries[box.dataset.kind] || 0;
     box.querySelector(".tries").textContent = `${n} free ${n === 1 ? "try" : "tries"} per visitor.`;
