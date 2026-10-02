@@ -197,6 +197,10 @@ const TRY_TEXT = {
 
 const ordinal = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
 
+// after a quiet period the extraction server starts and loads its models first (about a minute)
+const LOADING = "Please wait a moment, the models are loading …";
+const WARMING = ["Starting", "Preparing the models"];
+
 // no countdown: how long a paper takes varies too much to promise a time
 const TYPICAL = { figure: "a figure takes about 1–2 minutes", table: "a table takes about 1–2 minutes", pdf: "a paper takes about 10 minutes" };
 
@@ -206,7 +210,10 @@ function queueText(j) {
 }
 
 fetch("/api/limits").then((r) => r.json()).then((l) => {
-  document.querySelectorAll(".try .tries").forEach((n) => { n.textContent = `${l.tries} free tries per visitor.`; });
+  document.querySelectorAll(".try").forEach((box) => {
+    const n = l.tries[box.dataset.kind] || 0;
+    box.querySelector(".tries").textContent = `${n} free ${n === 1 ? "try" : "tries"} per visitor.`;
+  });
 }).catch(() => {});
 
 document.querySelectorAll(".try").forEach((box) => {
@@ -242,8 +249,7 @@ document.querySelectorAll(".try").forEach((box) => {
     fd.append("kind", kind);
     fd.append("file", file);
     let res;
-    // after a quiet period the extraction server starts first (about a minute)
-    const waking = setTimeout(() => say("Starting the extraction server after a quiet period, this takes about a minute …"), 6000);
+    const waking = setTimeout(() => say(LOADING), 6000);
     try {
       res = await fetch("/api/jobs", { method: "POST", body: fd });
     } catch (e) { return say("Could not reach the server. Please try again.", "error"); }
@@ -263,6 +269,7 @@ document.querySelectorAll(".try").forEach((box) => {
       if (!j) return;
       const mmss = `${Math.floor(j.elapsed / 60)}:${String(j.elapsed % 60).padStart(2, "0")}`;
       if (j.state === "queued") { say(queueText(j)); }
+      else if (j.state === "running" && WARMING.includes(j.step)) { say(LOADING); }
       else if (j.state === "running") { say(`Extracting · ${j.step} … ${mmss} (${TYPICAL[j.kind] || TYPICAL.figure})`); }
       else if (j.state === "done") { say(`Done in ${mmss}.`, "done"); show(out, kind, j.result, "try-" + kind); return; }
       else { say(j.error || "Extraction failed.", "error"); return; }

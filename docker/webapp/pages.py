@@ -24,8 +24,14 @@ def mount_static(app: FastAPI):
     app.mount("/examples", StaticFiles(directory=EXAMPLES_DIR), name="examples")
 
 
-def tries_per_address() -> int:
-    return int(os.environ.get("FFTM_TRIAL_PER_ADDRESS", "3"))
+def per_kind(env: str, default: str) -> dict:
+    """``figure=2,table=2,pdf=1`` from the environment (or the default) as a dict."""
+    raw = os.environ.get(env, default)
+    return {k.strip(): int(v) for k, v in (kv.split("=") for kv in raw.split(",") if "=" in kv)}
+
+
+def tries_per_address() -> dict:
+    return per_kind("FFTM_TRIAL_PER_ADDRESS", "figure=2,table=2,pdf=1")
 
 
 @router.get("/")

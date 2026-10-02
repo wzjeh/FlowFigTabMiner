@@ -2,9 +2,9 @@
 
 Every job runs on the server's Gemini key (GEMINI_API_KEY, then
 GEMINI_API_KEY_n / GOOGLE_API_KEY_n when a key's quota is exhausted).  Each
-address gets a few free tries per kind (FFTM_TRIAL_PER_ADDRESS, default 3: a
-conference or lab network shares one address) and the month has a total cap
-per kind (FFTM_TRIAL_MONTHLY, default "figure=1500,table=1500,pdf=150"),
+address gets a few free tries per kind (FFTM_TRIAL_PER_ADDRESS, default
+"figure=2,table=2,pdf=1"; a lab network shares one address) and the month has a
+total cap per kind (FFTM_TRIAL_MONTHLY, default "figure=500,table=500,pdf=30"),
 counted in data/web_usage.json.  A job that fails on our side is refunded.
 
 Each job returns a display dict (no files to download): the same shape the
@@ -24,7 +24,7 @@ import uuid
 
 import pandas as pd
 
-from pages import tries_per_address
+from pages import per_kind, tries_per_address
 
 APP_DIR = "/app" if os.path.isdir("/app/src") else os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if APP_DIR not in sys.path:
@@ -115,8 +115,7 @@ _USAGE_LOCK = threading.Lock()
 
 
 def _monthly_caps():
-    raw = os.environ.get("FFTM_TRIAL_MONTHLY", "figure=1500,table=1500,pdf=150")
-    return {k.strip(): int(v) for k, v in (kv.split("=") for kv in raw.split(",") if "=" in kv)}
+    return per_kind("FFTM_TRIAL_MONTHLY", "figure=500,table=500,pdf=30")
 
 
 def _load_usage():
@@ -134,7 +133,7 @@ def take_trial(kind: str, visitor: str):
     with _USAGE_LOCK:
         u = _load_usage()
         used = u["visitors"].setdefault(kind, {})
-        if used.get(visitor, 0) >= tries_per_address():
+        if used.get(visitor, 0) >= tries_per_address().get(kind, 0):
             raise TrialRefused(f"The free {kind} tries from this address are used up.")
         cap = _monthly_caps().get(kind, 0)
         if u["counts"].get(kind, 0) >= cap:
