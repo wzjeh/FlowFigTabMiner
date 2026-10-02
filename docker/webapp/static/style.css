@@ -54,13 +54,8 @@ h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; letter-spacin
 .lab:hover .lab-jp { color: var(--shu); }
 
 main { max-width: 1120px; margin: 0 auto; padding: 36px 32px 80px; }
-.lead { max-width: 720px; color: var(--sub); margin-bottom: 20px; }
-.quota {
-  display: inline-block; margin: 0 0 36px; padding: 6px 14px;
-  border-left: 3px solid var(--shu); background: rgba(183, 40, 46, 0.06);
-  font-size: 14px;
-}
-.quota strong { color: var(--shu); font-weight: 600; }
+.lead { max-width: 720px; color: var(--sub); margin-bottom: 36px; }
+.try .note.tries { color: var(--shu); font-weight: 600; font-size: 13px; margin-top: 10px; }
 
 /* ── tabs ── */
 .tabs { display: flex; gap: 40px; border-bottom: 1px solid var(--rule); margin-bottom: 36px; }

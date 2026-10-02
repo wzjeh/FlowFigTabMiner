@@ -210,13 +210,10 @@ function queueText(j) {
 }
 
 fetch("/api/limits").then((r) => r.json()).then((l) => {
-  const t = l.tries, plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-  const quota = document.getElementById("quota");
-  quota.innerHTML = `<strong>Free trial</strong> · each visitor can extract ${plural(t.figure, "figure", "figures")}, ${plural(t.table, "table", "tables")} and ${plural(t.pdf, "paper", "papers")}.`;
-  quota.hidden = false;
+  const noun = { figure: ["figure", "figures"], table: ["table", "tables"], pdf: ["paper", "papers"] };
   document.querySelectorAll(".try").forEach((box) => {
-    const n = l.tries[box.dataset.kind] || 0;
-    box.querySelector(".tries").textContent = `${n} free ${n === 1 ? "try" : "tries"} per visitor.`;
+    const kind = box.dataset.kind, n = l.tries[kind] || 0;
+    box.querySelector(".tries").textContent = `Free trial · ${n} ${noun[kind][n === 1 ? 0 : 1]} per visitor`;
   });
 }).catch(() => {});
 
@@ -226,7 +223,7 @@ document.querySelectorAll(".try").forEach((box) => {
     <label class="drop"><input type="file" hidden accept="${kind === "pdf" ? ".pdf" : "image/png,image/jpeg"}">
       <strong>${TRY_TEXT[kind][0]}</strong>
       <div class="note">${TRY_TEXT[kind][1]}</div>
-      <div class="note tries">Free tries for every visitor.</div>
+      <div class="note tries">Free trial for every visitor</div>
     </label>
     <div class="status"><span class="brush"></span><span class="msg"></span></div>
     <div class="out"></div>`;
