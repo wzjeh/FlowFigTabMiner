@@ -5,11 +5,13 @@ precomputed examples, structure drawings and the trial limit.
 Run front that forwards extraction jobs to a worker) both include this router.
 """
 import functools
+import hashlib
 import json
 import os
+import re
 
 from fastapi import APIRouter, FastAPI, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,9 +48,20 @@ def tries_per_address() -> dict:
     return per_kind("FFTM_TRIAL_PER_ADDRESS", "figure=2,table=2,pdf=1")
 
 
+@functools.lru_cache(maxsize=1)
+def _index_html() -> str:
+    """index.html with /static/x?v=<content hash>: a changed script or style sheet gets a new
+    address, so even a browser that cached the old file without revalidating fetches the new one."""
+    def versioned(m):
+        with open(os.path.join(STATIC_DIR, m.group(1)), "rb") as f:
+            return f'/static/{m.group(1)}?v={hashlib.sha1(f.read()).hexdigest()[:10]}"'
+    with open(os.path.join(STATIC_DIR, "index.html"), encoding="utf-8") as f:
+        return re.sub(r'/static/([\w.-]+\.(?:js|css))"', versioned, f.read())
+
+
 @router.get("/")
 def index():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"), headers=REVALIDATE)
+    return HTMLResponse(_index_html(), headers=REVALIDATE)
 
 
 @router.get("/api/limits")
