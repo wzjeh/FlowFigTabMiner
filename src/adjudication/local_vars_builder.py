@@ -448,6 +448,15 @@ length or flow rate.
             cands = [c for c in (time_cands or []) if c.get("step") in steps]
             allowed = {round(float(c["value_s"]), 6): c for c in cands}
             val = fc.get(field)
+            if isinstance(val, str):
+                # the model sometimes writes the number as a string ("9.0");
+                # parse it so the quoted-statement check below applies to it too
+                try:
+                    val = float(val.strip().replace("\u2212", "-"))
+                except ValueError:
+                    print(f"[LocalVarsBuilder] {field}={val!r} is not a number — cleared")
+                    val = None
+                fc[field] = val
             has_column = bool(carried.get(field)) if carried is not None else bool(col_re.search(header))
             # the same rule applies to every record of this table (post_processor.inherit_conditions):
             # a value comes from a column of the table or is one of the quoted statements

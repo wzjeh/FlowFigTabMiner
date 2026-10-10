@@ -21,6 +21,7 @@ import requests
 
 from src.adjudication.entity_pool import (
     build_global_entity_pool,
+    fill_smiles_from_document_labels,
     resolve_record_smiles,
 )
 
@@ -292,6 +293,37 @@ INHERITABLE_CONDITION_FIELDS = (
 )
 
 
+# Condition fields that are numbers in the output schema.  Everything the
+# pipeline writes into them is coerced by ``_to_float`` (inheritance from the
+# local / global pools and a final pass in ``PostProcessor.run``), so a value
+# is a number or None, never the string "9.0" the LLM sometimes emits.
+NUMERIC_CONDITION_FIELDS = (
+    "temperature_C", "residence_time_s", "residence_time_2_s", "reaction_time_s", "flow_rate_mL_min", "pressure_bar",
+)
+
+
+def _to_float(v):
+    """Numeric condition value -> number, or None.  Ints and floats pass
+    through (NaN -> None).  Strings are stripped of src tags and placeholders
+    (``clean_condition_string``), unicode minus and thousands commas, then
+    parsed; a string that is not a number (``"n.d."``, ``"rt"``) gives None.
+    Bools, dicts and lists give None."""
+    if v is None or isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return v if v == v else None
+    if isinstance(v, str):
+        s = clean_condition_string(v)
+        if not s:
+            return None
+        s = s.replace("\u2212", "-").replace(",", "").strip()
+        try:
+            return float(s)
+        except ValueError:
+            return None
+    return None
+
+
 _PLACEHOLDER_STRINGS = {
     "missing", "none", "n/a", "na", "null", "unknown", "not stated", "not specified",
     "not reported", "not given", "unspecified", "-", "--", "?", "tbd",
@@ -310,11 +342,15 @@ def clean_condition_string(v):
     return s
 
 
-def _scalar(v):
+def _scalar(v, field=None):
     """Only plain, non-placeholder scalars are inheritable (LocalVars
-    sometimes emits per-step dicts or the literal string "missing")."""
+    sometimes emits per-step dicts or the literal string "missing").  A
+    numeric condition field (``NUMERIC_CONDITION_FIELDS``) is inherited as a
+    number or not at all."""
     if isinstance(v, bool):
         return None
+    if field in NUMERIC_CONDITION_FIELDS:
+        return _to_float(v)
     if isinstance(v, (int, float)):
         return v
     if isinstance(v, str):
@@ -395,6 +431,12 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
     for field, v in list(conds.items()):
         if isinstance(v, str):
             conds[field] = clean_condition_string(v)
+        if field in NUMERIC_CONDITION_FIELDS and isinstance(conds.get(field), str):
+            # "9.0" from the per-source LLM: parse it so the time guard below
+            # sees a number; a non-numeric string is left for the final pass.
+            f = _to_float(conds[field])
+            if f is not None:
+                conds[field] = f
     # Residence times of a record come from the data itself (a table column, a
     # figure axis or legend series) or are one of the statements quoted in the
     # paper text (local_vars.time_guard, written by LocalVarsBuilder); anything
@@ -431,7 +473,7 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
                 continue
             prov.setdefault(field, "llm_source")
             continue
-        lv_val = _scalar(fixed.get(field))
+        lv_val = _scalar(fixed.get(field), field)
         if lv_val is not None:
             conds[field] = lv_val
             prov[field] = "source_local"
@@ -444,7 +486,7 @@ def inherit_conditions(rec: dict, local_vars: dict, global_vars: dict, stats: di
                 if stats is not None:
                     stats["blocked_by_source"] = stats.get("blocked_by_source", 0) + 1
                 continue
-            g_val = _scalar(g.get("value"))
+            g_val = _scalar(g.get("value"), field)
             if g_val is not None:
                 conds[field] = g_val
                 prov[field] = "paper_global"
@@ -1419,6 +1461,24 @@ class PostProcessor:
                     _msg = f"{_mf}: {_note}"
                     nr["data_correction_note"] = f"{_ex}; {_msg}" if _ex else _msg
 
+            # -- Numeric condition hygiene --
+            #    temperature, times, flow rate and pressure are numbers or None
+            #    in the output; a string that is not a number is cleared and
+            #    kept in <field>_raw with a note, like the metrics above.
+            _conds = nr.get("conditions")
+            if isinstance(_conds, dict):
+                for _cf in NUMERIC_CONDITION_FIELDS:
+                    _orig = _conds.get(_cf)
+                    if _orig is None or (isinstance(_orig, (int, float)) and not isinstance(_orig, bool)):
+                        continue
+                    _val = _to_float(_orig)
+                    _conds[_cf] = _val
+                    if _val is None:
+                        _conds[f"{_cf}_raw"] = _orig
+                        _ex = nr.get("data_correction_note")
+                        _msg = f"{_cf}: not numeric, cleared"
+                        nr["data_correction_note"] = f"{_ex}; {_msg}" if _ex else _msg
+
             # -- reaction_smiles (ORD-compatible: reactants>>reagents>>products) --
             if not nr.get("reaction_smiles"):
                 nr["reaction_smiles"] = build_reaction_smiles(nr)
@@ -1436,6 +1496,23 @@ class PostProcessor:
             nr["has_outcome"] = _has_outcome(nr)
 
             normalised.append(nr)
+
+        # -- Document-level label backfill (second pass) --
+        #    The entity pool above is a snapshot of the raw records, so a
+        #    SMILES that first appeared during normalisation (name promotion,
+        #    PubChem) never reached the other records of the paper with the
+        #    same product label or reactant name.  Share it now; the rules
+        #    (unanimous SMILES per label, no Markush labels) are in entity_pool.
+        n_doc = fill_smiles_from_document_labels(normalised)
+        if n_doc:
+            for nr in normalised:
+                if "document_label:" not in str(nr.get("__smiles_source") or ""):
+                    continue
+                ps = nr.get("product_smiles") or ""
+                if not nr.get("reaction_smiles") or (ps and ps not in nr["reaction_smiles"]):
+                    nr["reaction_smiles"] = build_reaction_smiles(nr)
+                nr["is_hollow"] = _is_hollow_record(nr)
+            print(f"[PostProcessor] document-label SMILES backfill: {n_doc} record(s)")
 
         normalised = _apply_paper_level_reaction_class(normalised, basename, intermediate_dir)
 

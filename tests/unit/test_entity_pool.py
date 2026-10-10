@@ -175,3 +175,55 @@ def test_csv_label_inside_the_structure_cell_is_harvested_and_found_inside_names
         assert pool.lookup(name="Suzuki coupled product (4c)") == canonical_smiles("CCOC(=O)c1ccccc1C")
         assert pool.lookup(name="ester 8c") == canonical_smiles("CCOC(=O)c1ccccc1Br")
         assert pool.lookup(name="entry 12") is None
+
+
+# ── fill_smiles_from_document_labels (second pass) ─────────────────────
+from src.adjudication.entity_pool import fill_smiles_from_document_labels
+
+
+def _rec(label, smiles=None, **kw):
+    r = {"product_label": label, "product_smiles": smiles, "reactant1_name": None, "reactant1_smiles": None}
+    r.update(kw)
+    return r
+
+
+def test_document_label_fill_shares_a_unanimous_smiles():
+    recs = [_rec("4j", "COC(=O)c1ccc(C(=O)CF)cc1"), _rec("4j"), _rec("4k")]
+    assert fill_smiles_from_document_labels(recs) == 1
+    assert recs[1]["product_smiles"] == recs[0]["product_smiles"]
+    assert "document_label:product" in recs[1]["__smiles_source"]
+    assert recs[2]["product_smiles"] is None
+    assert "__smiles_source" not in recs[2]
+
+
+def test_document_label_fill_refuses_conflicting_donors():
+    recs = [_rec("4j", "CCO"), _rec("4j", "CCN"), _rec("4j")]
+    assert fill_smiles_from_document_labels(recs) == 0
+    assert recs[2]["product_smiles"] is None
+
+
+def test_document_label_fill_skips_markush_labels():
+    # Nagaki 2010: label 3 is a generic ester core; one record resolved to a concrete ester
+    recs = [_rec("3", None, product_core_smiles="*OC(=O)c1ccccc1"), _rec("3", "CCOC(=O)c1ccccc1"),
+            _rec("3", "CCOC(=O)c1ccccc1"), _rec("3")]
+    assert fill_smiles_from_document_labels(recs) == 0
+    assert recs[3]["product_smiles"] is None
+
+
+def test_document_label_fill_bare_number_needs_two_donors_and_rejects_wildcards():
+    one = [_rec("3", "CCOC(=O)c1ccccc1"), _rec("3")]
+    assert fill_smiles_from_document_labels(one) == 0
+    two = [_rec("3", "CCOC(=O)c1ccccc1"), _rec("3", "CCOC(=O)c1ccccc1"), _rec("3")]
+    assert fill_smiles_from_document_labels(two) == 1
+    star = [_rec("5a", "*c1ccccc1"), _rec("5a")]
+    assert fill_smiles_from_document_labels(star) == 0
+    frag = [_rec("5b", "CCO.[Na+]"), _rec("5b")]
+    assert fill_smiles_from_document_labels(frag) == 0
+
+
+def test_document_name_fill_for_reactants():
+    recs = [_rec("1a", "CCO", reactant1_name="4-Bromoanisole", reactant1_smiles="COc1ccc(Br)cc1"),
+            _rec("1b", "CCN", reactant1_name="4-bromo anisole")]
+    assert fill_smiles_from_document_labels(recs) == 1
+    assert recs[1]["reactant1_smiles"] == "COc1ccc(Br)cc1"
+    assert "document_label:reactant1" in recs[1]["__smiles_source"]

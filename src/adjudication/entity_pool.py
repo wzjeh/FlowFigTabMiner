@@ -265,6 +265,84 @@ def build_global_entity_pool(intermediate_dir: str, scheme_pools: dict,
     return pool.finalize()
 
 
+def fill_smiles_from_document_labels(records: list) -> int:
+    """Second-pass backfill across the records of ONE paper, run after
+    normalisation.  Shares a product SMILES between records that carry the
+    same ``product_label`` and a reactant SMILES between records with the
+    same ``reactant{n}_name``.  Returns the number of records filled.
+
+    Precision rules (a wrong structure is worse than a missing one):
+      * only SMILES that pass ``_poolable_smiles`` (no ``.``, no ``*``) and
+        parse in RDKit are donors; they are compared canonical;
+      * a label or name is used only when every donor agrees on ONE SMILES;
+      * a label that any record of the paper parks as a Markush core
+        (``product_core_smiles``) is never filled, nor is a record that
+        itself carries a core;
+      * a bare numeric label (``3``) needs two agreeing donors, a lettered
+        label (``4j``) one, because bare numbers also serve as row indices.
+    Filled fields are noted in ``__smiles_source`` as ``document_label:...``.
+    """
+    def _label(s):
+        return s.strip().lower() if isinstance(s, str) and s.strip() else None
+
+    def _donor(s):
+        if not s or not isinstance(s, str):
+            return None
+        c = canonical_smiles(s)
+        return c if c and _poolable_smiles(c) else None
+
+    prod: dict = {}
+    markush = set()
+    names: dict = {}
+    for r in records:
+        k = _label(r.get("product_label"))
+        if k:
+            if r.get("product_core_smiles"):
+                markush.add(k)
+            c = _donor(r.get("product_smiles"))
+            if c:
+                prod.setdefault(k, []).append(c)
+        for n in (1, 2):
+            nk = normalize_name(r.get(f"reactant{n}_name"))
+            c = _donor(r.get(f"reactant{n}_smiles")) if nk else None
+            if c:
+                names.setdefault(nk, []).append(c)
+
+    def _unanimous(d, min_bare=1):
+        out = {}
+        for k, lst in d.items():
+            if len(set(lst)) != 1:
+                continue
+            bare = not _CSV_LABEL_RE.match(k)
+            if bare and len(lst) < min_bare:
+                continue
+            out[k] = lst[0]
+        return out
+
+    prod_u = {k: v for k, v in _unanimous(prod, min_bare=2).items() if k not in markush}
+    name_u = _unanimous(names)
+
+    n_filled = 0
+    for r in records:
+        filled = []
+        if not r.get("product_smiles") and not r.get("product_core_smiles"):
+            k = _label(r.get("product_label"))
+            if k and k in prod_u:
+                r["product_smiles"] = prod_u[k]
+                filled.append("product")
+        for n in (1, 2):
+            if not r.get(f"reactant{n}_smiles"):
+                nk = normalize_name(r.get(f"reactant{n}_name"))
+                if nk and nk in name_u:
+                    r[f"reactant{n}_smiles"] = name_u[nk]
+                    filled.append(f"reactant{n}")
+        if filled:
+            note = r.get("__smiles_source")
+            r["__smiles_source"] = (note + "; " if note else "") + "document_label:" + ",".join(filled)
+            n_filled += 1
+    return n_filled
+
+
 def resolve_record_smiles(record: dict, pool: EntityPool) -> dict:
     """Backfill missing reactant/product SMILES from the paper-level pool.
 
