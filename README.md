@@ -150,4 +150,4 @@ scoring code, is in the Zenodo record above.
 
 ## License
 
-Apache 2.0
+[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0): free for academic, research and personal use, including modification and redistribution. Commercial use is not permitted without permission from the authors. See `LICENSE`.

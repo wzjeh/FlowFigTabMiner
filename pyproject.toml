@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Automated multimodal mining of structured reaction data from chemistry-literature figures and tables."
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "Apache-2.0" }
+license = { text = "PolyForm-Noncommercial-1.0.0" }
 authors = [
     { name = "Wenyuan Zhao" },
     { name = "Aiichiro Nagaki", email = "nagaki@sci.hokudai.ac.jp" },
