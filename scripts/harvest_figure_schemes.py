@@ -12,23 +12,19 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.llm.config import load_vlm_config
-from src.llm.providers.gemini import GeminiProvider
-from src.pipeline.main import run_step35_figure_schemes
-
-CONFIG_PATH = "config.yaml"
+from src.pipeline.api import Paper, build_llm, figure_schemes
 
 
 def main(pdf_paths):
-    provider, vlm_cfg = GeminiProvider(), load_vlm_config(CONFIG_PATH)
+    llm = build_llm(no_vlm=True)
     for pdf in pdf_paths:
-        basename = os.path.splitext(os.path.basename(pdf))[0]
-        idir = os.path.join("data", "intermediate", basename)
+        paper = Paper(pdf)
+        idir = paper.work_dir
         if not os.path.isdir(idir):
-            print(f"[harvest] SKIP {basename}: no intermediate dir")
+            print(f"[harvest] SKIP {paper.paper_id}: no intermediate dir")
             continue
-        print(f"\n[harvest] === {basename} ===")
-        fig_pool = run_step35_figure_schemes(idir, provider, vlm_cfg)
+        print(f"\n[harvest] === {paper.paper_id} ===")
+        fig_pool = figure_schemes(paper, llm)
         pool_path = os.path.join(idir, "compound_pool.json")
         pools = json.load(open(pool_path)) if os.path.exists(pool_path) else {}
         if "reactant_pool" not in pools:

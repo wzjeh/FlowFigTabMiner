@@ -6,7 +6,8 @@ the manual VLM workflow scattered in ``src/extraction/table/vlm_table_pipeline.p
 Architecture
 ------------
 - ``providers``     — provider ABCs (LLMProvider, VLMProvider) + concrete impls
-                      registered via decorator (currently: GeminiProvider).
+                      registered via decorator (gemini, claude, openai;
+                      ``llm.provider`` in config.yaml picks one).
 - ``inspectors``    — figure / table inspectors that take a pipeline-produced
                       DataFrame, ask a VLMProvider to read the same crop
                       independently, and diff via pluggable matchers.
@@ -18,7 +19,7 @@ Architecture
 
 External callers see only ``LLMProvider`` / ``VLMProvider`` / ``Inspector``
 abstractions.  No file outside ``src/llm/providers/`` may import a vendor
-SDK (``google.genai``, etc.).
+SDK (``google.genai``, ``anthropic``, ``openai``).
 """
 
 from __future__ import annotations
@@ -30,7 +31,7 @@ from src.llm.errors import (
     ParseError,
     RateLimitError,
 )
-from src.llm.providers import GeminiProvider, get_llm_provider, get_vlm_provider
+from src.llm.providers import get_llm_provider, get_vlm_provider
 from src.llm.providers.base import LLMProvider, VLMProvider
 from src.llm.types import (
     ChatMessage,
@@ -57,7 +58,6 @@ __all__ = [
     # providers
     "LLMProvider",
     "VLMProvider",
-    "GeminiProvider",
     "get_llm_provider",
     "get_vlm_provider",
     # errors

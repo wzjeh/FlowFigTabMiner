@@ -5,9 +5,9 @@
 Much of the quantitative process data in chemistry papers sits inside figures and tables, where
 molecular structures are drawn as images and yields are plotted rather than typed. FlowFigTabMiner
 turns these figures and tables into structured reaction records. It chains five custom-trained YOLO
-models with chemistry-specific tools (Florence-2/TF-ID, TATR, MolNexTR, PP-OCR via RapidOCR) and uses Gemini
-only for table cells and the final record assembly. The figure track is deterministic (YOLO + RANSAC
-axis mapping), so the same PDF gives the same output on every run.
+models with chemistry-specific tools (Florence-2/TF-ID, TATR, MolNexTR, PP-OCR via RapidOCR) and uses a
+large language model (Claude, Gemini or OpenAI) only for table cells and the final record assembly.
+The figure geometry is deterministic (YOLO + RANSAC axis mapping); the LLM reads labels and text.
 
 > Zhao *et al.*, Automated multimodal mining of structured data locked in the figures and tables of
 > flow chemistry literature. In press.
@@ -17,9 +17,9 @@ axis mapping), so the same PDF gives the same output on every run.
 ```
 PDF → [0] flow-chem pre-filter → [1] TF-ID detect figures/tables
     → figures: YOLO segment → YOLO detect points → RANSAC axis mapping → legend match
-    → tables:  YOLO segment → TATR structure → Gemini cells + MolNexTR + RapidOCR
+    → tables:  YOLO segment → TATR structure → LLM cells + MolNexTR + RapidOCR
     → [3.5] scheme parsing → compound pool   → [4.5] per-source variable libraries
-    → [5] per-source Gemini assembly → JSON records → [6] normalize + validate → dataset
+    → [5] per-source LLM assembly → JSON records → [6] normalize + validate → dataset
 ```
 
 ## Install
@@ -43,10 +43,21 @@ hf download wyzhaoc/FlowFigTabMiner-models --local-dir models/ --exclude "paddle
 
 TF-ID, TATR and docling weights download on first run.
 
-**API key.** The LLM steps use Google Gemini (`gemini-2.5-flash`, temperature 0):
+**LLM provider.** One setting in `config.yaml` picks the vendor for every LLM call:
+
+```yaml
+llm:
+  provider: "claude"          # claude | gemini | openai
+  models: {claude: "claude-haiku-5-5", gemini: "gemini-2.5-flash", openai: "gpt-5-nano"}
+```
+
+Put the matching key in `.env` (or the environment): `ANTHROPIC_API_KEY`, `GEMINI_API_KEY` or
+`OPENAI_API_KEY`. `--provider` / `--model` (or `FFTM_LLM_PROVIDER` / `FFTM_LLM_MODEL`) override
+the setting for one run. Gemini runs at temperature 0. Current Claude and OpenAI models do not
+accept a temperature, so their repeated runs can differ slightly; responses are cached on disk.
 
 ```bash
-echo "GEMINI_API_KEY=your_key" > .env     # key from https://aistudio.google.com/apikey
+echo "ANTHROPIC_API_KEY=your_key" > .env
 ```
 
 ### Docker
@@ -56,7 +67,7 @@ first run (about 1.4 GB, once). The table stage needs about 10 GB of RAM.
 
 ```bash
 mkdir -p models data/input/my_pdfs          # put PDFs in data/input/my_pdfs
-docker run --rm -e GEMINI_API_KEY=your_key \
+docker run --rm -e ANTHROPIC_API_KEY=your_key \
     -v "$PWD/models:/app/models" -v "$PWD/data:/app/data" \
     ghcr.io/wzjeh/flowfigtabminer --dir data/input/my_pdfs
 ```
@@ -67,24 +78,42 @@ Results appear in `data/final_output/`. The image is built from `Dockerfile.full
 ## Usage
 
 ```bash
-set -a; source .env; set +a               # load GEMINI_API_KEY
+set -a; source .env; set +a               # load the API key
 
 flowfigtabminer path/to/paper.pdf         # single PDF, full pipeline
 flowfigtabminer --dir data/input/corpus   # every PDF in a folder, one subprocess each
-flowfigtabminer paper.pdf --skip-tfid     # reuse existing crops
-flowfigtabminer paper.pdf --force-assembly# re-run only the LLM assembly
+flowfigtabminer paper.pdf --steps prefilter,detect          # only these steps
+flowfigtabminer paper.pdf --steps assemble,normalize --redo # re-run the LLM assembly
+flowfigtabminer paper.pdf --provider gemini                 # another LLM vendor for this run
 
 python scripts/batch_all.py --pdf-dir data/input/corpus --resume   # resumable batch
 python scripts/reassemble.py paper.pdf    # re-run only the adjudication stages on existing crops
 ```
 
-Flags: `--dir` · `--skip-tfid` · `--force-assembly` · `--no-prefilter` · `--no-smiles-lookup` · `--no-vlm`.
-Module form: `python -m src.pipeline.main paper.pdf`.
+The steps, in order: `prefilter` · `detect` (TF-ID crops) · `figures` · `tables` · `schemes` ·
+`context` (paper- and source-level variables) · `assemble` (LLM records) · `normalize`.
+Each finished step is recorded in `<work dir>/steps.json` (status, time, LLM, code commit). A
+rerun skips steps already done, `--redo` repeats them, and re-running a step also repeats every
+later one. A step whose earlier steps have not run is refused.
+
+Flags: `--dir` · `--steps` · `--redo` · `--work-root` · `--out-dir` · `--provider` · `--model` ·
+`--no-prefilter` · `--no-smiles-lookup` · `--no-vlm`. Module form: `python -m src.pipeline.main paper.pdf`.
+
+**Python.** The same pipeline as functions:
+
+```python
+from src.pipeline.api import Paper, build_llm, extract, detect, figures, tables
+
+extract("paper.pdf", work_root="extract", out_dir="results")    # all steps; returns a status summary
+
+paper, llm = Paper("paper.pdf"), build_llm(provider="openai")    # or one step at a time
+detect(paper); figures(paper, llm); tables(paper, llm)
+```
 
 ## Output
 
 ```
-data/intermediate/<paper>/   crops, evidence JSONs, compound_pool.json, timing.json
+data/intermediate/<paper>/   crops, evidence JSONs, compound_pool.json, timing.json, steps.json
   layout.json, context/      crop geometry, figure/table labels, verbatim captions,
                              footnotes and in-box PDF text (from the PDF text layer)
   global_vars.json           paper-level defaults, each with a verbatim quote and scope
@@ -145,8 +174,10 @@ task and counts as 0 in the overall score.
 | Tables | 0.932 | **0.978** | 0.935 | – | – | 0.683 |
 | **Overall** | **0.874** | 0.848 | 0.778 | 0.035 | 0.062 | 0.342 |
 
-The pipeline output is byte-identical across repeated runs. The published scores were produced with
-PaddleOCR; RapidOCR runs the same PP-OCR models and gives the same scores on this benchmark. The benchmark archive, with protocol and
+The published scores were produced with Gemini 2.5 Flash (temperature 0) and PaddleOCR; with
+Gemini the pipeline output is byte-identical across repeated runs. RapidOCR runs the same PP-OCR
+models and gives the same scores. Claude Haiku 5.5 scores 0.821 (figures), 0.931 (tables) and
+0.876 overall. The benchmark archive, with protocol and
 scoring code, is in the Zenodo record above.
 
 ## License

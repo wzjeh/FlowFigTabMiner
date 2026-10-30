@@ -281,16 +281,12 @@ def paper_result(records, intermediate_dir, out_dir, title, doi=None, seconds=No
 # ── the three extractions ─────────────────────────────────────────────────
 
 
-def _build_figure_pipeline(provider):
+def _build_figure_pipeline(llm):
     from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
-    from src.llm.config import load_vlm_config
     from src.pipeline.figure_pipeline import FigurePipeline
-    from src.pipeline.main import _build_label_reader
-    vlm_cfg = load_vlm_config("config.yaml")
-    label_reader = _build_label_reader(provider)
-    return FigurePipeline(metadata_extractor=FigureMetadataExtractor(vlm=provider, cfg=vlm_cfg),
-                          label_reader=label_reader,
-                          value_conflict_policy=getattr(label_reader, "value_conflict_policy", "vlm"))
+    return FigurePipeline(metadata_extractor=FigureMetadataExtractor(vlm=llm.provider, cfg=llm.vlm_cfg),
+                          label_reader=llm.label_reader,
+                          value_conflict_policy=getattr(llm.label_reader, "value_conflict_policy", "vlm"))
 
 
 def extract_figure(image_path, keys, out_dir, status=lambda s: None):
@@ -303,8 +299,8 @@ def extract_figure(image_path, keys, out_dir, status=lambda s: None):
 
     def _job(key):
         with _WithKey(key):
-            from src.llm.providers.gemini import GeminiProvider
-            return _build_figure_pipeline(GeminiProvider()).process_images([src], work)
+            from src.pipeline.api import build_llm
+            return _build_figure_pipeline(build_llm()).process_images([src], work)
 
     try:
         evidence = _with_fallback(keys, _job)
@@ -329,9 +325,8 @@ def extract_table(image_path, keys, out_dir, status=lambda s: None):
         with _WithKey(key):
             from src.extraction.common.content_recognizer import ContentRecognizer
             from src.extraction.table.pipeline import TablePipeline
-            from src.llm.providers.gemini import GeminiProvider
-            from src.pipeline.main import _build_table_transcriber
-            transcriber, table_cfg = _build_table_transcriber(GeminiProvider())
+            from src.pipeline.api import build_llm
+            transcriber, table_cfg = build_llm(no_vlm=True).table_transcriber()
             pipeline = TablePipeline(transcriber=transcriber, content_recognizer=ContentRecognizer(),
                                      min_text_agreement=table_cfg.min_text_agreement)
             return pipeline.process_table(src, output_dir=tables_dir)
@@ -365,7 +360,7 @@ def extract_pdf(pdf_path, keys, out_dir, status=lambda s: None):
         proc = None
         for attempt, key in enumerate(keys):
             env = dict(os.environ, GEMINI_API_KEY=key, PYTHONUNBUFFERED="1")
-            args = [sys.executable, "-m", "src.pipeline.main", local_pdf] + (["--skip-tfid", "--force-assembly"] if attempt else [])
+            args = [sys.executable, "-m", "src.pipeline.main", local_pdf] + (["--redo", "--steps", "figures,tables,schemes,context,assemble,normalize"] if attempt else [])
             proc = subprocess.Popen(args, cwd=APP_DIR, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                     text=True, bufsize=1)
             quota_hit = False

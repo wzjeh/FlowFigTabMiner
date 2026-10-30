@@ -1,7 +1,7 @@
 """Evaluate the VLM table transcriber (table stage rerun + reassembly + metrics).
 
 Re-runs ONLY the table stage on existing TF-ID crops (``data/intermediate/{paper}/tables/*.png``)
-with the reader set by ``--reader gemini|claude`` (via FFTM_TABLE_READER), then
+with the reader set by ``--reader gemini|claude|openai``, then
 ``scripts/reassemble.py --rebuild-vars`` (table local_vars depend on the CSV), then
 collects per-table transcription facts and table-record coverage.
 
@@ -67,14 +67,12 @@ def _papers_from(path: str) -> list[str]:
 
 
 def run_stage(paths: list[str], reader: str) -> dict:
-    os.environ["FFTM_TABLE_READER"] = reader
     import src.pipeline._threadcaps  # noqa: F401
     from src.extraction.common.content_recognizer import ContentRecognizer
     from src.extraction.table.pipeline import TablePipeline
-    from src.llm.providers.gemini import GeminiProvider
-    from src.pipeline.main import _build_table_transcriber
+    from src.pipeline.api import build_llm
     from scripts.reassemble import main as reassemble_main
-    transcriber, cfg = _build_table_transcriber(GeminiProvider())
+    transcriber, cfg = build_llm(provider=reader, no_vlm=True).table_transcriber()
     pipe = TablePipeline(transcriber=transcriber, content_recognizer=ContentRecognizer(),
                          min_text_agreement=cfg.min_text_agreement)
     timing = {}
@@ -192,7 +190,7 @@ def write_spotcheck(tables: list[dict], n: int, out_xlsx: str, seed: int = 0) ->
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--reader", choices=["gemini", "claude"], default="gemini")
+    ap.add_argument("--reader", choices=["gemini", "claude", "openai"], default="gemini")
     ap.add_argument("--papers", nargs="*", default=[])
     ap.add_argument("--papers-from", help="txt of paper basenames/paths, or audit xlsx/csv with a 'pdf' column")
     ap.add_argument("--report-only", action="store_true")

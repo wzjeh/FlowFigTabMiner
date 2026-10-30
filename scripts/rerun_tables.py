@@ -11,20 +11,18 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.llm.providers.gemini import GeminiProvider
-from src.pipeline.main import run_step_tables
+from src.pipeline.api import Paper, build_llm, tables
 
 
 def main(pdf_paths):
-    provider = GeminiProvider()
+    llm = build_llm(no_vlm=True)
     for pdf in pdf_paths:
-        basename = os.path.splitext(os.path.basename(pdf))[0]
-        idir = os.path.join("data", "intermediate", basename)
-        if not os.path.isdir(idir):
-            print(f"[tables] SKIP {basename}: no intermediate dir")
+        paper = Paper(pdf)
+        if not os.path.isdir(paper.work_dir):
+            print(f"[tables] SKIP {paper.paper_id}: no intermediate dir")
             continue
-        print(f"\n[tables] === {basename} ===")
-        run_step_tables(idir, provider)
+        print(f"\n[tables] === {paper.paper_id} ===")
+        tables(paper, llm)
 
 
 if __name__ == "__main__":

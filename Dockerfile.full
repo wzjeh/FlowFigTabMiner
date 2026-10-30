@@ -1,9 +1,9 @@
 # FlowFigTabMiner, complete local pipeline (TF-ID -> figure/table extraction ->
-# Gemini assembly -> post-processing) in one CPU image.  Python 3.9 to match
+# LLM assembly -> post-processing) in one CPU image.  Python 3.9 to match
 # the development venv exactly; the four Dockerfile.{tfid,figure,table,frontend}
 # images are the Cloud Run demo and are not touched by this file.
 #
-#   docker run --rm -e GEMINI_API_KEY=... \
+#   docker run --rm -e ANTHROPIC_API_KEY=... \
 #       -v $PWD/models:/app/models -v $PWD/data:/app/data \
 #       ghcr.io/wzjeh/flowfigtabminer --dir data/input/my_pdfs
 #   docker run --rm -p 7860:7860 -v $PWD/models:/app/models \

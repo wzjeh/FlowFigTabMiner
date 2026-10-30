@@ -40,13 +40,9 @@ class _TablesConfig(TypedDict):
     segmentation: _TablesSegConfig
     molecule_detection: _TablesMolConfig
 
-class _LLMAdjudicationConfig(TypedDict):
-    model_name: str
-    temperature: float
-
 class _LLMConfig(TypedDict):
-    default_provider: str
-    adjudication: _LLMAdjudicationConfig
+    provider: str
+    models: dict
 
 class AppConfig(TypedDict):
     global_: _GlobalConfig   # accessed via cfg["global"] (key name in YAML is "global")
@@ -68,10 +64,9 @@ _REQUIRED_PATHS = [
     # LLM/VLM configuration moved to typed Pydantic models loaded via
     # src.llm.config.load_llm_config / load_vlm_config; presence is
     # validated there.
-    ("llm.adjudication.provider",),
-    ("llm.adjudication.model",),
-    ("vlm.inspection.provider",),
-    ("vlm.inspection.model",),
+    ("llm.provider",),
+    ("llm.adjudication",),
+    ("vlm.inspection",),
 ]
 
 

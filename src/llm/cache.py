@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -42,10 +43,12 @@ class ResponseCache:
 
     The cache directory is user-scoped (``~/.cache/flowfigtabminer/llm``)
     so it survives ``git clean`` and is shared across repo checkouts.
+    ``FFTM_LLM_CACHE_DIR`` points a run at another directory (a fresh cache
+    for a repeat measurement, or one cache per corpus).
     """
 
     def __init__(self, root: str | Path | None = None, size_limit_gb: float = 2.0):
-        path = Path(root) if root else _DEFAULT_DIR
+        path = Path(root or os.environ.get("FFTM_LLM_CACHE_DIR") or _DEFAULT_DIR)
         path.mkdir(parents=True, exist_ok=True)
         self._cache = Cache(directory=str(path), size_limit=int(size_limit_gb * 1024**3))
 

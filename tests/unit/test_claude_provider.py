@@ -29,13 +29,20 @@ def _resp(text="", parsed=None, stop="end_turn"):
     return r
 
 
+def _client():
+    """Mock Anthropic client; ``with_options(timeout=...)`` returns the same mock."""
+    c = MagicMock()
+    c.with_options.return_value = c
+    return c
+
+
 def _cfg(retries=0):
     return VLMConfig(provider="claude", model="claude-sonnet-5", max_retries=retries, max_output_tokens=512)
 
 
 def test_inspect_sends_base64_image_and_schema(tmp_path):
     img = tmp_path / "sheet.png"; img.write_bytes(b"\x89PNG fake")
-    client = MagicMock(); client.messages.parse.return_value = _resp(parsed=_Schema(readings=[{"index": 0, "text": "10^-1.5"}]))
+    client = _client(); client.messages.parse.return_value = _resp(parsed=_Schema(readings=[{"index": 0, "text": "10^-1.5"}]))
     p = ClaudeProvider(client=client, cache=_NoCache())
     meta, parsed = p.inspect(VLMImage(path=img), "", "read cells", _cfg(), response_schema=_Schema)
     kw = client.messages.parse.call_args.kwargs
@@ -48,7 +55,7 @@ def test_inspect_sends_base64_image_and_schema(tmp_path):
 
 def test_inspect_free_mode_extracts_json(tmp_path):
     img = tmp_path / "s.png"; img.write_bytes(b"x")
-    client = MagicMock(); client.messages.create.return_value = _resp(text='```json\n{"a": 1}\n```')
+    client = _client(); client.messages.create.return_value = _resp(text='```json\n{"a": 1}\n```')
     _, parsed = ClaudeProvider(client=client, cache=_NoCache()).inspect(VLMImage(path=img), "sys", "u", _cfg())
     assert parsed == {"a": 1} and client.messages.create.call_args.kwargs["system"] == "sys"
 
@@ -57,7 +64,7 @@ def test_rate_limit_maps_and_propagates(tmp_path):
     img = tmp_path / "s.png"; img.write_bytes(b"x")
     class RateLimitError(Exception):   # same name as the SDK class
         status_code = 429
-    client = MagicMock(); client.messages.parse.side_effect = RateLimitError("429 too many")
+    client = _client(); client.messages.parse.side_effect = RateLimitError("429 too many")
     with pytest.raises(RateLimitError.__mro__[0]) if False else pytest.raises(Exception) as ei:
         ClaudeProvider(client=client, cache=_NoCache()).inspect(VLMImage(path=img), "", "u", _cfg(retries=0), response_schema=_Schema)
     assert ei.type is RateLimitError or issubclass(ei.type, __import__("src.llm.errors", fromlist=["RateLimitError"]).RateLimitError)
@@ -65,23 +72,35 @@ def test_rate_limit_maps_and_propagates(tmp_path):
 
 def test_refusal_and_other_errors(tmp_path):
     img = tmp_path / "s.png"; img.write_bytes(b"x")
-    client = MagicMock(); client.messages.parse.return_value = _resp(stop="refusal", parsed=_Schema())
+    client = _client(); client.messages.parse.return_value = _resp(stop="refusal", parsed=_Schema())
     with pytest.raises(LLMProviderError):
         ClaudeProvider(client=client, cache=_NoCache()).inspect(VLMImage(path=img), "", "u", _cfg(), response_schema=_Schema)
-    client2 = MagicMock(); client2.messages.create.side_effect = ValueError("boom")
+    client2 = _client(); client2.messages.create.side_effect = ValueError("boom")
     with pytest.raises(LLMProviderError):
         ClaudeProvider(client=client2, cache=_NoCache()).chat([ChatMessage(role=Role.USER, content="hi")],
                                                              LLMConfig(provider="claude", model="claude-sonnet-5", max_retries=0))
 
 
 def test_chat_roundtrip():
-    client = MagicMock(); client.messages.create.return_value = _resp(text="hello")
+    client = _client(); client.messages.create.return_value = _resp(text="hello")
     out = ClaudeProvider(client=client, cache=_NoCache()).chat(
         [ChatMessage(role=Role.SYSTEM, content="be brief"), ChatMessage(role=Role.USER, content="hi")],
         LLMConfig(provider="claude", model="claude-sonnet-5", max_retries=0))
     kw = client.messages.create.call_args.kwargs
     assert out.text == "hello" and kw["system"] == "be brief" and kw["messages"] == [{"role": "user", "content": "hi"}]
     assert "temperature" not in kw and kw["output_config"] == {"effort": "low"}
+    assert client.with_options.call_args.kwargs == {"timeout": 120.0}
+
+
+def test_server_errors_are_transient():
+    from src.llm.errors import TransientError
+    class InternalServerError(Exception):
+        status_code = 529
+    for exc in (InternalServerError("overloaded_error"), RuntimeError("Overloaded")):
+        with pytest.raises(TransientError):
+            ClaudeProvider._wrap_and_raise(exc)
+    with pytest.raises(LLMProviderError):
+        ClaudeProvider._wrap_and_raise(ValueError("400 invalid_request_error"))
 
 
 def test_missing_key_refuses(monkeypatch):

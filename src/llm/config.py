@@ -22,7 +22,7 @@ class LLMConfig(BaseModel):
 
     model_config = {"frozen": True, "extra": "forbid"}
 
-    provider: Literal["gemini", "claude"]
+    provider: Literal["gemini", "claude", "openai"]
     model: str
     temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
@@ -44,7 +44,7 @@ class VLMConfig(BaseModel):
 
     model_config = {"frozen": True, "extra": "forbid"}
 
-    provider: Literal["gemini", "claude"]
+    provider: Literal["gemini", "claude", "openai"]
     model: str
     temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     max_output_tokens: int = Field(default=8192, ge=1)
@@ -67,13 +67,36 @@ def _safe_get(d: dict, *keys: str) -> dict | None:
     return cur if isinstance(cur, dict) else None
 
 
-def load_llm_config(yaml_path: str | Path) -> LLMConfig:
-    """Parse ``llm.adjudication`` from a config.yaml into a typed model."""
+def _section(yaml_path: str | Path, *keys: str, provider: str | None = None, model: str | None = None) -> dict:
+    """One config section with its provider / model resolved.
+
+    ``llm.provider`` picks the vendor for every LLM/VLM call and
+    ``llm.models[<provider>]`` its default model; a section may name its own
+    ``provider`` / ``model``.  An explicit ``provider`` / ``model`` argument or
+    ``FFTM_LLM_PROVIDER`` / ``FFTM_LLM_MODEL`` overrides every section.
+    """
+    import os
     raw = yaml.safe_load(Path(yaml_path).read_text())
-    section = _safe_get(raw, "llm", "adjudication")
+    section = _safe_get(raw, *keys)
     if section is None:
-        raise ConfigError(f"missing llm.adjudication in {yaml_path}")
-    return LLMConfig(**section)
+        raise ConfigError(f"missing {'.'.join(keys)} in {yaml_path}")
+    llm = raw.get("llm", {})
+    provider = provider or os.environ.get("FFTM_LLM_PROVIDER", "").strip().lower() or None
+    model = model or os.environ.get("FFTM_LLM_MODEL", "").strip() or None
+    chosen = provider or section.get("provider") or llm.get("provider")
+    if not chosen:
+        raise ConfigError(f"no LLM provider: set llm.provider in {yaml_path}")
+    if model is None:
+        model = section.get("model") if section.get("provider", llm.get("provider")) == chosen else None
+        model = model or (llm.get("models") or {}).get(chosen)
+    if not model:
+        raise ConfigError(f"no model for provider '{chosen}': add llm.models.{chosen} in {yaml_path}")
+    return {**section, "provider": chosen, "model": model}
+
+
+def load_llm_config(yaml_path: str | Path, provider: str | None = None, model: str | None = None) -> LLMConfig:
+    """Parse ``llm.adjudication`` from a config.yaml into a typed model."""
+    return LLMConfig(**_section(yaml_path, "llm", "adjudication", provider=provider, model=model))
 
 
 class LabelReaderConfig(VLMConfig):
@@ -84,23 +107,13 @@ class LabelReaderConfig(VLMConfig):
     max_boxes: int = Field(default=80, ge=1)
 
 
-def load_label_reader_config(yaml_path: str | Path) -> LabelReaderConfig:
-    """Parse ``vlm.label_reader``; if absent, mirror ``vlm.inspection`` with
-    ``enabled=False`` so older config files keep the single-reader behaviour.
-    ``FFTM_LABEL_READER=off|gemini|claude`` overrides enabled / provider (eval use)."""
+def load_label_reader_config(yaml_path: str | Path, provider: str | None = None,
+                             model: str | None = None) -> LabelReaderConfig:
+    """Parse ``vlm.label_reader``.  ``FFTM_LABEL_READER=off`` disables it (eval use)."""
     import os
-    raw = yaml.safe_load(Path(yaml_path).read_text())
-    section = _safe_get(raw, "vlm", "label_reader")
-    if section is None:
-        base = _safe_get(raw, "vlm", "inspection") or {}
-        section = {**base, "enabled": False}
-    cfg = LabelReaderConfig(**section)
-    override = os.environ.get("FFTM_LABEL_READER", "").strip().lower()
-    if override == "off":
+    cfg = LabelReaderConfig(**_section(yaml_path, "vlm", "label_reader", provider=provider, model=model))
+    if os.environ.get("FFTM_LABEL_READER", "").strip().lower() == "off":
         cfg = cfg.model_copy(update={"enabled": False})
-    elif override in ("gemini", "claude"):
-        model = cfg.model if override == cfg.provider else {"gemini": "gemini-2.5-flash", "claude": "claude-sonnet-5"}[override]
-        cfg = cfg.model_copy(update={"enabled": True, "provider": override, "model": model})
     return cfg
 
 
@@ -110,26 +123,12 @@ class TableReaderConfig(VLMConfig):
     min_text_agreement: float = Field(default=0.6, ge=0.0, le=1.0)
 
 
-def load_table_reader_config(yaml_path: str | Path) -> TableReaderConfig:
-    """Parse ``vlm.table_reader`` (required).  ``FFTM_TABLE_READER=gemini|claude``
-    overrides provider (and model, unless the config already names that provider)."""
-    import os
-    raw = yaml.safe_load(Path(yaml_path).read_text())
-    section = _safe_get(raw, "vlm", "table_reader")
-    if section is None:
-        raise ConfigError(f"missing vlm.table_reader in {yaml_path}")
-    cfg = TableReaderConfig(**section)
-    override = os.environ.get("FFTM_TABLE_READER", "").strip().lower()
-    if override in ("gemini", "claude"):
-        model = cfg.model if override == cfg.provider else {"gemini": "gemini-2.5-flash", "claude": "claude-sonnet-5"}[override]
-        cfg = cfg.model_copy(update={"provider": override, "model": model})
-    return cfg
+def load_table_reader_config(yaml_path: str | Path, provider: str | None = None,
+                             model: str | None = None) -> TableReaderConfig:
+    """Parse ``vlm.table_reader`` (required)."""
+    return TableReaderConfig(**_section(yaml_path, "vlm", "table_reader", provider=provider, model=model))
 
 
-def load_vlm_config(yaml_path: str | Path) -> VLMConfig:
+def load_vlm_config(yaml_path: str | Path, provider: str | None = None, model: str | None = None) -> VLMConfig:
     """Parse ``vlm.inspection`` from a config.yaml into a typed model."""
-    raw = yaml.safe_load(Path(yaml_path).read_text())
-    section = _safe_get(raw, "vlm", "inspection")
-    if section is None:
-        raise ConfigError(f"missing vlm.inspection in {yaml_path}")
-    return VLMConfig(**section)
+    return VLMConfig(**_section(yaml_path, "vlm", "inspection", provider=provider, model=model))

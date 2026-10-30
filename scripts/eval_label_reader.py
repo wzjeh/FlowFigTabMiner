@@ -1,7 +1,7 @@
 """Evaluate the VLM label reader (design: VLM reads symbols, geometry stays with YOLO).
 
 Re-runs ONLY the figure stage on existing crops for the given papers with the
-reader set by ``--reader off|gemini|claude`` (via FFTM_LABEL_READER), then
+reader set by ``--reader off|gemini|claude|openai``, then
 Steps 5-6 (reassemble, vars reused), and writes a metrics report:
 axis-fit rejections, fit inlier ratio, OCR×VLM agreement / conflict counts,
 synthesized-record fidelity, has_outcome share, per-figure cost.
@@ -34,17 +34,17 @@ def _papers_from_audit(xlsx: str) -> list[str]:
 
 
 def run_stage(paths: list[str], reader: str) -> None:
-    os.environ["FFTM_LABEL_READER"] = reader
+    if reader == "off":
+        os.environ["FFTM_LABEL_READER"] = "off"
     import src.pipeline._threadcaps  # noqa: F401
-    from src.llm.providers.gemini import GeminiProvider
-    from src.llm.config import load_vlm_config
     from src.extraction.figure.metadata_vlm import FigureMetadataExtractor
+    from src.pipeline.api import _build_label_reader, build_llm
     from src.pipeline.figure_pipeline import FigurePipeline
-    from src.pipeline.main import _build_label_reader
     from scripts.reassemble import main as reassemble_main
-    provider = GeminiProvider()
-    fp = FigurePipeline(metadata_extractor=FigureMetadataExtractor(vlm=provider, cfg=load_vlm_config("config.yaml")),
-                        post_extract_hooks=[], label_reader=_build_label_reader(provider))
+    llm = build_llm(no_vlm=True)
+    label_reader = _build_label_reader({"provider": None if reader == "off" else reader, "model": None}, llm)
+    fp = FigurePipeline(metadata_extractor=FigureMetadataExtractor(vlm=llm.provider, cfg=llm.vlm_cfg),
+                        post_extract_hooks=[], label_reader=label_reader)
     for p in paths:
         base = os.path.splitext(os.path.basename(p))[0]
         idir = os.path.join("data/intermediate", base)
@@ -131,7 +131,7 @@ def collect(paths: list[str]) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--reader", choices=["off", "gemini", "claude"], required=True)
+    ap.add_argument("--reader", choices=["off", "gemini", "claude", "openai"], required=True)
     ap.add_argument("--papers", nargs="*", default=[])
     ap.add_argument("--papers-from", help="audit xlsx (uses its 'pdf' column)")
     ap.add_argument("--report-only", action="store_true")

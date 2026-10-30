@@ -14,7 +14,7 @@ Usage:
 cached local_vars/*.json, so prompt/context changes in that stage are
 validated too (adds ~1 LLM call per source).
 
-Reads GEMINI_API_KEY from the environment. Writes the same
+Uses llm.provider from config.yaml (its API key from the environment). Writes the same
 data/final_output/{basename}_{final,normalized}.{json,xlsx} as the full pipeline.
 """
 import os
@@ -22,38 +22,22 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import yaml
-
-from src.llm.concurrency import configure_concurrency
-from src.llm.config import load_llm_config
-from src.llm.providers.gemini import GeminiProvider
-from src.adjudication.global_assembly import GlobalAssembly
-from src.adjudication.post_processor import PostProcessor
-from src.pipeline.main import run_step44_global_vars, run_step45_local_vars
-
-CONFIG_PATH = "config.yaml"
+from src.pipeline.api import Paper, assemble, build_llm, context, normalize
 
 
 def main(pdf_paths, smiles_lookup=True, rebuild_vars=False):
-    raw_cfg = yaml.safe_load(open(CONFIG_PATH))
-    configure_concurrency(int(raw_cfg.get("llm", {}).get("max_concurrent", 5)))
-    llm_cfg = load_llm_config(CONFIG_PATH)
-    provider = GeminiProvider()
+    llm = build_llm(no_vlm=True)
 
     for pdf_path in pdf_paths:
-        basename = os.path.splitext(os.path.basename(pdf_path))[0]
-        intermediate_dir = os.path.join("data", "intermediate", basename)
-        if not os.path.isdir(intermediate_dir):
-            print(f"[reassemble] SKIP {basename}: no intermediate dir")
+        paper = Paper(pdf_path)
+        if not os.path.isdir(paper.work_dir):
+            print(f"[reassemble] SKIP {paper.paper_id}: no intermediate dir")
             continue
-        print(f"\n[reassemble] === {basename} ===")
+        print(f"\n[reassemble] === {paper.paper_id} ===")
         if rebuild_vars:
-            gv = run_step44_global_vars(pdf_path, intermediate_dir, provider, llm_cfg, rebuild=True)
-            run_step45_local_vars(pdf_path, intermediate_dir, provider, llm_cfg, rebuild=True, global_vars=gv)
-        GlobalAssembly(llm=provider, llm_cfg=llm_cfg).run(
-            pdf_path, intermediate_dir, force=True
-        )
-        PostProcessor().run(pdf_path, intermediate_dir, smiles_lookup=smiles_lookup)
+            context(paper, llm, rebuild=True)
+        assemble(paper, llm, force=True)
+        normalize(paper, smiles_lookup=smiles_lookup)
 
 
 if __name__ == "__main__":

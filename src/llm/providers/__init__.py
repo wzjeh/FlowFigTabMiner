@@ -3,9 +3,12 @@
 External callers should use the factory helpers ``get_llm_provider`` and
 ``get_vlm_provider`` rather than instantiating concrete classes — this
 guarantees the rest of the codebase never imports a vendor SDK directly.
+``llm.provider`` in config.yaml names the one to use.
 """
 
 from __future__ import annotations
+
+import importlib
 
 from src.llm.config import LLMConfig, VLMConfig
 from src.llm.providers._registry import (
@@ -16,13 +19,13 @@ from src.llm.providers._registry import (
 )
 from src.llm.providers.base import LLMProvider, VLMProvider
 
-# Importing the concrete provider modules triggers their @register_* decorators
-# and makes them discoverable via the factory helpers above.
-from src.llm.providers import gemini  # noqa: F401  (side-effect import)
-try:  # Claude is optional: registers only when the anthropic SDK can be imported lazily at construction
-    from src.llm.providers import claude  # noqa: F401  (side-effect import)
-except Exception:  # pragma: no cover
-    pass
+# Importing a provider module runs its @register_* decorators.  Each one needs
+# only its own SDK, so a missing SDK leaves the other providers usable.
+for _module in ("gemini", "claude", "openai"):
+    try:
+        importlib.import_module(f"src.llm.providers.{_module}")
+    except ImportError:  # pragma: no cover
+        pass
 
 __all__ = [
     "LLMConfig",
@@ -34,8 +37,3 @@ __all__ = [
     "get_llm_provider",
     "get_vlm_provider",
 ]
-
-# Re-export the concrete classes for type hints / tests that need them.
-from src.llm.providers.gemini import GeminiProvider  # noqa: E402
-
-__all__.append("GeminiProvider")

@@ -12,11 +12,8 @@ Usage:
     # Full pipeline (Steps 1–6):
     flowfigtabminer/bin/python scripts/batch_all.py
 
-    # Skip TF-ID (crops already extracted):
-    flowfigtabminer/bin/python scripts/batch_all.py --skip-tfid
-
-    # Force re-run LLM even if _final.json exists:
-    flowfigtabminer/bin/python scripts/batch_all.py --force-assembly
+    # Re-run steps already done (steps.json) and force the assembly LLM call:
+    flowfigtabminer/bin/python scripts/batch_all.py --redo
 
     # Resume interrupted batch (skips already-done PDFs):
     flowfigtabminer/bin/python scripts/batch_all.py --resume
@@ -108,7 +105,7 @@ def get_all_pdfs() -> list[str]:
     return pdfs
 
 
-def run_one_pdf(pdf_path: str, skip_tfid: bool, force_assembly: bool):
+def run_one_pdf(pdf_path: str, redo: bool):
     """
     Run the full pipeline for one PDF in an isolated subprocess.
 
@@ -120,10 +117,8 @@ def run_one_pdf(pdf_path: str, skip_tfid: bool, force_assembly: bool):
     the child is killed mid-run).
     """
     cmd = [VENV_PYTHON, PIPELINE, pdf_path]
-    if skip_tfid:
-        cmd.append("--skip-tfid")
-    if force_assembly:
-        cmd.append("--force-assembly")
+    if redo:
+        cmd.append("--redo")
 
     basename = os.path.splitext(os.path.basename(pdf_path))[0]
     log_path = os.path.join("data/intermediate", basename, "pipeline.log")
@@ -164,10 +159,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Full-pipeline batch runner with subprocess isolation + checkpoint."
     )
-    parser.add_argument("--skip-tfid",      action="store_true",
-                        help="Pass --skip-tfid to each PDF's pipeline run")
-    parser.add_argument("--force-assembly", action="store_true",
-                        help="Force LLM re-run even if _final.json exists")
+    parser.add_argument("--redo",           action="store_true",
+                        help="Pass --redo to each PDF's pipeline run")
     parser.add_argument("--resume",         action="store_true",
                         help="Skip PDFs already marked done in checkpoint")
     parser.add_argument("--reset",          action="store_true",
@@ -217,7 +210,7 @@ def main():
         ts   = datetime.now().strftime("%H:%M:%S")
         print(f"[{i:>3}/{len(pdfs)}] {ts}  {name}")
 
-        status, elapsed = run_one_pdf(pdf_path, args.skip_tfid, args.force_assembly)
+        status, elapsed = run_one_pdf(pdf_path, args.redo)
 
         _forget(cp, name)  # reclassify cleanly on re-run (mutually exclusive buckets)
         if status == "ok":

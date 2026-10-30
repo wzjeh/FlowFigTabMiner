@@ -40,7 +40,7 @@ if [ "$1" = "web" ]; then
 fi
 
 fetch_weights
-if [ -z "$GEMINI_API_KEY" ]; then
-    echo "[entrypoint] WARNING: GEMINI_API_KEY is not set; steps 4.4/4.5/5 and the VLM readers will fail" >&2
+if [ -z "$ANTHROPIC_API_KEY$GEMINI_API_KEY$OPENAI_API_KEY" ]; then
+    echo "[entrypoint] WARNING: no ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY; the LLM steps will fail" >&2
 fi
 exec python -m src.pipeline.main "$@"

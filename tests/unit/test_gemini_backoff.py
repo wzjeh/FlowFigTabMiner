@@ -2,8 +2,9 @@
 import pytest
 
 from src.llm.errors import LLMProviderError, RateLimitError, TransientError
-from src.llm.providers import gemini
-from src.llm.providers.gemini import GeminiProvider, _backoff_call
+from src.llm.providers import _common
+from src.llm.providers._common import _backoff_call
+from src.llm.providers.gemini import GeminiProvider
 
 
 def test_wrap_maps_server_side_failures_to_transient():
@@ -18,7 +19,7 @@ def test_wrap_maps_server_side_failures_to_transient():
 
 
 def test_backoff_retries_transient_then_succeeds(monkeypatch):
-    monkeypatch.setattr(gemini.time, "sleep", lambda s: None)
+    monkeypatch.setattr(_common.time, "sleep", lambda s: None)
     calls = []
 
     def flaky():

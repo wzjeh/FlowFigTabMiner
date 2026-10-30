@@ -79,17 +79,11 @@ class FigurePipeline:
         print("Loading EvidenceAssembler...")
         self.assembler = EvidenceAssembler() # Output dir handled per run usually or default
         
-    def process_pdf_figures(self, pdf_path):
+    def process_pdf_figures(self, pdf_intermediate_dir):
         """
-        Runs Step 2-4 for a given PDF.
-        Assumes Step 1 (TF-ID) has already run and populated data/intermediate/{basename}/figures.
+        Runs Step 2-4 for one paper.
+        Assumes Step 1 (TF-ID) has already populated {pdf_intermediate_dir}/figures.
         """
-        basename = os.path.splitext(os.path.basename(pdf_path))[0]
-        intermediate_dir = "data/intermediate" # Could be configurable
-        # If the user has a different intermediate structure, we might need to adjust.
-        # But standard is data/intermediate/{basename}
-        
-        pdf_intermediate_dir = os.path.join(intermediate_dir, basename)
         figures_dir = os.path.join(pdf_intermediate_dir, "figures")
         
         if not os.path.exists(figures_dir):

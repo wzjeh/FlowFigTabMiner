@@ -8,8 +8,7 @@ slot, exponential backoff on rate limits.
 Environment
 -----------
 - ``ANTHROPIC_API_KEY`` (required unless a client is injected).
-- Model id from the typed config (``claude-sonnet-5`` by default in
-  config.yaml; ``claude-sonnet-4-6`` also works).
+- Model id from the typed config (``llm.models.claude`` in config.yaml).
 
 Notes
 -----
@@ -18,6 +17,8 @@ Notes
   outputs + low effort.
 - Structured mode uses ``client.messages.parse(output_format=<pydantic>)``;
   free mode uses ``messages.create`` and a balanced-JSON extraction.
+- Every call carries ``cfg.timeout_s``: the SDK refuses a non-streaming call
+  with a large ``max_tokens`` (assembly: 32k) unless a timeout is explicit.
 """
 
 from __future__ import annotations
@@ -33,10 +34,10 @@ from pydantic import BaseModel
 from src.llm.cache import ResponseCache
 from src.llm.concurrency import acquire_llm_slot
 from src.llm.config import LLMConfig, VLMConfig
-from src.llm.errors import LLMProviderError, ParseError, RateLimitError
+from src.llm.errors import LLMProviderError, ParseError, RateLimitError, TransientError
 from src.llm.providers._registry import register_llm_provider, register_vlm_provider
 from src.llm.providers.base import LLMProvider, VLMProvider
-from src.llm.providers.gemini import _backoff_call, _extract_balanced_json, _strip_json_fence
+from src.llm.providers._common import _backoff_call, _extract_balanced_json, _strip_json_fence
 from src.llm.types import ChatMessage, LLMResponse, Role, VLMImage
 
 logger = logging.getLogger(__name__)
@@ -72,11 +73,15 @@ class ClaudeProvider(LLMProvider, VLMProvider):
         return "claude"
 
     # ------------------------------------------------------------------ errors
-    def _wrap_and_raise(self, exc: Exception) -> None:
+    @staticmethod
+    def _wrap_and_raise(exc: Exception) -> None:
         name = type(exc).__name__
         status = getattr(exc, "status_code", None)
         if name == "RateLimitError" or status == 429 or "rate" in str(exc).lower():
             raise RateLimitError(str(exc)) from exc
+        if (status in (500, 502, 503, 529) or name in ("APITimeoutError", "APIConnectionError", "InternalServerError")
+                or "overloaded" in str(exc).lower()):
+            raise TransientError(str(exc)) from exc      # one source must not be lost to a server hiccup
         raise LLMProviderError(f"claude call failed: {exc}") from exc
 
     @staticmethod
@@ -109,7 +114,7 @@ class ClaudeProvider(LLMProvider, VLMProvider):
         def _call() -> Any:
             with acquire_llm_slot():
                 try:
-                    return self._client.messages.create(**kwargs)
+                    return self._client.with_options(timeout=cfg.timeout_s).messages.create(**kwargs)
                 except Exception as exc:
                     self._wrap_and_raise(exc)
 
@@ -151,9 +156,10 @@ class ClaudeProvider(LLMProvider, VLMProvider):
         def _call() -> Any:
             with acquire_llm_slot():
                 try:
+                    client = self._client.with_options(timeout=cfg.timeout_s)
                     if response_schema is not None:
-                        return self._client.messages.parse(output_format=response_schema, **kwargs)
-                    return self._client.messages.create(**kwargs)
+                        return client.messages.parse(output_format=response_schema, **kwargs)
+                    return client.messages.create(**kwargs)
                 except Exception as exc:
                     self._wrap_and_raise(exc)
 
