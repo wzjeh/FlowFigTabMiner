@@ -7,9 +7,10 @@ WEIGHTS_REPO="${FFTM_WEIGHTS_REPO:-wyzhaoc/FlowFigTabMiner-models}"
 READY="$MODELS/.ready"          # the demo's job worker waits for this file
 
 fetch_weights() {
-    if [ ! -f "$MODELS/molnextr_model_best.pth" ]; then
-        echo "[entrypoint] downloading weights from hf.co/$WEIGHTS_REPO into $MODELS (about 1.4 GB, once)"
-        python -c "from huggingface_hub import snapshot_download; snapshot_download('$WEIGHTS_REPO', local_dir='$MODELS')"
+    if [ ! -f "$MODELS/molnextr_model_best.pth" ] || [ ! -f "$MODELS/rapidocr/ch_PP-OCRv5_server_det.onnx" ]; then
+        echo "[entrypoint] downloading weights from hf.co/$WEIGHTS_REPO into $MODELS (about 1.5 GB, once)"
+        # paddlex/ holds the PaddleOCR weights of the published version; RapidOCR does not need them.
+        python -c "from huggingface_hub import snapshot_download; snapshot_download('$WEIGHTS_REPO', local_dir='$MODELS', ignore_patterns=['paddlex/*'])"
     fi
     # TF-ID (Florence-2, ~1 GB, with its remote code) into the HF cache on the same
     # volume; a lazy download inside the first PDF job fails too often to rely on.

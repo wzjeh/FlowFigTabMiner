@@ -38,7 +38,7 @@ weights, the MolNexTR checkpoint and the PP-OCR models (ONNX, for RapidOCR), lai
 
 ```bash
 pip install huggingface_hub
-hf download wyzhaoc/FlowFigTabMiner-models --local-dir models/
+hf download wyzhaoc/FlowFigTabMiner-models --local-dir models/ --exclude "paddlex/*"
 ```
 
 TF-ID, TATR and docling weights download on first run.
