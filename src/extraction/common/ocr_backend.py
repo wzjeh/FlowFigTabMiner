@@ -6,6 +6,9 @@ Two modes:
   get_rec_instance()  → rec-only model (for pre-cropped single-text regions: tick labels, cells)
 
 USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
+FFTM_OCR_ENGINE=paddle|rapid|apple selects the engine (default paddle):
+  rapid → RapidOCR, the same PP-OCR models run by ONNX Runtime (no paddlepaddle)
+  apple → Apple Vision text recognition (macOS only, Neural Engine)
 """
 import os
 
@@ -62,6 +65,14 @@ def upscale_for_ocr(img, pad=50, max_factor=3.0, max_side=None):
 _ocr_instances: dict = {}
 
 
+def ocr_engine():
+    """Engine name from FFTM_OCR_ENGINE (paddle | rapid | apple)."""
+    engine = os.environ.get('FFTM_OCR_ENGINE', 'paddle').strip().lower()
+    if engine not in ('paddle', 'rapid', 'apple'):
+        raise ValueError(f"FFTM_OCR_ENGINE must be paddle, rapid or apple, not {engine!r}")
+    return engine
+
+
 def get_ocr_instance(lang='en', enable_mkldnn=False, **kwargs):
     """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells).
 
@@ -73,8 +84,13 @@ def get_ocr_instance(lang='en', enable_mkldnn=False, **kwargs):
     if cached is not None:
         return cached
 
+    engine = ocr_engine()
     if os.environ.get('USE_EASYOCR', '0') == '1':
         instance = _EasyOCRWrapper()
+    elif engine == 'rapid':
+        instance = _RapidFull()
+    elif engine == 'apple':
+        instance = _AppleVision()
     else:
         from paddleocr import PaddleOCR
         instance = PaddleOCR(lang=lang, enable_mkldnn=enable_mkldnn)
@@ -100,7 +116,13 @@ def get_rec_instance(model_name=None):
     if os.environ.get('USE_EASYOCR', '0') == '1':
         _rec_instance = _EasyOCRRecWrapper()
         return _rec_instance
-    _rec_instance = _PaddleRecOnly(model_name=model_name)
+    engine = ocr_engine()
+    if engine == 'rapid':
+        _rec_instance = _RapidRecOnly()
+    elif engine == 'apple':
+        _rec_instance = _AppleVision()
+    else:
+        _rec_instance = _PaddleRecOnly(model_name=model_name)
     return _rec_instance
 
 
@@ -204,3 +226,128 @@ class _EasyOCRWrapper:
             return " ".join(t for _, t, c in results if c > 0.3)
         except Exception:
             return ""
+
+
+def _to_bgr(img_or_path):
+    if isinstance(img_or_path, str):
+        return cv2.imread(img_or_path)
+    return img_or_path
+
+
+def _xyxy(poly):
+    xs = [float(p[0]) for p in poly]
+    ys = [float(p[1]) for p in poly]
+    return [min(xs), min(ys), max(xs), max(ys)]
+
+
+def _rapid(params):
+    from rapidocr import RapidOCR
+    base = {"Global.log_level": "error", "Global.text_score": 0.0}
+    base.update(params)
+    return RapidOCR(params=base)
+
+
+class _RapidFull:
+    """RapidOCR det+rec with the models PaddleOCR(lang='en') uses:
+    PP-OCRv5 server det + en PP-OCRv5 mobile rec, Paddle's det thresholds.
+    Paddle's doc preprocessor (orientation + UVDoc unwarping) has no equivalent."""
+
+    def __init__(self):
+        from rapidocr import LangDet, LangRec, ModelType, OCRVersion
+        self._engine = _rapid({
+            "Global.max_side_len": 4000,
+            "Det.ocr_version": OCRVersion.PPOCRV5, "Det.model_type": ModelType.SERVER, "Det.lang_type": LangDet.CH,
+            "Det.limit_side_len": 64, "Det.limit_type": "min",
+            "Det.thresh": 0.3, "Det.box_thresh": 0.6, "Det.unclip_ratio": 1.5,
+            "Rec.ocr_version": OCRVersion.PPOCRV5, "Rec.model_type": ModelType.MOBILE, "Rec.lang_type": LangRec.EN,
+        })
+        print("[OCR] RapidOCR full: PP-OCRv5 server det + en PP-OCRv5 mobile rec")
+
+    def ocr(self, img_or_path, **kwargs):
+        """PaddleOCR 3.x dict format: [{'rec_texts', 'rec_scores', 'rec_boxes'}]."""
+        out = self._engine(_to_bgr(img_or_path))
+        if out.txts is None:
+            return [{'rec_texts': [], 'rec_scores': [], 'rec_boxes': []}]
+        return [{'rec_texts': list(out.txts), 'rec_scores': [float(x) for x in out.scores],
+                 'rec_boxes': [_xyxy(b) for b in out.boxes]}]
+
+
+class _RapidRecOnly:
+    """RapidOCR rec-only with the model the Paddle path uses (PP-OCRv4 server rec)."""
+
+    def __init__(self):
+        from rapidocr import LangRec, ModelType, OCRVersion
+        self._engine = _rapid({
+            "Global.use_det": False, "Global.use_cls": False,
+            "Rec.ocr_version": OCRVersion.PPOCRV4, "Rec.model_type": ModelType.SERVER, "Rec.lang_type": LangRec.CH,
+        })
+        print("[OCR] RapidOCR rec-only: PP-OCRv4 server rec")
+
+    def recognize(self, crop_image):
+        try:
+            out = self._engine(_to_bgr(crop_image), use_det=False, use_cls=False, use_rec=True)
+            if not out.txts:
+                return '', 0.0
+            return out.txts[0], float(out.scores[0])
+        except Exception:
+            return '', 0.0
+
+    def ocr(self, crop_image, **kwargs):
+        text, score = self.recognize(crop_image)
+        return [{'rec_texts': [text], 'rec_scores': [score]}]
+
+
+class _AppleVision:
+    """Apple Vision VNRecognizeTextRequest (accurate, language correction off so
+    numbers are not 'corrected').  Serves both the full and the rec-only role:
+    Vision has no rec-only mode, so recognize() joins the lines it finds."""
+
+    def __init__(self):
+        import Vision  # noqa: F401  (pyobjc-framework-Vision, macOS only)
+        print("[OCR] Apple Vision (accurate, no language correction)")
+
+    def _run(self, img_or_path):
+        import objc
+        import Vision
+        from Foundation import NSData
+        img = _to_bgr(img_or_path)
+        if img is None:
+            return [], 0, 0
+        h, w = img.shape[:2]
+        ok, png = cv2.imencode('.png', img)
+        if not ok:
+            return [], w, h
+        lines = []
+        with objc.autorelease_pool():
+            req = Vision.VNRecognizeTextRequest.alloc().init()
+            req.setRecognitionLevel_(0)          # accurate
+            req.setUsesLanguageCorrection_(False)
+            req.setRecognitionLanguages_(["en-US"])
+            data = NSData.dataWithBytes_length_(png.tobytes(), len(png))
+            handler = Vision.VNImageRequestHandler.alloc().initWithData_options_(data, None)
+            handler.performRequests_error_([req], None)
+            for r in req.results() or []:
+                cand = r.topCandidates_(1)
+                if not cand:
+                    continue
+                bb = r.boundingBox()           # normalised, origin bottom-left
+                x1 = bb.origin.x * w
+                y1 = (1.0 - bb.origin.y - bb.size.height) * h
+                lines.append((str(cand[0].string()), float(cand[0].confidence()),
+                              [x1, y1, x1 + bb.size.width * w, y1 + bb.size.height * h]))
+        return lines, w, h
+
+    def ocr(self, img_or_path, **kwargs):
+        lines, _, _ = self._run(img_or_path)
+        return [{'rec_texts': [t for t, _, _ in lines], 'rec_scores': [c for _, c, _ in lines],
+                 'rec_boxes': [b for _, _, b in lines]}]
+
+    def recognize(self, crop_image):
+        try:
+            lines, _, _ = self._run(crop_image)
+        except Exception:
+            return '', 0.0
+        if not lines:
+            return '', 0.0
+        lines.sort(key=lambda t: (t[2][1], t[2][0]))
+        return ' '.join(t for t, _, _ in lines), min(c for _, c, _ in lines)
