@@ -41,16 +41,9 @@ COPY docker/entrypoint-full.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && mkdir -p data/input data/intermediate data/final_output data/cache models
 
-# Hugging Face and PaddleX caches live under the models volume so a single
+# The Hugging Face cache lives under the models volume so a single
 # mount keeps every weight between runs.
 ENV HF_HOME=/app/models/hf
-ENV PADDLE_PDX_CACHE_HOME=/app/models/paddlex
-# PaddleX reads exactly this name; it skips a ~90 s connectivity probe at startup.
-ENV PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True
-# OneDNN is not available on every x86 CPU Paddle may land on.
-ENV FLAGS_use_mkldnn=0
-ENV FLAGS_pir_apply_mkldnn_pass=0
-ENV FLAGS_enable_pir_api=0
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 

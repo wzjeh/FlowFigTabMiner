@@ -17,8 +17,8 @@ figures:
   step3_micro:
     model_path: "models/yolo11m-fig-scatter-0208/runs/detect/train/weights/best.pt"
     crop_padding: 10
-    ocr_engine: "paddle"
-    ocr_rec_model: "PP-OCRv4_server_rec"  # rec-only model for tick labels/data values
+    # OCR: RapidOCR (PP-OCR models in models/rapidocr/), see src/extraction/common/ocr_backend.py;
+    # FFTM_OCR_ENGINE=apple switches to Apple Vision (macOS).
     confidence_threshold: 0.5
 
   step4_assembly:

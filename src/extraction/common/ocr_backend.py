@@ -5,10 +5,12 @@ Two modes:
   get_ocr_instance()  → full det+rec pipeline (for multi-line text: captions, legends)
   get_rec_instance()  → rec-only model (for pre-cropped single-text regions: tick labels, cells)
 
-USE_EASYOCR=1 → EasyOCR fallback (Cloud Run, avoids PaddlePaddle PIR crash)
-FFTM_OCR_ENGINE=paddle|rapid|apple selects the engine (default paddle):
-  rapid → RapidOCR, the same PP-OCR models run by ONNX Runtime (no paddlepaddle)
-  apple → Apple Vision text recognition (macOS only, Neural Engine)
+Engine (FFTM_OCR_ENGINE):
+  rapid (default) → RapidOCR: PP-OCR models on ONNX Runtime, weights in models/rapidocr/.
+                    On flowchem-bench it gives the same scores as PaddleOCR (2026-10-30).
+                    The rec-only model runs on CoreML when ONNX Runtime offers it (macOS).
+  apple           → Apple Vision text recognition (macOS only).
+USE_EASYOCR=1 → EasyOCR (old Cloud Run figure-service image).
 """
 import os
 
@@ -55,119 +57,50 @@ def upscale_for_ocr(img, pad=50, max_factor=3.0, max_side=None):
                               cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
 
-# Singleton full det+rec instances, keyed by (lang, enable_mkldnn).
-# Without this, every caller (EvidenceAssembler, LegendMatcher,
-# ContentRecognizer) builds its OWN PaddleOCR — 3 per run — each
-# spawning its own thread pool (the load=30 / repeated "No ccache found"
-# culprit).  Memoizing collapses them to one shared instance.  Safe
-# because the pipeline runs single-process (single-instance lock) and
+RAPIDOCR_DIR = os.environ.get("FFTM_RAPIDOCR_DIR", os.path.join("models", "rapidocr"))
+
+# One shared full det+rec instance and one rec-only instance per process.
+# Safe because the pipeline runs single-process (single-instance lock) and
 # OCR calls are sequential, not concurrent.
-_ocr_instances: dict = {}
-
-
-def ocr_engine():
-    """Engine name from FFTM_OCR_ENGINE (paddle | rapid | apple)."""
-    engine = os.environ.get('FFTM_OCR_ENGINE', 'paddle').strip().lower()
-    if engine not in ('paddle', 'rapid', 'apple'):
-        raise ValueError(f"FFTM_OCR_ENGINE must be paddle, rapid or apple, not {engine!r}")
-    return engine
-
-
-def get_ocr_instance(lang='en', enable_mkldnn=False, **kwargs):
-    """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells).
-
-    Memoized per (lang, enable_mkldnn) — repeat calls return the same
-    instance instead of constructing a fresh PaddleOCR each time.
-    """
-    key = (lang, enable_mkldnn)
-    cached = _ocr_instances.get(key)
-    if cached is not None:
-        return cached
-
-    engine = ocr_engine()
-    if os.environ.get('USE_EASYOCR', '0') == '1':
-        instance = _EasyOCRWrapper()
-    elif engine == 'rapid':
-        instance = _RapidFull()
-    elif engine == 'apple':
-        instance = _AppleVision()
-    else:
-        from paddleocr import PaddleOCR
-        instance = PaddleOCR(lang=lang, enable_mkldnn=enable_mkldnn)
-
-    _ocr_instances[key] = instance
-    return instance
-
-
-# Singleton rec-only instance (lazy)
+_ocr_instance = None
 _rec_instance = None
 
 
-def get_rec_instance(model_name=None):
-    """Rec-only model for pre-cropped single-text regions.
+def ocr_engine():
+    """Engine name from FFTM_OCR_ENGINE (rapid | apple)."""
+    engine = os.environ.get('FFTM_OCR_ENGINE', 'rapid').strip().lower()
+    if engine not in ('rapid', 'apple'):
+        raise ValueError(f"FFTM_OCR_ENGINE must be rapid or apple, not {engine!r}")
+    return engine
 
-    Skips detection — treats entire crop as one text line.
-    Default: PP-OCRv4_server_rec (higher accuracy).
-    Fallback: en_PP-OCRv5_mobile_rec (lighter, faster).
+
+def get_ocr_instance():
+    """Full det+rec pipeline. Use for multi-line text (captions, legends, table cells)."""
+    global _ocr_instance
+    if _ocr_instance is None:
+        if os.environ.get('USE_EASYOCR', '0') == '1':
+            _ocr_instance = _EasyOCRWrapper()
+        elif ocr_engine() == 'apple':
+            _ocr_instance = _AppleVision()
+        else:
+            _ocr_instance = _RapidFull()
+    return _ocr_instance
+
+
+def get_rec_instance():
+    """Rec-only model for pre-cropped single-text regions (tick labels, cells).
+
+    Skips detection — treats the entire crop as one text line.
     """
     global _rec_instance
-    if _rec_instance is not None:
-        return _rec_instance
-    if os.environ.get('USE_EASYOCR', '0') == '1':
-        _rec_instance = _EasyOCRRecWrapper()
-        return _rec_instance
-    engine = ocr_engine()
-    if engine == 'rapid':
-        _rec_instance = _RapidRecOnly()
-    elif engine == 'apple':
-        _rec_instance = _AppleVision()
-    else:
-        _rec_instance = _PaddleRecOnly(model_name=model_name)
-    return _rec_instance
-
-
-class _PaddleRecOnly:
-    """Wraps PaddleX rec-only model for single-text-line recognition."""
-
-    def __init__(self, model_name=None):
-        from paddlex import create_model
-        if model_name is None:
-            # Try server (more accurate), fall back to mobile
-            for name in ['PP-OCRv4_server_rec', 'en_PP-OCRv5_mobile_rec']:
-                try:
-                    self._model = create_model(name)
-                    self._model_name = name
-                    print(f"[RecOnlyOCR] Loaded: {name}")
-                    return
-                except Exception:
-                    continue
-            raise RuntimeError("No PaddleX rec model available")
+    if _rec_instance is None:
+        if os.environ.get('USE_EASYOCR', '0') == '1':
+            _rec_instance = _EasyOCRRecWrapper()
+        elif ocr_engine() == 'apple':
+            _rec_instance = _AppleVision()
         else:
-            self._model = create_model(model_name)
-            self._model_name = model_name
-            print(f"[RecOnlyOCR] Loaded: {model_name}")
-
-    def recognize(self, crop_image):
-        """Recognize text from a single crop image.
-
-        Args:
-            crop_image: numpy array (BGR) or file path
-        Returns:
-            (text: str, confidence: float)
-        """
-        try:
-            result = list(self._model.predict(crop_image))[0]
-            return result.get('rec_text', ''), result.get('rec_score', 0.0)
-        except Exception:
-            return '', 0.0
-
-    def ocr(self, crop_image, **kwargs):
-        """Compatibility wrapper matching PaddleOCR .ocr() return format.
-
-        Returns PaddleX dict format: [{'rec_texts': [...], 'rec_scores': [...]}]
-        """
-        text, score = self.recognize(crop_image)
-        return [{'rec_texts': [text], 'rec_scores': [score]}]
+            _rec_instance = _RapidRecOnly()
+    return _rec_instance
 
 
 class _EasyOCRRecWrapper:
@@ -240,6 +173,13 @@ def _xyxy(poly):
     return [min(xs), min(ys), max(xs), max(ys)]
 
 
+def _model(name):
+    path = os.path.join(RAPIDOCR_DIR, name)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"{path} missing: hf download wyzhaoc/FlowFigTabMiner-models --local-dir models/")
+    return path
+
+
 def _rapid(params):
     from rapidocr import RapidOCR
     base = {"Global.log_level": "error", "Global.text_score": 0.0}
@@ -247,19 +187,36 @@ def _rapid(params):
     return RapidOCR(params=base)
 
 
+def _use_coreml(ort_wrapper, model_path):
+    """Re-open one ONNX session with CoreML first (macOS); same model, so the
+    output is unchanged (913/913 identical on the benchmark tick crops).
+    Only used for the rec-only model: CoreML garbles the PP-OCRv5 detector."""
+    import onnxruntime as ort
+    if "CoreMLExecutionProvider" not in ort.get_available_providers():
+        return False
+    so = ort.SessionOptions()
+    so.log_severity_level = 4
+    ort_wrapper.session = ort.InferenceSession(
+        model_path, sess_options=so, providers=["CoreMLExecutionProvider", "CPUExecutionProvider"])
+    return True
+
+
 class _RapidFull:
-    """RapidOCR det+rec with the models PaddleOCR(lang='en') uses:
+    """RapidOCR det+rec with the models PaddleOCR(lang='en') used:
     PP-OCRv5 server det + en PP-OCRv5 mobile rec, Paddle's det thresholds.
-    Paddle's doc preprocessor (orientation + UVDoc unwarping) has no equivalent."""
+    Paddle's doc preprocessor (orientation + UVDoc unwarping) is not used."""
 
     def __init__(self):
         from rapidocr import LangDet, LangRec, ModelType, OCRVersion
         self._engine = _rapid({
             "Global.max_side_len": 4000,
             "Det.ocr_version": OCRVersion.PPOCRV5, "Det.model_type": ModelType.SERVER, "Det.lang_type": LangDet.CH,
+            "Det.model_path": _model("ch_PP-OCRv5_server_det.onnx"),
             "Det.limit_side_len": 64, "Det.limit_type": "min",
             "Det.thresh": 0.3, "Det.box_thresh": 0.6, "Det.unclip_ratio": 1.5,
+            "Cls.model_path": _model("ch_ppocr_mobile_v2.0_cls_infer.onnx"),
             "Rec.ocr_version": OCRVersion.PPOCRV5, "Rec.model_type": ModelType.MOBILE, "Rec.lang_type": LangRec.EN,
+            "Rec.model_path": _model("en_PP-OCRv5_rec_mobile_infer.onnx"),
         })
         print("[OCR] RapidOCR full: PP-OCRv5 server det + en PP-OCRv5 mobile rec")
 
@@ -273,15 +230,18 @@ class _RapidFull:
 
 
 class _RapidRecOnly:
-    """RapidOCR rec-only with the model the Paddle path uses (PP-OCRv4 server rec)."""
+    """RapidOCR rec-only with the model the Paddle path used (PP-OCRv4 server rec)."""
 
     def __init__(self):
         from rapidocr import LangRec, ModelType, OCRVersion
+        path = _model("ch_PP-OCRv4_rec_server_infer.onnx")
         self._engine = _rapid({
             "Global.use_det": False, "Global.use_cls": False,
             "Rec.ocr_version": OCRVersion.PPOCRV4, "Rec.model_type": ModelType.SERVER, "Rec.lang_type": LangRec.CH,
+            "Rec.model_path": path,
         })
-        print("[OCR] RapidOCR rec-only: PP-OCRv4 server rec")
+        coreml = _use_coreml(self._engine.text_rec.session, path)
+        print(f"[OCR] RapidOCR rec-only: PP-OCRv4 server rec ({'CoreML' if coreml else 'CPU'})")
 
     def recognize(self, crop_image):
         try:

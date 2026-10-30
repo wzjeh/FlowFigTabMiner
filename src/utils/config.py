@@ -18,7 +18,6 @@ class _Step2MacroConfig(TypedDict):
 class _Step3MicroConfig(TypedDict):
     model_path: str
     crop_padding: int
-    ocr_engine: str
     confidence_threshold: float
 
 class _Step4AssemblyConfig(TypedDict):

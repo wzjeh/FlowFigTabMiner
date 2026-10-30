@@ -1,17 +1,5 @@
 import os
-# Must be set BEFORE any paddle/paddleocr import
-os.environ["DISABLE_MODEL_SOURCE_CHECK"] = "True"
-os.environ["PADDLEPD_DISABLE_MODEL_SOURCE_CHECK"] = "True"
 os.environ["HF_HUB_OFFLINE"] = "1"
-# Disable OneDNN (MKL-DNN) — causes NotImplementedError on Cloud Run CPUs
-os.environ["FLAGS_use_mkldnn"] = "0"
-os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
-os.environ["FLAGS_enable_pir_api"] = "0"
-import paddle
-try:
-    paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
-except Exception:
-    pass
 from src.extraction.common.ocr_backend import get_ocr_instance, get_rec_instance
 
 class ContentRecognizer:
@@ -22,7 +10,7 @@ class ContentRecognizer:
         Rec-only fallback catches small cells where the detector returns empty.
         """
         print("Loading OCR for table cells (full-pipeline + rec-only fallback)...")
-        self.ocr = get_ocr_instance(lang='en', enable_mkldnn=False)
+        self.ocr = get_ocr_instance()
         self.rec = get_rec_instance()
 
         # MolNexTR for chemical structure recognition

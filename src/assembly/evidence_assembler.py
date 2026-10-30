@@ -2,23 +2,12 @@ import os
 import glob
 import json
 import re
-if os.environ.get('USE_EASYOCR', '0') != '1':
-    os.environ["FLAGS_use_mkldnn"] = "0"
-    os.environ["FLAGS_pir_apply_mkldnn_pass"] = "0"
-    os.environ["FLAGS_enable_pir_api"] = "0"
-    import paddle
-    try:
-        paddle.set_flags({'FLAGS_use_mkldnn': False, 'FLAGS_pir_apply_mkldnn_pass': False})
-    except Exception:
-        pass
 from src.extraction.common.ocr_backend import get_ocr_instance
 from src.extraction.figure.metadata_vlm import FigureMetadata
 
 class EvidenceAssembler:
     def __init__(self):
-        # Initialize PaddleOCR
-        # use_angle_cls=True ensures we can read rotated y-axis text
-        self.ocr = get_ocr_instance(use_angle_cls=True)
+        self.ocr = get_ocr_instance()
 
     def check_relevance(self, figure_id, intermediate_dir):
         """

@@ -5,7 +5,7 @@
 Much of the quantitative process data in chemistry papers sits inside figures and tables, where
 molecular structures are drawn as images and yields are plotted rather than typed. FlowFigTabMiner
 turns these figures and tables into structured reaction records. It chains five custom-trained YOLO
-models with chemistry-specific tools (Florence-2/TF-ID, TATR, MolNexTR, PaddleOCR) and uses Gemini
+models with chemistry-specific tools (Florence-2/TF-ID, TATR, MolNexTR, PP-OCR via RapidOCR) and uses Gemini
 only for table cells and the final record assembly. The figure track is deterministic (YOLO + RANSAC
 axis mapping), so the same PDF gives the same output on every run.
 
@@ -17,7 +17,7 @@ axis mapping), so the same PDF gives the same output on every run.
 ```
 PDF → [0] flow-chem pre-filter → [1] TF-ID detect figures/tables
     → figures: YOLO segment → YOLO detect points → RANSAC axis mapping → legend match
-    → tables:  YOLO segment → TATR structure → Gemini cells + MolNexTR + PaddleOCR
+    → tables:  YOLO segment → TATR structure → Gemini cells + MolNexTR + RapidOCR
     → [3.5] scheme parsing → compound pool   → [4.5] per-source variable libraries
     → [5] per-source Gemini assembly → JSON records → [6] normalize + validate → dataset
 ```
@@ -34,7 +34,7 @@ pip install -e .                       # installs deps (requirements.txt) + the 
 ```
 
 **Models** (git-ignored, under `models/`). One Hugging Face repository holds the five YOLO
-weights, the MolNexTR checkpoint and the PaddleOCR models, laid out as `config.yaml` expects:
+weights, the MolNexTR checkpoint and the PP-OCR models (ONNX, for RapidOCR), laid out as `config.yaml` expects:
 
 ```bash
 pip install huggingface_hub
@@ -105,7 +105,7 @@ Condition fields inherited from the paper-level pool are tagged in `conditions_p
 `config.yaml` holds model paths, detection thresholds and LLM settings (`llm.adjudication.model`,
 `llm.max_concurrent`, …), each key documented inline. `keywords.yaml` lists table-relevance keywords.
 Runtime knobs as environment variables: `OCR_UPSCALE_MAX_SIDE` (default 1600),
-`MOLNEXTR_NUM_WORKERS` (default 1), `OCR_PROFILE=1` (timing), `USE_EASYOCR=1` (OCR fallback).
+`MOLNEXTR_NUM_WORKERS` (default 1), `OCR_PROFILE=1` (timing), `FFTM_OCR_ENGINE=apple` (Apple Vision OCR on macOS).
 
 ## Web tool
 
@@ -145,7 +145,8 @@ task and counts as 0 in the overall score.
 | Tables | 0.932 | **0.978** | 0.935 | – | – | 0.683 |
 | **Overall** | **0.874** | 0.848 | 0.778 | 0.035 | 0.062 | 0.342 |
 
-The pipeline output is byte-identical across repeated runs. The benchmark archive, with protocol and
+The pipeline output is byte-identical across repeated runs. The published scores were produced with
+PaddleOCR; RapidOCR runs the same PP-OCR models and gives the same scores on this benchmark. The benchmark archive, with protocol and
 scoring code, is in the Zenodo record above.
 
 ## License

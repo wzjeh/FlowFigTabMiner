@@ -9,12 +9,10 @@ torchvision==0.23.0
 # ── Object Detection (YOLO) ──
 ultralytics==8.4.2
 
-# ── OCR (PaddlePaddle) ──
-# Use paddlepaddle-gpu on Linux with CUDA for faster inference
-paddlepaddle==3.3.0            # macOS / CPU
-# paddlepaddle-gpu==3.3.0     # Linux + CUDA (uncomment for GPU)
-paddleocr==3.3.2
-paddlex==3.3.13
+# ── OCR (RapidOCR: PP-OCR models on ONNX Runtime; weights in models/rapidocr/) ──
+rapidocr==3.5.0
+onnxruntime==1.19.2            # CoreML provider on macOS speeds up the rec-only model
+pyobjc-framework-Vision>=10.0; sys_platform == "darwin"   # optional engine FFTM_OCR_ENGINE=apple
 
 # ── Transformers (TF-ID Florence-2, TATR) ──
 transformers==4.57.3

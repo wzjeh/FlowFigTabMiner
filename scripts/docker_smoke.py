@@ -62,7 +62,7 @@ def yolo():
     return f"{len(paths)} models"
 
 
-def paddle():
+def ocr():
     from src.extraction.common.ocr_backend import get_ocr_instance
     eng = get_ocr_instance()
     img = np.full((80, 300, 3), 255, dtype=np.uint8)
@@ -81,9 +81,8 @@ def molnextr():
 
 
 def weights():
-    pdx = os.environ.get("PADDLE_PDX_CACHE_HOME", os.path.expanduser("~/.paddlex"))
     need = ["models/molnextr_model_best.pth", "models/tab-scheme-seg/best.pt",
-            os.path.join(pdx, "official_models/PP-OCRv5_server_det/inference.pdiparams")]
+            "models/rapidocr/ch_PP-OCRv5_server_det.onnx", "models/rapidocr/ch_PP-OCRv4_rec_server_infer.onnx"]
     missing = [p for p in need if not os.path.exists(p)]
     if missing:
         raise FileNotFoundError(missing)
@@ -93,6 +92,6 @@ def weights():
 check("weights", weights)
 check("yolo", yolo)
 check("molnextr", molnextr)
-check("paddleocr", paddle)
+check("rapidocr", ocr)
 check("tfid", tfid)
 sys.exit(0 if all(ok for ok, _ in results.values()) else 1)
